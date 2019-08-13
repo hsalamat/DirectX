@@ -46,8 +46,11 @@ void D3D12HelloWindow::LoadPipeline()
     }
 #endif
 
+	//step3: Enables creating Microsoft DirectX Graphics Infrastructure (DXGI) objects
     ComPtr<IDXGIFactory4> factory;
     ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
+
+	//step4: create a Windows Advanced Rasterization Platform (WARP) WARP enables Rendering When Direct3D Hardware is Not Available
 
     if (m_useWarpDevice)
     {
@@ -62,9 +65,11 @@ void D3D12HelloWindow::LoadPipeline()
     }
     else
     {
+		//step5: The IDXGIAdapter interface represents a display subsystem (including one or more GPUs, DACs and video memory).
         ComPtr<IDXGIAdapter1> hardwareAdapter;
         GetHardwareAdapter(factory.Get(), &hardwareAdapter);
 
+		//step6: Creates a device that represents the display adapter.
         ThrowIfFailed(D3D12CreateDevice(
             hardwareAdapter.Get(),
             D3D_FEATURE_LEVEL_11_0,
@@ -72,14 +77,14 @@ void D3D12HelloWindow::LoadPipeline()
             ));
     }
 
-    // Describe and create the command queue.
+    // step7: Describe and create the command queue. Fill out a command queue description, then create the command queue:
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
     ThrowIfFailed(m_device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 
-    // Describe and create the swap chain.
+    // step8: Describe and create the swap chain. Fill out a swapchain description, then create the swap chain
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.BufferCount = FrameCount;
     swapChainDesc.Width = m_width;
@@ -105,7 +110,7 @@ void D3D12HelloWindow::LoadPipeline()
     ThrowIfFailed(swapChain.As(&m_swapChain));
     m_frameIndex = m_swapChain->GetCurrentBackBufferIndex();
 
-    // Create descriptor heaps.
+    // step9: Create descriptor heaps. Fill out a heap description. then create a descriptor heap:
     {
         // Describe and create a render target view (RTV) descriptor heap.
         D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
@@ -117,7 +122,7 @@ void D3D12HelloWindow::LoadPipeline()
         m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     }
 
-    // Create frame resources.
+    // step10 : Create frame resources. Create the render target view:
     {
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 

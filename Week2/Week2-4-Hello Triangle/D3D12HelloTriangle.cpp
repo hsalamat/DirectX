@@ -138,11 +138,12 @@ void D3D12HelloTriangle::LoadPipeline()
 // Load the sample assets.
 void D3D12HelloTriangle::LoadAssets()
 {
-    // Create an empty root signature.
+    //step11: Create an empty root signature.
     {
         CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
         rootSignatureDesc.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
+		//ID3DBlob: This interface is used to return data of arbitrary length.
         ComPtr<ID3DBlob> signature;
         ComPtr<ID3DBlob> error;
         ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
@@ -166,17 +167,20 @@ void D3D12HelloTriangle::LoadAssets()
         //ThrowIfFailed(D3DCompileFromFile(GetAssetFullPath(L"shaders.hlsl").c_str(), nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
 		std::wstring path = GetAssetFullPath(L"shaders.hlsl").c_str();
+
+		//step12: Load and compile the shaders
 		ThrowIfFailed(D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
 		ThrowIfFailed(D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
-        // Define the vertex input layout.
+        // step13: Define the vertex input layout.
         D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
             { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
         };
 
-        // Describe and create the graphics pipeline state object (PSO).
+        // step13: Describe and create the graphics pipeline state object (PSO).
+		//Fill out a pipeline state description, using the helper structures available, then create the graphics pipeline state
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
         psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
         psoDesc.pRootSignature = m_rootSignature.Get();
@@ -194,14 +198,14 @@ void D3D12HelloTriangle::LoadAssets()
         ThrowIfFailed(m_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState)));
     }
 
-    // Create the command list.
+    // step14: Create the command list.
     ThrowIfFailed(m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocator.Get(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandList)));
 
-    // Command lists are created in the recording state, but there is nothing
+    // step15: Command lists are created in the recording state, but there is nothing
     // to record yet. The main loop expects it to be closed, so close it now.
     ThrowIfFailed(m_commandList->Close());
 
-    // Create the vertex buffer.
+    // step16: Create the vertex buffer.
     {
         // Define the geometry for a triangle.
         Vertex triangleVertices[] =
@@ -234,32 +238,33 @@ void D3D12HelloTriangle::LoadAssets()
             nullptr,
             IID_PPV_ARGS(&m_vertexBuffer)));
 
-        // Copy the triangle data to the vertex buffer.
+        // step17: Copy the triangle data to the vertex buffer.
         UINT8* pVertexDataBegin;
         CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
         ThrowIfFailed(m_vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
         memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
         m_vertexBuffer->Unmap(0, nullptr);
 
-        // Initialize the vertex buffer view.
+        //step18: Initialize the vertex buffer view.
         m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
         m_vertexBufferView.StrideInBytes = sizeof(Vertex);
         m_vertexBufferView.SizeInBytes = vertexBufferSize;
     }
 
     // Create synchronization objects and wait until assets have been uploaded to the GPU.
+	//step18: Create and initialize the fence
     {
         ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
         m_fenceValue = 1;
 
-        // Create an event handle to use for frame synchronization.
+        // step19: Create an event handle to use for frame synchronization.
         m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
         if (m_fenceEvent == nullptr)
         {
             ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
         }
 
-        // Wait for the command list to execute; we are reusing the same command 
+        // step20: Wait for the GPU to finish. Wait for the command list to execute; we are reusing the same command 
         // list in our main loop but for now, we just want to wait for setup to 
         // complete before continuing.
         WaitForPreviousFrame();
@@ -272,20 +277,23 @@ void D3D12HelloTriangle::OnUpdate()
 }
 
 // Render the scene.
+//Rendering involves a call to populate the command list, then the command list can be executed and the next buffer in the swap chain presented:
 void D3D12HelloTriangle::OnRender()
 {
-    // Record all the commands we need to render the scene into the command list.
+	//During set up, the member variable m_commandList was used to record and execute all of the set up commands. You can now reuse that member in the main render loop.
+    // step 21: Record all the commands we need to render the scene into the command list.
     PopulateCommandList();
 
-    // Execute the command list.
+    // step22: Execute the command list.
     ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
     m_commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-    // Present the frame.
+    // step23: Present the frame.
 	//Swapping the roles of the back and front buffers is called presenting.
 	//Presenting is an efficient operation, as the pointer to the current front bufferand the pointer to the current back buffer just need to be swapped.
     ThrowIfFailed(m_swapChain->Present(1, 0));
 
+	//step24: Wait on the GPU to finish.
     WaitForPreviousFrame();
 }
 
@@ -293,38 +301,41 @@ void D3D12HelloTriangle::OnDestroy()
 {
     // Ensure that the GPU is no longer referencing resources that are about to be
     // cleaned up by the destructor.
+
+	//step37: Wait for the GPU to finish.
     WaitForPreviousFrame();
 
+	//step38: Close the event.
     CloseHandle(m_fenceEvent);
 }
 
 void D3D12HelloTriangle::PopulateCommandList()
 {
-    // Command list allocators can only be reset when the associated 
+    // step25: Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
     // fences to determine GPU execution progress.
     ThrowIfFailed(m_commandAllocator->Reset());
 
-    // However, when ExecuteCommandList() is called on a particular command 
+    // step26: However, when ExecuteCommandList() is called on a particular command 
     // list, that command list can then be reset at any time and must be before 
     // re-recording.
     ThrowIfFailed(m_commandList->Reset(m_commandAllocator.Get(), m_pipelineState.Get()));
 
-    // Set necessary state.
+    // step27: Set the root signature, viewport and scissors rectangles:
     m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
     m_commandList->RSSetViewports(1, &m_viewport);
     m_commandList->RSSetScissorRects(1, &m_scissorRect);
 
-    // Indicate that the back buffer will be used as a render target.
+    // step28: Indicate that the back buffer will be used as a render target.
     m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), m_frameIndex, m_rtvDescriptorSize);
     m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
-    // Record commands.
+    // step29: Record commands.
     const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 
-	//note1: to submit a command to the GPU to clear a render target(e.g., the screen)
+	//step30: : to submit a command to the GPU to clear a render target(e.g., the screen)
     m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
     m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -333,9 +344,10 @@ void D3D12HelloTriangle::PopulateCommandList()
     m_commandList->DrawInstanced(9, 1, 0, 0);
 	//m_commandList->DrawInstanced(3, 1, 3, 3);
 
-    // Indicate that the back buffer will now be used to present.
+    // step31: Indicate that the back buffer will now be used to present.
     m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
+	//step32: Close the command list:
     ThrowIfFailed(m_commandList->Close());
 }
 
@@ -346,17 +358,18 @@ void D3D12HelloTriangle::WaitForPreviousFrame()
     // sample illustrates how to use fences for efficient resource usage and to
     // maximize GPU utilization.
 
-    // Signal and increment the fence value.
+    // step33: Signal and increment the fence value.
     const UINT64 fence = m_fenceValue;
     ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fence));
     m_fenceValue++;
 
-    // Wait until the previous frame is finished.
+    // step34: Wait until the previous frame is finished.
     if (m_fence->GetCompletedValue() < fence)
     {
         ThrowIfFailed(m_fence->SetEventOnCompletion(fence, m_fenceEvent));
         WaitForSingleObject(m_fenceEvent, INFINITE);
     }
 
+	//step35: Update the frame index:
     m_frameIndex = m_swapChain->GetCurrentBackBufferIndex();
 }
