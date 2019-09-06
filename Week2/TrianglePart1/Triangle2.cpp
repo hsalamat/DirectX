@@ -53,7 +53,7 @@
 //
 //	ComPtr<ID3D12PipelineState> mPSO = nullptr;
 //
-//	//step3
+//
 //	std::array<Vertex, 9> vertices =
 //	{
 //
@@ -73,7 +73,6 @@
 //		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
 //	};
 //
-//	//step4: //now let's replace vertexBufferSize with vbBufferSize
 //	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);
 //
 //};
@@ -189,18 +188,19 @@
 //
 //	mCommandList->IASetVertexBuffers(0, 1, &mVertexBufferView);
 //
-//	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//	//step1
+//	//mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//	//mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+//	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 //
 //	//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.
-//	//step3
-//	//mCommandList->DrawInstanced(3, 1, 0, 0);
 //	mCommandList->DrawInstanced((UINT)std::size(vertices), 1, 0, 0);
 //
 //	// Indicate a state transition on the resource usage.
 //	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 //		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 //
-//	//step4: Done recording commands.
+//	// Done recording commands.
 //	ThrowIfFailed(mCommandList->Close());
 //
 //	// Add the command list to the queue for execution.
@@ -273,35 +273,10 @@
 //void TriangleAPP::BuildTriangleGeometry()
 //{
 //
-//	 // Define the geometry for a triangle.
-//	 Vertex triangleVertices[] =
-//	{
-//		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f)}),
-//		Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) }),
-//		Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) }),
-//
-//		//step 1: why don't we see this triangle? because you are setting up the vertices counterclockwise!
-//		//by default, system does backface culling
-//		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-//		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-//		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-//
-//		//LET'S FIX THAT!
-//		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-//		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-//		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-//
-//		//STILL NOT WORKING?? GO TO STEP2 TO FIX IT
-//		//end
-//	};
-//
-//	 // step 2: comment this out and let's move trianglevertices somewhere else
-//	//const UINT vertexBufferSize = sizeof(triangleVertices);
-//
-//	// Note: using upload heaps to transfer static data like vert buffers is not 
-//	// recommended. Every time the GPU needs it, the upload heap will be marshalled 
-//	// over. Please read up on Default Heap usage. An upload heap is used here for 
-//	// code simplicity and because there are very few verts to actually transfer.
+//   // Note: using upload heaps to transfer static data like vert buffers is not 
+//   // recommended. Every time the GPU needs it, the upload heap will be marshalled 
+//   // over. Please read up on Default Heap usage. An upload heap is used here for 
+//   // code simplicity and because there are very few verts to actually transfer.
 //	md3dDevice->CreateCommittedResource(
 //		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 //		D3D12_HEAP_FLAG_NONE,
@@ -351,7 +326,10 @@
 //	psoDesc.DepthStencilState.DepthEnable = FALSE;
 //	psoDesc.DepthStencilState.StencilEnable = FALSE;
 //	psoDesc.SampleMask = UINT_MAX;
-//	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+//	//step2
+//	//psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+//	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+//	//
 //	psoDesc.NumRenderTargets = 1;
 //	psoDesc.RTVFormats[0] = mBackBufferFormat;  //DXGI_FORMAT_R8G8B8A8_UNORM;
 //	psoDesc.SampleDesc.Count = 1;
