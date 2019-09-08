@@ -6,8 +6,8 @@
 // structures, types, and function declarations we need to program
 // Windows.
 #include <windows.h>
-// The main window handle; this is used to identify a
-// created window.
+// The main window handle; this is used to identify a created window.
+//In Windows programming, we often use handles to refer to objects maintained internally by Windows.ghMainWnd is our main application window.
 HWND ghMainWnd = 0;
 // Wraps the code necessary to initialize a Windows
 // application. Function returns true if initialization
@@ -17,9 +17,9 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show);
 int Run();
 // The window procedure handles events our window receives.
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-// Windows equivalant to main()
+// Windows equivalant to main() - #define WINAPI __stdcall specifies the calling convention of the function, how the function arguments get placed on the stack.
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	PSTR pCmdLine, int nShowCmd)
+	PSTR pCmdLine, int nShowCmd) //nShowCmd --> how our application should be displayed min-maximized
 {
 	// First call our wrapper function (InitWindowsApp) to create
 		// and initialize the main application window, passing in the
@@ -37,16 +37,15 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 	// The first task to creating a window is to describe some of its
 		// characteristics by filling out a WNDCLASS structure.
 	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
+	wc.style = CS_HREDRAW | CS_VREDRAW;   //redrew when horizontal or vertical window size is changed
+	wc.lpfnWndProc = WndProc; //pointer to windows procedure function, if you have two windows, you might consider having 2 windows classes with 2 different window procedures
+	wc.cbClsExtra = 0;   //extra memory slots
+	wc.cbWndExtra = 0;    //extra memory slots
 	wc.hInstance = instanceHandle;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
-	wc.hbrBackground =
-		(HBRUSH)GetStockObject(WHITE_BRUSH);
-	wc.lpszMenuName = 0;
+	wc.hIcon = LoadIcon(0, IDI_APPLICATION);  //deault application icon - you can use your own design icon
+	wc.hCursor = LoadCursor(0, IDC_ARROW);  //uses standard arrow cursor - you can use your own design cursor
+	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); //uses white color as the background color for the client area of the window.
+	wc.lpszMenuName = 0; //spcifies the windows menu. We have no menu.
 	wc.lpszClassName = L"BasicWndClass";
 	// Next, we register this WNDCLASS instance with Windows so
 		// that we can create a window based on it.
@@ -66,15 +65,15 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 	ghMainWnd = CreateWindow(
 		L"BasicWndClass", // Registered WNDCLASS instance to use.
 		L"Win32Basic", // window title
-		WS_OVERLAPPEDWINDOW, // style flags
-		CW_USEDEFAULT, // x-coordinate
-		CW_USEDEFAULT, // y-coordinate
-		CW_USEDEFAULT, // width
-		CW_USEDEFAULT, // height
-		0, // parent window
-		0, // menu handle
+		WS_OVERLAPPEDWINDOW, // style flags  such as WS_MINIMIZEBOX, etc..
+		CW_USEDEFAULT, // x-coordinate of top-left corner relative to the screen
+		CW_USEDEFAULT, // y-coordinate of top-left corner relative to the screen
+		CW_USEDEFAULT, // width in pixels
+		CW_USEDEFAULT, // height in pixels
+		0, // parent window - there is no parent window
+		0, // menu handle - we have no menu
 		instanceHandle, // app instance
-		0); // extra creation parameters
+		0); // extra creation parameters, A window handles the WM_CREATE message if it wants to do something.
 	if (ghMainWnd == 0)
 	{
 		MessageBox(0, L"CreateWindow FAILED", 0, 0);
@@ -90,31 +89,53 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 	UpdateWindow(ghMainWnd);
 	return true;
 }
+//int Run()
+//{
+//	MSG msg = { 0 };
+//	// Loop until we get a WM_QUIT message. The function
+//		// GetMessage will only return 0 (false) when a WM_QUIT message
+//		// is received, which effectively exits the loop. The function
+//		// returns -1 if there is an error. Also, note that GetMessage
+//		// puts the application thread to sleep until there is a
+//		// message.
+//	BOOL bRet = 1;
+//	while ((bRet = GetMessage(&msg, 0, 0, 0)) != 0)
+//	{
+//		if (bRet == -1)
+//		{
+//			MessageBox(0, L"GetMessage FAILED", L"Error", MB_OK);
+//			break;
+//		}
+//		else
+//		{
+//			TranslateMessage(&msg);
+//			DispatchMessage(&msg);
+//		}
+//	}
+//	return (int)msg.wParam;
+//}
+
+
 int Run()
 {
 	MSG msg = { 0 };
-	// Loop until we get a WM_QUIT message. The function
-		// GetMessage will only return 0 (false) when a WM_QUIT message
-		// is received, which effectively exits the loop. The function
-		// returns -1 if there is an error. Also, note that GetMessage
-		// puts the application thread to sleep until there is a
-		// message.
-	BOOL bRet = 1;
-	while ((bRet = GetMessage(&msg, 0, 0, 0)) != 0)
+	while (msg.message != WM_QUIT)
 	{
-		if (bRet == -1)
-		{
-			MessageBox(0, L"GetMessage FAILED", L"Error", MB_OK);
-			break;
-		}
-		else
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		// If there are Window messages then process them.
+			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		// Otherwise, do animation/game stuff.
+			else
+			{
+			}
 	}
 	return (int)msg.wParam;
 }
+
+//callback function means Windows will be calling this function outside of the code space of the program
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// Handle some specific messages. Note that if we handle a
