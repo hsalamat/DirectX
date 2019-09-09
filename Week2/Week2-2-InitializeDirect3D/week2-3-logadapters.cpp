@@ -80,6 +80,35 @@ bool InitDirect3DApp::Initialize()
 
 	ThrowIfFailed(md3dDevice->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msQualityLevels, sizeof(msQualityLevels)));
 
+	//Note that the second parameter is both an input and output parameter. For the input,
+	//we specify the number of elements(NumFeatureLevels) in a feature level array, and
+	//	a pointer to a feature level array(pFeatureLevelsRequested) which contains a list
+	//	of feature levels we want to check hardware support for.The function outputs the
+	//	maximum supported feature level through the MaxSupportedFeatureLevel field.
+
+	//step1 what is the maximum feature that hardware support
+	D3D_FEATURE_LEVEL featureLevels[5] =
+	{
+	D3D_FEATURE_LEVEL_12_1, // First check D3D 12.1 support,
+	D3D_FEATURE_LEVEL_12_0, // Next check D3D 12 support
+	D3D_FEATURE_LEVEL_11_0, // Next check D3D 11 support
+	D3D_FEATURE_LEVEL_10_0, // Next, check D3D 10 support
+	D3D_FEATURE_LEVEL_9_3 // Finally, check D3D 9.3 support
+	};
+	D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevelsInfo;
+	featureLevelsInfo.NumFeatureLevels = 5;
+	featureLevelsInfo.pFeatureLevelsRequested =	featureLevels;
+	md3dDevice->CheckFeatureSupport( D3D12_FEATURE_FEATURE_LEVELS, &featureLevelsInfo, sizeof(featureLevelsInfo));
+
+
+	std::wstring text = L"***Maximum Supported Feature is: ";
+	std::wstring maxSupport = L"9.3";
+	if (featureLevelsInfo.MaxSupportedFeatureLevel == D3D_FEATURE_LEVEL_12_1) maxSupport = L"12.1";
+	if (featureLevelsInfo.MaxSupportedFeatureLevel == D3D_FEATURE_LEVEL_11_0) maxSupport = L"11.0";
+	text += maxSupport;
+	text += L"\n";
+	OutputDebugString(text.c_str());
+
 	return true;
 }
 
