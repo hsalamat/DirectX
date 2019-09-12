@@ -89,7 +89,7 @@ protected:
 	// Used to keep track of the “delta-time” and game time (§4.4).
 	GameTimer mTimer;
 	
-    Microsoft::WRL::ComPtr<IDXGIFactory7> mdxgiFactory;
+    Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
     Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
     Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
