@@ -219,7 +219,6 @@ void D3DApp::OnResize()
     // Execute the resize commands.
     ThrowIfFailed(mCommandList->Close());
     ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
-	//step2: adds the commands in the command list to command queue in order starting with the first array element
     mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	// Wait until resize is complete.
@@ -467,7 +466,6 @@ bool D3DApp::InitDirect3D()
 
     m4xMsaaQuality = msQualityLevels.NumQualityLevels;
 	assert(m4xMsaaQuality > 0 && "Unexpected MSAA quality level.");
-
 	
 #ifdef _DEBUG
     LogAdapters();
@@ -481,27 +479,24 @@ bool D3DApp::InitDirect3D()
 }
 
 
-//step1
+
 void D3DApp::CreateCommandObjects()
 {
-	//GPU has a command queue. The CPU submits commands to the queue using command list.
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;    //Specifies a command buffer that the GPU can execute. A direct command list doesn't inherit any GPU state (unlike bundle).
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	ThrowIfFailed(md3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
 
-	//step5: As commands are recorded to the command list, they will be stored in associated command allocator. When a command list is executed, the command queue will reference the commands in the allocator
-	//you can create multiple command lists with the same allocator, but you cannot record at the same time! you have to reset it first, or you get an error.
 	ThrowIfFailed(md3dDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		IID_PPV_ARGS(mDirectCmdListAlloc.GetAddressOf())));
 
 	ThrowIfFailed(md3dDevice->CreateCommandList(
-		0, //for single GPU
-		D3D12_COMMAND_LIST_TYPE_DIRECT, //Direct or Bundle
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		mDirectCmdListAlloc.Get(), // Associated command allocator
 		nullptr,                   // Initial PipelineStateObject
-		IID_PPV_ARGS(mCommandList.GetAddressOf()))); //Outputs a pointer to the created command list
+		IID_PPV_ARGS(mCommandList.GetAddressOf())));
 
 	// Start off in a closed state.  This is because the first time we refer 
 	// to the command list we will Reset it, and it needs to be closed before
