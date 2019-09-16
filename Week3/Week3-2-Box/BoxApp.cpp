@@ -147,6 +147,8 @@ void BoxApp::OnResize()
     XMStoreFloat4x4(&mProj, P);
 }
 
+
+
 void BoxApp::Update(const GameTimer& gt)
 {
     // Convert Spherical to Cartesian coordinates.
@@ -162,6 +164,9 @@ void BoxApp::Update(const GameTimer& gt)
     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
     XMStoreFloat4x4(&mView, view);
 
+
+
+
     XMMATRIX world = XMLoadFloat4x4(&mWorld);
     XMMATRIX proj = XMLoadFloat4x4(&mProj);
     XMMATRIX worldViewProj = world*view*proj;
@@ -170,6 +175,7 @@ void BoxApp::Update(const GameTimer& gt)
 	ObjectConstants objConstants;
     XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
     mObjectCB->CopyData(0, objConstants);
+
 }
 
 void BoxApp::Draw(const GameTimer& gt)
@@ -178,7 +184,7 @@ void BoxApp::Draw(const GameTimer& gt)
     // We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(mDirectCmdListAlloc->Reset());
 
-	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
+	//step3: A command list can be reset after it has been added to the command queue via ExecuteCommandList.
     // Reusing the command list reuses memory.
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 
@@ -188,6 +194,7 @@ void BoxApp::Draw(const GameTimer& gt)
     // Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
 
     // Clear the back buffer and depth buffer.
     mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
@@ -203,7 +210,7 @@ void BoxApp::Draw(const GameTimer& gt)
 
 	mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
 	mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());
-    mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     
     mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 
@@ -215,7 +222,7 @@ void BoxApp::Draw(const GameTimer& gt)
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-    // Done recording commands.
+    //step4: Done recording commands. Comment this line out to see what debugger will tell you in the output window.
 	ThrowIfFailed(mCommandList->Close());
  
     // Add the command list to the queue for execution.
@@ -223,6 +230,9 @@ void BoxApp::Draw(const GameTimer& gt)
 	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 	
 	// swap the back and front buffers
+		//HRESULT Present(UINT SyncInterval,UINT Flags);
+	//SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.
+	//Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
@@ -231,6 +241,8 @@ void BoxApp::Draw(const GameTimer& gt)
 	// so we do not have to wait per frame.
 	FlushCommandQueue();
 }
+
+
 
 void BoxApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
@@ -308,6 +320,8 @@ void BoxApp::BuildConstantBuffers()
 		mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
+
+
 void BoxApp::BuildRootSignature()
 {
 	// Shader programs typically require resources as input (constant buffers,
@@ -328,6 +342,7 @@ void BoxApp::BuildRootSignature()
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr, 
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
+
 	// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
 	ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	ComPtr<ID3DBlob> errorBlob = nullptr;
@@ -346,6 +361,9 @@ void BoxApp::BuildRootSignature()
 		serializedRootSig->GetBufferSize(),
 		IID_PPV_ARGS(&mRootSignature)));
 }
+
+
+
 
 void BoxApp::BuildShadersAndInputLayout()
 {
@@ -449,7 +467,15 @@ void BoxApp::BuildPSO()
 		reinterpret_cast<BYTE*>(mpsByteCode->GetBufferPointer()), 
 		mpsByteCode->GetBufferSize() 
 	};
+
+	//Hooman: convert it to wireframe
     psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+
+	//CD3DX12_RASTERIZER_DESC rsDesc(D3D12_DEFAULT);
+	//rsDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	//rsDesc.CullMode = D3D12_CULL_MODE_NONE;
+	//psoDesc.RasterizerState = rsDesc;
+
     psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
     psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
     psoDesc.SampleMask = UINT_MAX;
@@ -461,3 +487,6 @@ void BoxApp::BuildPSO()
     psoDesc.DSVFormat = mDepthStencilFormat;
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 }
+
+
+
