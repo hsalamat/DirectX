@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Boxes
+// Box Using Frame Resources
 //
 // Hold down '1' key to view scene in wireframe mode.
 //***************************************************************************************
@@ -20,8 +20,7 @@ using namespace DirectX::PackedVector;
 //step3: Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will
-// vary from app-to-app.
+// Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
 struct RenderItem
 {
 	RenderItem() = default;
@@ -33,7 +32,7 @@ struct RenderItem
 
 	// Dirty flag indicating the object data has changed and we need to update the constant buffer.
 	// Because we have an object cbuffer for each FrameResource, we have to apply the
-	// update to each FrameResource.  Thus, when we modify obect data we should set 
+	// update to each FrameResource.  Thus, when we modify object data, we should set 
 	// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
 	int NumFramesDirty = gNumFrameResources;
 
@@ -48,9 +47,9 @@ struct RenderItem
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	// DrawIndexedInstanced parameters.
-	UINT IndexCount = 0;
-	UINT StartIndexLocation = 0;
-	int BaseVertexLocation = 0;
+	UINT IndexCount = 0; //Number of indices read from the index buffer for each instance.
+	UINT StartIndexLocation = 0; //The location of the first index read by the GPU from the index buffer.
+	int BaseVertexLocation = 0; //A value added to each index before reading a vertex from the vertex buffer.
 };
 
 class ShapesApp : public D3DApp
@@ -230,13 +229,11 @@ void ShapesApp::Update(const GameTimer& gt)
 
 	std::wstring text = L"CPU working on Frame Number = " + std::to_wstring(mCurrFrameResourceIndex)+ L"\n";
 	text += L"CPU is working on current fence Number = " + std::to_wstring(mCurrentFence - 1) + L"\n";
-	OutputDebugString(text.c_str());
 
 	// Has the GPU finished processing the commands of the current frame resource?
 	// If not, wait until the GPU has completed commands up to this fence point.
-	text = L"CPU has added commands up to this Fence Number = " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
-	OutputDebugString(text.c_str());
-	text = L"GPU has completed commands up to Fence Number = " + std::to_wstring(mFence->GetCompletedValue()) + L"\n";
+	text += L"CPU has added commands up to this Fence Number = " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
+	text += L"GPU has completed commands up to Fence Number = " + std::to_wstring(mFence->GetCompletedValue()) + L"\n";
 	OutputDebugString(text.c_str());
 
 	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
@@ -433,6 +430,8 @@ void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
+//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
+//rendering pass while the per object CBV needs to be set per render item
 void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
@@ -729,13 +728,15 @@ void ShapesApp::BuildRenderItems()
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Geo = mGeometries["shapeGeo"].get();
 	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
-	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
-	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;  //36
+	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation; //0
+	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation; //0
 	mAllRitems.push_back(std::move(boxRitem));
 
 
 	// All the render items are opaque.
+	//Our application will maintain lists of render items based on how they need to be
+	//drawn; that is, render items that need different PSOs will be kept in different lists.
 	for (auto& e : mAllRitems)
 		mOpaqueRitems.push_back(e.get());
 }
