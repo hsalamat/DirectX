@@ -1,4 +1,4 @@
-//***************************************************************************************
+﻿//***************************************************************************************
 // ShapesApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
 //
 // Hold down '1' key to view scene in wireframe mode.
@@ -403,6 +403,10 @@ void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
+//If we have 3 frame resources and n render items, then we have three 3n object constant
+//buffers and 3 pass constant buffers.Hence we need 3(n + 1) constant buffer views(CBVs).
+//Thus we will need to modify our CBV heap to include the additional descriptors :
+
 void ShapesApp::BuildDescriptorHeaps()
 {
     UINT objCount = (UINT)mOpaqueRitems.size();
@@ -423,6 +427,11 @@ void ShapesApp::BuildDescriptorHeaps()
         IID_PPV_ARGS(&mCbvHeap)));
 }
 
+//assuming we have n renter items, we can populate the CBV heap with the following code where descriptors 0 to n-
+//1 contain the object CBVs for the 0th frame resource, descriptors n to 2n−1 contains the
+//object CBVs for 1st frame resource, descriptors 2n to 3n−1 contain the objects CBVs for
+//the 2nd frame resource, and descriptors 3n, 3n + 1, and 3n + 2 contain the pass CBVs for the
+//0th, 1st, and 2nd frame resource
 void ShapesApp::BuildConstantBufferViews()
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
@@ -442,7 +451,13 @@ void ShapesApp::BuildConstantBufferViews()
 
             // Offset to the object cbv in the descriptor heap.
             int heapIndex = frameIndex*objCount + i;
+
+			//we can get a handle to the first descriptor in a heap with the ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart
             auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+
+			//our heap has more than one descriptor,we need to know the size to increment in the heap to get to the next descriptor
+			//This is hardware specific, so we have to query this information from the device, and it depends on
+			//the heap type.Recall that our D3DApp class caches this information: 	mCbvSrvUavDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
             handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
 
             D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
@@ -474,6 +489,8 @@ void ShapesApp::BuildConstantBufferViews()
     }
 }
 
+//A root signature defines what resources need to be bound to the pipeline before issuing a draw call and
+//how those resources get mapped to shader input registers. there is a limit of 64 DWORDs that can be put in a root signature.
 void ShapesApp::BuildRootSignature()
 {
     CD3DX12_DESCRIPTOR_RANGE cbvTable0;
@@ -778,6 +795,8 @@ void ShapesApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
+
+//The DrawRenderItems method is invoked in the main Draw call:
 void ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
