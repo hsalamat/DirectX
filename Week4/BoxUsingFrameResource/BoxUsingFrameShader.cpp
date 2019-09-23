@@ -229,7 +229,7 @@ void ShapesApp::Update(const GameTimer& gt)
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
 	std::wstring text = L"CPU working on Frame Number = " + std::to_wstring(mCurrFrameResourceIndex)+ L"\n";
-
+	text += L"CPU is working on current fence Number = " + std::to_wstring(mCurrentFence - 1) + L"\n";
 	OutputDebugString(text.c_str());
 
 	// Has the GPU finished processing the commands of the current frame resource?
