@@ -10,6 +10,9 @@
 #include "../../Common/GeometryGenerator.h"
 #include "FrameResource.h"
 
+#include <iostream>
+#include <string>
+
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -110,7 +113,7 @@ private:
 
 	//step11: Our application will maintain lists of render items based on how they need to be
 	//drawn; that is, render items that need different PSOs will be kept in different lists.
-	
+
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mOpaqueRitems;
 
@@ -225,8 +228,14 @@ void ShapesApp::Update(const GameTimer& gt)
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
+	std::wstring text = L"Frame Number = " + std::to_wstring(mCurrFrameResourceIndex)+ L"\n";
+
+	OutputDebugString(text.c_str());
+
 	// Has the GPU finished processing the commands of the current frame resource?
 	// If not, wait until the GPU has completed commands up to this fence point.
+
+	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
 	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
@@ -369,7 +378,13 @@ void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 {
-	if (GetAsyncKeyState('1') & 0x8000)
+	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
+	//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
+	//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.
+	//if (GetAsyncKeyState('1') & 0x8000)
+
+	short key = GetAsyncKeyState('1');
+	if (key & 0x8000)  //if one is pressed, 0x8000 = 32767 , key = -32767 = FFFFFFFFFFFF8001
 		mIsWireframe = true;
 	else
 		mIsWireframe = false;
