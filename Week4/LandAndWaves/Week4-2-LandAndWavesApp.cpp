@@ -115,6 +115,8 @@ private:
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
+	//step1: If we  use Waves class to draw the waves, we would use a triangle grid mesh like we did with the peaks and valleys, 
+	//and apply f(x, z, t) to each grid point in order to obtain the wave heights at the grid points.
 	std::unique_ptr<Waves> mWaves;
 
     PassConstants mMainPassCB;
@@ -177,6 +179,7 @@ bool LandAndWavesApp::Initialize()
     // Reset the command list to prep for initialization commands.
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
+	//step4 Waves(int mRows, int nColumns, float mSpatialStep, float mTimeStep, float speed, float damping)
 	mWaves = std::make_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);
 
     BuildRootSignature();
@@ -229,6 +232,9 @@ void LandAndWavesApp::Update(const GameTimer& gt)
 
 	UpdateObjectCBs(gt);
 	UpdateMainPassCB(gt);
+
+	//step2: Because this wave function also depends on time t (i.e., the wave surface changes with time), 
+	//we would need to reapply this function to the grid points a short time later(say every quater second) to get a smooth animation.
 	UpdateWaves(gt);
 }
 
@@ -416,6 +422,9 @@ void LandAndWavesApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
+//step5: Because we need to upload the new contents from the CPU to the wave’s dynamic
+//vertex buffer every frame, the dynamic vertex buffer needs to be a frame resource.
+//Otherwise we could overwrite the memory before the GPU has finished processing the last frame.
 void LandAndWavesApp::UpdateWaves(const GameTimer& gt)
 {
 	// Every quarter second, generate a random wave.
@@ -447,8 +456,13 @@ void LandAndWavesApp::UpdateWaves(const GameTimer& gt)
 		currWavesVB->CopyData(i, v);
 	}
 
+	//We save a reference to the wave render item (mWavesRitem) so that we
+	//can set its vertex buffer on the fly.We need to do this because its vertex buffer is a dynamic buffer and changes every frame.
 	// Set the dynamic VB of the wave renderitem to the current frame VB.
 	mWavesRitem->Geo->VertexBufferGPU = currWavesVB->Resource();
+
+	//Index buffers can be dynamic, too. However, in this demo, the triangle topology remains constantand only the vertex heights change; 
+	//therefore, only the vertex buffer needs to be dynamic.
 }
 
 void LandAndWavesApp::BuildRootSignature()
