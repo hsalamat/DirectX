@@ -1,6 +1,6 @@
 //***************************************************************************************
-// Skull
-//
+// Skull Using Root Descriptor
+//There are 3 steps that need to be changed in three methods: BuildRootSignature(), Draw(), DrawRenderItems() to convert from Descriptor Table to Root descriptor
 // Hold down '1' key to view scene in wireframe mode.
 //***************************************************************************************
 
@@ -14,11 +14,9 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will
-// vary from app-to-app.
+
 struct RenderItem
 {
 	RenderItem() = default;
@@ -74,31 +72,28 @@ private:
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 
-	void BuildDescriptorHeaps();
-	void BuildConstantBufferViews();
+	//step4
+	//void BuildDescriptorHeaps();
+	//void BuildConstantBufferViews();
 	void BuildRootSignature();
 	void BuildShadersAndInputLayout();
-	void BuildShapeGeometry();
 	void BuildSkullGeometry();
 	void BuildPSOs();
-
-	//step5
 	void BuildFrameResources();
-
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
 private:
 
-	//step4: keep member variables to track the current frame resource :
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
 
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-	ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
-	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
+	//step4-1
+	//ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+	//ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
@@ -109,20 +104,11 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	//step11: Our application will maintain lists of render items based on how they need to be
-	//drawn; that is, render items that need different PSOs will be kept in different lists.
-	
+
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mOpaqueRitems;
 
 	//std::vector<RenderItem*> mTransparentRitems;  //we could have render items for transparant items
-
-
-
-	//step12: this mMainPassCB stores constant data that is fixed over a given
-	//rendering pass such as the eye position, the view and projection matrices, and information
-	//about the screen(render target) dimensions; it also includes game timing information,
-	//which is useful data to have access to in shader programs.
 
 	PassConstants mMainPassCB;
 
@@ -185,12 +171,13 @@ bool SkullApp::Initialize()
 
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
-	//BuildShapeGeometry();
 	BuildSkullGeometry();
 	BuildRenderItems();
 	BuildFrameResources();
-	BuildDescriptorHeaps();
-	BuildConstantBufferViews();
+	//step5
+	//BuildDescriptorHeaps();
+	//BuildConstantBufferViews();
+
 	BuildPSOs();
 
 	// Execute the initialization commands.
@@ -213,10 +200,6 @@ void SkullApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-//step7: for CPU frame n, the algorithm
-//1. Cycle through the circular frame resource array.
-//2. Wait until the GPU has completed commands up to this fence point.
-//3. Update resources in mCurrFrameResource (like cbuffers).
 
 void SkullApp::Update(const GameTimer& gt)
 {
@@ -277,15 +260,22 @@ void SkullApp::Draw(const GameTimer& gt)
 	// Specify the buffers we are going to render to.
 	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
-	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	//step2: No more descriptor heap,  we simply bind the virtual address of the resource directly for each frame resource.
 
+	//ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
+	//mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
 
-	int passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;
-	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);
-	mCommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+	// Bind per-pass constant buffer. We only need to do this once per - pass.
+
+	//int passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;
+	//auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+	//passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);
+	//mCommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+
+	auto passCB = mCurrFrameResource->PassCB->Resource();
+	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
+	//end of step2
 
 	DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
 
@@ -304,13 +294,6 @@ void SkullApp::Draw(const GameTimer& gt)
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-
-	//Step1:  we have been calling D3DApp::FlushCommandQueue at the end of every
-	//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient
-	//For every frame, the CPU and GPU are idling at some point.
-	//	FlushCommandQueue();
-
-	//step9:  Advance the fence value to mark commands up to this fence point.
 	mCurrFrameResource->Fence = ++mCurrentFence;
 
 	// Add an instruction to the command queue to set a new fence point. 
@@ -393,7 +376,6 @@ void SkullApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-//step8: Update resources (cbuffers) in mCurrFrameResource
 void SkullApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
@@ -444,97 +426,96 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void SkullApp::BuildDescriptorHeaps()
-{
-	UINT objCount = (UINT)mOpaqueRitems.size();
+//void SkullApp::BuildDescriptorHeaps()
+//{
+//	UINT objCount = (UINT)mOpaqueRitems.size();
+//
+//	// Need a CBV descriptor for each object for each frame resource,
+//	// +1 for the perPass CBV for each frame resource.
+//	UINT numDescriptors = (objCount + 1) * gNumFrameResources;
+//
+//	// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.
+//	mPassCbvOffset = objCount * gNumFrameResources;
+//
+//	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+//	cbvHeapDesc.NumDescriptors = numDescriptors;
+//	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+//	cbvHeapDesc.NodeMask = 0;
+//	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc,
+//		IID_PPV_ARGS(&mCbvHeap)));
+//}
 
-	// Need a CBV descriptor for each object for each frame resource,
-	// +1 for the perPass CBV for each frame resource.
-	UINT numDescriptors = (objCount + 1) * gNumFrameResources;
+//void SkullApp::BuildConstantBufferViews()
+//{
+//	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+//
+//	UINT objCount = (UINT)mOpaqueRitems.size();
+//
+//	// Need a CBV descriptor for each object for each frame resource.
+//	for (int frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)
+//	{
+//		auto objectCB = mFrameResources[frameIndex]->ObjectCB->Resource();
+//		for (UINT i = 0; i < objCount; ++i)
+//		{
+//			D3D12_GPU_VIRTUAL_ADDRESS cbAddress = objectCB->GetGPUVirtualAddress();
+//
+//			// Offset to the ith object constant buffer in the buffer.
+//			cbAddress += i * objCBByteSize;
+//
+//			// Offset to the object cbv in the descriptor heap.
+//			int heapIndex = frameIndex * objCount + i;
+//			auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+//			handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
+//
+//			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+//			cbvDesc.BufferLocation = cbAddress;
+//			cbvDesc.SizeInBytes = objCBByteSize;
+//
+//			md3dDevice->CreateConstantBufferView(&cbvDesc, handle);
+//		}
+//	}
 
-	// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.
-	mPassCbvOffset = objCount * gNumFrameResources;
-
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = numDescriptors;
-	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDesc.NodeMask = 0;
-	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc,
-		IID_PPV_ARGS(&mCbvHeap)));
-}
-
-void SkullApp::BuildConstantBufferViews()
-{
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	UINT objCount = (UINT)mOpaqueRitems.size();
-
-	// Need a CBV descriptor for each object for each frame resource.
-	for (int frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)
-	{
-		auto objectCB = mFrameResources[frameIndex]->ObjectCB->Resource();
-		for (UINT i = 0; i < objCount; ++i)
-		{
-			D3D12_GPU_VIRTUAL_ADDRESS cbAddress = objectCB->GetGPUVirtualAddress();
-
-			// Offset to the ith object constant buffer in the buffer.
-			cbAddress += i * objCBByteSize;
-
-			// Offset to the object cbv in the descriptor heap.
-			int heapIndex = frameIndex * objCount + i;
-			auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
-			handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
-
-			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-			cbvDesc.BufferLocation = cbAddress;
-			cbvDesc.SizeInBytes = objCBByteSize;
-
-			md3dDevice->CreateConstantBufferView(&cbvDesc, handle);
-		}
-	}
-
-	UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(PassConstants));
-
-	// Last three descriptors are the pass CBVs for each frame resource.
-	for (int frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)
-	{
-		auto passCB = mFrameResources[frameIndex]->PassCB->Resource();
-		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = passCB->GetGPUVirtualAddress();
-
-		// Offset to the pass cbv in the descriptor heap.
-		int heapIndex = mPassCbvOffset + frameIndex;
-		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
-		handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
-
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-		cbvDesc.BufferLocation = cbAddress;
-		cbvDesc.SizeInBytes = passCBByteSize;
-
-		md3dDevice->CreateConstantBufferView(&cbvDesc, handle);
-	}
-}
+//	UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(PassConstants));
+//
+//	// Last three descriptors are the pass CBVs for each frame resource.
+//	for (int frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)
+//	{
+//		auto passCB = mFrameResources[frameIndex]->PassCB->Resource();
+//		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = passCB->GetGPUVirtualAddress();
+//
+//		// Offset to the pass cbv in the descriptor heap.
+//		int heapIndex = mPassCbvOffset + frameIndex;
+//		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+//		handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
+//
+//		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+//		cbvDesc.BufferLocation = cbAddress;
+//		cbvDesc.SizeInBytes = passCBByteSize;
+//
+//		md3dDevice->CreateConstantBufferView(&cbvDesc, handle);
+//	}
+//}
 
 void SkullApp::BuildRootSignature()
 {
-	//step 15
-	//The resources that our shaders expect have changed; therefore, we need to update the
-	//root signature accordingly to take two descriptor tables(we need two tables because the
-	//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
-	//rendering pass while the per object CBV needs to be set per render item) :
 
-	CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-	cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-
-	CD3DX12_DESCRIPTOR_RANGE cbvTable1;
-	cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
-
-	// Root parameter can be a table, root descriptor or root constants.
 	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
 
+	//step1: Replace Descriptor Table with Root Descriptor
+	//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
+	//cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	//CD3DX12_DESCRIPTOR_RANGE cbvTable1;
+	//cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+
+	// Root parameter can be a table, root descriptor or root constants.
+
 	// Create root CBVs.
-	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable0);
-	slotRootParameter[1].InitAsDescriptorTable(1, &cbvTable1);
+
+	//slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable0);
+	//slotRootParameter[1].InitAsDescriptorTable(1, &cbvTable1);
+	slotRootParameter[0].InitAsConstantBufferView(0); // per - object CBV
+	slotRootParameter[1].InitAsConstantBufferView(1); // per - pass CBV
 
 	// A root signature is an array of root parameters.
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, slotRootParameter, 0, nullptr,
@@ -571,84 +552,6 @@ void SkullApp::BuildShadersAndInputLayout()
 	};
 }
 
-void SkullApp::BuildShapeGeometry()
-{
-	GeometryGenerator geoGen;
-	GeometryGenerator::MeshData box = geoGen.CreateBox(2.0f, 2.0f, 2.0f, 0);
-
-
-	//
-	// We are concatenating all the geometry into one big vertex/index buffer.  So
-	// define the regions in the buffer each submesh covers.
-	//
-
-	// Cache the vertex offsets to each object in the concatenated vertex buffer.
-	UINT boxVertexOffset = 0;
-
-
-	// Cache the starting index for each object in the concatenated index buffer.
-	UINT boxIndexOffset = 0;
-
-
-	// Define the SubmeshGeometry that cover different 
-	// regions of the vertex/index buffers.
-
-	SubmeshGeometry boxSubmesh;
-	boxSubmesh.IndexCount = (UINT)box.Indices32.size();
-	boxSubmesh.StartIndexLocation = boxIndexOffset;
-	boxSubmesh.BaseVertexLocation = boxVertexOffset;
-
-
-	//
-	// Extract the vertex elements we are interested in and pack the
-	// vertices of all the meshes into one vertex buffer.
-	//
-
-	auto totalVertexCount = box.Vertices.size();
-
-
-	std::vector<Vertex> vertices(totalVertexCount);
-
-	UINT k = 0;
-	for (size_t i = 0; i < box.Vertices.size(); ++i, ++k)
-	{
-		vertices[k].Pos = box.Vertices[i].Position;
-		vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);
-	}
-
-
-	std::vector<std::uint16_t> indices;
-	indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
-
-
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
-	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = "shapeGeo";
-
-	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-	geo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),
-		mCommandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-	geo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),
-		mCommandList.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
-
-	geo->VertexByteStride = sizeof(Vertex);
-	geo->VertexBufferByteSize = vbByteSize;
-	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
-	geo->IndexBufferByteSize = ibByteSize;
-
-	geo->DrawArgs["box"] = boxSubmesh;
-
-
-	mGeometries[geo->Name] = std::move(geo);
-}
 
 void SkullApp::BuildSkullGeometry()
 {
@@ -780,8 +683,6 @@ void SkullApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
-//step6: build three frame resources
-//FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);
 
 void SkullApp::BuildFrameResources()
 {
@@ -825,12 +726,18 @@ void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
 		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
 		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
-		// Offset to the CBV in the descriptor heap for this object and for this frame resource.
-		UINT cbvIndex = mCurrFrameResourceIndex * (UINT)mOpaqueRitems.size() + ri->ObjCBIndex;
-		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-		cbvHandle.Offset(cbvIndex, mCbvSrvUavDescriptorSize);
 
-		cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+		//step3:no more heap, we simple bind the virtual address of the resource (constant buffer) directly for each render item.
+
+		// Offset to the CBV in the descriptor heap for this object and for this frame resource.
+		//UINT cbvIndex = mCurrFrameResourceIndex * (UINT)mOpaqueRitems.size() + ri->ObjCBIndex;
+		//auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+		//cbvHandle.Offset(cbvIndex, mCbvSrvUavDescriptorSize);
+		//cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+
+		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress();
+		objCBAddress += ri->ObjCBIndex * objCBByteSize;
+		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 
 		cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 	}
