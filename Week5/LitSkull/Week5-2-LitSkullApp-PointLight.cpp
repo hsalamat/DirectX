@@ -1,5 +1,5 @@
 //***************************************************************************************
-// LitSkullApp.cpp 
+// LitSkullApp.cpp - PointLight
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -80,7 +80,6 @@ private:
 	void BuildSkullGeometry();
     void BuildPSOs();
     void BuildFrameResources();
-	//step1
     void BuildMaterials();
 
     void BuildRenderItems();
@@ -95,7 +94,6 @@ private:
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
-	//step2
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
 
@@ -170,7 +168,6 @@ bool SkullApp::Initialize()
     BuildRootSignature();
     BuildShadersAndInputLayout();
 	BuildSkullGeometry();
-	//step3
 	BuildMaterials();
 
     BuildRenderItems();
@@ -218,9 +215,7 @@ void SkullApp::Update(const GameTimer& gt)
 
 
 	UpdateObjectCBs(gt);
-	//step4
 	UpdateMaterialCBs(gt);
-
 	UpdateMainPassCB(gt);
 }
 
@@ -383,7 +378,6 @@ void SkullApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-//step5
 void SkullApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
@@ -434,14 +428,19 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 	mMainPassCB.TotalTime = gt.TotalTime();
 	mMainPassCB.DeltaTime = gt.DeltaTime();
 
-	//step6
+	//step1
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
-	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
-	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
-	mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-	mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+
+	//mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
+	//mMainPassCB.Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
+	//mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
+	//mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
+	//mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
+	//mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+
+
+	mMainPassCB.Lights[0].Position = { 0.0f,  1.0f,  -3.0f };
+	mMainPassCB.Lights[0].Strength = { 0.95f, 0.95f, 0.95f };
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);
@@ -455,8 +454,6 @@ void SkullApp::BuildRootSignature()
 	// Create root CBV.
 	slotRootParameter[0].InitAsConstantBufferView(0);
 	slotRootParameter[1].InitAsConstantBufferView(1);
-
-	//step7
 	slotRootParameter[2].InitAsConstantBufferView(2);
 
 	// A root signature is an array of root parameters.
@@ -484,13 +481,12 @@ void SkullApp::BuildRootSignature()
 void SkullApp::BuildShadersAndInputLayout()
 {
 
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\VS_PointLight.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\PS_PointLight.hlsl", nullptr, "PS", "ps_5_1");
 	
     mInputLayout =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		//step8: note that we use DXGI_FORMAT_R32G32B32_FLOAT instead of DXGI_FORMAT_R32G32B32A32_FLOAT in color
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     };
 }
@@ -518,7 +514,6 @@ void SkullApp::BuildSkullGeometry()
 	for(UINT i = 0; i < vcount; ++i)
 	{
 		fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;
-		//step 9: normal is used in this demo!
 		fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
 	}
 
@@ -662,11 +657,9 @@ void SkullApp::BuildRenderItems()
 void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-	//step10
     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
  
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
-	//step11
 	auto matCB = mCurrFrameResource->MaterialCB->Resource();
 
     // For each render item...
@@ -679,11 +672,9 @@ void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
         cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex*objCBByteSize;
-		//step12
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
 
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-		//step13
 		cmdList->SetGraphicsRootConstantBufferView(1, matCBAddress);
 
         cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
