@@ -201,7 +201,7 @@ bool LitWavesApp::Initialize()
     BuildWavesGeometryBuffers();
 	BuildMaterials();
     BuildRenderItems();
-	BuildRenderItems();
+//	BuildRenderItems();
     BuildFrameResources();
 	BuildPSOs();
 
@@ -798,7 +798,17 @@ void LitWavesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std:
 		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
 		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
+		// Each render item contains a pointer to a constant object. Each world matrix lives in a constant object. Each constant object has an index (ObjCBIndex) that specifies
+		//where its constant data is in the constant buffer.
+		//we can offset to the virtual address of the constant data needed for the render item we are drawing, and set it to
+		//the root descriptor that expects the world matrix constant data.
+
 		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex*objCBByteSize;
+
+		// Each render item contains a pointer to a Material. Each Material object has an index (Mat->MatCBIndex) that specifies
+		//where its constant data is in the material constant buffer.
+		//we can offset to the virtual address of the constant data needed for the render item we are drawing, and set it to
+		//the root descriptor that expects the material constant data.
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
 
 		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);

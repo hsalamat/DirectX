@@ -197,7 +197,7 @@ bool LitWavesApp::Initialize()
 	BuildLandGeometry();
     BuildWavesGeometryBuffers();
 	BuildMaterials();
-    BuildRenderItems();
+    //BuildRenderItems();
 	BuildRenderItems();
     BuildFrameResources();
 	BuildPSOs();
