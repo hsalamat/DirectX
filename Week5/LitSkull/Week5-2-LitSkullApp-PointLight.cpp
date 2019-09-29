@@ -439,7 +439,7 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 	//mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
 
 
-	mMainPassCB.Lights[0].Position = { 0.0f,  1.0f,  -3.0f };
+	mMainPassCB.Lights[0].Position = { 0.0f, 5.0f, -3.0f };
 	mMainPassCB.Lights[0].Strength = { 0.95f, 0.95f, 0.95f };
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
