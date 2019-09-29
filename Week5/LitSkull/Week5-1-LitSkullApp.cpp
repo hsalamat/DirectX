@@ -50,13 +50,13 @@ struct RenderItem
     int BaseVertexLocation = 0;
 };
 
-class SkullApp : public D3DApp
+class CarApp : public D3DApp
 {
 public:
-    SkullApp(HINSTANCE hInstance);
-    SkullApp(const SkullApp& rhs) = delete;
-    SkullApp& operator=(const SkullApp& rhs) = delete;
-    ~SkullApp();
+    CarApp(HINSTANCE hInstance);
+    CarApp(const CarApp& rhs) = delete;
+    CarApp& operator=(const CarApp& rhs) = delete;
+    ~CarApp();
 
     virtual bool Initialize()override;
 
@@ -134,7 +134,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
-        SkullApp theApp(hInstance);
+        CarApp theApp(hInstance);
         if(!theApp.Initialize())
             return 0;
 
@@ -147,18 +147,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     }
 }
 
-SkullApp::SkullApp(HINSTANCE hInstance)
+CarApp::CarApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
 }
 
-SkullApp::~SkullApp()
+CarApp::~CarApp()
 {
     if(md3dDevice != nullptr)
         FlushCommandQueue();
 }
 
-bool SkullApp::Initialize()
+bool CarApp::Initialize()
 {
     if(!D3DApp::Initialize())
         return false;
@@ -188,7 +188,7 @@ bool SkullApp::Initialize()
     return true;
 }
  
-void SkullApp::OnResize()
+void CarApp::OnResize()
 {
     D3DApp::OnResize();
 
@@ -197,7 +197,7 @@ void SkullApp::OnResize()
     XMStoreFloat4x4(&mProj, P);
 }
 
-void SkullApp::Update(const GameTimer& gt)
+void CarApp::Update(const GameTimer& gt)
 {
     OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -224,7 +224,7 @@ void SkullApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void SkullApp::Draw(const GameTimer& gt)
+void CarApp::Draw(const GameTimer& gt)
 {
     auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -290,7 +290,7 @@ void SkullApp::Draw(const GameTimer& gt)
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void SkullApp::OnMouseDown(WPARAM btnState, int x, int y)
+void CarApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
     mLastMousePos.x = x;
     mLastMousePos.y = y;
@@ -298,12 +298,12 @@ void SkullApp::OnMouseDown(WPARAM btnState, int x, int y)
     SetCapture(mhMainWnd);
 }
 
-void SkullApp::OnMouseUp(WPARAM btnState, int x, int y)
+void CarApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
     ReleaseCapture();
 }
 
-void SkullApp::OnMouseMove(WPARAM btnState, int x, int y)
+void CarApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
     if((btnState & MK_LBUTTON) != 0)
     {
@@ -335,7 +335,7 @@ void SkullApp::OnMouseMove(WPARAM btnState, int x, int y)
     mLastMousePos.y = y;
 }
  
-void SkullApp::OnKeyboardInput(const GameTimer& gt)
+void CarApp::OnKeyboardInput(const GameTimer& gt)
 {
 	if (GetAsyncKeyState('1') & 0x8000)
 		mIsWireframe = true;
@@ -343,7 +343,7 @@ void SkullApp::OnKeyboardInput(const GameTimer& gt)
 		mIsWireframe = false;
 }
  
-void SkullApp::UpdateCamera(const GameTimer& gt)
+void CarApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);
@@ -361,7 +361,7 @@ void SkullApp::UpdateCamera(const GameTimer& gt)
 
 
 
-void SkullApp::UpdateObjectCBs(const GameTimer& gt)
+void CarApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for(auto& e : mAllRitems)
@@ -384,7 +384,7 @@ void SkullApp::UpdateObjectCBs(const GameTimer& gt)
 }
 
 //step5
-void SkullApp::UpdateMaterialCBs(const GameTimer& gt)
+void CarApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
 	for(auto& e : mMaterials)
@@ -410,7 +410,7 @@ void SkullApp::UpdateMaterialCBs(const GameTimer& gt)
 	}
 }
 
-void SkullApp::UpdateMainPassCB(const GameTimer& gt)
+void CarApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -447,7 +447,7 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void SkullApp::BuildRootSignature()
+void CarApp::BuildRootSignature()
 {
 	// Root parameter can be a table, root descriptor or root constants.
 	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
@@ -481,7 +481,7 @@ void SkullApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void SkullApp::BuildShadersAndInputLayout()
+void CarApp::BuildShadersAndInputLayout()
 {
 
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "VS", "vs_5_1");
@@ -496,7 +496,7 @@ void SkullApp::BuildShadersAndInputLayout()
 }
 
 
-void SkullApp::BuildSkullGeometry()
+void CarApp::BuildSkullGeometry()
 {
 	std::ifstream fin("Models/skull.txt");
 
@@ -572,7 +572,7 @@ void SkullApp::BuildSkullGeometry()
 	mGeometries[geo->Name] = std::move(geo);
 }
 
-void SkullApp::BuildPSOs()
+void CarApp::BuildPSOs()
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -609,12 +609,12 @@ void SkullApp::BuildPSOs()
 	//
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = opaquePsoDesc;
-	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 
 }
 
-void SkullApp::BuildFrameResources()
+void CarApp::BuildFrameResources()
 {
     for(int i = 0; i < gNumFrameResources; ++i)
     {
@@ -623,7 +623,7 @@ void SkullApp::BuildFrameResources()
     }
 }
 
-void SkullApp::BuildMaterials()
+void CarApp::BuildMaterials()
 {
 
 	auto skullMat = std::make_unique<Material>();
@@ -638,7 +638,7 @@ void SkullApp::BuildMaterials()
 	mMaterials["skullMat"] = std::move(skullMat);
 }
 
-void SkullApp::BuildRenderItems()
+void CarApp::BuildRenderItems()
 {
 
 	auto skullRitem = std::make_unique<RenderItem>();
@@ -659,7 +659,7 @@ void SkullApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void CarApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	//step10
