@@ -1,5 +1,5 @@
 //***************************************************************************************
-// LitCarApp.cpp Car + Grid lit using 3 direct lights
+// LitCarApp.cpp Car + Grid are lit using 2 PSOs
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -50,6 +50,15 @@ struct RenderItem
     int BaseVertexLocation = 0;
 };
 
+//step1
+enum class RenderLayer : int
+{
+	Opaque = 0,
+	Transparent,
+	AlphaTested,
+	Count
+};
+
 class CarApp : public D3DApp
 {
 public:
@@ -77,9 +86,7 @@ private:
 
     void BuildRootSignature();
     void BuildShadersAndInputLayout();
-	//step1
 	void BuildShapeGeometry();
-
 	void BuildCarGeometry();
     void BuildPSOs();
     void BuildFrameResources();
@@ -108,9 +115,11 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	// Render items divided by PSO.
-	std::vector<RenderItem*> mOpaqueRitems;
-	std::vector<RenderItem*> mTransparentRitems;
+	// step2 Render items divided by PSO.
+	//std::vector<RenderItem*> mOpaqueRitems;
+	//std::vector<RenderItem*> mTransparentRitems;
+	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
+
 
     PassConstants mMainPassCB;
 	bool mIsWireframe = false;
@@ -171,13 +180,9 @@ bool CarApp::Initialize()
 
     BuildRootSignature();
     BuildShadersAndInputLayout();
-	
-	//step2
 	BuildShapeGeometry();
-
 	BuildCarGeometry();
 	BuildMaterials();
-
     BuildRenderItems();
     BuildFrameResources();
     BuildPSOs();
@@ -267,13 +272,13 @@ void CarApp::Draw(const GameTimer& gt)
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	mCommandList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-    DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+	//step3
+    //DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Opaque]);
 
-	//mCommandList->SetPipelineState(mPSOs["opaque_wireframe"].Get());
-	//DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
 
-	//mCommandList->SetPipelineState(mPSOs["opaque"].Get());
-	//DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+	mCommandList->SetPipelineState(mPSOs["opaque_wireframe"].Get());
+	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Transparent]);
 
     // Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -743,9 +748,12 @@ void CarApp::BuildRenderItems()
 	carRitem->IndexCount = carRitem->Geo->DrawArgs["car"].IndexCount;
 	carRitem->StartIndexLocation = carRitem->Geo->DrawArgs["car"].StartIndexLocation;
 	carRitem->BaseVertexLocation = carRitem->Geo->DrawArgs["car"].BaseVertexLocation;
-	mAllRitems.push_back(std::move(carRitem));
 
-	//step5
+
+	//step4
+	//mAllRitems.push_back(std::move(carRitem));
+	mRitemLayer[(int)RenderLayer::Opaque].push_back(carRitem.get());
+
 	auto gridRitem = std::make_unique<RenderItem>();
 	gridRitem->World = MathHelper::Identity4x4();
 	XMStoreFloat4x4(&gridRitem->World, XMMatrixScaling(8.0f, 8.0f, 1.0f));
@@ -756,14 +764,18 @@ void CarApp::BuildRenderItems()
 	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
 	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
-	mAllRitems.push_back(std::move(gridRitem));
 
-	//mOpaqueRitems.push_back(car)
+	//step5
+	//mAllRitems.push_back(std::move(gridRitem));
+	mRitemLayer[(int)RenderLayer::Transparent].push_back(gridRitem.get());
+
+	mAllRitems.push_back(std::move(carRitem));
+	mAllRitems.push_back(std::move(gridRitem));
 
 
 	// All the render items are opaque.
-	for(auto& e : mAllRitems)
-		mOpaqueRitems.push_back(e.get());
+	//for(auto& e : mAllRitems)
+	//	mOpaqueRitems.push_back(e.get());
 }
 
 void CarApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
