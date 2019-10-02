@@ -111,6 +111,9 @@ VertexOut VS(VertexIn vin)
     //step16:Texture coordinates represent 2D points in the texture plane. Thus, we can translate,
     //rotate, and scale them like we could any otherpoint.
     //gTexTransform and gMatTransform are variables used in the vertex shader to transform the input texture coordinates
+    //We use two separate texture transformation matrices gTexTransform and gMatTransform .
+    //Because sometimes it makes more sense for the material to transform the textures (for animated materials like water), but sometimes it makes more sense for the texture transform to be a property of the object.
+
     float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
     vout.TexC = mul(texC, gMatTransform).xy;
 
