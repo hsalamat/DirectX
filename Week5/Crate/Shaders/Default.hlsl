@@ -34,14 +34,14 @@ SamplerState gsamLinear  : register(s0);
 
 
 
-// Constant data that varies per frame.
+// Constant data that varies per object.
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
     float4x4 gTexTransform;
 };
 
-// Constant data that varies per material.
+// Constant data that varies per frame.
 cbuffer cbPass : register(b1)
 {
     float4x4 gView;
@@ -67,6 +67,7 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
+// Constant data that varies per material.
 cbuffer cbMaterial : register(b2)
 {
 	float4 gDiffuseAlbedo;
@@ -107,7 +108,9 @@ VertexOut VS(VertexIn vin)
     vout.PosH = mul(posW, gViewProj);
 	
 	// Output vertex attributes for interpolation across triangle.
-    //step16
+    //step16:Texture coordinates represent 2D points in the texture plane. Thus, we can translate,
+    //rotate, and scale them like we could any otherpoint.
+    //gTexTransform and gMatTransform are variables used in the vertex shader to transform the input texture coordinates
     float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
     vout.TexC = mul(texC, gMatTransform).xy;
 

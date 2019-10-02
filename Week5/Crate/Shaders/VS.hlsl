@@ -34,14 +34,14 @@ SamplerState gsamMirror : register(s6);
 
 
 
-// Constant data that varies per frame.
+// Constant data that varies per object.
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
     float4x4 gTexTransform;
 };
 
-// Constant data that varies per material.
+// Constant data that varies per frame.
 cbuffer cbPass : register(b1)
 {
     float4x4 gView;
@@ -67,6 +67,7 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
+// Constant data that varies per material.
 cbuffer cbMaterial : register(b2)
 {
 	float4 gDiffuseAlbedo;
