@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Default.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// Default.hlsl 
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -28,14 +28,14 @@ SamplerState gsamLinearClamp      : register(s3);
 SamplerState gsamAnisotropicWrap  : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
 
-// Constant data that varies per frame.
+// Constant data that varies per object.
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
 	float4x4 gTexTransform;
 };
 
-// Constant data that varies per material.
+// Constant data that varies per frame.
 cbuffer cbPass : register(b1)
 {
     float4x4 gView;
@@ -61,6 +61,7 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
+// Constant data that varies per material.
 cbuffer cbMaterial : register(b2)
 {
 	float4   gDiffuseAlbedo;
@@ -107,6 +108,12 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
+  
+    //Because the land mesh is a large surface, if we simply
+//stretched a texture over it, then too few texels would cover each triangle. In other words,
+//there is not enough texture resolution for the surface; we would thus get magnification
+//artifacts. Therefore, we repeat the grass texture over the land mesh to get more resolution.
+
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
 	
     // Interpolating normal can unnormalize it, so renormalize it.

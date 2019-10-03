@@ -1,5 +1,5 @@
 //***************************************************************************************
-// d3dApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// d3dApp.cpp 
 //***************************************************************************************
 
 #include "d3dApp.h"
@@ -180,7 +180,6 @@ void D3DApp::OnResize()
     depthStencilDesc.DepthOrArraySize = 1;
     depthStencilDesc.MipLevels = 1;
 
-	// Correction 11/12/2016: SSAO chapter requires an SRV to the depth buffer to read from 
 	// the depth buffer.  Therefore, because we need to create two views to the same resource:
 	//   1. SRV format: DXGI_FORMAT_R24_UNORM_X8_TYPELESS
 	//   2. DSV Format: DXGI_FORMAT_D24_UNORM_S8_UINT
@@ -425,11 +424,23 @@ bool D3DApp::InitDirect3D()
 
 	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory)));
 
+	//Hooman: I added this code to take advantage of your "stronger" GPU. 
+	//In the lab, seond graphics card NVDIA is much stronger, that would stop blinking!
+	UINT i = 0;
+	IDXGIAdapter* adapter = nullptr;
+	std::vector<IDXGIAdapter*> adapterList;
+	while (mdxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		adapterList.push_back(adapter);
+		++i;
+	}
 	// Try to create hardware device.
 	HRESULT hardwareResult = D3D12CreateDevice(
-		nullptr,             // default adapter
-		D3D_FEATURE_LEVEL_11_0,
+		//nullptr,             // default adapter
+		adapterList[1],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter
+		D3D_FEATURE_LEVEL_12_0,
 		IID_PPV_ARGS(&md3dDevice));
+
 
 	// Fallback to WARP device.
 	if(FAILED(hardwareResult))
