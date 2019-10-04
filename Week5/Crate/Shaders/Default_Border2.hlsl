@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Default.hlsl 
+// Default_Border2.hlsl 
 //
 // Default shader, currently supports lighting.
 //***************************************************************************************
@@ -20,17 +20,9 @@
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
 
-//step14
 Texture2D    gDiffuseMap : register(t0);
-SamplerState gsamPointWrap : register(s0);
 
-//SamplerState gsamPointWrap : register(s0);
-//SamplerState gsamPointClamp : register(s1);
-//SamplerState gsamLinearWrap : register(s2);
-//SamplerState gsamLinearClamp : register(s3);
-//SamplerState gsamAnisotropicWrap : register(s4);
-//SamplerState gsamAnisotropicClamp : register(s5);
-
+SamplerState gsamBorder : register(s0);
 
 
 
@@ -67,6 +59,7 @@ cbuffer cbPass : register(b1)
     Light gLights[MaxLights];
 };
 
+
 // Constant data that varies per material.
 cbuffer cbMaterial : register(b2)
 {
@@ -89,7 +82,6 @@ struct VertexOut
 	float4 PosH    : SV_POSITION;
     float3 PosW    : POSITION;
     float3 NormalW : NORMAL;
-    //step15
 	float2 TexC    : TEXCOORD;
 };
 
@@ -108,27 +100,31 @@ VertexOut VS(VertexIn vin)
     vout.PosH = mul(posW, gViewProj);
 	
 	// Output vertex attributes for interpolation across triangle.
-    //step16:Texture coordinates represent 2D points in the texture plane. Thus, we can translate,
-    //rotate, and scale them like we could any otherpoint.
-    //gTexTransform and gMatTransform are variables used in the vertex shader to transform the input texture coordinates
-    //We use two separate texture transformation matrices gTexTransform and gMatTransform .
-    //Because sometimes it makes more sense for the material to transform the textures (for animated materials like water), but sometimes it makes more sense for the texture transform to be a property of the object.
-
+    //step16
     float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
     vout.TexC = mul(texC, gMatTransform).xy;
+
+    // Multiplied by 3 to force the texture to wrap, subtract 1 to center the texture
+    //you can do the samething in the application by scaling. Look at inside BuildRenderItem!
+    vout.TexC = vout.TexC * 3.0 - float2(1.0, 1.0);
+
 
     return vout;
 }
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    //step17: we add a diffuse albedo texture map to specify the diffuse albedo
+    //we add a diffuse albedo texture map to specify the diffuse albedo
     //component of our material
+    //SamplerState gsamPointWrap : register(s0);
+    //SamplerState gsamBorder : register(s1);
+    //SamplerState gsamLinearWrap : register(s2);
+    //SamplerState gsamLinearClamp : register(s3);
+    //SamplerState gsamAnisotropicWrap : register(s4);
+    //SamplerState gsamAnisotropicClamp : register(s5);
 
-    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamPointWrap, pin.TexC) * gDiffuseAlbedo;
+    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamBorder, pin.TexC) * gDiffuseAlbedo;
 
-    //float diffuseAlbedo2 = float4(0.9f, 0.9f, 1.0f, 1.0f);
-    //float4 diffuseAlbedo = gDiffuseMap.Sample(gsamLinear, pin.TexC) * diffuseAlbedo2;
 
     // Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);

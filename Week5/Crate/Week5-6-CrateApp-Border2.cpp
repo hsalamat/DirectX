@@ -101,6 +101,8 @@ private:
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
 	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
+	//step4
+	ComPtr<ID3D12DescriptorHeap> mSamplerDescriptorHeap = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
@@ -260,13 +262,13 @@ void CrateApp::Draw(const GameTimer& gt)
     // Specify the buffers we are going to render to.
     mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get(), mSamplerDescriptorHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
 
 	auto passCB = mCurrFrameResource->PassCB->Resource();
-	mCommandList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	mCommandList->SetGraphicsRootConstantBufferView(3, passCB->GetGPUVirtualAddress());
 
     DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
 
@@ -463,25 +465,28 @@ void CrateApp::LoadTextures()
 
 void CrateApp::BuildRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE texTable[2];
+	texTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	texTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER,1, 0);
 
     // Root parameter can be a table, root descriptor or root constants.
-    CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+    CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 
 	// Perfomance TIP: Order from most frequent to least frequent.
-	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-    slotRootParameter[1].InitAsConstantBufferView(0);
-    slotRootParameter[2].InitAsConstantBufferView(1);
-    slotRootParameter[3].InitAsConstantBufferView(2);
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable[0], D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsDescriptorTable(1, &texTable[1], D3D12_SHADER_VISIBILITY_PIXEL);
+    slotRootParameter[2].InitAsConstantBufferView(0);
+    slotRootParameter[3].InitAsConstantBufferView(1);
+    slotRootParameter[4].InitAsConstantBufferView(2);
 
-	auto staticSamplers = GetStaticSamplers();
+	//auto staticSamplers = GetStaticSamplers();
 
     // A root signature is an array of root parameters.
 	//The Init function of the CD3DX12_ROOT_SIGNATURE_DESC class has two parameters that allow you to
 		//define an array of so - called static samplers your application can use.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter,
-		(UINT)staticSamplers.size(), staticSamplers.data(),  //6 samplers!
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(5, slotRootParameter,
+		0, nullptr,  //no static samplers!
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     // create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
@@ -545,12 +550,43 @@ void CrateApp::BuildDescriptorHeaps()
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 
 	md3dDevice->CreateShaderResourceView(woodCrateTex.Get(), &srvDesc, hDescriptor);
+
+
+	// step2: If we are going to be setting sampler descriptors, we need a sampler heap.A sampler
+	//	heap is created by filling out a D3D12_DESCRIPTOR_HEAP_DESC instanceand
+	//	specifying the heap type D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER :
+	D3D12_DESCRIPTOR_HEAP_DESC descHeapSampler = {};
+	descHeapSampler.NumDescriptors = 1;
+	descHeapSampler.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
+	descHeapSampler.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+	md3dDevice->CreateDescriptorHeap(&descHeapSampler,__uuidof(ID3D12DescriptorHeap), (void**)& mSamplerDescriptorHeap);
+
+	//Once we have a sampler heap, we can create sampler descriptors.It is here that we
+	//specify the address modeand filter type, as well as other parameters by filling out a
+	//D3D12_SAMPLER_DESC object :
+
+	D3D12_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.BorderColor[0] = 1.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	md3dDevice->CreateSampler(&samplerDesc, mSamplerDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 void CrateApp::BuildShadersAndInputLayout()
 {
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border2.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border2.hlsl", nullptr, "PS", "ps_5_1");
 	
     mInputLayout =
     {
@@ -711,9 +747,11 @@ void CrateApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex*objCBByteSize;
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
 
+		//step5
 		cmdList->SetGraphicsRootDescriptorTable(0, tex);
-        cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
-        cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
+		cmdList->SetGraphicsRootDescriptorTable(1, mSamplerDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+        cmdList->SetGraphicsRootConstantBufferView(2, objCBAddress);
+        cmdList->SetGraphicsRootConstantBufferView(4, matCBAddress);
 
         cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
     }
