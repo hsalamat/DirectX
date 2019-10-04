@@ -1,5 +1,5 @@
 //***************************************************************************************
-// CrateApp.cpp using Anisotrpic Sampler
+// CrateApp.cpp using Linear Wrap
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -453,7 +453,7 @@ void CrateApp::LoadTextures()
 {
 	auto woodCrateTex = std::make_unique<Texture>();
 	woodCrateTex->Name = "woodCrateTex";
-	woodCrateTex->Filename = L"../../Textures/Bricks2.dds";
+	woodCrateTex->Filename = L"../../Textures/WoodCrate01.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), woodCrateTex->Filename.c_str(),
 		woodCrateTex->Resource, woodCrateTex->UploadHeap));
@@ -549,8 +549,8 @@ void CrateApp::BuildDescriptorHeaps()
 
 void CrateApp::BuildShadersAndInputLayout()
 {
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\VS_Anisotropic.hlsl", nullptr, "VS", "vs_5_0");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\PS_Anisotropic.hlsl", nullptr, "PS", "ps_5_0");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default_LinearWrap.hlsl", nullptr, "VS", "vs_5_0");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default_LinearWrap.hlsl", nullptr, "PS", "ps_5_0");
 	
     mInputLayout =
     {
@@ -668,6 +668,11 @@ void CrateApp::BuildMaterials()
 void CrateApp::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItem>();
+	//step1
+	boxRitem->World = MathHelper::Identity4x4();
+	XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));
+
+
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Mat = mMaterials["woodCrate"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
@@ -714,6 +719,21 @@ void CrateApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
 }
 
 //step4
+//CD3DX12_STATIC_SAMPLER_DESC(
+//	UINT shaderRegister,
+//	D3D12_FILTER filter = D3D12_FILTER_ANISOTROPIC,
+//	D3D12_TEXTURE_ADDRESS_MODE addressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+//	D3D12_TEXTURE_ADDRESS_MODE addressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+//	D3D12_TEXTURE_ADDRESS_MODE addressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+//	FLOAT mipLODBias = 0,
+//	UINT maxAnisotropy = 16,
+//	D3D12_COMPARISON_FUNC comparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL,
+//	D3D12_STATIC_BORDER_COLOR borderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
+//	FLOAT minLOD = 0.f,
+//	FLOAT maxLOD = D3D12_FLOAT32_MAX,
+//	D3D12_SHADER_VISIBILITY shaderVisibility = D3D12_SHADER_VISIBILITY_ALL,
+//	UINT registerSpace = 0)
+
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> CrateApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
@@ -731,14 +751,24 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> CrateApp::GetStaticSamplers()
 		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressU
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressW
+		0,								   // mipLODBias
+		16,								// maxAnisotropy
+		D3D12_COMPARISON_FUNC_LESS_EQUAL,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK //There are some limitations on what the border color can be.
+	);
 
 	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
 		2, // shaderRegister
 		D3D12_FILTER_MIN_MAG_MIP_LINEAR, // filter
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,   // addressW
+		 0,								   // mipLODBias
+		 16,								// maxAnisotropy
+		D3D12_COMPARISON_FUNC_LESS_EQUAL,
+        D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE //There are some limitations on what the border color can be.
+		);
 
 	const CD3DX12_STATIC_SAMPLER_DESC linearClamp(
 		3, // shaderRegister

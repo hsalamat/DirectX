@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Default2.hlsl 
+// Default_LinearWrap.hlsl 
 //
 // Default shader, currently supports lighting.
 //***************************************************************************************
@@ -109,7 +109,8 @@ VertexOut VS(VertexIn vin)
     vout.TexC = mul(texC, gMatTransform).xy;
 
     // Multiplied by 3 to force the texture to wrap, subtract 1 to center the texture
-    vout.TexC = vout.TexC * 3.0 - float2(1.0, 1.0);
+    //you can do the samething in the application by scaling. Look at inside BuildRenderItem!
+    //vout.TexC = vout.TexC * 3.0 - float2(1.0, 1.0);
 
 
     return vout;

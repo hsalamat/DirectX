@@ -1,10 +1,10 @@
 //***************************************************************************************
-// PS.hlsl 
+// PS_Anisotropic.hlsl 
 //
 // Default shader, currently supports lighting.
 //***************************************************************************************
 
-#include "VS.hlsl"
+#include "VS_Anisotropic.hlsl"
 
 float4 PS(VertexOut pin) : SV_Target
 {

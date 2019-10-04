@@ -549,8 +549,8 @@ void CrateApp::BuildDescriptorHeaps()
 
 void CrateApp::BuildShadersAndInputLayout()
 {
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default2.hlsl", nullptr, "VS", "vs_5_0");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default2.hlsl", nullptr, "PS", "ps_5_0");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default_Border.hlsl", nullptr, "PS", "ps_5_1");
 	
     mInputLayout =
     {
@@ -668,6 +668,12 @@ void CrateApp::BuildMaterials()
 void CrateApp::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItem>();
+	//step1
+	//boxRitem->World = MathHelper::Identity4x4();
+	XMStoreFloat4x4(&boxRitem->World, XMMatrixTranslation(1.0f, 0.0f, 0.0f));
+	XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));
+
+
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Mat = mMaterials["woodCrate"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
@@ -746,7 +752,12 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> CrateApp::GetStaticSamplers()
 		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressU
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_CLAMP); // addressW
+		D3D12_TEXTURE_ADDRESS_MODE_CLAMP, // addressW
+		0,								   // mipLODBias
+		16,								// maxAnisotropy
+		D3D12_COMPARISON_FUNC_LESS_EQUAL,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE //There are some limitations on what the border color can be.
+	);
 
 	const CD3DX12_STATIC_SAMPLER_DESC linearWrap(
 		2, // shaderRegister
