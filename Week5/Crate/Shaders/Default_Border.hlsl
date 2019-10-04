@@ -23,7 +23,7 @@
 Texture2D    gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap : register(s0);
-SamplerState gsamPointClamp : register(s1);
+SamplerState gsamBorder : register(s1);
 SamplerState gsamLinearWrap : register(s2);
 SamplerState gsamLinearClamp : register(s3);
 SamplerState gsamAnisotropicWrap : register(s4);
@@ -110,7 +110,7 @@ VertexOut VS(VertexIn vin)
 
     // Multiplied by 3 to force the texture to wrap, subtract 1 to center the texture
     //you can do the samething in the application by scaling. Look at inside BuildRenderItem!
-    //vout.TexC = vout.TexC * 3.0 - float2(1.0, 1.0);
+    vout.TexC = vout.TexC * 3.0 - float2(1.0, 1.0);
 
 
     return vout;
@@ -121,13 +121,13 @@ float4 PS(VertexOut pin) : SV_Target
     //we add a diffuse albedo texture map to specify the diffuse albedo
     //component of our material
     //SamplerState gsamPointWrap : register(s0);
-    //SamplerState gsamPointClamp : register(s1);
+    //SamplerState gsamBorder : register(s1);
     //SamplerState gsamLinearWrap : register(s2);
     //SamplerState gsamLinearClamp : register(s3);
     //SamplerState gsamAnisotropicWrap : register(s4);
     //SamplerState gsamAnisotropicClamp : register(s5);
 
-    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamLinearClamp, pin.TexC) * gDiffuseAlbedo;
+    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamBorder, pin.TexC) * gDiffuseAlbedo;
 
 
     // Interpolating normal can unnormalize it, so renormalize it.
