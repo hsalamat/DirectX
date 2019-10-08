@@ -1,5 +1,5 @@
 //***************************************************************************************
-// StencilApp.cpp 
+// StencilApp.cpp no shadow!
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -57,7 +57,6 @@ enum class RenderLayer : int
 	Mirrors ,
 	Reflected,
 	Transparent,
-	Shadow,
 	Count
 };
 
@@ -125,7 +124,6 @@ private:
 	// Cache render items of interest.
 	RenderItem* mSkullRitem = nullptr;
 	RenderItem* mReflectedSkullRitem = nullptr;
-	RenderItem* mShadowedSkullRitem = nullptr;
 
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
@@ -312,9 +310,6 @@ void StencilApp::Draw(const GameTimer& gt)
 	mCommandList->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Transparent]);
 
-	// Draw shadows
-	//mCommandList->SetPipelineState(mPSOs["shadow"].Get());
-	//DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Shadow]);
 	
     // Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -418,16 +413,8 @@ void StencilApp::OnKeyboardInput(const GameTimer& gt)
 	XMMATRIX R = XMMatrixReflect(mirrorPlane);
 	XMStoreFloat4x4(&mReflectedSkullRitem->World, skullWorld * R);
 
-	// Update shadow world matrix.
-	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // xz plane
-	XMVECTOR toMainLight = -XMLoadFloat3(&mMainPassCB.Lights[0].Direction);
-	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
-	XMMATRIX shadowOffsetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
-	XMStoreFloat4x4(&mShadowedSkullRitem->World, skullWorld * S * shadowOffsetY);
-
 	mSkullRitem->NumFramesDirty = gNumFrameResources;
 	mReflectedSkullRitem->NumFramesDirty = gNumFrameResources;
-	mShadowedSkullRitem->NumFramesDirty = gNumFrameResources;
 }
  
 void StencilApp::UpdateCamera(const GameTimer& gt)
@@ -1015,33 +1002,7 @@ void StencilApp::BuildPSOs()
 	drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = true;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&drawReflectionsPsoDesc, IID_PPV_ARGS(&mPSOs["drawStencilReflections"])));
 
-	//
-	// PSO for shadow objects
-	//
 
-	// We are going to draw shadows with transparency, so base it off the transparency description.
-	D3D12_DEPTH_STENCIL_DESC shadowDSS;
-	shadowDSS.DepthEnable = true;
-	shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	shadowDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	shadowDSS.StencilEnable = true;
-	shadowDSS.StencilReadMask = 0xff;
-	shadowDSS.StencilWriteMask = 0xff;
-
-	shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
-	shadowDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
-
-	// We are not rendering backfacing polygons, so these settings do not matter.
-	shadowDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
-	shadowDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
-	shadowPsoDesc.DepthStencilState = shadowDSS;
-	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
 }
 
 void StencilApp::BuildFrameResources()
@@ -1091,19 +1052,11 @@ void StencilApp::BuildMaterials()
 	skullMat->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
 	skullMat->Roughness = 0.3f;
 
-	auto shadowMat = std::make_unique<Material>();
-	shadowMat->Name = "shadowMat";
-	shadowMat->MatCBIndex = 4;
-	shadowMat->DiffuseSrvHeapIndex = 3;
-	shadowMat->DiffuseAlbedo = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	shadowMat->FresnelR0 = XMFLOAT3(0.001f, 0.001f, 0.001f);
-	shadowMat->Roughness = 0.0f;
 
 	mMaterials["bricks"] = std::move(bricks);
 	mMaterials["checkertile"] = std::move(checkertile);
 	mMaterials["icemirror"] = std::move(icemirror);
 	mMaterials["skullMat"] = std::move(skullMat);
-	mMaterials["shadowMat"] = std::move(shadowMat);
 }
 
 void StencilApp::BuildRenderItems()
@@ -1152,13 +1105,6 @@ void StencilApp::BuildRenderItems()
 	mReflectedSkullRitem = reflectedSkullRitem.get();
 	mRitemLayer[(int)RenderLayer::Reflected].push_back(reflectedSkullRitem.get());
 
-	// Shadowed skull will have different world matrix, so it needs to be its own render item.
-	auto shadowedSkullRitem = std::make_unique<RenderItem>();
-	*shadowedSkullRitem = *skullRitem;
-	shadowedSkullRitem->ObjCBIndex = 4;
-	shadowedSkullRitem->Mat = mMaterials["shadowMat"].get();
-	mShadowedSkullRitem = shadowedSkullRitem.get();
-	mRitemLayer[(int)RenderLayer::Shadow].push_back(shadowedSkullRitem.get());
 
 	auto mirrorRitem = std::make_unique<RenderItem>();
 	mirrorRitem->World = MathHelper::Identity4x4();
@@ -1178,7 +1124,6 @@ void StencilApp::BuildRenderItems()
 	mAllRitems.push_back(std::move(wallsRitem));
 	mAllRitems.push_back(std::move(skullRitem));
 	mAllRitems.push_back(std::move(reflectedSkullRitem));
-	mAllRitems.push_back(std::move(shadowedSkullRitem));
 	mAllRitems.push_back(std::move(mirrorRitem));
 }
 
