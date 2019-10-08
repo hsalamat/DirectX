@@ -230,6 +230,7 @@ void StencilApp::OnResize()
 
 void StencilApp::Update(const GameTimer& gt)
 {
+	//step13: we are calling OnKeyboardInput to calculate the shadow world skulled matrix for every frame or every time user presses AWSD keyskeys
     OnKeyboardInput(gt);
 	UpdateCamera(gt);
 
@@ -1020,7 +1021,6 @@ void StencilApp::BuildPSOs()
 	// PSO for shadow objects
 	//
 
-	// We are going to draw shadows with transparency, so base it off the transparency description.
 	D3D12_DEPTH_STENCIL_DESC shadowDSS;
 	shadowDSS.DepthEnable = true;
 	shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -1040,7 +1040,12 @@ void StencilApp::BuildPSOs()
 	shadowDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
 	shadowDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
+	// We are going to draw shadows with transparency, so base it off the transparency description.
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
+
+	//what happens if we base our shadow PSO base off opaque description
+	shadowPsoDesc = opaquePsoDesc;
+
 	shadowPsoDesc.DepthStencilState = shadowDSS;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
 }
@@ -1113,7 +1118,7 @@ void StencilApp::BuildRenderItems()
 	floorRitem->ObjCBIndex = 0;
 	floorRitem->Mat = mMaterials["checkertile"].get();
 	floorRitem->Geo = mGeometries["roomGeo"].get();
-	floorRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	floorRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	floorRitem->IndexCount = floorRitem->Geo->DrawArgs["floor"].IndexCount;
 	floorRitem->StartIndexLocation = floorRitem->Geo->DrawArgs["floor"].StartIndexLocation;
 	floorRitem->BaseVertexLocation = floorRitem->Geo->DrawArgs["floor"].BaseVertexLocation;
@@ -1125,7 +1130,7 @@ void StencilApp::BuildRenderItems()
 	wallsRitem->ObjCBIndex = 1;
 	wallsRitem->Mat = mMaterials["bricks"].get();
 	wallsRitem->Geo = mGeometries["roomGeo"].get();
-	wallsRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	wallsRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	wallsRitem->IndexCount = wallsRitem->Geo->DrawArgs["wall"].IndexCount;
 	wallsRitem->StartIndexLocation = wallsRitem->Geo->DrawArgs["wall"].StartIndexLocation;
 	wallsRitem->BaseVertexLocation = wallsRitem->Geo->DrawArgs["wall"].BaseVertexLocation;
@@ -1137,7 +1142,7 @@ void StencilApp::BuildRenderItems()
 	skullRitem->ObjCBIndex = 2;
 	skullRitem->Mat = mMaterials["skullMat"].get();
 	skullRitem->Geo = mGeometries["skullGeo"].get();
-	skullRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	skullRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	skullRitem->IndexCount = skullRitem->Geo->DrawArgs["skull"].IndexCount;
 	skullRitem->StartIndexLocation = skullRitem->Geo->DrawArgs["skull"].StartIndexLocation;
 	skullRitem->BaseVertexLocation = skullRitem->Geo->DrawArgs["skull"].BaseVertexLocation;
@@ -1165,7 +1170,7 @@ void StencilApp::BuildRenderItems()
 	mirrorRitem->ObjCBIndex = 5;
 	mirrorRitem->Mat = mMaterials["icemirror"].get();
 	mirrorRitem->Geo = mGeometries["roomGeo"].get();
-	mirrorRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	mirrorRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	mirrorRitem->IndexCount = mirrorRitem->Geo->DrawArgs["mirror"].IndexCount;
 	mirrorRitem->StartIndexLocation = mirrorRitem->Geo->DrawArgs["mirror"].StartIndexLocation;
 	mirrorRitem->BaseVertexLocation = mirrorRitem->Geo->DrawArgs["mirror"].BaseVertexLocation;
