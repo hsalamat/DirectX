@@ -1,5 +1,5 @@
 //***************************************************************************************
-// BlendApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// BlendApp.cpp 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -292,6 +292,14 @@ void BlendApp::Draw(const GameTimer& gt)
 
 	mCommandList->SetPipelineState(mPSOs["alphaTested"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::AlphaTested]);
+
+	//when you draw, you can set the blend factor that modulate values for a pixel shader, render target, or both.
+	//You could also use the following blend factor when you set your blend to D3D12_BLEND_BLEND_FACTOR in PSO like following:
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+
+	//float blendFactor[4] = { 0.5f, 0.5f, 0.5f, 1.f };
+	//mCommandList->OMSetBlendFactor(blendFactor);
 
 	mCommandList->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Transparent]);
@@ -655,7 +663,7 @@ void BlendApp::BuildShadersAndInputLayout()
 	const D3D_SHADER_MACRO alphaTestDefines[] =
 	{
 		"FOG", "1",
-		"ALPHA_TEST", "1",
+		"ALPHA_TEST", 
 		NULL, NULL
 	};
 
@@ -873,9 +881,24 @@ void BlendApp::BuildPSOs()
 	D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
-	transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+
+	//you could  specify the blend factor or not..
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+
+	//F = (r, g, b) and F = a, where the color (r, g, b,a) is supplied to the  parameter of the ID3D12GraphicsCommandList::OMSetBlendFactor method.
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+
+	//Hooman: try different blend operators to see the blending effect
+	//D3D12_BLEND_OP_ADD,
+	//D3D12_BLEND_OP_SUBTRACT,
+	//D3D12_BLEND_OP_REV_SUBTRACT,
+	//D3D12_BLEND_OP_MIN,
+	//D3D12_BLEND_OP_MAX
+
+	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,
+
 	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
@@ -949,7 +972,7 @@ void BlendApp::BuildRenderItems()
 	wavesRitem->ObjCBIndex = 0;
 	wavesRitem->Mat = mMaterials["water"].get();
 	wavesRitem->Geo = mGeometries["waterGeo"].get();
-	wavesRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	wavesRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	wavesRitem->IndexCount = wavesRitem->Geo->DrawArgs["grid"].IndexCount;
 	wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 	wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
@@ -964,7 +987,7 @@ void BlendApp::BuildRenderItems()
 	gridRitem->ObjCBIndex = 1;
 	gridRitem->Mat = mMaterials["grass"].get();
 	gridRitem->Geo = mGeometries["landGeo"].get();
-	gridRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
     gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
     gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
@@ -976,7 +999,7 @@ void BlendApp::BuildRenderItems()
 	boxRitem->ObjCBIndex = 2;
 	boxRitem->Mat = mMaterials["wirefence"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
-	boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
