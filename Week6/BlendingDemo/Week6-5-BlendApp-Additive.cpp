@@ -1,5 +1,7 @@
 //***************************************************************************************
-// BlendApp.cpp 
+// Week6-5-BlendApp-Adding.cpp 
+//Additive Blending: Suppose that we want to add the source pixels with the destination pixels. 
+//Adding creates a brighter image since color is being added.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -292,14 +294,6 @@ void BlendApp::Draw(const GameTimer& gt)
 
 	mCommandList->SetPipelineState(mPSOs["alphaTested"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::AlphaTested]);
-
-	//when you draw, you can set the blend factor that modulate values for a pixel shader, render target, or both.
-	//You could also use the following blend factor when you set your blend to D3D12_BLEND_BLEND_FACTOR in PSO like following:
-	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
-	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
-
-	//float blendFactor[4] = { 0.5f, 0.5f, 0.5f, 1.f };
-	//mCommandList->OMSetBlendFactor(blendFactor);
 
 	mCommandList->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Transparent]);
@@ -882,29 +876,23 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
-	//you could  specify the blend factor or not..
-	transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	//Suppose that we want to add the source pixels with the destination pixels.
+	//To do this,
+	//source blend factor : D3D12_BLEND_ONE,
+	//destination blend factor = D3D12_BLEND_ONE,
+	//blend operator =  D3D12_BLEND_OP_ADD.
+	//The following adds source and destination color. Adding creates a brighter image since color is being added.
 
-	//F = (r, g, b) and F = a, where the color (r, g, b,a) is supplied to the  parameter of the ID3D12GraphicsCommandList::OMSetBlendFactor method.
-	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
-	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
-
-	//Hooman: try different blend operators to see the blending effect
-	//D3D12_BLEND_OP_ADD,
-	//D3D12_BLEND_OP_SUBTRACT,
-	//D3D12_BLEND_OP_REV_SUBTRACT,
-	//D3D12_BLEND_OP_MIN,
-	//D3D12_BLEND_OP_MAX
-
+	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ONE;
+	transparencyBlendDesc.DestBlend = D3D12_BLEND_ONE;
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,
 
-	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;  //default
+	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO; //default
+	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD; //default
 	transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
 	transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_BLUE;
+	//transparencyBlendDesc.RenderTargetWriteMask = 0;
 	//Direct3D supports rendering to up to eight render targets simultaneously.
 	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));

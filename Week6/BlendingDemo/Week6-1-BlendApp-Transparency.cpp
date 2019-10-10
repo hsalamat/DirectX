@@ -1,9 +1,9 @@
-//***************************************************************************************
-// Week6-3-BlendApp-NoColorWrite2.cpp 
-//No Color Write blending by setting RenderTargetWriteMask to zero
-//Suppose that we want to keep the original destination pixel exactly as it is and not
-//overwrite it or blend it with the source pixel currently being rasterized.This can be useful,
-//for example, if you just want to write to the depth / stencil buffer, and not the back buffer.
+﻿//***************************************************************************************
+// Week6-1-BlendApp-Transparency.cpp 
+//0 alpha means 0 % opaque, 0.4 means 40 % opaque, and 1.0 means 100 % opaque
+//The relationship between opacity and transparency:
+//T = 1− A, where A is opacity and T is transparency
+//suppose that we want to blend the source and destination pixels based on the opacity of the source pixel 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -296,6 +296,14 @@ void BlendApp::Draw(const GameTimer& gt)
 
 	mCommandList->SetPipelineState(mPSOs["alphaTested"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::AlphaTested]);
+
+	//when you draw, you can set the blend factor that modulate values for a pixel shader, render target, or both.
+	//You could also use the following blend factor when you set your blend to D3D12_BLEND_BLEND_FACTOR in PSO like following:
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+
+	//float blendFactor[4] = { 0.5f, 0.5f, 0.5f, 1.f };
+	//mCommandList->OMSetBlendFactor(blendFactor);
 
 	mCommandList->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Transparent]);
@@ -878,22 +886,35 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
-	//No Color Write: To do this, set the source pixel blend factor to D3D12_BLEND_ZERO, the destination
-	//blend factor to D3D12_BLEND_ONE, and the blend operator to D3D12_BLEND_OP_ADD.
-	//But another way to implement the same thing would be to set
-	//the D3D12_RENDER_TARGET_BLEND_DESC::RenderTargetWriteMask member to 0, 
-	//so that none of the color channels are written to.
+	//suppose that we want to blend the sourceand destination pixels based on the opacity of the source pixel :
+	//source blend factor : D3D12_BLEND_SRC_ALPHA
+	//destination blend factor : D3D12_BLEND_INV_SRC_ALPHA
+	//blend operator : D3D12_BLEND_OP_ADD
+
 
 	transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+
+	//you could  specify the blend factor or not..
+	//F = (r, g, b) and F = a, where the color (r, g, b,a) is supplied to the  parameter of the ID3D12GraphicsCommandList::OMSetBlendFactor method.
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+
+	//Hooman: try different blend operators to see the blending effect
+	//D3D12_BLEND_OP_ADD,
+	//D3D12_BLEND_OP_SUBTRACT,
+	//D3D12_BLEND_OP_REV_SUBTRACT,
+	//D3D12_BLEND_OP_MIN,
+	//D3D12_BLEND_OP_MAX
+
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,
 
 	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	transparencyBlendDesc.RenderTargetWriteMask = 0;
+	transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_BLUE;
 	//Direct3D supports rendering to up to eight render targets simultaneously.
 	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
