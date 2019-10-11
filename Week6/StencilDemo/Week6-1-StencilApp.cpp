@@ -978,6 +978,8 @@ void StencilApp::BuildPSOs()
 	//
 
 	D3D12_DEPTH_STENCIL_DESC reflectionsDSS;
+	//By using the depth/stencil buffer, we can block the reflected from being rendered on the wall
+	//what happens when you set reflectionsDSS.DepthEnable = false; and reflectionsDSS.StencilEnable = false;
 	reflectionsDSS.DepthEnable = true;
 	reflectionsDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	reflectionsDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
