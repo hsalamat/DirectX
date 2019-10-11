@@ -980,6 +980,7 @@ void StencilApp::BuildPSOs()
 	D3D12_DEPTH_STENCIL_DESC reflectionsDSS;
 	//By using the depth/stencil buffer, we can block the reflected from being rendered on the wall
 	//what happens when you set reflectionsDSS.DepthEnable = false; and reflectionsDSS.StencilEnable = false;
+	//the mirror would not occlude the reflection
 	reflectionsDSS.DepthEnable = true;
 	reflectionsDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	reflectionsDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
@@ -992,6 +993,7 @@ void StencilApp::BuildPSOs()
 	reflectionsDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 	reflectionsDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
 	reflectionsDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	//we set the stencil test to only succeed if the value in the stencil buffer equals 1 (stencil ref)
 	reflectionsDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
 	// We are not rendering backfacing polygons, so these settings do not matter.
@@ -1040,7 +1042,7 @@ void StencilApp::BuildMaterials()
 	icemirror->Name = "icemirror";
 	icemirror->MatCBIndex = 2;
 	icemirror->DiffuseSrvHeapIndex = 2;
-	//in order for the skull reflection to show through(which lies behind the mirror), we need to render the
+	//In order for the skull reflection to show through(which lies behind the mirror), we need to render the
 	//mirror with transparency blending.If we did not render the mirror with transparency,
 	//the mirror would simply occlude the reflection since its depth is less than that of the reflection.
 	//try this: 	icemirror->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
