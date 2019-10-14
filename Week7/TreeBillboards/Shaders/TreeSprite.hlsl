@@ -1,5 +1,5 @@
 //***************************************************************************************
-// TreeSprite.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// TreeSprite.hlsl.
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -17,9 +17,8 @@
 
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
-
+//step5
 Texture2DArray gTreeMapArray : register(t0);
-
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);
@@ -106,12 +105,13 @@ VertexOut VS(VertexIn vin)
 	return vout;
 }
  
+//step4
  // We expand each point into a quad (4 vertices), so the maximum number of vertices
  // we output per geometry shader invocation is 4.
 [maxvertexcount(4)]
-void GS(point VertexOut gin[1], 
-        uint primID : SV_PrimitiveID, 
-        inout TriangleStream<GeoOut> triStream)
+void GS(point VertexOut gin[1], //PrimitiveType InputVertexType InputName[NumElements]-> one vertex for a point, two for aline, threefor atriangle, four for line with adjacency, and six for a triangle with adjacency.
+        uint primID : SV_PrimitiveID, //inout StreamOutputObject<OutputVertexType>
+        inout TriangleStream<GeoOut> triStream)  //OutputName
 {	
 	//
 	// Compute the local coordinate system of the sprite relative to the world
@@ -163,6 +163,7 @@ void GS(point VertexOut gin[1],
 	}
 }
 
+//step6
 float4 PS(GeoOut pin) : SV_Target
 {
 	float3 uvw = float3(pin.TexC, pin.PrimID%3);
