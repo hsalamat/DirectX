@@ -970,7 +970,7 @@ void TreeBillboardsApp::BuildPSOs()
 	opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;
 	//there is abug with F2 key that is supposed to turn on the multisampling!
 	//Set4xMsaaState(true);
-	m4xMsaaState = true;
+	//m4xMsaaState = true;
 
 	opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
 	opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
