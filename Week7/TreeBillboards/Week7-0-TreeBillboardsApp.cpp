@@ -591,7 +591,7 @@ void TreeBillboardsApp::BuildTreeSpritesGeometry()
 		y += 8.0f;
 
 		vertices[i].Pos = XMFLOAT3(x, y, z);
-		vertices[i].Size = XMFLOAT2(20.0f, 20.0f);
+		vertices[i].Size = XMFLOAT2(10.0f, 10.0f);
 	}
 
 	std::array<std::uint16_t, 3> indices =
