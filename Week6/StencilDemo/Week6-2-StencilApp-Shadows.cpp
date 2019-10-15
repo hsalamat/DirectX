@@ -1031,7 +1031,12 @@ void StencilApp::BuildPSOs()
 
 	shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 	shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+
 	shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+
+	// Uncomment this line to see the effect if double blending
+	//shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+
 	shadowDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
 	// We are not rendering backfacing polygons, so these settings do not matter.
@@ -1044,7 +1049,7 @@ void StencilApp::BuildPSOs()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
 
 	//what happens if we base our shadow PSO base off opaque description
-	shadowPsoDesc = opaquePsoDesc;
+	//shadowPsoDesc = opaquePsoDesc;
 
 	shadowPsoDesc.DepthStencilState = shadowDSS;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
