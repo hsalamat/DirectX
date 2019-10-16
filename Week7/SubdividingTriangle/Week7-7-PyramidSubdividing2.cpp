@@ -567,7 +567,7 @@ void CrateApp::BuildShadersAndInputLayout()
 {
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default2.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default2.hlsl", nullptr, "PS", "ps_5_1");
-	mShaders["opaqueGS"] = d3dUtil::CompileShader(L"Shaders\\GS5.hlsl", nullptr, "GS", "ps_5_1");
+	mShaders["opaqueGS"] = d3dUtil::CompileShader(L"Shaders\\GS5.hlsl", nullptr, "GS", "gs_5_1");
 
 	mInputLayout =
 	{
