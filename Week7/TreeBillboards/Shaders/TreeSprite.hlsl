@@ -20,6 +20,10 @@
 //step5
 Texture2DArray gTreeMapArray : register(t0);
 
+//you can use dynamic indexing as well. Pay attention how we changed the sampler!
+//Texture2D gTreeMapArray[3] : register(t0);
+
+
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);
 SamplerState gsamLinearWrap       : register(s2);
@@ -168,6 +172,10 @@ float4 PS(GeoOut pin) : SV_Target
 {
 	float3 uvw = float3(pin.TexC, pin.PrimID%3);
     float4 diffuseAlbedo = gTreeMapArray.Sample(gsamAnisotropicWrap, uvw) * gDiffuseAlbedo;
+
+    //using dynamic indexing
+    //float4 diffuseAlbedo = gTreeMapArray[pin.PrimID % 3].Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
+
 	
 #ifdef ALPHA_TEST
 	// Discard pixel if texture alpha < 0.1.  We do this test as soon 
