@@ -96,6 +96,12 @@ int main()
 	cout << "The intersection of the ray r(t) with the shadow plane (n, d) gives s: "
 		<< XMPlaneIntersectLine(XMPlaneFromPointNormal(v, p), LinePoint1, LinePoint2) << endl;
 
+	//Builds a transformation matrix that flattens geometry into a plane.
+	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // xz plane
+	XMVECTOR lightPosition = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);
+	XMMATRIX S = XMMatrixShadow(shadowPlane, lightPosition);
+	cout << "The transformation matrix that flattens geometry into a plane given a light position: " << endl << S << endl;
+
 	system("pause");
 	return 0;
 }
