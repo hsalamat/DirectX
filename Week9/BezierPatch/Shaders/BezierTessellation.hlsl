@@ -1,5 +1,5 @@
 //***************************************************************************************
-// BezierTessellation.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// BezierTessellation.hlsl 
 //
 // Demonstrates hardware tessellating a Bezier patch.
 //***************************************************************************************
