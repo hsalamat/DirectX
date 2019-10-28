@@ -1,5 +1,11 @@
 //***************************************************************************************
-// TreeBillboardsApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// TreeBillboardsApp.cpp
+//When objects are far away, a billboarding technique is used for efficiency.That is,
+//instead of rendering the geometry for a fully 3D object, a quad with a picture of a 3D object is
+//painted on it. From a distance, you cannot tell that a billboard is being
+//used.However, the trick is to make sure that the billboard always faces the camera
+//Assuming the y-axis is up and the xz-plane is the ground plane, the  billboards
+//will generally be aligned with the y - axis and just face the camera in the xz - plane.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -558,9 +564,9 @@ void TreeBillboardsApp::BuildShadersAndInputLayouts()
 	};
 
 	
-	mShaders["treeSpriteVS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "VS", "vs_5_0");
-	mShaders["treeSpriteGS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "GS", "gs_5_0");
-	mShaders["treeSpritePS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "PS", "ps_5_0");
+	mShaders["treeSpriteVS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["treeSpriteGS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "GS", "gs_5_1");
+	mShaders["treeSpritePS"] = d3dUtil::CompileShader(L"Shaders\\TreeSprite.hlsl", nullptr, "PS", "ps_5_1");
 
 
 	mTreeSpriteInputLayout =
