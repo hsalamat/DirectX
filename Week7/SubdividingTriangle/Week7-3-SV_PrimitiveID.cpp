@@ -1,5 +1,8 @@
 //***************************************************************************************
-// Use constant buffer to do rotation
+//We determine the color in the pixel shader using SV_PrimitiveID
+//If a geometry shader is no present, the primitive ID parameter can be added to
+//the parameter list of the pixelshader:
+//float4 PS(VertexOut pin, uint primID : SV_PrimitiveID) : SV_Target
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -172,7 +175,7 @@ void TriangleAPP::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
+	// a rotation around z axis
 	//mTheta2 += 0.1f;
 	//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 	//
@@ -218,11 +221,8 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	// Clear the back buffer and depth buffer.
 	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 
-	//step6: let's get ready for 3D
 	mCommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	//mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, nullptr);
-	//
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -234,9 +234,8 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//step12 bind the constant buffer to the pipeline
+	//bind the constant buffer to the pipeline
 	mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	// if you compile the code at this point, there is no build problem. but it doesn't do anything, because the shader is not making a use of it.
 
 	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
 
@@ -394,7 +393,6 @@ void TriangleAPP::BuildPSO()
 	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
 	psoDesc.pRootSignature = mRootSignature.Get();
 
-	//in old days, we use to call create vertex shader, now we hook it up to the PSO!
 	psoDesc.VS =
 	{
 		reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
@@ -407,25 +405,16 @@ void TriangleAPP::BuildPSO()
 	};
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-
-	//step8
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	//psoDesc.DepthStencilState.DepthEnable = FALSE;
-	//psoDesc.DepthStencilState.StencilEnable = FALSE;
-
-
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = mBackBufferFormat;  //DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	//step9
-	//	psoDesc.SampleDesc.Count = 1;
 	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
 	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
 	psoDesc.DSVFormat = mDepthStencilFormat;
-	//end
+
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 }
 

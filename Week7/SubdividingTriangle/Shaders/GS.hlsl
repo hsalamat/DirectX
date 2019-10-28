@@ -61,6 +61,11 @@ void OutputSubdivision(VertexOut v[6], inout TriangleStream<GeoOut> triStream, u
         triStream.Append(gout[j]); // Strip 1: bottom three triangles (5 vertices)
     }
 
+ //The vertices output by a geometry shader form primitives; the type of output primitive
+//is indicated by the stream type (PointStream, LineStream, TriangleStream).
+//For lines and triangles, the output primitive is always a strip. Line and triangle lists,
+//however, can be simulated by using the intrinsic RestartStrip method:
+
     triStream.RestartStrip(); //Strip 2: top triangle (three vertices)
 
     triStream.Append(gout[1]); //m0

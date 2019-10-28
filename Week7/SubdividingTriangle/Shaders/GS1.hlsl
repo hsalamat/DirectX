@@ -4,7 +4,6 @@ cbuffer cbPerObject : register(b0)
 };
 
 
-
 struct VertexOut
 {
     float3 CenterW : POSITION;
@@ -22,10 +21,9 @@ struct GeoOut
 
 
 
-
 //step4
  // We expand each point into a quad (4 vertices), so the maximum number of vertices
- // we output per geometry shader invocation is 4.
+ // Output per geometry shader invocation is 4.
 [maxvertexcount(4)]
 void GS(point VertexOut gin[1], //PrimitiveType InputVertexType InputName[NumElements]-> one vertex for a point, two for aline, threefor atriangle, four for line with adjacency, and six for a triangle with adjacency.
         uint primID : SV_PrimitiveID, //inout StreamOutputObject<OutputVertexType>

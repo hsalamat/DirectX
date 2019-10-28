@@ -1,5 +1,7 @@
 //***************************************************************************************
-// Use constant buffer to do rotation
+//It is possible to have the input assembler generate a vertex ID. 
+//To do this, add an additional parameter of type uint to the vertex shader signature 
+//with semantic SV_VertexID: VertexOut VS(VertexIn vin, uint vertID : SV_VertexID)
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -59,13 +61,13 @@ private:
 	//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
 	ComPtr<ID3DBlob> mvsByteCode = nullptr;
 	ComPtr<ID3DBlob> mpsByteCode = nullptr;
+	ComPtr<ID3DBlob> mpsWByteCode = nullptr;
 	ComPtr<ID3DBlob> mgsByteCode = nullptr;
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	//ComPtr<ID3D12PipelineState> mPSO = nullptr;
-	std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;
-
+	ComPtr<ID3D12PipelineState> mPSO = nullptr;
+	ComPtr<ID3D12PipelineState> mWireframePSO = nullptr;
 
 
 	XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
@@ -75,10 +77,7 @@ private:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = XM_PIDIV4;
 	float mRadius = 5.0f;
-
-	//step1
 	float mTheta2 = 0.0f;
-	//
 
 	POINT mLastMousePos;
 
@@ -100,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 		return theApp.Run();
 	}
-	catch (DxException& e)
+	catch (DxException & e)
 	{
 		MessageBox(nullptr, e.ToString().c_str(), L"HR Failed", MB_OK);
 		return 0;
@@ -148,7 +147,7 @@ void TriangleAPP::OnResize()
 {
 	D3DApp::OnResize();
 
-		// The window resized, so update the aspect ratio and recompute the projection matrix.
+	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	XMMATRIX P = XMMatrixPerspectiveFovLH(0.10f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	XMStoreFloat4x4(&mProj, P);
 }
@@ -175,7 +174,7 @@ void TriangleAPP::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
+	//a rotation around z axis
 	//mTheta2 += 0.1f;
 	//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 	//
@@ -198,7 +197,7 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	//A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSOs["opaque"].Get()));
+	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 
 	//You cannot render without a view port. 
 	//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.
@@ -220,12 +219,8 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	// Clear the back buffer and depth buffer.
 	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
-
-	//step6: let's get ready for 3D
 	mCommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	//mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, nullptr);
-	//
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -237,14 +232,13 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//step12 bind the constant buffer to the pipeline
 	mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	// if you compile the code at this point, there is no build problem. but it doesn't do anything, because the shader is not making a use of it.
 
 	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
 
-	mCommandList->SetPipelineState(mPSOs["wireframe"].Get());
-	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
+	//mCommandList->SetPipelineState(mWireframePSO.Get());
+	//mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
+
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -274,7 +268,7 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 void TriangleAPP::BuildRootSignature()
 {
- 
+
 	// Shader programs typically require resources as input (constant buffers,
 	// textures, samplers).  The root signature defines the resources the shader
 	// programs expect.  If we think of the shader programs as a function, and
@@ -320,10 +314,9 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
-	//step3: refactoring the vertex shader to use structs for both ins and outs parameters
-	//note that I changed "main" to PS and VS
 	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS3.hlsl", nullptr, "VS", "vs_5_1");
 	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS3.hlsl", nullptr, "PS", "ps_5_1");
+	mpsWByteCode = d3dUtil::CompileShader(L"Shaders\\PS3_Wireframe.hlsl", nullptr, "PS", "ps_5_1");
 	mgsByteCode = d3dUtil::CompileShader(L"Shaders\\GS3.hlsl", nullptr, "GS", "gs_5_1");
 
 	mInputLayout =
@@ -337,10 +330,9 @@ void TriangleAPP::BuildTriangleGeometry()
 {
 	std::array<Vertex, 3> vertices =
 	{
-		//we change the color in the vertex shader using vertex id!
-				Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(Colors::Black)}),
-				Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Black) }),
-				Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Black)}),
+				Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(Colors::Red)}),
+				Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Green) }),
+				Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Blue)}),
 	};
 
 
@@ -394,7 +386,6 @@ void TriangleAPP::BuildPSO()
 	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
 	psoDesc.pRootSignature = mRootSignature.Get();
 
-	//in old days, we use to call create vertex shader, now we hook it up to the PSO!
 	psoDesc.VS =
 	{
 		reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
@@ -410,16 +401,12 @@ void TriangleAPP::BuildPSO()
 		reinterpret_cast<BYTE*>(mgsByteCode->GetBufferPointer()),
 		mgsByteCode->GetBufferSize()
 	};
-	
+
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-
-	//step8
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	//psoDesc.DepthStencilState.DepthEnable = FALSE;
-	//psoDesc.DepthStencilState.StencilEnable = FALSE;
 
 
 	psoDesc.SampleMask = UINT_MAX;
@@ -428,18 +415,20 @@ void TriangleAPP::BuildPSO()
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = mBackBufferFormat;  //DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	//step9
-	//	psoDesc.SampleDesc.Count = 1;
 	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
 	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
 	psoDesc.DSVFormat = mDepthStencilFormat;
-	//end
-	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
+	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC wireFramePsoDesc = psoDesc;
-	wireFramePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&wireFramePsoDesc, IID_PPV_ARGS(&mPSOs["wireframe"])));
 
+	auto wireframePsoDec = psoDesc;
+	wireframePsoDec.PS =
+	{
+		reinterpret_cast<BYTE*>(mpsWByteCode->GetBufferPointer()),
+		mpsWByteCode->GetBufferSize()
+	};
+	wireframePsoDec.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&wireframePsoDec, IID_PPV_ARGS(&mWireframePSO)));
 }
 
 

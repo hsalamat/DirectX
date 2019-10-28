@@ -1,5 +1,8 @@
 //***************************************************************************************
-// Use constant buffer to do rotation
+//A triangle adjacency, contains adjacency data for triangles, so that adjacent triangles can be accessed.
+//The Geometry Shader stage has access to 6 vertices and attributes, which forms 4 triangles.
+//3 vertices form the triangle which is currently rendered.The other 3 vertices are forming 
+//the neighbor(adjacent) triangles, in combination with the 3 side edges of the currently rendered triangle.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -125,7 +128,6 @@ bool TriangleAPP::Initialize()
 
 	BuildDescriptorHeaps();
 	BuildConstantBuffers();
-
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
 	BuildTriangleGeometry();
@@ -219,11 +221,8 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	// Clear the back buffer and depth buffer.
 	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 
-	//step6: let's get ready for 3D
 	mCommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	//mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, nullptr);
-	//
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -316,8 +315,6 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
-	//step3: refactoring the vertex shader to use structs for both ins and outs parameters
-	//note that I changed "main" to PS and VS
 	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "VS", "vs_5_1");
 	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "PS", "ps_5_1");
 	mgsByteCode = d3dUtil::CompileShader(L"Shaders\\GS_Adjacency.hlsl", nullptr, "GS", "gs_5_1");
@@ -329,6 +326,7 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	};
 }
 
+//step1
 void TriangleAPP::BuildTriangleGeometry()
 {
 	std::array<Vertex, 6> vertices =
@@ -392,7 +390,6 @@ void TriangleAPP::BuildPSO()
 	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
 	psoDesc.pRootSignature = mRootSignature.Get();
 
-	//in old days, we use to call create vertex shader, now we hook it up to the PSO!
 	psoDesc.VS =
 	{
 		reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
@@ -414,24 +411,17 @@ void TriangleAPP::BuildPSO()
 
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 
-	//step8
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	//psoDesc.DepthStencilState.DepthEnable = FALSE;
-	//psoDesc.DepthStencilState.StencilEnable = FALSE;
-
 
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = mBackBufferFormat;  //DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	//step9
-	//	psoDesc.SampleDesc.Count = 1;
 	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
 	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
 	psoDesc.DSVFormat = mDepthStencilFormat;
-	//end
+
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 }
 

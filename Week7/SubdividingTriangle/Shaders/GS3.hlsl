@@ -63,10 +63,11 @@ void OutputSubdivision(VertexOut v[6], inout TriangleStream<GeoOut> triStream, u
 
     triStream.RestartStrip(); //Strip 2: top triangle (three vertices)
 
+    gout[1].Color = float4(1.0, 1.0, 0.0, 0.0);
     triStream.Append(gout[1]); //m0
-
+    gout[5].Color = float4(1.0, 1.0, 0.0, 0.0);
     triStream.Append(gout[5]); //p1
-
+    gout[3].Color = float4(1.0, 1.0, 0.0, 0.0);
     triStream.Append(gout[3]); //m1
 
 

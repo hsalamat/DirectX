@@ -1,5 +1,18 @@
 //***************************************************************************************
-// Use constant buffer to do rotation
+// Triangle subdividing inputs a triangle, subdivides it and outputs the four subdivided
+//triangles. The  geometry shader illustrates the Append and RestartStrip methods.
+//      1
+//      *
+//     /  \
+//    /    \
+//   m0*–-—*m1
+//  /  \   /  \
+// /    \ /    \ 
+// *–—*–—*–—*–—*
+// 0     m2    2
+// We can draw the subdivision in two strips:
+// Strip 1: bottom three triangles
+// Strip 2: top triangle
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -73,10 +86,7 @@ private:
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = XM_PIDIV4;
 	float mRadius = 5.0f;
-
-	//step1
 	float mTheta2 = 0.0f;
-	//
 
 	POINT mLastMousePos;
 
@@ -173,7 +183,7 @@ void TriangleAPP::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
+	//a rotation around z axis
 	//mTheta2 += 0.1f;
 	//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 	//
@@ -218,12 +228,8 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	// Clear the back buffer and depth buffer.
 	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
-
-	//step6: let's get ready for 3D
 	mCommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	//mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, nullptr);
-	//
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -235,9 +241,7 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//step12 bind the constant buffer to the pipeline
 	mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	// if you compile the code at this point, there is no build problem. but it doesn't do anything, because the shader is not making a use of it.
 
 	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
 
@@ -316,8 +320,6 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
-	//step3: refactoring the vertex shader to use structs for both ins and outs parameters
-	//note that I changed "main" to PS and VS
 	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "VS", "vs_5_1");
 	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "PS", "ps_5_1");
 	mgsByteCode = d3dUtil::CompileShader(L"Shaders\\GS.hlsl", nullptr, "GS", "gs_5_1");
@@ -389,7 +391,6 @@ void TriangleAPP::BuildPSO()
 	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
 	psoDesc.pRootSignature = mRootSignature.Get();
 
-	//in old days, we use to call create vertex shader, now we hook it up to the PSO!
 	psoDesc.VS =
 	{
 		reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
@@ -410,11 +411,7 @@ void TriangleAPP::BuildPSO()
 	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-
-	//step8
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	//psoDesc.DepthStencilState.DepthEnable = FALSE;
-	//psoDesc.DepthStencilState.StencilEnable = FALSE;
 
 
 	psoDesc.SampleMask = UINT_MAX;
@@ -423,12 +420,9 @@ void TriangleAPP::BuildPSO()
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = mBackBufferFormat;  //DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	//step9
-	//	psoDesc.SampleDesc.Count = 1;
 	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
 	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
 	psoDesc.DSVFormat = mDepthStencilFormat;
-	//end
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 }
 
