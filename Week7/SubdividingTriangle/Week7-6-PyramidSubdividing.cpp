@@ -1,5 +1,6 @@
 //***************************************************************************************
-// CrateApp.cpp 
+// Pyramid subdividing in CPU without Geometry Shader. Look at Default.hlsl.
+//We have removed the texture in the pixel shader
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -43,7 +44,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
 	// Primitive topology.
-	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	// DrawIndexedInstanced parameters.
 	UINT IndexCount = 0;
@@ -76,15 +77,9 @@ private:
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMaterialCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
-
-	//step5
 	void LoadTextures();
-
 	void BuildRootSignature();
-
-	//step9
 	void BuildDescriptorHeaps();
-
 	void BuildShadersAndInputLayout();
 	void BuildShapeGeometry();
 	void BuildPSOs();
@@ -93,7 +88,6 @@ private:
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
-	//step20
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 private:
@@ -105,14 +99,10 @@ private:
 	UINT mCbvSrvDescriptorSize = 0;
 
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-
-	//step11
 	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
-
-	//step7
 	std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
@@ -186,14 +176,9 @@ bool CrateApp::Initialize()
 	// so we have to query this information.
 	mCbvSrvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	//step6
 	LoadTextures();
-
 	BuildRootSignature();
-
-	//step10
 	BuildDescriptorHeaps();
-
 	BuildShadersAndInputLayout();
 	BuildShapeGeometry();
 	BuildMaterials();
@@ -518,7 +503,6 @@ void CrateApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-//step12
 //Once a texture resource is created, we need to create an SRV descriptor to it which we
 //can set to a root signature parameter slot for use by the shader programs.
 void CrateApp::BuildDescriptorHeaps()
@@ -572,8 +556,6 @@ void CrateApp::BuildShadersAndInputLayout()
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		//step3
-		//The texture coordinates determine what part of the texture gets mapped on the triangles.
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 }
@@ -584,9 +566,7 @@ void CrateApp::BuildShapeGeometry()
 	GeometryGenerator::MeshData box; 
 
 
-	//
 	// Create the vertices.
-	//
 
 	GeometryGenerator::Vertex v[4];
 
@@ -728,14 +708,13 @@ void CrateApp::BuildMaterials()
 	mMaterials["woodCrate"] = std::move(woodCrate);
 }
 
-//step14
 void CrateApp::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItem>();
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Mat = mMaterials["woodCrate"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
-	boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
@@ -777,7 +756,6 @@ void CrateApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
 	}
 }
 
-//step21
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> CrateApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front

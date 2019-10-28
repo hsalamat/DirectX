@@ -20,7 +20,6 @@
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
 
-//step14
 Texture2D    gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap : register(s0);
@@ -79,7 +78,6 @@ struct VertexIn
 {
 	float3 PosL    : POSITION;
     float3 NormalL : NORMAL;
-    //step2
 	float2 TexC    : TEXCOORD;
 };
 
@@ -88,7 +86,6 @@ struct VertexOut
 	float4 PosH    : SV_POSITION;
     float3 PosW    : POSITION;
     float3 NormalW : NORMAL;
-    //step15
 	float2 TexC    : TEXCOORD;
 };
 
@@ -107,12 +104,7 @@ VertexOut VS(VertexIn vin)
     vout.PosH = mul(posW, gViewProj);
 	
 	// Output vertex attributes for interpolation across triangle.
-    //step16:Texture coordinates represent 2D points in the texture plane. Thus, we can translate,
-    //rotate, and scale them like we could any otherpoint.
-    //gTexTransform and gMatTransform are variables used in the vertex shader to transform the input texture coordinates
-    //We use two separate texture transformation matrices gTexTransform and gMatTransform .
-    //Because sometimes it makes more sense for the material to transform the textures (for animated materials like water), but sometimes it makes more sense for the texture transform to be a property of the object.
-
+  
     float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
     vout.TexC = mul(texC, gMatTransform).xy;
 
@@ -121,16 +113,13 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    //step17: we add a diffuse albedo texture map to specify the diffuse albedo
+    //we add a diffuse albedo texture map to specify the diffuse albedo
     //component of our material
 
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamPointWrap, pin.TexC) * gDiffuseAlbedo;
 
     //remove the texture
      diffuseAlbedo =  gDiffuseAlbedo;
-
-    //float diffuseAlbedo2 = float4(0.5f, 0.5f, 1.0f, 1.0f);
-    //float4 diffuseAlbedo = gDiffuseMap.Sample(gsamPointWrap, pin.TexC) * diffuseAlbedo2;
 
     // Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);

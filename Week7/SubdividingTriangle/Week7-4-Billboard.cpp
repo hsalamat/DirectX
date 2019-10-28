@@ -1,5 +1,6 @@
 //***************************************************************************************
 //  Billboard. We expand each point into a quad (4 vertices) using Geometry shader
+//The input primitive is a point. The output is a triangle strip.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"

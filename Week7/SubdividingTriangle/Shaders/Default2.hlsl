@@ -20,7 +20,6 @@
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
 
-//step14
 Texture2D    gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap : register(s0);
@@ -29,8 +28,6 @@ SamplerState gsamLinearWrap : register(s2);
 SamplerState gsamLinearClamp : register(s3);
 SamplerState gsamAnisotropicWrap : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
-
-
 
 
 // Constant data that varies per object.
@@ -111,22 +108,15 @@ VertexOut VS(VertexIn vin)
 
 
 
-
-
-
-
 float4 PS(GeoOut pin) : SV_Target
 {
-    //step17: we add a diffuse albedo texture map to specify the diffuse albedo
+    //we add a diffuse albedo texture map to specify the diffuse albedo
     //component of our material
 
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamPointWrap, pin.TexC) * gDiffuseAlbedo;
 
     //remove the texture
-     diffuseAlbedo =  gDiffuseAlbedo;
-
-    //float diffuseAlbedo2 = float4(0.5f, 0.5f, 1.0f, 1.0f);
-    //float4 diffuseAlbedo = gDiffuseMap.Sample(gsamPointWrap, pin.TexC) * diffuseAlbedo2;
+     //diffuseAlbedo =  gDiffuseAlbedo;
 
     // Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);

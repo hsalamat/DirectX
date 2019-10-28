@@ -1,5 +1,5 @@
 //***************************************************************************************
-// CrateApp.cpp 
+// We are using geometry shader to subdivide our pyramid.  
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -76,15 +76,9 @@ private:
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMaterialCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
-
-	//step5
 	void LoadTextures();
-
 	void BuildRootSignature();
-
-	//step9
 	void BuildDescriptorHeaps();
-
 	void BuildShadersAndInputLayout();
 	void BuildShapeGeometry();
 	void BuildPSOs();
@@ -93,7 +87,6 @@ private:
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
-	//step20
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 private:
@@ -106,13 +99,10 @@ private:
 
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
-	//step11
 	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
-
-	//step7
 	std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
@@ -186,12 +176,8 @@ bool CrateApp::Initialize()
 	// so we have to query this information.
 	mCbvSrvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	//step6
 	LoadTextures();
-
 	BuildRootSignature();
-
-	//step10
 	BuildDescriptorHeaps();
 
 	BuildShadersAndInputLayout();
@@ -462,12 +448,11 @@ void CrateApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-//step 8
 void CrateApp::LoadTextures()
 {
 	auto woodCrateTex = std::make_unique<Texture>();
 	woodCrateTex->Name = "woodCrateTex";
-	woodCrateTex->Filename = L"../../Textures/WoodCrate01.dds";
+	woodCrateTex->Filename = L"../../Textures/ice.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), woodCrateTex->Filename.c_str(),
 		woodCrateTex->Resource, woodCrateTex->UploadHeap));
@@ -477,7 +462,6 @@ void CrateApp::LoadTextures()
 
 void CrateApp::BuildRootSignature()
 {
-	//step22
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
@@ -518,7 +502,6 @@ void CrateApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-//step12
 //Once a texture resource is created, we need to create an SRV descriptor to it which we
 //can set to a root signature parameter slot for use by the shader programs.
 void CrateApp::BuildDescriptorHeaps()
@@ -697,7 +680,7 @@ void CrateApp::BuildPSOs()
 		mShaders["opaquePS"]->GetBufferSize()
 	};
 	opaquePsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 
 	opaquePsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
@@ -733,14 +716,13 @@ void CrateApp::BuildMaterials()
 	mMaterials["woodCrate"] = std::move(woodCrate);
 }
 
-//step14
 void CrateApp::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItem>();
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Mat = mMaterials["woodCrate"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
-	boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
@@ -782,7 +764,6 @@ void CrateApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
 	}
 }
 
-//step21
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> CrateApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
