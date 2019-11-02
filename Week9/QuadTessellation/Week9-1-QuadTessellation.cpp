@@ -1,7 +1,6 @@
 //***************************************************************************************
-// Box Using Frame Resources
+// Quad Tessellation
 //
-// Hold down '1' key to view scene in wireframe mode.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
