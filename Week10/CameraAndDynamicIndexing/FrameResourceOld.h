@@ -8,10 +8,6 @@ struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
-	UINT     MaterialIndex;
-	UINT     ObjPad0;
-	UINT     ObjPad1;
-	UINT     ObjPad2;
 };
 
 struct PassConstants
@@ -40,23 +36,6 @@ struct PassConstants
     Light Lights[MaxLights];
 };
 
-struct MaterialData
-{
-	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
-	float Roughness = 64.0f;
-
-	// Used in texture mapping.
-	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
-
-	//Add a MaterialIndex field to our object constant buffer to specify the index of the material 
-	//to use for each draw call. 
-	UINT DiffuseMapIndex = 0;
-	UINT MaterialPad0;
-	UINT MaterialPad1;
-	UINT MaterialPad2;
-};
-
 struct Vertex
 {
     DirectX::XMFLOAT3 Pos;
@@ -66,14 +45,14 @@ struct Vertex
 
 // Stores the resources needed for the CPU to build the command lists
 // for a frame.  
-struct FrameResource
+struct FrameResourceOld
 {
 public:
     
-    FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);
-    FrameResource(const FrameResource& rhs) = delete;
-    FrameResource& operator=(const FrameResource& rhs) = delete;
-    ~FrameResource();
+	FrameResourceOld(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);
+	FrameResourceOld(const FrameResourceOld& rhs) = delete;
+	FrameResourceOld& operator=(const FrameResourceOld& rhs) = delete;
+    ~FrameResourceOld();
 
     // We cannot reset the allocator until the GPU is done processing the commands.
     // So each frame needs their own allocator.
@@ -81,13 +60,13 @@ public:
 
     // We cannot update a cbuffer until the GPU is done processing the commands
     // that reference it.  So each frame needs their own cbuffers.
+   // std::unique_ptr<UploadBuffer<FrameConstants>> FrameCB = nullptr;
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
+    std::unique_ptr<UploadBuffer<MaterialConstants>> MaterialCB = nullptr;
     std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
 
-	std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
 
     // Fence value to mark commands up to this fence point.  This lets us
     // check if these frame resources are still in use by the GPU.
     UINT64 Fence = 0;
 };
-
