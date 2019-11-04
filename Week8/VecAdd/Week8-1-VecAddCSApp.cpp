@@ -1,12 +1,10 @@
 //***************************************************************************************
-// VecAddCSApp.cpp 
+// VecAddCSApp.cpp how to add two sets of 32 vectors using 32 threads in the compute shader
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
-#include "../../Common/GeometryGenerator.h"
-#include "FrameResource.h"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -15,63 +13,22 @@ using namespace DirectX::PackedVector;
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 
-const int gNumFrameResources = 3;
 
+//step1
 struct Data
 {
 	XMFLOAT3 v1;
 	XMFLOAT2 v2;
 };
 
-// Lightweight structure stores parameters to draw a shape.  This will
-// vary from app-to-app.
-struct RenderItem
-{
-	RenderItem() = default;
 
-    // World matrix of the shape that describes the object's local space
-    // relative to the world space, which defines the position, orientation,
-    // and scale of the object in the world.
-    XMFLOAT4X4 World = MathHelper::Identity4x4();
-
-	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
-
-	// Dirty flag indicating the object data has changed and we need to update the constant buffer.
-	// Because we have an object cbuffer for each FrameResource, we have to apply the
-	// update to each FrameResource.  Thus, when we modify obect data we should set 
-	// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
-	int NumFramesDirty = gNumFrameResources;
-
-	// Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-	UINT ObjCBIndex = -1;
-
-	Material* Mat = nullptr;
-	MeshGeometry* Geo = nullptr;
-
-    // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-    // DrawIndexedInstanced parameters.
-    UINT IndexCount = 0;
-    UINT StartIndexLocation = 0;
-    int BaseVertexLocation = 0;
-};
-
-enum class RenderLayer : int
-{
-	Opaque = 0,
-	Transparent,
-	AlphaTested,
-	Count
-};
-
-class VecAddCSApp : public D3DApp
+class VecAddApp : public D3DApp
 {
 public:
-    VecAddCSApp(HINSTANCE hInstance);
-    VecAddCSApp(const VecAddCSApp& rhs) = delete;
-    VecAddCSApp& operator=(const VecAddCSApp& rhs) = delete;
-    ~VecAddCSApp();
+    VecAddApp(HINSTANCE hInstance);
+    VecAddApp(const VecAddApp& rhs) = delete;
+    VecAddApp& operator=(const VecAddApp& rhs) = delete;
+    ~VecAddApp();
 
     virtual bool Initialize()override;
 
@@ -80,44 +37,24 @@ private:
     virtual void Update(const GameTimer& gt)override;
     virtual void Draw(const GameTimer& gt)override;
 
+	//step2
 	void DoComputeWork();
 
 	void BuildBuffers();
     void BuildRootSignature();
     void BuildShadersAndInputLayout();
     void BuildPSOs();
-    void BuildFrameResources();
-
-	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
 private:
 
-    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-    FrameResource* mCurrFrameResource = nullptr;
-    int mCurrFrameResourceIndex = 0;
-
-    UINT mCbvSrvDescriptorSize = 0;
-
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
-	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
-
-	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
-	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
-	std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
 	std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;
 
     std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
- 
-    RenderItem* mWavesRitem = nullptr;
 
-	// List of all the render items.
-	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
-
-	// Render items divided by PSO.
-	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
-
+	//step3: we have 2 sets of 32 vectors that we want to add. Same operation for all vectors!
 	const int NumDataElements = 32;
 
 	ComPtr<ID3D12Resource> mInputBufferA = nullptr;
@@ -127,17 +64,6 @@ private:
 	ComPtr<ID3D12Resource> mOutputBuffer = nullptr;
 	ComPtr<ID3D12Resource> mReadBackBuffer = nullptr;
 
-    PassConstants mMainPassCB;
-
-	XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT4X4 mView = MathHelper::Identity4x4();
-	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
-
-    float mTheta = 1.5f*XM_PI;
-    float mPhi = XM_PIDIV2 - 0.1f;
-    float mRadius = 50.0f;
-
-    POINT mLastMousePos;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -150,10 +76,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
-        VecAddCSApp theApp(hInstance);
+        VecAddApp theApp(hInstance);
         if(!theApp.Initialize())
             return 0;
-
+		//step 3: we don't need to have a game loop
        // return theApp.Run();
 		return 0;
     }
@@ -164,18 +90,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     }
 }
 
-VecAddCSApp::VecAddCSApp(HINSTANCE hInstance)
+VecAddApp::VecAddApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
 }
 
-VecAddCSApp::~VecAddCSApp()
+VecAddApp::~VecAddApp()
 {
     if(md3dDevice != nullptr)
         FlushCommandQueue();
 }
 
-bool VecAddCSApp::Initialize()
+bool VecAddApp::Initialize()
 {
     if(!D3DApp::Initialize())
         return false;
@@ -183,14 +109,10 @@ bool VecAddCSApp::Initialize()
     // Reset the command list to prep for initialization commands.
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
-    // Get the increment size of a descriptor in this heap type.  This is hardware specific, 
-	// so we have to query this information.
-    mCbvSrvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
+	//step4
 	BuildBuffers();
     BuildRootSignature();
     BuildShadersAndInputLayout();
-    BuildFrameResources();
     BuildPSOs();
 
     // Execute the initialization commands.
@@ -206,86 +128,20 @@ bool VecAddCSApp::Initialize()
     return true;
 }
  
-void VecAddCSApp::OnResize()
+void VecAddApp::OnResize()
 {
-    D3DApp::OnResize();
-
-    // The window resized, so update the aspect ratio and recompute the projection matrix.
-    //XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
-    //XMStoreFloat4x4(&mProj, P);
 }
 
-void VecAddCSApp::Update(const GameTimer& gt)
+void VecAddApp::Update(const GameTimer& gt)
 {
-    // Cycle through the circular frame resource array.
-    mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
-    mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
-
-    // Has the GPU finished processing the commands of the current frame resource?
-    // If not, wait until the GPU has completed commands up to this fence point.
-    if(mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
-    {
-        HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-        ThrowIfFailed(mFence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
-        WaitForSingleObject(eventHandle, INFINITE);
-        CloseHandle(eventHandle);
-    }
 }
 
-void VecAddCSApp::Draw(const GameTimer& gt)
+void VecAddApp::Draw(const GameTimer& gt)
 {
-    auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
-
-    // Reuse the memory associated with command recording.
-    // We can only reset when the associated command lists have finished execution on the GPU.
-    ThrowIfFailed(cmdListAlloc->Reset());
-
-    // A command list can be reset after it has been added to the command queue via ExecuteCommandList.
-    // Reusing the command list reuses memory.
-    ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
-
-    mCommandList->RSSetViewports(1, &mScreenViewport);
-    mCommandList->RSSetScissorRects(1, &mScissorRect);
-
-    // Indicate a state transition on the resource usage.
-//	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
-//		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-    // Clear the back buffer and depth buffer.
-    mCommandList->ClearRenderTargetView(CurrentBackBufferView(), (float*)&mMainPassCB.FogColor, 0, nullptr);
-    mCommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-
-    // Specify the buffers we are going to render to.
-    mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-
-
-
-    // Indicate a state transition on the resource usage.
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
-
-    // Done recording commands.
-    ThrowIfFailed(mCommandList->Close());
-
-    // Add the command list to the queue for execution.
-    ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
-    mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-
-    // Swap the back and front buffers
-    ThrowIfFailed(mSwapChain->Present(0, 0));
-	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
-
-    // Advance the fence value to mark commands up to this fence point.
-    mCurrFrameResource->Fence = ++mCurrentFence;
-
-    // Add an instruction to the command queue to set a new fence point. 
-    // Because we are on the GPU timeline, the new fence point won't be 
-    // set until the GPU finishes processing all the commands prior to this Signal().
-    mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
- 
-void VecAddCSApp::DoComputeWork()
+ //step 5
+void VecAddApp::DoComputeWork()
 {
 	// Reuse the memory associated with command recording.
 	// We can only reset when the associated command lists have finished execution on the GPU.
@@ -311,18 +167,9 @@ void VecAddCSApp::DoComputeWork()
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutputBuffer.Get(), 
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_SOURCE));
 
-
-	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mReadBackBuffer.Get(),
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST));
-
-
 	//We need to read the data back from the GPU after computer shader does its calculation
 	//mCommandList->CopyResource(Destination: CPUData, Source: GPUData);
 	mCommandList->CopyResource(mReadBackBuffer.Get(), mOutputBuffer.Get());
-
-
-	//mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutputBuffer.Get(),
-	//	D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COMMON));
 
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mOutputBuffer.Get(),
 		D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
@@ -353,18 +200,18 @@ void VecAddCSApp::DoComputeWork()
 	mReadBackBuffer->Unmap(0, nullptr);
 }
 
-void VecAddCSApp::BuildBuffers()
+void VecAddApp::BuildBuffers()
 {
 	// Generate some data.
 	std::vector<Data> dataA(NumDataElements);
 	std::vector<Data> dataB(NumDataElements);
 	for(int i = 0; i < NumDataElements; ++i)
 	{
-		dataA[i].v1 = XMFLOAT3(i, i, i);
-		dataA[i].v2 = XMFLOAT2(i, 0);
+		dataA[i].v1 = XMFLOAT3((float)i, (float)i, (float)i);
+		dataA[i].v2 = XMFLOAT2((float)i, 0.0f);
 
-		dataB[i].v1 = XMFLOAT3(-i, i, 0.0f);
-		dataB[i].v2 = XMFLOAT2(0, -i);
+		dataB[i].v1 = XMFLOAT3(-(float)i, (float)i, 0.0f);
+		dataB[i].v2 = XMFLOAT2(0.0f, -(float)i);
 	}
 
 	UINT64 byteSize = dataA.size()*sizeof(Data);
@@ -406,7 +253,7 @@ void VecAddCSApp::BuildBuffers()
 		IID_PPV_ARGS(&mReadBackBuffer)));
 }
 
-void VecAddCSApp::BuildRootSignature()
+void VecAddApp::BuildRootSignature()
 {
     // Root parameter can be a table, root descriptor or root constants.
     CD3DX12_ROOT_PARAMETER slotRootParameter[3];
@@ -441,12 +288,12 @@ void VecAddCSApp::BuildRootSignature()
 }
 
 
-void VecAddCSApp::BuildShadersAndInputLayout()
+void VecAddApp::BuildShadersAndInputLayout()
 {
 	mShaders["vecAddCS"] = d3dUtil::CompileShader(L"Shaders\\VecAdd.hlsl", nullptr, "CS", "cs_5_1");
 }
 
-void VecAddCSApp::BuildPSOs()
+void VecAddApp::BuildPSOs()
 {
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePsoDesc = {};
 	computePsoDesc.pRootSignature = mRootSignature.Get();
@@ -459,13 +306,5 @@ void VecAddCSApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateComputePipelineState(&computePsoDesc, IID_PPV_ARGS(&mPSOs["vecAdd"])));
 }
 
-void VecAddCSApp::BuildFrameResources()
-{
-    for(int i = 0; i < gNumFrameResources; ++i)
-    {
-        mFrameResources.push_back(std::make_unique<FrameResource>(md3dDevice.Get(),
-            1));
-    }
-}
 
 
