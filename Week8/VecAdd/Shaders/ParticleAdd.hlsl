@@ -4,7 +4,8 @@ struct Particle
     float3 Velocity;
     float3 Acceleration;
 };
-float TimeStep = 1.0f / 60.0f;
+//declare the type as static const, otherwise this would override it from the app via constant buffer.
+static const float TimeStep = 1.0f / 1.0f;
 ConsumeStructuredBuffer<Particle> gInput : register(u0);
 AppendStructuredBuffer<Particle> gOutput : register(u1);
 [numthreads(16, 16, 1)]
@@ -17,6 +18,3 @@ void CS()
 // Append normalized vector to output buffer.
     gOutput.Append(p);
 }
-
-
-

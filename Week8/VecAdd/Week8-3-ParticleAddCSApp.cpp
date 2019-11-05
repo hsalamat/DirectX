@@ -42,11 +42,15 @@ private:
 	void BuildBuffers();
     void BuildRootSignature();
     void BuildShadersAndInputLayout();
+	void BuildUnorderedAcceeViews();
+	void BuildDescriptorHeaps();
     void BuildPSOs();
 
 private:
 
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
+
+	ComPtr<ID3D12DescriptorHeap> mUavHeap = nullptr;
 
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
 	std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;
@@ -58,7 +62,6 @@ private:
 	ComPtr<ID3D12Resource> mInputBufferA = nullptr;
 	ComPtr<ID3D12Resource> mInputUploadBufferA = nullptr;
 	ComPtr<ID3D12Resource> mOutputBuffer = nullptr;
-	ComPtr<ID3D12Resource> mOutputBuffer1 = nullptr;
 	ComPtr<ID3D12Resource> mReadBackBuffer = nullptr;
 
 };
@@ -110,6 +113,8 @@ bool ParticleAddCSApp::Initialize()
 	BuildBuffers();
     BuildRootSignature();
     BuildShadersAndInputLayout();
+	BuildDescriptorHeaps();
+	BuildUnorderedAcceeViews();
     BuildPSOs();
 
     // Execute the initialization commands.
@@ -148,10 +153,21 @@ void ParticleAddCSApp::DoComputeWork()
 	// Reusing the command list reuses memory.
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSOs["particleAdd"].Get()));
 
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mUavHeap.Get() };
+	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+
 	mCommandList->SetComputeRootSignature(mRootSignature.Get());
 
-	mCommandList->SetComputeRootUnorderedAccessView(0, mInputBufferA->GetGPUVirtualAddress());
-	mCommandList->SetComputeRootUnorderedAccessView(1, mOutputBuffer->GetGPUVirtualAddress());
+	//mCommandList->SetComputeRootUnorderedAccessView(0, mInputBufferA->GetGPUVirtualAddress());
+	//mCommandList->SetComputeRootUnorderedAccessView(1, mOutputBuffer->GetGPUVirtualAddress());
+
+	int passUavIndex = 0;
+	auto passUavHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mUavHeap->GetGPUDescriptorHandleForHeapStart());
+
+	mCommandList->SetComputeRootDescriptorTable(0, passUavHandle);  //mInputBufferA->GetGPUVirtualAddress()
+	passUavHandle.Offset(passUavIndex, mCbvSrvUavDescriptorSize);
+	mCommandList->SetComputeRootDescriptorTable(1, passUavHandle); //mOutputBuffer->GetGPUVirtualAddress()
  
 	mCommandList->Dispatch(1, 1, 1);
 
@@ -179,7 +195,7 @@ void ParticleAddCSApp::DoComputeWork()
 	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	// Wait for the work to finish.
-	FlushCommandQueue();
+	//FlushCommandQueue();
 
 	// Map the data so we can read it on CPU.
 	Particle* mappedData = nullptr;
@@ -208,17 +224,6 @@ void ParticleAddCSApp::BuildBuffers()
 		dataA[i].Velocity = XMFLOAT3(10.0f, 10.0f, 0);
 	}
 
-
-	std::ofstream fout("inputs.txt");
-	fout << "Acceleration(x,y,z), Position(x,y,z), Velocity(x,y,z)" << std::endl;
-	for (int i = 0; i < NumDataElements; ++i)
-	{
-		fout << "(" << dataA[i].Acceleration.x << ", " << dataA[i].Acceleration.y << ", " << dataA[i].Acceleration.z <<
-			", " << dataA[i].Position.x << ", " << dataA[i].Position.y << ", " << dataA[i].Position.z <<
-			", " << dataA[i].Velocity.x << ", " << dataA[i].Velocity.y << ", " << dataA[i].Velocity.z << ")" << std::endl;
-	}
-
-
 	UINT64 byteSize = dataA.size()*sizeof(Particle);
 
 	// Create some buffers to be used as SRV.
@@ -230,7 +235,7 @@ void ParticleAddCSApp::BuildBuffers()
 	//	mInputUploadBufferA);
 
 
-	// Create the actual mInputBufferA buffer resource.
+	// Create the actual default buffer resource.
 	ThrowIfFailed(md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
@@ -239,7 +244,7 @@ void ParticleAddCSApp::BuildBuffers()
 		nullptr,
 		IID_PPV_ARGS(&mInputBufferA)));
 
-	// In order to copy CPU memory data into our mInputBufferA buffer, we need to create
+	// In order to copy CPU memory data into our default buffer, we need to create
 	// an intermediate upload heap. 
 	ThrowIfFailed(md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -250,13 +255,13 @@ void ParticleAddCSApp::BuildBuffers()
 		IID_PPV_ARGS(mInputUploadBufferA.GetAddressOf())));
 
 
-	// Describe the data we want to copy into the mInputBufferA buffer.
+	// Describe the data we want to copy into the default buffer.
 	D3D12_SUBRESOURCE_DATA subResourceData = {};
 	subResourceData.pData = dataA.data();
 	subResourceData.RowPitch = byteSize;
 	subResourceData.SlicePitch = subResourceData.RowPitch;
 
-	// Schedule to copy the data to the mInputBufferA buffer resource.  At a high level, the helper function UpdateSubresources
+	// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources
 	// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,
 	// the intermediate upload heap data will be copied to mBuffer.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mInputBufferA.Get(),
@@ -267,6 +272,14 @@ void ParticleAddCSApp::BuildBuffers()
 
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mInputBufferA.Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
+
+
+	/*D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_APPEND;
+	uavDesc.Buffer.NumElements = mNumElements;*/
 
 
 	// Create the buffer that will be a UAV.
@@ -295,12 +308,18 @@ void ParticleAddCSApp::BuildRootSignature()
 {
 
 
-    // Root parameter can be a table, root descriptor or root constants.
-    CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	CD3DX12_DESCRIPTOR_RANGE uavTable0;
+	uavTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
 
-	// Perfomance TIP: Order from most frequent to least frequent.
-	slotRootParameter[0].InitAsUnorderedAccessView(0);
-    slotRootParameter[1].InitAsUnorderedAccessView(1);
+	CD3DX12_DESCRIPTOR_RANGE uavTable1;
+	uavTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+
+	// Root parameter can be a table, root descriptor or root constants.
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+
+	// Create root CBVs.
+	slotRootParameter[0].InitAsDescriptorTable(1, &uavTable0);
+	slotRootParameter[1].InitAsDescriptorTable(1, &uavTable1);
 
 
     // A root signature is an array of root parameters.
@@ -348,5 +367,124 @@ void ParticleAddCSApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateComputePipelineState(&computePsoDesc, IID_PPV_ARGS(&mPSOs["particleAdd"])));
 }
 
+
+void ParticleAddCSApp::BuildDescriptorHeaps()
+
+{
+
+	D3D12_DESCRIPTOR_HEAP_DESC uavHeapDesc;
+
+	uavHeapDesc.NumDescriptors = 2;
+
+	uavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	uavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+	uavHeapDesc.NodeMask = 0;
+
+	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&uavHeapDesc, IID_PPV_ARGS(&mUavHeap)));
+
+}
+
+
+void ParticleAddCSApp::BuildUnorderedAcceeViews()
+{
+
+	//To do
+	// Create the unordered access views (UAVs) that store the results of the compute work.
+	//CD3DX12_CPU_DESCRIPTOR_HANDLE processedCommandsHandle(mUavHeap->GetCPUDescriptorHandleForHeapStart(), ProcessedCommandsOffset, m_cbvSrvUavDescriptorSize);
+	//for (UINT frame = 0; frame < FrameCount; frame++)
+	//{
+	//	// Allocate a buffer large enough to hold all of the indirect commands
+	//	// for a single frame as well as a UAV counter.
+	//	commandBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(CommandBufferSizePerFrame + sizeof(UINT), D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+	//	ThrowIfFailed(m_device->CreateCommittedResource(
+	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&commandBufferDesc,
+	//		D3D12_RESOURCE_STATE_COPY_DEST,
+	//		nullptr,
+	//		IID_PPV_ARGS(&m_processedCommandBuffers[frame])));
+
+	//	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	//	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	//	uavDesc.Buffer.FirstElement = 0;
+	//	uavDesc.Buffer.NumElements = TriangleCount;
+	//	uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
+	//	uavDesc.Buffer.CounterOffsetInBytes = CommandBufferSizePerFrame;
+	//	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+	//	m_device->CreateUnorderedAccessView(
+	//		m_processedCommandBuffers[frame].Get(),
+	//		m_processedCommandBuffers[frame].Get(),
+	//		&uavDesc,
+	//		processedCommandsHandle);
+
+	//	processedCommandsHandle.Offset(CbvSrvUavDescriptorCountPerFrame, m_cbvSrvUavDescriptorSize);
+	//}
+
+	//// Allocate a buffer that can be used to reset the UAV counters and initialize it to 0.
+	//ThrowIfFailed(m_device->CreateCommittedResource(
+	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
+	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+
+	//	nullptr,
+	//	IID_PPV_ARGS(&m_processedCommandBufferCounterReset)));
+
+	//UINT8* pMappedCounterReset = nullptr;
+	//CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
+	//ThrowIfFailed(m_processedCommandBufferCounterReset->Map(0, &readRange, reinterpret_cast<void**>(&pMappedCounterReset)));
+	//ZeroMemory(pMappedCounterReset, sizeof(UINT));
+	//m_processedCommandBufferCounterReset->Unmap(0, nullptr);
+
+
+	//***************************************************************************************
+
+
+	//To be done
+
+
+			//D3D12_GPU_VIRTUAL_ADDRESS uavAddress = mInputBufferA->GetGPUVirtualAddress();
+
+			//// Offset to next uav.
+			//uavAddress += 9216;
+
+			//// Offset to the object cbv in the descriptor heap.
+			//int heapIndex = 0 ;
+
+			////we can get a handle to the first descriptor in a heap with the ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart
+			//auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mUavHeap->GetCPUDescriptorHandleForHeapStart());
+
+
+			//D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			//uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			//uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			//uavDesc.Buffer.FirstElement = 0;
+			//uavDesc.Buffer.NumElements = 1;
+			//uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+			//md3dDevice->CreateUnorderedAccessView(
+			//	mInputBufferA.Get(),
+			//	mInputBufferA.Get(),
+			//	&uavDesc,
+			//	handle);
+
+			////our heap has more than one descriptor,we need to know the size to increment in the heap to get to the next descriptor
+			////This is hardware specific, so we have to query this information from the device, and it depends on
+			////the heap type.Recall that our D3DApp class caches this information: 	mCbvSrvUavDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			//handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
+
+
+			//md3dDevice->CreateUnorderedAccessView(
+			//	mOutputBuffer.Get(),
+			//	mOutputBuffer.Get(),
+			//	&uavDesc,
+			//	handle);
+
+	
+}
 
 
