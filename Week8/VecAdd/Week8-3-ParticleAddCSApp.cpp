@@ -386,13 +386,13 @@ void ParticleAddCSApp::BuildDescriptors()
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 	uavDesc.Buffer.FirstElement = 0;
 	uavDesc.Buffer.NumElements = 256;
-	//uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
-	//uavDesc.Buffer.CounterOffsetInBytes = CommandBufferSizePerFrame;
+	uavDesc.Buffer.StructureByteStride = 36;
+	uavDesc.Buffer.CounterOffsetInBytes = 9216;
 	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
 
-	md3dDevice->CreateUnorderedAccessView(mInputBufferA.Get(), nullptr, &uavDesc, hDescriptor);
-	md3dDevice->CreateUnorderedAccessView(mOutputBuffer.Get(), nullptr, &uavDesc, hDescriptor.Offset(1, mCbvSrvUavDescriptorSize));
+	md3dDevice->CreateUnorderedAccessView(mInputBufferA.Get(), mInputBufferA.Get(), &uavDesc, hDescriptor);
+	md3dDevice->CreateUnorderedAccessView(mOutputBuffer.Get(), mOutputBuffer.Get(), &uavDesc, hDescriptor.Offset(1, mCbvSrvUavDescriptorSize));
 
 	//To do
 	// Create the unordered access views (UAVs) that store the results of the compute work.
@@ -446,47 +446,6 @@ void ParticleAddCSApp::BuildDescriptors()
 
 
 	//***************************************************************************************
-
-
-	//To be done
-
-
-			//D3D12_GPU_VIRTUAL_ADDRESS uavAddress = mInputBufferA->GetGPUVirtualAddress();
-
-			//// Offset to next uav.
-			//uavAddress += 9216;
-
-			//// Offset to the object cbv in the descriptor heap.
-			//int heapIndex = 0 ;
-
-			////we can get a handle to the first descriptor in a heap with the ID3D12DescriptorHeap::GetCPUDescriptorHandleForHeapStart
-			//auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mUavHeap->GetCPUDescriptorHandleForHeapStart());
-
-
-			//D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-			//uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-			//uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-			//uavDesc.Buffer.FirstElement = 0;
-			//uavDesc.Buffer.NumElements = 1;
-			//uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-
-			//md3dDevice->CreateUnorderedAccessView(
-			//	mInputBufferA.Get(),
-			//	mInputBufferA.Get(),
-			//	&uavDesc,
-			//	handle);
-
-			////our heap has more than one descriptor,we need to know the size to increment in the heap to get to the next descriptor
-			////This is hardware specific, so we have to query this information from the device, and it depends on
-			////the heap type.Recall that our D3DApp class caches this information: 	mCbvSrvUavDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-			//handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);
-
-
-			//md3dDevice->CreateUnorderedAccessView(
-			//	mOutputBuffer.Get(),
-			//	mOutputBuffer.Get(),
-			//	&uavDesc,
-			//	handle);
 
 
 }
