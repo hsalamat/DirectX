@@ -1,5 +1,8 @@
 //***************************************************************************************
 // particleAddCSApp.cpp 
+////If pCounterResource is specified in the call to CreateUnorderedAccessView, then there is a counter associated with the UAV.
+// It will increment the counter when append is called and decrement the counter when consume is called.
+//So, in this program, I have 256 particles. Every particle is a structure of 36 bytes. I have two UAVs associated to the append and consume structures.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -203,6 +206,7 @@ void ParticleAddCSApp::DoComputeWork()
 
 	// Map the data so we can read it on CPU.
 	Particle* mappedData = nullptr;
+	CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
 	ThrowIfFailed(mReadBackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mappedData)));
 
 	std::ofstream fout("results.txt");
@@ -231,7 +235,7 @@ void ParticleAddCSApp::BuildBuffers()
 	UINT64 byteSize = dataA.size() * sizeof(Particle);
 
 
-	// Create the actual default buffer resource.
+	// Create the actual input buffer resource.
 	ThrowIfFailed(md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
@@ -384,69 +388,25 @@ void ParticleAddCSApp::BuildDescriptors()
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	uavDesc.Buffer.FirstElement = 0;
-	uavDesc.Buffer.NumElements = 256;
-	uavDesc.Buffer.StructureByteStride = 36;
-	uavDesc.Buffer.CounterOffsetInBytes = 9216;
+	uavDesc.Buffer.FirstElement = 0;  //The zero-based index of the first element to be accessed.
+	uavDesc.Buffer.NumElements = 256;  //Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.
+	uavDesc.Buffer.StructureByteStride = 36;  //The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer
+	uavDesc.Buffer.CounterOffsetInBytes = 4096; //CounterOffsetInBytes must be a multiple of 4096
 	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
 
 	md3dDevice->CreateUnorderedAccessView(mInputBufferA.Get(), mInputBufferA.Get(), &uavDesc, hDescriptor);
+
+
+	//D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc1 = {};
+	//uavDesc1.Format = DXGI_FORMAT_UNKNOWN;
+	//uavDesc1.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	//uavDesc1.Buffer.FirstElement = 0;  //The zero-based index of the first element to be accessed.
+	//uavDesc1.Buffer.NumElements = 1;  //Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.
+	//uavDesc1.Buffer.StructureByteStride = 36;  //The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer
+	//uavDesc1.Buffer.CounterOffsetInBytes = 4096; //CounterOffsetInBytes must be a multiple of 4096
+	//uavDesc1.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	md3dDevice->CreateUnorderedAccessView(mOutputBuffer.Get(), mOutputBuffer.Get(), &uavDesc, hDescriptor.Offset(1, mCbvSrvUavDescriptorSize));
-
-	//To do
-	// Create the unordered access views (UAVs) that store the results of the compute work.
-	//CD3DX12_CPU_DESCRIPTOR_HANDLE processedCommandsHandle(mUavHeap->GetCPUDescriptorHandleForHeapStart(), ProcessedCommandsOffset, m_cbvSrvUavDescriptorSize);
-	//for (UINT frame = 0; frame < FrameCount; frame++)
-	//{
-	//	// Allocate a buffer large enough to hold all of the indirect commands
-	//	// for a single frame as well as a UAV counter.
-	//	commandBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(CommandBufferSizePerFrame + sizeof(UINT), D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-	//	ThrowIfFailed(m_device->CreateCommittedResource(
-	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-	//		D3D12_HEAP_FLAG_NONE,
-	//		&commandBufferDesc,
-	//		D3D12_RESOURCE_STATE_COPY_DEST,
-	//		nullptr,
-	//		IID_PPV_ARGS(&m_processedCommandBuffers[frame])));
-
-	//	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-	//	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	//	uavDesc.Buffer.FirstElement = 0;
-	//	uavDesc.Buffer.NumElements = TriangleCount;
-	//	uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
-	//	uavDesc.Buffer.CounterOffsetInBytes = CommandBufferSizePerFrame;
-	//	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-
-	//	m_device->CreateUnorderedAccessView(
-	//		m_processedCommandBuffers[frame].Get(),
-	//		m_processedCommandBuffers[frame].Get(),
-	//		&uavDesc,
-	//		processedCommandsHandle);
-
-	//	processedCommandsHandle.Offset(CbvSrvUavDescriptorCountPerFrame, m_cbvSrvUavDescriptorSize);
-	//}
-
-	//// Allocate a buffer that can be used to reset the UAV counters and initialize it to 0.
-	//ThrowIfFailed(m_device->CreateCommittedResource(
-	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-	//	D3D12_HEAP_FLAG_NONE,
-	//	&CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
-	//	D3D12_RESOURCE_STATE_GENERIC_READ,
-
-	//	nullptr,
-	//	IID_PPV_ARGS(&m_processedCommandBufferCounterReset)));
-
-	//UINT8* pMappedCounterReset = nullptr;
-	//CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-	//ThrowIfFailed(m_processedCommandBufferCounterReset->Map(0, &readRange, reinterpret_cast<void**>(&pMappedCounterReset)));
-	//ZeroMemory(pMappedCounterReset, sizeof(UINT));
-	//m_processedCommandBufferCounterReset->Unmap(0, nullptr);
-
-
-	//***************************************************************************************
-
 
 }
 

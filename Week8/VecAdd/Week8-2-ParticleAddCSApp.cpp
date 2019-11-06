@@ -1,7 +1,10 @@
 //***************************************************************************************
-// particleAddCSApp.cpp 
-//this program has an error
-//https://gist.github.com/shorttermmem/a14ab1e8980d01ac36943d0f4a8117d9
+// particleAddCSApp.cpp using root UAV
+//you can't use append/consume buffers from root UAVs, they need to be descriptors in a descriptor table.
+//That's why you can't produce what you are looking for. 
+//Root UAVs don't have associated counters, and therefore cannot be used as append/consume buffers.
+//If pCounterResource is specified in the call to CreateUnorderedAccessView, then there is a counter associated with the UAV.
+//https://docs.microsoft.com/en-us/windows/win32/direct3d12/uav-counters
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
