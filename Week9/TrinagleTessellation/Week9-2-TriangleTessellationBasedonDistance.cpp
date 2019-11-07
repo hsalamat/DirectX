@@ -16,10 +16,10 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
+//Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
+//Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
 struct RenderItem
 {
 	RenderItem() = default;
@@ -81,16 +81,13 @@ private:
 	void BuildShadersAndInputLayout();
 	void BuildShapeGeometry();
 	void BuildPSOs();
-
-	//step5
 	void BuildFrameResources();
-
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
 private:
 
-	//step4: keep member variables to track the current frame resource :
+	//keep member variables to track the current frame resource :
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
@@ -109,7 +106,7 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	//step11: Our application will maintain lists of render items based on how they need to be
+	//Our application will maintain lists of render items based on how they need to be
 	//drawn; that is, render items that need different PSOs will be kept in different lists.
 
 	// Render items divided by PSO.
@@ -119,7 +116,7 @@ private:
 
 
 
-	//step12: this mMainPassCB stores constant data that is fixed over a given
+	//this mMainPassCB stores constant data that is fixed over a given
 	//rendering pass such as the eye position, the view and projection matrices, and information
 	//about the screen(render target) dimensions; it also includes game timing information,
 	//which is useful data to have access to in shader programs.
@@ -212,7 +209,7 @@ void TriangleTessellationApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-//step7: for CPU frame n, the algorithm
+//for CPU frame n, the algorithm
 //1. Cycle through the circular frame resource array.
 //2. Wait until the GPU has completed commands up to this fence point.
 //3. Update resources in mCurrFrameResource (like cbuffers).
@@ -303,12 +300,12 @@ void TriangleTessellationApp::Draw(const GameTimer& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 
-	//Step1:  we have been calling D3DApp::FlushCommandQueue at the end of every
+	//we have been calling D3DApp::FlushCommandQueue at the end of every
 	//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient
 	//For every frame, the CPU and GPU are idling at some point.
 	//	FlushCommandQueue();
 
-	//step9:  Advance the fence value to mark commands up to this fence point.
+	//Advance the fence value to mark commands up to this fence point.
 	mCurrFrameResource->Fence = ++mCurrentFence;
 
 	// Add an instruction to the command queue to set a new fence point. 
@@ -397,7 +394,7 @@ void TriangleTessellationApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-//step8: Update resources (cbuffers) in mCurrFrameResource
+//Update resources (cbuffers) in mCurrFrameResource
 void TriangleTessellationApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
@@ -523,7 +520,6 @@ void TriangleTessellationApp::BuildConstantBufferViews()
 
 void TriangleTessellationApp::BuildRootSignature()
 {
-	//step 15
 	//The resources that our shaders expect have changed; therefore, we need to update the
 	//root signature accordingly to take two descriptor tables(we need two tables because the
 	//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per

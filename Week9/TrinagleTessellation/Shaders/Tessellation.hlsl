@@ -2,11 +2,11 @@
 // Tessellation.hlsl 
 //The triangle vertices were processed by the VS. 
 //The Control Point Hull Shader gets a triangle as a patch with 3 CPs and simply passed it through to the Domain Shader. 
-//The constant hull shader set the edge and inside tessellation factor.
+//The Constant Hull Shader sets the edge and inside tessellation factors.
 //The Tessellation stage subdivides an equilateral triangle into smaller triangles and 
-//executed the Domain Shader for every generated vertex. In each Domain Shader invocation we can access 
+//execute the Domain Shader for every generated vertex. In each Domain Shader invocation we can access 
 //the barycentric coordinates (a.k.a Tessellation Coordinates) of the vertex in the 3D-float uvw. 
-//Since the barycentric coordinates within a triangle represent a weight combination of the 3 vertices,
+//Since the barycentric coordinates within a triangle represents a weight combination of the 3 vertices,
 //we can use it to interpolate all the attributes of the new vertex. 
 // The world space position for each new vertex is calculated. 
 // The homogenous position of new matrix is calculated by multiplying the world space position by view projection matrix

@@ -1,6 +1,7 @@
 //***************************************************************************************
-// Quad Tessellation
-//Use Right mouse button to zoom in and out
+// Triangle Tesselation
+//
+// Hold down '1' key to view scene in wireframe mode.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -51,13 +52,13 @@ struct RenderItem
 	int BaseVertexLocation = 0; //A value added to each index before reading a vertex from the vertex buffer.
 };
 
-class ShapesApp : public D3DApp
+class TriangleTessellationApp : public D3DApp
 {
 public:
-	ShapesApp(HINSTANCE hInstance);
-	ShapesApp(const ShapesApp& rhs) = delete;
-	ShapesApp& operator=(const ShapesApp& rhs) = delete;
-	~ShapesApp();
+	TriangleTessellationApp(HINSTANCE hInstance);
+	TriangleTessellationApp(const TriangleTessellationApp& rhs) = delete;
+	TriangleTessellationApp& operator=(const TriangleTessellationApp& rhs) = delete;
+	~TriangleTessellationApp();
 
 	virtual bool Initialize()override;
 
@@ -148,7 +149,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 	try
 	{
-		ShapesApp theApp(hInstance);
+		TriangleTessellationApp theApp(hInstance);
 		if (!theApp.Initialize())
 			return 0;
 
@@ -161,18 +162,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	}
 }
 
-ShapesApp::ShapesApp(HINSTANCE hInstance)
+TriangleTessellationApp::TriangleTessellationApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
 }
 
-ShapesApp::~ShapesApp()
+TriangleTessellationApp::~TriangleTessellationApp()
 {
 	if (md3dDevice != nullptr)
 		FlushCommandQueue();
 }
 
-bool ShapesApp::Initialize()
+bool TriangleTessellationApp::Initialize()
 {
 	if (!D3DApp::Initialize())
 		return false;
@@ -200,7 +201,7 @@ bool ShapesApp::Initialize()
 	return true;
 }
 
-void ShapesApp::OnResize()
+void TriangleTessellationApp::OnResize()
 {
 	D3DApp::OnResize();
 
@@ -214,7 +215,7 @@ void ShapesApp::OnResize()
 //2. Wait until the GPU has completed commands up to this fence point.
 //3. Update resources in mCurrFrameResource (like cbuffers).
 
-void ShapesApp::Update(const GameTimer& gt)
+void TriangleTessellationApp::Update(const GameTimer& gt)
 {
 	OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -239,7 +240,7 @@ void ShapesApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void ShapesApp::Draw(const GameTimer& gt)
+void TriangleTessellationApp::Draw(const GameTimer& gt)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -251,7 +252,7 @@ void ShapesApp::Draw(const GameTimer& gt)
 	// Reusing the command list reuses memory.
 	if (mIsWireframe)
 	{
-		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["opaque_wireframe"].Get()));
+		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["wireframe"].Get()));
 	}
 	else
 	{
@@ -281,6 +282,10 @@ void ShapesApp::Draw(const GameTimer& gt)
 	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+
+	DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+
+	mCommandList->SetPipelineState(mPSOs["wireframe"].Get());
 
 	DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
 
@@ -319,7 +324,7 @@ void ShapesApp::Draw(const GameTimer& gt)
 
 }
 
-void ShapesApp::OnMouseDown(WPARAM btnState, int x, int y)
+void TriangleTessellationApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
@@ -327,12 +332,12 @@ void ShapesApp::OnMouseDown(WPARAM btnState, int x, int y)
 	SetCapture(mhMainWnd);
 }
 
-void ShapesApp::OnMouseUp(WPARAM btnState, int x, int y)
+void TriangleTessellationApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
+void TriangleTessellationApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
@@ -364,7 +369,7 @@ void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void ShapesApp::OnKeyboardInput(const GameTimer& gt)
+void TriangleTessellationApp::OnKeyboardInput(const GameTimer& gt)
 {
 	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
 	//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
@@ -378,7 +383,7 @@ void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 		mIsWireframe = false;
 }
 
-void ShapesApp::UpdateCamera(const GameTimer& gt)
+void TriangleTessellationApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
@@ -395,7 +400,7 @@ void ShapesApp::UpdateCamera(const GameTimer& gt)
 }
 
 //Update resources (cbuffers) in mCurrFrameResource
-void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
+void TriangleTessellationApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for (auto& e : mAllRitems)
@@ -419,7 +424,7 @@ void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 
 //CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
 //rendering pass while the per object CBV needs to be set per render item
-void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
+void TriangleTessellationApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -447,7 +452,7 @@ void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void ShapesApp::BuildDescriptorHeaps()
+void TriangleTessellationApp::BuildDescriptorHeaps()
 {
 	UINT objCount = (UINT)mOpaqueRitems.size();
 
@@ -467,7 +472,7 @@ void ShapesApp::BuildDescriptorHeaps()
 		IID_PPV_ARGS(&mCbvHeap)));
 }
 
-void ShapesApp::BuildConstantBufferViews()
+void TriangleTessellationApp::BuildConstantBufferViews()
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -518,7 +523,7 @@ void ShapesApp::BuildConstantBufferViews()
 	}
 }
 
-void ShapesApp::BuildRootSignature()
+void TriangleTessellationApp::BuildRootSignature()
 {
 	//The resources that our shaders expect have changed; therefore, we need to update the
 	//root signature accordingly to take two descriptor tables(we need two tables because the
@@ -561,13 +566,15 @@ void ShapesApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void ShapesApp::BuildShadersAndInputLayout()
+void TriangleTessellationApp::BuildShadersAndInputLayout()
 {
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["blackPS"] = d3dUtil::CompileShader(L"Shaders\\PS3.hlsl", nullptr, "PS", "ps_5_1");
 
-	mShaders["tessHS"] = d3dUtil::CompileShader(L"Shaders\\Tessellation2.hlsl", nullptr, "HS", "hs_5_1");
-	mShaders["tessDS"] = d3dUtil::CompileShader(L"Shaders\\Tessellation2.hlsl", nullptr, "DS", "ds_5_1");
+
+	mShaders["tessHS"] = d3dUtil::CompileShader(L"Shaders\\Tessellation.hlsl", nullptr, "HS", "hs_5_1");
+	mShaders["tessDS"] = d3dUtil::CompileShader(L"Shaders\\Tessellation.hlsl", nullptr, "DS", "ds_5_1");
 
 	mInputLayout =
 	{
@@ -576,22 +583,21 @@ void ShapesApp::BuildShadersAndInputLayout()
 	};
 }
 
-void ShapesApp::BuildShapeGeometry()
+void TriangleTessellationApp::BuildShapeGeometry()
 {
-	std::array<Vertex, 4> vertices =
+	std::array<Vertex, 3> vertices =
 	{
-				Vertex({ XMFLOAT3(-2.0f, -2.0f, 0.0f), XMFLOAT4(Colors::Red)}),
-				Vertex({ XMFLOAT3(-2.0f, +2.0f, 0.0f) , XMFLOAT4(Colors::Green) }),
-				Vertex({ XMFLOAT3(+2.0f, -2.0f, 0.0f) , XMFLOAT4(Colors::Cyan)}),
-				Vertex({ XMFLOAT3(+2.0f, +2.0f, 0.0f) , XMFLOAT4(Colors::Yellow)}),
+				Vertex({ XMFLOAT3(-1.5f, -1.5f, 0.0f), XMFLOAT4(Colors::Red)}),
+				Vertex({ XMFLOAT3(+1.5f, +1.5f, 0.0f) , XMFLOAT4(Colors::Green) }),
+				Vertex({ XMFLOAT3(+1.5f, -1.5f, 0.0f) , XMFLOAT4(Colors::Blue)}),
 
 	};
 
 
-	std::array<std::uint16_t, 4> indices =
+	std::array<std::uint16_t, 3> indices =
 	{
 
-		0, 1, 2,3
+		0, 1, 2
 	};
 
 
@@ -628,9 +634,10 @@ void ShapesApp::BuildShapeGeometry()
 
 
 	mGeometries[mBoxGeo->Name] = std::move(mBoxGeo);
+
 }
 
-void ShapesApp::BuildPSOs()
+void TriangleTessellationApp::BuildPSOs()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -663,7 +670,7 @@ void ShapesApp::BuildPSOs()
 	};
 
 	opaquePsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	opaquePsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	opaquePsoDesc.SampleMask = UINT_MAX;
@@ -681,14 +688,20 @@ void ShapesApp::BuildPSOs()
 	//
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = opaquePsoDesc;
-	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
+	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	opaqueWireframePsoDesc.DepthStencilState.DepthEnable = false;
+
+	opaqueWireframePsoDesc.PS =
+	{
+		reinterpret_cast<BYTE*>(mShaders["blackPS"]->GetBufferPointer()),
+		mShaders["blackPS"]->GetBufferSize()
+	};
+
+	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["wireframe"])));
 }
 
-//build three frame resources
-//FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);
 
-void ShapesApp::BuildFrameResources()
+void TriangleTessellationApp::BuildFrameResources()
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
 	{
@@ -697,13 +710,13 @@ void ShapesApp::BuildFrameResources()
 	}
 }
 
-void ShapesApp::BuildRenderItems()
+void TriangleTessellationApp::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItem>();
 	XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Geo = mGeometries["shapeGeo"].get();
-	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;  //36
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation; //0
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation; //0
@@ -717,7 +730,7 @@ void ShapesApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void TriangleTessellationApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
