@@ -373,7 +373,6 @@ void CameraApp::UpdateObjectCBs(const GameTimer& gt)
 			ObjectConstants objConstants;
 			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
 			XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
-			//objConstants.MaterialIndex = e->Mat->MatCBIndex;
 
 			currObjectCB->CopyData(e->ObjCBIndex, objConstants);
 
@@ -979,4 +978,5 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> CameraApp::GetStaticSamplers()
 		linearWrap, linearClamp, 
 		anisotropicWrap, anisotropicClamp };
 }
+
 

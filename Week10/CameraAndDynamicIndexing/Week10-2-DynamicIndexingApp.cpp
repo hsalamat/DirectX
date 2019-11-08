@@ -258,7 +258,7 @@ void CameraAndDynamicIndexingApp::Draw(const GameTimer& gt)
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
 
-	// Bind all the materials used in this scene.  For structured buffers, we can bypass the heap and 
+	// step4: Bind all the materials used in this scene.  For structured buffers, we can bypass the heap and 
 	// set as a root descriptor.
 	auto matBuffer = mCurrFrameResource->MaterialBuffer->Resource();
 	mCommandList->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
@@ -362,6 +362,9 @@ void CameraAndDynamicIndexingApp::UpdateObjectCBs(const GameTimer& gt)
 			ObjectConstants objConstants;
 			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
 			XMStoreFloat4x4(&objConstants.TexTransform, XMMatrixTranspose(texTransform));
+			
+			//step6: note that the ObjectConstants structure has been updated to have a MaterialIndex. 
+
 			objConstants.MaterialIndex = e->Mat->MatCBIndex;
 
 			currObjectCB->CopyData(e->ObjCBIndex, objConstants);
@@ -481,7 +484,10 @@ void CameraAndDynamicIndexingApp::BuildRootSignature()
 	// Perfomance TIP: Order from most frequent to least frequent.
     slotRootParameter[0].InitAsConstantBufferView(0);
     slotRootParameter[1].InitAsConstantBufferView(1);
+	//step3: one SRV for frame
+	//slotRootParameter[3].InitAsConstantBufferView(2); // register b2
     slotRootParameter[2].InitAsShaderResourceView(0, 1);
+
 	slotRootParameter[3].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 

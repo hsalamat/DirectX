@@ -18,6 +18,10 @@
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
 
+
+//step1: Instead of storing our material data in constant buffers, 
+//we will store it in a structured buffer. A structured buffer can be indexed in the shader program.
+
 struct MaterialData
 {
 	float4   DiffuseAlbedo;
@@ -47,6 +51,8 @@ SamplerState gsamLinearClamp      : register(s3);
 SamplerState gsamAnisotropicWrap  : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
 
+
+//step2:  Add a MaterialIndex field to our object constant buffer to specify the index of the material to use for this draw call. 
 // Constant data that varies per frame.
 cbuffer cbPerObject : register(b0)
 {
@@ -103,7 +109,7 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
 
-	// Fetch the material data.
+	// step7: Fetch the material data.
 	MaterialData matData = gMaterialData[gMaterialIndex];
 	
     // Transform to world space.
@@ -125,7 +131,7 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-	// Fetch the material data.
+	// step 8: Fetch the material data.
 	MaterialData matData = gMaterialData[gMaterialIndex];
 	float4 diffuseAlbedo = matData.DiffuseAlbedo;
 	float3 fresnelR0 = matData.FresnelR0;

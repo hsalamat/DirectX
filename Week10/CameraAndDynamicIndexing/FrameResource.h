@@ -8,6 +8,9 @@ struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
+
+	//step5: Add a DiffuseMapIndex field to the material data that specifies the texture map associated with the material
+
 	UINT     MaterialIndex;
 	UINT     ObjPad0;
 	UINT     ObjPad1;
