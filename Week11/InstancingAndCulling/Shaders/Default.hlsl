@@ -40,8 +40,9 @@ struct MaterialData
 	uint     MatPad2;
 };
 
-// An array of textures, which is only supported in shader model 5.1+.  Unlike Texture2DArray, the textures
+// step14: An array of textures, which is only supported in shader model 5.1+.  Unlike Texture2DArray, the textures
 // in this array can be different sizes and formats, making it more flexible than texture arrays.
+//Texture2D    gDiffuseMap : register(t0);
 Texture2D gDiffuseMap[7] : register(t0);
 
 // Put in space1, so the texture array does not overlap with these resources.  
@@ -55,6 +56,14 @@ SamplerState gsamLinearWrap       : register(s2);
 SamplerState gsamLinearClamp      : register(s3);
 SamplerState gsamAnisotropicWrap  : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
+
+//step15: we don't need constant buffer per object!
+// Constant data that varies per object.
+//cbuffer cbPerObject : register(b0)
+//{
+//    float4x4 gWorld;
+//    float4x4 gTexTransform;
+//};
 
 // Constant data that varies per pass.
 cbuffer cbPass : register(b0)
@@ -105,7 +114,7 @@ VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut vout = (VertexOut)0.0f;
 	
-	// Fetch the instance data.
+	// step 16 Fetch the instance data.
 	InstanceData instData = gInstanceData[instanceID];
 	float4x4 world = instData.World;
 	float4x4 texTransform = instData.TexTransform;
@@ -113,7 +122,7 @@ VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 
 	vout.MatIndex = matIndex;
 	
-	// Fetch the material data.
+	// step 17: Fetch the material data.
 	MaterialData matData = gMaterialData[matIndex];
 	
     // Transform to world space.
@@ -128,6 +137,8 @@ VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 	
 	// Output vertex attributes for interpolation across triangle.
 	float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), texTransform);
+
+    //vout.TexC = mul(texC, gMatTransform).xy;
 	vout.TexC = mul(texC, matData.MatTransform).xy;
 	
     return vout;
@@ -142,7 +153,8 @@ float4 PS(VertexOut pin) : SV_Target
     float  roughness = matData.Roughness;
 	uint diffuseTexIndex = matData.DiffuseMapIndex;
 	
-	// Dynamically look up the texture in the array.
+	// step18: Dynamically look up the texture in the array.
+    // float4 diffuseAlbedo = gDiffuseMap.Sample(gsamLinearWrap, pin.TexC) * gDiffuseAlbedo;
     diffuseAlbedo *= gDiffuseMap[diffuseTexIndex].Sample(gsamLinearWrap, pin.TexC);
 	
     // Interpolating normal can unnormalize it, so renormalize it.
