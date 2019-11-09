@@ -1,5 +1,5 @@
 //***************************************************************************************
-// InstancingAndCullingApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// InstancingApp.cpp 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -45,7 +45,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
     // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	BoundingBox Bounds;
 	std::vector<InstanceData> Instances;
@@ -57,13 +57,13 @@ struct RenderItem
     int BaseVertexLocation = 0;
 };
 
-class InstancingAndCullingApp : public D3DApp
+class InstancingApp : public D3DApp
 {
 public:
-    InstancingAndCullingApp(HINSTANCE hInstance);
-    InstancingAndCullingApp(const InstancingAndCullingApp& rhs) = delete;
-    InstancingAndCullingApp& operator=(const InstancingAndCullingApp& rhs) = delete;
-    ~InstancingAndCullingApp();
+    InstancingApp(HINSTANCE hInstance);
+    InstancingApp(const InstancingApp& rhs) = delete;
+    InstancingApp& operator=(const InstancingApp& rhs) = delete;
+    ~InstancingApp();
 
     virtual bool Initialize()override;
 
@@ -123,10 +123,6 @@ private:
 
 	UINT mInstanceCount = 0;
 
-	bool mFrustumCullingEnabled = true;
-
-	BoundingFrustum mCamFrustum;
-
     PassConstants mMainPassCB;
 
 	Camera mCamera;
@@ -144,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
-        InstancingAndCullingApp theApp(hInstance);
+        InstancingApp theApp(hInstance);
         if(!theApp.Initialize())
             return 0;
 
@@ -157,18 +153,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     }
 }
 
-InstancingAndCullingApp::InstancingAndCullingApp(HINSTANCE hInstance)
+InstancingApp::InstancingApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
 }
 
-InstancingAndCullingApp::~InstancingAndCullingApp()
+InstancingApp::~InstancingApp()
 {
     if(md3dDevice != nullptr)
         FlushCommandQueue();
 }
 
-bool InstancingAndCullingApp::Initialize()
+bool InstancingApp::Initialize()
 {
     if(!D3DApp::Initialize())
         return false;
@@ -203,16 +199,15 @@ bool InstancingAndCullingApp::Initialize()
     return true;
 }
  
-void InstancingAndCullingApp::OnResize()
+void InstancingApp::OnResize()
 {
     D3DApp::OnResize();
 
 	mCamera.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 
-	BoundingFrustum::CreateFromMatrix(mCamFrustum, mCamera.GetProj());
 }
 
-void InstancingAndCullingApp::Update(const GameTimer& gt)
+void InstancingApp::Update(const GameTimer& gt)
 {
     OnKeyboardInput(gt);
 
@@ -236,7 +231,7 @@ void InstancingAndCullingApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void InstancingAndCullingApp::Draw(const GameTimer& gt)
+void InstancingApp::Draw(const GameTimer& gt)
 {
     auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -304,7 +299,7 @@ void InstancingAndCullingApp::Draw(const GameTimer& gt)
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void InstancingAndCullingApp::OnMouseDown(WPARAM btnState, int x, int y)
+void InstancingApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
     mLastMousePos.x = x;
     mLastMousePos.y = y;
@@ -312,12 +307,12 @@ void InstancingAndCullingApp::OnMouseDown(WPARAM btnState, int x, int y)
     SetCapture(mhMainWnd);
 }
 
-void InstancingAndCullingApp::OnMouseUp(WPARAM btnState, int x, int y)
+void InstancingApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
     ReleaseCapture();
 }
 
-void InstancingAndCullingApp::OnMouseMove(WPARAM btnState, int x, int y)
+void InstancingApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
     if((btnState & MK_LBUTTON) != 0)
     {
@@ -333,7 +328,7 @@ void InstancingAndCullingApp::OnMouseMove(WPARAM btnState, int x, int y)
     mLastMousePos.y = y;
 }
  
-void InstancingAndCullingApp::OnKeyboardInput(const GameTimer& gt)
+void InstancingApp::OnKeyboardInput(const GameTimer& gt)
 {
 	const float dt = gt.DeltaTime();
 
@@ -349,21 +344,15 @@ void InstancingAndCullingApp::OnKeyboardInput(const GameTimer& gt)
 	if(GetAsyncKeyState('D') & 0x8000)
 		mCamera.Strafe(20.0f*dt);
 
-	if(GetAsyncKeyState('1') & 0x8000)
-		mFrustumCullingEnabled = true;
-
-	if(GetAsyncKeyState('2') & 0x8000)
-		mFrustumCullingEnabled = false;
-
 	mCamera.UpdateViewMatrix();
 }
  
-void InstancingAndCullingApp::AnimateMaterials(const GameTimer& gt)
+void InstancingApp::AnimateMaterials(const GameTimer& gt)
 {
 	
 }
 
-void InstancingAndCullingApp::UpdateInstanceData(const GameTimer& gt)
+void InstancingApp::UpdateInstanceData(const GameTimer& gt)
 {
 	XMMATRIX view = mCamera.GetView();
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
@@ -385,13 +374,6 @@ void InstancingAndCullingApp::UpdateInstanceData(const GameTimer& gt)
 			// View space to the object's local space.
 			XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
  
-			// Transform the camera frustum from view space to the object's local space.
-			BoundingFrustum localSpaceFrustum;
-			mCamFrustum.Transform(localSpaceFrustum, viewToLocal);
-
-			// Perform the box/frustum intersection test in local space.
-			if((localSpaceFrustum.Contains(e->Bounds) != DirectX::DISJOINT) || (mFrustumCullingEnabled==false))
-			{
 				InstanceData data;
 				XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
 				XMStoreFloat4x4(&data.TexTransform, XMMatrixTranspose(texTransform));
@@ -399,21 +381,20 @@ void InstancingAndCullingApp::UpdateInstanceData(const GameTimer& gt)
 
 				// Write the instance data to structured buffer for the visible objects.
 				currInstanceBuffer->CopyData(visibleInstanceCount++, data);
-			}
 		}
 
 		e->InstanceCount = visibleInstanceCount;
 
 		std::wostringstream outs;
 		outs.precision(6);
-		outs << L"Instancing and Culling Demo" <<
+		outs << L"Instancing Demo" <<
 			L"    " << e->InstanceCount <<
 			L" objects visible out of " << e->Instances.size();
 		mMainWndCaption = outs.str();
 	}
 }
 
-void InstancingAndCullingApp::UpdateMaterialBuffer(const GameTimer& gt)
+void InstancingApp::UpdateMaterialBuffer(const GameTimer& gt)
 {
 	auto currMaterialBuffer = mCurrFrameResource->MaterialBuffer.get();
 	for(auto& e : mMaterials)
@@ -440,7 +421,7 @@ void InstancingAndCullingApp::UpdateMaterialBuffer(const GameTimer& gt)
 	}
 }
 
-void InstancingAndCullingApp::UpdateMainPassCB(const GameTimer& gt)
+void InstancingApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = mCamera.GetView();
 	XMMATRIX proj = mCamera.GetProj();
@@ -475,7 +456,7 @@ void InstancingAndCullingApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void InstancingAndCullingApp::LoadTextures()
+void InstancingApp::LoadTextures()
 {
 	auto bricksTex = std::make_unique<Texture>();
 	bricksTex->Name = "bricksTex";
@@ -535,7 +516,7 @@ void InstancingAndCullingApp::LoadTextures()
 	mTextures[defaultTex->Name] = std::move(defaultTex);
 }
 
-void InstancingAndCullingApp::BuildRootSignature()
+void InstancingApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 7, 0, 0);
@@ -575,7 +556,7 @@ void InstancingAndCullingApp::BuildRootSignature()
         IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void InstancingAndCullingApp::BuildDescriptorHeaps()
+void InstancingApp::BuildDescriptorHeaps()
 {
 	//
 	// Create the SRV heap.
@@ -651,7 +632,7 @@ void InstancingAndCullingApp::BuildDescriptorHeaps()
 	md3dDevice->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
 }
 
-void InstancingAndCullingApp::BuildShadersAndInputLayout()
+void InstancingApp::BuildShadersAndInputLayout()
 {
 	const D3D_SHADER_MACRO alphaTestDefines[] =
 	{
@@ -670,7 +651,7 @@ void InstancingAndCullingApp::BuildShadersAndInputLayout()
     };
 }
 
-void InstancingAndCullingApp::BuildSkullGeometry()
+void InstancingApp::BuildSkullGeometry()
 {
 	std::ifstream fin("Models/skull.txt");
 
@@ -723,9 +704,6 @@ void InstancingAndCullingApp::BuildSkullGeometry()
 		vMax = XMVectorMax(vMax, P);
 	}
 
-	BoundingBox bounds;
-	XMStoreFloat3(&bounds.Center, 0.5f*(vMin + vMax));
-	XMStoreFloat3(&bounds.Extents, 0.5f*(vMax - vMin));
 
 	fin >> ignore;
 	fin >> ignore;
@@ -771,14 +749,13 @@ void InstancingAndCullingApp::BuildSkullGeometry()
 	submesh.IndexCount = (UINT)indices.size();
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
-	submesh.Bounds = bounds;
 
 	geo->DrawArgs["skull"] = submesh;
 
 	mGeometries[geo->Name] = std::move(geo);
 }
 
-void InstancingAndCullingApp::BuildPSOs()
+void InstancingApp::BuildPSOs()
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -811,7 +788,7 @@ void InstancingAndCullingApp::BuildPSOs()
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 }
 
-void InstancingAndCullingApp::BuildFrameResources()
+void InstancingApp::BuildFrameResources()
 {
     for(int i = 0; i < gNumFrameResources; ++i)
     {
@@ -820,7 +797,7 @@ void InstancingAndCullingApp::BuildFrameResources()
     }
 }
 
-void InstancingAndCullingApp::BuildMaterials()
+void InstancingApp::BuildMaterials()
 {
 	auto bricks0 = std::make_unique<Material>();
 	bricks0->Name = "bricks0";
@@ -887,7 +864,7 @@ void InstancingAndCullingApp::BuildMaterials()
 	mMaterials["skullMat"] = std::move(skullMat);
 }
 
-void InstancingAndCullingApp::BuildRenderItems()
+void InstancingApp::BuildRenderItems()
 {
     auto skullRitem = std::make_unique<RenderItem>();
 	skullRitem->World = MathHelper::Identity4x4();
@@ -895,12 +872,11 @@ void InstancingAndCullingApp::BuildRenderItems()
 	skullRitem->ObjCBIndex = 0;
 	skullRitem->Mat = mMaterials["tile0"].get();
 	skullRitem->Geo = mGeometries["skullGeo"].get();
-	skullRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	skullRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	skullRitem->InstanceCount = 0;
 	skullRitem->IndexCount = skullRitem->Geo->DrawArgs["skull"].IndexCount;
 	skullRitem->StartIndexLocation = skullRitem->Geo->DrawArgs["skull"].StartIndexLocation;
 	skullRitem->BaseVertexLocation = skullRitem->Geo->DrawArgs["skull"].BaseVertexLocation;
-	skullRitem->Bounds = skullRitem->Geo->DrawArgs["skull"].Bounds;
 
 	// Generate instance data.
 	const int n = 5;
@@ -946,7 +922,7 @@ void InstancingAndCullingApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void InstancingAndCullingApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void InstancingApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     // For each render item...
     for(size_t i = 0; i < ritems.size(); ++i)
@@ -966,7 +942,7 @@ void InstancingAndCullingApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList
     }
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> InstancingAndCullingApp::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> InstancingApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	// and keep them available as part of the root signature.  
@@ -1022,4 +998,5 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> InstancingAndCullingApp::GetSta
 		linearWrap, linearClamp, 
 		anisotropicWrap, anisotropicClamp };
 }
+
 
