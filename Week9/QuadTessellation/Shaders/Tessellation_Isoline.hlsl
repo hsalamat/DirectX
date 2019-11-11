@@ -8,8 +8,8 @@
 
 struct PatchTess
 {
-	float EdgeTess[4]   : SV_TessFactor;
-	float InsideTess[2] : SV_InsideTessFactor;
+	float EdgeTess[2]   : SV_TessFactor;
+	//float InsideTess[2] : SV_TessFactor;
 };
 
 PatchTess ConstantHS(InputPatch<VertexOut, 4> patch, uint patchID : SV_PrimitiveID)
@@ -17,12 +17,12 @@ PatchTess ConstantHS(InputPatch<VertexOut, 4> patch, uint patchID : SV_Primitive
 	PatchTess pt;
 	
     // Uniformly tessellate the patch 3 times.
-    pt.EdgeTess[0] = 2; // Left edge
-    pt.EdgeTess[1] = 2; // Top edge
-    pt.EdgeTess[2] = 2; // Right edge
-    pt.EdgeTess[3] = 2; // Bottom edge
-    pt.InsideTess[0] = 3; // u-axis (columns)
-    pt.InsideTess[1] = 3; // v-axis (rows)
+    pt.EdgeTess[0] = 8; // Left edge
+    pt.EdgeTess[1] = 8; // Top edge
+   // pt.EdgeTess[2] = 2; // Right edge
+   // pt.EdgeTess[3] = 2; // Bottom edge
+   // pt.InsideTess[0] = 3; // u-axis (columns)
+    //pt.InsideTess[1] = 3; // v-axis (rows)
     return pt;
 
 	
@@ -35,9 +35,9 @@ struct HullOut
     float4 Color : COLOR;
 };
 
-[domain("quad")]
-[partitioning("integer")] //change it to fractional_odd or fractional_even to see the difference
-[outputtopology("triangle_cw")]
+[domain("isoline")]
+[partitioning("integer")]  //change it to fractional_odd or fractional_even
+[outputtopology("line")]
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
@@ -61,7 +61,7 @@ struct DomainOut
 
 // The domain shader is called for every vertex created by the tessellator.  
 // It is like the vertex shader after tessellation.
-[domain("quad")]
+[domain("isoline")]
 DomainOut DS(PatchTess patchTess, 
              float2 uv : SV_DomainLocation, 
              const OutputPatch<HullOut, 4> quad)
