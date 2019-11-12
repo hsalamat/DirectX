@@ -579,20 +579,20 @@ void ShapesApp::BuildShadersAndInputLayout()
 
 void ShapesApp::BuildShapeGeometry()
 {
-	std::array<Vertex, 4> vertices =
+	std::array<Vertex, 2> vertices =
 	{
 				Vertex({ XMFLOAT3(-2.0f, -2.0f, 0.0f), XMFLOAT4(Colors::Red)}),
 				Vertex({ XMFLOAT3(-2.0f, +2.0f, 0.0f) , XMFLOAT4(Colors::Green) }),
-				Vertex({ XMFLOAT3(+2.0f, -2.0f, 0.0f) , XMFLOAT4(Colors::Cyan)}),
-				Vertex({ XMFLOAT3(+2.0f, +2.0f, 0.0f) , XMFLOAT4(Colors::Yellow)}),
+				//Vertex({ XMFLOAT3(+2.0f, -2.0f, 0.0f) , XMFLOAT4(Colors::Cyan)}),
+				//Vertex({ XMFLOAT3(+2.0f, +2.0f, 0.0f) , XMFLOAT4(Colors::Yellow)}),
 
 	};
 
 
-	std::array<std::uint16_t, 4> indices =
+	std::array<std::uint16_t, 2> indices =
 	{
 
-		0, 1, 2,3
+		0, 1, 
 	};
 
 
@@ -705,7 +705,7 @@ void ShapesApp::BuildRenderItems()
 	XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Geo = mGeometries["shapeGeo"].get();
-	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;  //36
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation; //0
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation; //0
