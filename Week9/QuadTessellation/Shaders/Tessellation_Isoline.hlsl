@@ -9,20 +9,15 @@
 struct PatchTess
 {
 	float EdgeTess[2]   : SV_TessFactor;
-	//float InsideTess[2] : SV_TessFactor;
 };
 
-PatchTess ConstantHS(InputPatch<VertexOut, 4> patch, uint patchID : SV_PrimitiveID)
+PatchTess ConstantHS(InputPatch<VertexOut, 2> patch, uint patchID : SV_PrimitiveID)
 {
 	PatchTess pt;
 	
-    // Uniformly tessellate the patch 3 times.
-    pt.EdgeTess[0] = 8; // Left edge
-    pt.EdgeTess[1] = 8; // Top edge
-   // pt.EdgeTess[2] = 2; // Right edge
-   // pt.EdgeTess[3] = 2; // Bottom edge
-   // pt.InsideTess[0] = 3; // u-axis (columns)
-    //pt.InsideTess[1] = 3; // v-axis (rows)
+    pt.EdgeTess[0] = 100; // outside
+    pt.EdgeTess[1] = 1; // inside
+
     return pt;
 
 	
@@ -41,7 +36,7 @@ struct HullOut
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
-HullOut HS(InputPatch<VertexOut, 4> p, 
+HullOut HS(InputPatch<VertexOut, 2> p, 
            uint i : SV_OutputControlPointID,
            uint patchId : SV_PrimitiveID)
 {
@@ -71,10 +66,8 @@ DomainOut DS(PatchTess patchTess,
 	// Bilinear interpolation.
 	float3 v1 = lerp(quad[0].PosL, quad[1].PosL, uv.x); 
 	float3 v2 = lerp(quad[2].PosL, quad[3].PosL, uv.x); 
-	float3 p  = lerp(v1, v2, uv.y); 
-	
-	// Displacement mapping
-	//p.y = 0.3f*( p.z*sin(p.x) + p.x*cos(p.z) );
+	float3 p  = lerp(v1, v2, uv.y);
+
 	
 	float4 posW = mul(float4(p, 1.0f), gWorld);
 	dout.PosH = mul(posW, gViewProj);
