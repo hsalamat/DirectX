@@ -52,6 +52,7 @@ struct RenderItem
 
 	// DrawIndexedInstanced parameters.
 	UINT IndexCount = 0;
+	//step 0
 	UINT InstanceCount = 0;
 	UINT StartIndexLocation = 0;
 	int BaseVertexLocation = 0;
@@ -690,6 +691,10 @@ void InstancingApp::BuildShadersAndInputLayout()
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
+	//When creating an input layout, you can specify that data streams in per - instance rather than at a per - vertex frequency by using D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA
+	//You would then bind a secondary vertex buffer to the input stream that contained the instancing data.
+	//The modern approach is to create a structured buffer that contains the per - instance data for all of our instances.
+
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -715,12 +720,6 @@ void InstancingApp::BuildSkullGeometry()
 	fin >> ignore >> vcount;
 	fin >> ignore >> tcount;
 	fin >> ignore >> ignore >> ignore >> ignore;
-
-	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
-	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
-
-	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
-	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
 
 	std::vector<Vertex> vertices(vcount);
 	for (UINT i = 0; i < vcount; ++i)

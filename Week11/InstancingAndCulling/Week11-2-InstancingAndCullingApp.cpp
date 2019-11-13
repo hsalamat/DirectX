@@ -45,7 +45,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
     // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	BoundingBox Bounds;
 	std::vector<InstanceData> Instances;
@@ -123,6 +123,7 @@ private:
 
 	UINT mInstanceCount = 0;
 
+	//step1: create a boundung frustum
 	bool mFrustumCullingEnabled = true;
 
 	BoundingFrustum mCamFrustum;
@@ -349,6 +350,7 @@ void InstancingAndCullingApp::OnKeyboardInput(const GameTimer& gt)
 	if(GetAsyncKeyState('D') & 0x8000)
 		mCamera.Strafe(20.0f*dt);
 
+	//step2
 	if(GetAsyncKeyState('1') & 0x8000)
 		mFrustumCullingEnabled = true;
 
@@ -385,7 +387,7 @@ void InstancingAndCullingApp::UpdateInstanceData(const GameTimer& gt)
 			// View space to the object's local space.
 			XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
  
-			// Transform the camera frustum from view space to the object's local space.
+			// step3: Transform the camera frustum from view space to the object's local space.
 			BoundingFrustum localSpaceFrustum;
 			mCamFrustum.Transform(localSpaceFrustum, viewToLocal);
 
@@ -688,6 +690,7 @@ void InstancingAndCullingApp::BuildSkullGeometry()
 	fin >> ignore >> tcount;
 	fin >> ignore >> ignore >> ignore >> ignore;
 
+	//step4
 	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
 
@@ -719,10 +722,12 @@ void InstancingAndCullingApp::BuildSkullGeometry()
 
 		vertices[i].TexC = { u, v };
 
+		//step5
 		vMin = XMVectorMin(vMin, P);
 		vMax = XMVectorMax(vMax, P);
 	}
 
+	//step6
 	BoundingBox bounds;
 	XMStoreFloat3(&bounds.Center, 0.5f*(vMin + vMax));
 	XMStoreFloat3(&bounds.Extents, 0.5f*(vMax - vMin));
@@ -771,6 +776,7 @@ void InstancingAndCullingApp::BuildSkullGeometry()
 	submesh.IndexCount = (UINT)indices.size();
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
+	//step7
 	submesh.Bounds = bounds;
 
 	geo->DrawArgs["skull"] = submesh;
@@ -895,7 +901,7 @@ void InstancingAndCullingApp::BuildRenderItems()
 	skullRitem->ObjCBIndex = 0;
 	skullRitem->Mat = mMaterials["tile0"].get();
 	skullRitem->Geo = mGeometries["skullGeo"].get();
-	skullRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	skullRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	skullRitem->InstanceCount = 0;
 	skullRitem->IndexCount = skullRitem->Geo->DrawArgs["skull"].IndexCount;
 	skullRitem->StartIndexLocation = skullRitem->Geo->DrawArgs["skull"].StartIndexLocation;
