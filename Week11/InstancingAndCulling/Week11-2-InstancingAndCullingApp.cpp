@@ -123,7 +123,8 @@ private:
 
 	UINT mInstanceCount = 0;
 
-	//step1: create a boundung frustum
+	//step1: create a bounding frustum from camera projection matrix
+
 	bool mFrustumCullingEnabled = true;
 
 	BoundingFrustum mCamFrustum;
@@ -208,8 +209,9 @@ void InstancingAndCullingApp::OnResize()
 {
     D3DApp::OnResize();
 
-	mCamera.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+	mCamera.SetLens(0.6f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 
+	//step2
 	BoundingFrustum::CreateFromMatrix(mCamFrustum, mCamera.GetProj());
 }
 
