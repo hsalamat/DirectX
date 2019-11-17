@@ -1,5 +1,5 @@
-//***************************************************************************************
-// PickingApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+﻿//***************************************************************************************
+// PickingApp.cpp 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -25,6 +25,7 @@ struct RenderItem
 	RenderItem() = default;
     RenderItem(const RenderItem& rhs) = delete;
 
+	//step1: An invisible render-item will not be drawn.
 	bool Visible = true;
 
 	BoundingBox Bounds;
@@ -49,7 +50,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
     // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     // DrawIndexedInstanced parameters.
     UINT IndexCount = 0;
@@ -129,6 +130,7 @@ private:
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
+	//step2: To render the triangle with a highlight, we need a render-item for it.
 	RenderItem* mPickedRitem = nullptr;
 
     PassConstants mMainPassCB;
@@ -184,9 +186,10 @@ bool PickingApp::Initialize()
 	// so we have to query this information.
     mCbvSrvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+	//void Camera::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
 	mCamera.LookAt(
 		XMFLOAT3(5.0f, 4.0f, -15.0f),
-		XMFLOAT3(0.0f, 1.0f, 0.0f),
+		XMFLOAT3(0.0f, 0.0f, 0.0f),
 		XMFLOAT3(0.0f, 1.0f, 0.0f));
  
 	LoadTextures();
@@ -287,6 +290,7 @@ void PickingApp::Draw(const GameTimer& gt)
 
     DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Opaque]);
 
+	//step7
 	mCommandList->SetPipelineState(mPSOs["highlight"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Highlight]);
 
@@ -314,6 +318,7 @@ void PickingApp::Draw(const GameTimer& gt)
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
+//step 5
 void PickingApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	if((btnState & MK_LBUTTON) != 0)
@@ -325,6 +330,7 @@ void PickingApp::OnMouseDown(WPARAM btnState, int x, int y)
 	}
 	else if((btnState & MK_RBUTTON) != 0)
 	{
+		//step4
 		Pick(x, y);
 	}
 }
@@ -676,7 +682,7 @@ void PickingApp::BuildPSOs()
 	};
 	opaquePsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	opaquePsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);  //by default, opaquePsoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS
 	opaquePsoDesc.SampleMask = UINT_MAX;
 	opaquePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	opaquePsoDesc.NumRenderTargets = 1;
@@ -686,7 +692,7 @@ void PickingApp::BuildPSOs()
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
-	//
+	// Step6
 	// PSO for highlight objects
 	//
 
@@ -755,12 +761,14 @@ void PickingApp::BuildRenderItems()
 	carRitem->ObjCBIndex = 0;
 	carRitem->Mat = mMaterials["gray0"].get();
 	carRitem->Geo = mGeometries["carGeo"].get();
-	carRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	carRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	carRitem->Bounds = carRitem->Geo->DrawArgs["car"].Bounds;
 	carRitem->IndexCount = carRitem->Geo->DrawArgs["car"].IndexCount;
 	carRitem->StartIndexLocation = carRitem->Geo->DrawArgs["car"].StartIndexLocation;
 	carRitem->BaseVertexLocation = carRitem->Geo->DrawArgs["car"].BaseVertexLocation;
 	mRitemLayer[(int)RenderLayer::Opaque].push_back(carRitem.get());
+
+	//step7
 
 	auto pickedRitem = std::make_unique<RenderItem>();
 	pickedRitem->World = MathHelper::Identity4x4();
@@ -768,7 +776,7 @@ void PickingApp::BuildRenderItems()
 	pickedRitem->ObjCBIndex = 1;
 	pickedRitem->Mat = mMaterials["highlight0"].get();
 	pickedRitem->Geo = mGeometries["carGeo"].get();
-	pickedRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	pickedRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	// Picked triangle is not visible until one is picked.
 	pickedRitem->Visible = false;
@@ -868,11 +876,20 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> PickingApp::GetStaticSamplers()
 		anisotropicWrap, anisotropicClamp };
 }
 
+//step3: Assuming sx and xy are the screen coordinates where user picked an object (clicked)
+//recall that d3dApp.h, we defined a screen size 
+//int mClientWidth = 800;
+//int mClientHeight = 600;
+
+
 void PickingApp::Pick(int sx, int sy)
 {
-	XMFLOAT4X4 P = mCamera.GetProj4x4f();
+	XMFLOAT4X4 P = mCamera.GetProj4x4f();   ////XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
+
 
 	// Compute picking ray in view space.
+	//we can shoot our picking ray through the point (v'x, v'y, 1) instead. Note that this yields the same picking ray as the one shot through the point (xv, yv, d) on the projection window.
+
 	float vx = (+2.0f*sx / mClientWidth - 1.0f) / P(0, 0);
 	float vy = (-2.0f*sy / mClientHeight + 1.0f) / P(1, 1);
 
@@ -882,6 +899,10 @@ void PickingApp::Pick(int sx, int sy)
 	
 	XMMATRIX V = mCamera.GetView();
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
+
+	//Generally, each object in the scene has its own local space. Therefore, the ray must be transformed to the local space of each scene object to do the intersection test.
+	//The following code shows how the picking ray is transformed from view space to the local space of an object :
+
 
 	// Assume nothing is picked to start, so the picked render-item is invisible.
 	mPickedRitem->Visible = false;
@@ -897,11 +918,14 @@ void PickingApp::Pick(int sx, int sy)
 			continue;
 
 		XMMATRIX W = XMLoadFloat4x4(&ri->World);
+
+		//If W is the world matrix of an object, the matrix W−1 transforms geometry from world space to the local space of the object.
 		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
 
-		// Tranform ray to vi space of Mesh.
+		//Because the view matrix transforms geometry from world space to view space, the inverse of the view matrix transforms geometry from view space to world space. 
 		XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
 
+		//Generally, each object in the scene has its own local space. Therefore, the ray must be transformed to the local space of each scene object to do the intersection test.
 		rayOrigin = XMVector3TransformCoord(rayOrigin, toLocal);
 		rayDir = XMVector3TransformNormal(rayDir, toLocal);
 
