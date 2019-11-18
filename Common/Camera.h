@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Camera.h by Frank Luna (C) 2011 All Rights Reserved.
+// Camera.h 
 //   
 // Simple first person style camera class that lets the viewer explore the 3D scene.
 //   -It keeps track of the camera coordinate system relative to the world space
@@ -64,6 +64,7 @@ public:
 	// Strafe/Walk the camera a distance d.
 	void Strafe(float d);
 	void Walk(float d);
+	void Pedestal(float d);
 
 	// Rotate the camera.
 	void Pitch(float angle);

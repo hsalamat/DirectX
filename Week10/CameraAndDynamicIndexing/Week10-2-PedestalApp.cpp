@@ -1,5 +1,8 @@
 //***************************************************************************************
-// CameraApp.cpp 
+// PedestalApp.cpp 
+//Pedestal: Moving the camera vertically up or down along the world’s y-axis (assuming the y-axis corresponds to the world’s “up” direction). 
+//This can be implemented by translating the camera position along its up vector.
+//use up and down arrow key!
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -118,17 +121,7 @@ private:
 	std::vector<RenderItem*> mOpaqueRitems;
 
     PassConstants mMainPassCB;
-
-	//step1: remove all the old variables from our application class that were related to the orbital camera system such as mPhi, mTheta, mRadius. 
-	//float mTheta = 1.5f * XM_PI;
-	//float mPhi = 0.2f * XM_PI;
-	//float mRadius = 15.0f;
-	//XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
-	//XMFLOAT4X4 mView = MathHelper::Identity4x4();
-	//XMFLOAT4X4 mProj = MathHelper::Identity4x4();
-
 	Camera mCamera;
-	//*************************************************
 
     POINT mLastMousePos;
 };
@@ -205,12 +198,6 @@ bool CameraApp::Initialize()
 void CameraApp::OnResize()
 {
     D3DApp::OnResize();
-
-	//step2: When the window is resized, we no longer rebuild the projection matrix explicitly, 
-	//and instead delegate the work to the Camera class with SetLens:
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
-	//XMStoreFloat4x4(&mProj, P);
-
 	mCamera.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 }
 
@@ -320,11 +307,6 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(x - mLastMousePos.x));
 		float dy = XMConvertToRadians(0.25f*static_cast<float>(y - mLastMousePos.y));
 
-		//step4: Instead of updating the angles based on input to orbit camera around scene, 
-		//we rotate the camera’s look direction:
-		//mTheta += dx;
-		//mPhi += dy;
-
 		mCamera.Pitch(dy);
 		mCamera.RotateY(dx);
     }
@@ -335,7 +317,6 @@ void CameraApp::OnMouseMove(WPARAM btnState, int x, int y)
  
 void CameraApp::OnKeyboardInput(const GameTimer& gt)
 {
-	//step3: we handle keyboard input to move the camera:
 
 	const float dt = gt.DeltaTime();
 
@@ -351,6 +332,13 @@ void CameraApp::OnKeyboardInput(const GameTimer& gt)
 
 	if(GetAsyncKeyState('D') & 0x8000)
 		mCamera.Strafe(10.0f*dt);
+
+	//step1
+	if (GetAsyncKeyState(VK_UP) & 0x8000)
+		mCamera.Pedestal(10.0f * dt);
+
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+		mCamera.Pedestal(-10.0f * dt);
 
 	mCamera.UpdateViewMatrix();
 }
