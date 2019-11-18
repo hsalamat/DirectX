@@ -93,6 +93,10 @@ struct VertexOut
 VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 {
 	VertexOut vout = (VertexOut)0.0f;
+	//step2: To get the instance ID, we use the SV_InstanceID semantic, which is a system value (notice the "SV_") that the GPU will provide for us, as input to a shader. 
+	//Here is an example of a vertex shader that uses the SV_InstanceID semantic as input
+	// Moves the position of each instance along the positive x axis
+	vin.PosL.x += instanceID*8-8.0f;
 	
     // Transform to world space.
     float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);

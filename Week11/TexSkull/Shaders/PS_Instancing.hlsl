@@ -4,7 +4,7 @@
 // Default shader, currently supports lighting.
 //***************************************************************************************
 
-#include "VS_Anisotropic.hlsl"
+#include "VS_Instancing.hlsl"
 
 float4 PS(VertexOut pin) : SV_Target
 {
