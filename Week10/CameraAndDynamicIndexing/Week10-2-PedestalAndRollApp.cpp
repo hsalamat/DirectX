@@ -3,6 +3,8 @@
 //Pedestal: Moving the camera vertically up or down along the world’s y-axis (assuming the y-axis corresponds to the world’s “up” direction). 
 //This can be implemented by translating the camera position along its up vector.
 //use up and down arrow key!
+//Modify the camera demo to support “roll.” This is where the camera rotates around
+//its look vector.This could be useful for an aircraft game.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -339,6 +341,12 @@ void CameraApp::OnKeyboardInput(const GameTimer& gt)
 
 	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 		mCamera.Pedestal(-10.0f * dt);
+
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		mCamera.Roll(10.0f * dt);
+
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		mCamera.Roll(-10.0f * dt);
 
 	mCamera.UpdateViewMatrix();
 }
