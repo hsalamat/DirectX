@@ -1,5 +1,8 @@
 //***************************************************************************************
-// CubeRenderTarget.cpp by Frank Luna (C) 2011 All Rights Reserved.
+// CubeRenderTarget.cpp 
+//Step2: To help render to a cube map dynamically, we create the following CubeRenderTarget class, 
+//which encapsulates the actual ID3D12Resource object of the cube map, the various descriptors to the resource, 
+//and other useful data for rendering to the cube map
 //***************************************************************************************
 
 #include "CubeRenderTarget.h"
@@ -14,6 +17,7 @@ CubeRenderTarget::CubeRenderTarget(ID3D12Device* device,
 	mHeight = height;
 	mFormat = format;
 
+	//step8: Because the cube map faces will have a different resolution than the main back buffer, we need to define a new viewport and scissor rectangle that covers a cube map face:
 	mViewport = { 0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f };
 	mScissorRect = { 0, 0, (int)width, (int)height };
 
@@ -76,6 +80,7 @@ void CubeRenderTarget::OnResize(UINT newWidth, UINT newHeight)
  
 void CubeRenderTarget::BuildDescriptors()
 {
+	//step5: We now need to create an SRV to the cube map resource so that we can sample it in a pixel shader after it is built
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = mFormat;
@@ -87,7 +92,7 @@ void CubeRenderTarget::BuildDescriptors()
 	// Create SRV to the entire cubemap resource.
 	md3dDevice->CreateShaderResourceView(mCubeMap.Get(), &srvDesc, mhCpuSrv);
 
-	// Create RTV to each cube face.
+	// step 6: We also need to create a render target view to each element in the cube map texture array, so that we can render onto each cube map face one by one. 
 	for(int i = 0; i < 6; ++i)
 	{
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc; 
@@ -107,6 +112,7 @@ void CubeRenderTarget::BuildDescriptors()
 	}
 }
 
+
 void CubeRenderTarget::BuildResource()
 {
 	// Note, compressed formats cannot be used for UAV.  We get error like:
@@ -121,12 +127,14 @@ void CubeRenderTarget::BuildResource()
 	texDesc.Alignment = 0;
 	texDesc.Width = mWidth;
 	texDesc.Height = mHeight;
+	//step2: Creating a cube map texture is done by creating a texture array with six elements (one for each face). 
 	texDesc.DepthOrArraySize = 6;
 	texDesc.MipLevels = 1;
 	texDesc.Format = mFormat;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	//step3: Because we are going to render to the cube map, we must set the D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET flag. 
 	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
 	ThrowIfFailed(md3dDevice->CreateCommittedResource(

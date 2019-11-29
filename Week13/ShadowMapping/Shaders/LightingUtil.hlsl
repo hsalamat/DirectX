@@ -1,5 +1,5 @@
 //***************************************************************************************
-// LightingUtil.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// LightingUtil.hlsl 
 //
 // Contains API for shader lighting.
 //***************************************************************************************
@@ -135,6 +135,8 @@ float3 ComputeSpotLight(Light L, Material mat, float3 pos, float3 normal, float3
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
 
+
+//step11: In our model, the shadow factor will be multiplied against the direct lighting (diffuse and specular) terms:
 float4 ComputeLighting(Light gLights[MaxLights], Material mat,
                        float3 pos, float3 normal, float3 toEye,
                        float3 shadowFactor)

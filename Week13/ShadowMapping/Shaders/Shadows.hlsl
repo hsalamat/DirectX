@@ -1,5 +1,8 @@
 //***************************************************************************************
-// Shadows.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// Shadows.hlsl 
+//step9: The shader programs we use for rendering the scene from the perspective of the light is quite simple 
+//because we are only building the shadow map, so we do not need to do any complicated pixel shader work. 
+//Notice that the pixel shader does not return a value because we only need to output depth values.
 //***************************************************************************************
 
 // Include common HLSL code.
@@ -36,7 +39,7 @@ VertexOut VS(VertexIn vin)
     return vout;
 }
 
-// This is only used for alpha cut out geometry, so that shadows 
+// step9: This is only used for alpha cut out geometry, so that shadows 
 // show up correctly.  Geometry that does not need to sample a
 // texture can use a NULL pixel shader for depth pass.
 void PS(VertexOut pin) 

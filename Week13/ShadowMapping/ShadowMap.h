@@ -1,5 +1,8 @@
 //***************************************************************************************
-// ShadowMap.h by Frank Luna (C) 2015 All Rights Reserved.
+// ShadowMap.h 
+//step1: ShadowMap Utility helps us store the scene depth from the perspective of the light source. 
+//It simply encapsulates a depth / stencil buffer, necessary views, and viewport.
+//A depth / stencil buffer used for shadow mapping is called a shadow map.
 //***************************************************************************************
 
 #pragma once

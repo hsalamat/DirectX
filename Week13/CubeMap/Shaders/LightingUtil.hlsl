@@ -1,5 +1,5 @@
 //***************************************************************************************
-// LightingUtil.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// LightingUtil.hlsl 
 //
 // Contains API for shader lighting.
 //***************************************************************************************
@@ -166,5 +166,4 @@ float4 ComputeLighting(Light gLights[MaxLights], Material mat,
 
     return float4(result, 0.0f);
 }
-
 

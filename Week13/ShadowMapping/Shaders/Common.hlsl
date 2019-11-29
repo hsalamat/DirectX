@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Common.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// Common.hlsl 
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -48,7 +48,7 @@ SamplerState gsamLinearWrap       : register(s2);
 SamplerState gsamLinearClamp      : register(s3);
 SamplerState gsamAnisotropicWrap  : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
-SamplerComparisonState gsamShadow : register(s6);
+SamplerComparisonState gsamShadow : register(s6);  //The zero-based sampler index
 
 // Constant data that varies per frame.
 cbuffer cbPerObject : register(b0)
@@ -109,7 +109,10 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 }
 
 //---------------------------------------------------------------------------------------
-// PCF for shadow mapping.
+// step5: PCF for shadow mapping.
+//The shadow factor is a scalar in the range 0 to 1. 
+//A value of 0 indicates a point is in shadow, and a value of 1 indicates a point is not in shadow.
+//With PCF, a point can also be partially in shadow, in which case the shadow factor will be between 0 and 1.
 //---------------------------------------------------------------------------------------
 
 float CalcShadowFactor(float4 shadowPosH)
@@ -143,4 +146,6 @@ float CalcShadowFactor(float4 shadowPosH)
     
     return percentLit / 9.0f;
 }
+
+
 

@@ -1,5 +1,5 @@
-//***************************************************************************************
-// Default.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+﻿//***************************************************************************************
+// Default.hlsl
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -86,10 +86,16 @@ float4 PS(VertexOut pin) : SV_Target
 
     float4 litColor = ambient + directLight;
 
-	// Add in specular reflections.
+	// step8: Add in specular reflections.
+	//Light from the environment comes in with incident direction I and reflects off the surface (due to the Fresnel effect) and enters the eye in the direction.
+	//Here toEyeW is the eye point, and pin.NormalW is the surface normal at the point p.
+	//The texel that stores the light that reflects off p and enters the eye is obtained by sampling the cube map with the vector r.
+	//toEyeW = E − p = > r = reflect(−v, n)
+
 	float3 r = reflect(-toEyeW, pin.NormalW);
 	float4 reflectionColor = gCubeMap.Sample(gsamLinearWrap, r);
 	float3 fresnelFactor = SchlickFresnel(fresnelR0, pin.NormalW, r);
+	//Hooman: Comment this out to see the demo without specular reflection
 	litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
 
     // Common convention to take alpha from diffuse albedo.

@@ -1,7 +1,8 @@
 //***************************************************************************************
-// CubeRenderTarget.h by Frank Luna (C) 2015 All Rights Reserved.
+// CubeRenderTarget.h 
 //***************************************************************************************
 
+//step1
 #pragma once
 
 #include "../../Common/d3dUtil.h"

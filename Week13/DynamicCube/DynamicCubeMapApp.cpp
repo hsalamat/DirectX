@@ -1,5 +1,7 @@
 //***************************************************************************************
-// DynamicCubeMapApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// DynamicCubeMapApp.cpp 
+//We render the scene six times along each coordinate axis direction with a field of view angle of 90° 
+//so that the image of the entire surrounding environment is captured.
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -55,6 +57,9 @@ struct RenderItem
     UINT StartIndexLocation = 0;
     int BaseVertexLocation = 0;
 };
+
+//step10: We have three render layers. 
+//The OpaqueDynamicReflectors layer contains the center sphere  which will use the dynamic cube map to reflect local dynamic objects.
 
 enum class RenderLayer : int
 {
@@ -224,7 +229,7 @@ bool DynamicCubeMapApp::Initialize()
  
 void DynamicCubeMapApp::CreateRtvAndDsvDescriptorHeaps()
 {
-	// Add +6 RTV for cube render target.
+	//step4: Rendering to a cube map requires six additional render target views, one for each face, and one additional depth/stencil buffer.
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 	rtvHeapDesc.NumDescriptors = SwapChainBufferCount + 6;
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -350,6 +355,10 @@ void DynamicCubeMapApp::Draw(const GameTimer& gt)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE dynamicTexDescriptor(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	dynamicTexDescriptor.Offset(mSkyTexHeapIndex + 1, mCbvSrvUavDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(3, dynamicTexDescriptor);
+
+	//step11: Finally, after we rendered the scene to the cube map, we set our main render targets and draw the scene as normal, 
+	//but with the dynamic cube map applied to the center sphere:
+
 
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::OpaqueDynamicReflectors]);
 
@@ -527,6 +536,7 @@ void DynamicCubeMapApp::UpdateMainPassCB(const GameTimer& gt)
 	UpdateCubeMapFacePassCBs();
 }
 
+//step9: We implement the following method to set the constant data for each cube map face:
 void DynamicCubeMapApp::UpdateCubeMapFacePassCBs()
 {
 	for(int i = 0; i < 6; ++i)
@@ -702,12 +712,17 @@ void DynamicCubeMapApp::BuildDescriptorHeaps()
 	for(int i = 0; i < 6; ++i)
 		cubeRtvHandles[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvCpuStart, rtvOffset + i, mRtvDescriptorSize);
 
+	//step4: In addition, we will need one extra SRV so that we can bind the cube map as a shader input after it has been generated.
+	//The descriptor handles are passed into the CubeRenderTarget::BuildDescriptors method which saves a copy of the handles and then actually creates the views.
 	// Dynamic cubemap SRV is after the sky SRV.
 	mDynamicCubeMap->BuildDescriptors(
 		CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, mDynamicTexHeapIndex, mCbvSrvUavDescriptorSize),
 		CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, mDynamicTexHeapIndex, mCbvSrvUavDescriptorSize),
 		cubeRtvHandles);
 }
+
+//step7: Because we render to the cube faces one at a time, we only need one depth buffer for the cube map rendering.
+//We build an additional depth buffer and DSV with the following code :
 
 void DynamicCubeMapApp::BuildCubeDepthStencil()
 {
@@ -1043,6 +1058,10 @@ void DynamicCubeMapApp::BuildPSOs()
 
 }
 
+//step9: Because rendering to each cube map face utilizes a different camera, each cube face needs its own set of PassConstants, 
+//we need to increase our PassConstants count by six when we create our frame resources.
+//Element 0 will correspond to our main rendering pass, and elements 1 - 6 will correspond to our cube map faces.
+
 void DynamicCubeMapApp::BuildFrameResources()
 {
     for(int i = 0; i < gNumFrameResources; ++i)
@@ -1265,6 +1284,7 @@ void DynamicCubeMapApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, cons
     }
 }
 
+//step11: Our first step is to draw the scene to each face of the cube map, but not including the center sphere; this means we just need to render the opaque and sky layers to the cube map:
 void DynamicCubeMapApp::DrawSceneToCubeMap()
 {
 	mCommandList->RSSetViewports(1, &mDynamicCubeMap->Viewport());
@@ -1362,6 +1382,11 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> DynamicCubeMapApp::GetStaticSam
 		anisotropicWrap, anisotropicClamp };
 }
 
+//step8: To generate a cube map idea is to position a camera at the center of some object O in the scene with a 90° field of view angle (both vertically and horizontally).
+//Then have the camera look down the positive x-axis, negative x-axis, positive y-axis, negative y-axis, positive z-axis, and negative z-axis, 
+//and to take a picture of the scene (excluding the object O) from each of these six viewpoints. 
+//To facilitate this, we generate six cameras, one for each face, centered at the given position(x, y, z) :
+
 void DynamicCubeMapApp::BuildCubeFaceCamera(float x, float y, float z)
 {
 	// Generate the cube map about the given position.
@@ -1398,3 +1423,6 @@ void DynamicCubeMapApp::BuildCubeFaceCamera(float x, float y, float z)
 		mCubeMapCamera[i].UpdateViewMatrix();
 	}
 }
+
+
+

@@ -1,5 +1,5 @@
 //***************************************************************************************
-// ShadowMapApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// ShadowMapApp.cpp 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -187,10 +187,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 ShadowMapApp::ShadowMapApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
-    // Estimate the scene bounding sphere manually since we know how the scene was constructed.
+    // step7: Estimate the scene bounding sphere manually since we know how the scene was constructed.
     // The grid is the "widest object" with a width of 20 and depth of 30.0f, and centered at
     // the world space origin.  In general, you need to loop over every world space vertex
     // position and compute the bounding sphere.
+
+	//We then define a light view matrixand projection matrix(representing the light frame and view volume).
+	//The light view matrix is derived from the primary light source, and the light view volume is computed to fit the bounding sphere of the entire scene.
+
+
     mSceneBounds.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
     mSceneBounds.Radius = sqrtf(10.0f*10.0f + 15.0f*15.0f);
 }
@@ -211,6 +216,8 @@ bool ShadowMapApp::Initialize()
 
 	mCamera.SetPosition(0.0f, 2.0f, -15.0f);
  
+	//step6: The first step in shadow mapping is to build the shadow map. To do this, we create a ShadowMap instance:
+
     mShadowMap = std::make_unique<ShadowMap>(
         md3dDevice.Get(), 2048, 2048);
 
@@ -1092,8 +1099,25 @@ void ShadowMapApp::BuildPSOs()
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
+// [From MSDN]
+// If the depth buffer currently bound to the outputmerger stage
+// has a UNORM format or no depth buffer is bound the bias value
+// is calculated like this:
+//
+// Bias = (float)DepthBias * r + SlopeScaledDepthBias* MaxDepthSlope;
+//
+// where r is the minimum representable value > 0 in the
+// depth-buffer format converted to float32.
+// [/End MSDN]
+//
+// For a 24-bit depth buffer, r = 1 / 2^24.
+//
+// Example: DepthBias = 100000 ==> Actual DepthBias = 100000 / 2 ^ 24 = .006
+// These values are highly scene dependent, and you will need
+// to experiment with these values for your scene to find the
+// best values.
     //
-    // PSO for shadow map pass.
+    // step4: PSO for shadow map pass.
     //
     D3D12_GRAPHICS_PIPELINE_STATE_DESC smapPsoDesc = opaquePsoDesc;
     smapPsoDesc.RasterizerState.DepthBias = 100000;
@@ -1111,7 +1135,12 @@ void ShadowMapApp::BuildPSOs()
         mShaders["shadowOpaquePS"]->GetBufferSize()
     };
     
-    // Shadow map pass does not have a render target.
+    //step8: Note that we set a null render target, which essentially disables color writes. 
+	//This is because when we render the scene to the shadow map, all we care about is the depth values of the scene relative to the light source.
+	//Graphics cards are optimized for only drawing depth; a depth only render pass is significantly faster than drawing colorand depth.
+	//The active pipeline state object must also specify a render target count of 0:
+
+	//Shadow map pass does not have a render target.
     smapPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
     smapPsoDesc.NumRenderTargets = 0;
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&smapPsoDesc, IID_PPV_ARGS(&mPSOs["shadow_opaque"])));
@@ -1470,6 +1499,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> ShadowMapApp::GetStaticSamplers
 		0.0f,                              // mipLODBias
 		8);                                // maxAnisotropy
 
+	//step4
     const CD3DX12_STATIC_SAMPLER_DESC shadow(
         6, // shaderRegister
         D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, // filter

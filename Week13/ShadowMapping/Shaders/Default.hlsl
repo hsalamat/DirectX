@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Default.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// Default.hlsl 
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -100,6 +100,7 @@ float4 PS(VertexOut pin) : SV_Target
     // Light terms.
     float4 ambient = gAmbientLight*diffuseAlbedo;
 
+	//step10:The shadow factor does not affect ambient light since that is indirect light, and it also does not affect reflective light coming from the environment map.
     // Only the first light casts a shadow.
     float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
     shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
@@ -122,5 +123,6 @@ float4 PS(VertexOut pin) : SV_Target
 
     return litColor;
 }
+
 
 

@@ -1,9 +1,13 @@
 //***************************************************************************************
-// ShadowMap.cpp by Frank Luna (C) 2011 All Rights Reserved.
+// ShadowMap.cpp
 //***************************************************************************************
 
 #include "ShadowMap.h"
  
+//The constructor creates the texture of the specified dimensions and viewport. 
+//The resolution of the shadow map affects the quality of our shadows, 
+//but at the same time, a high resolution shadow map is more expensive to render intoand requires more memory.
+
 ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height)
 {
 	md3dDevice = device;
@@ -26,6 +30,12 @@ UINT ShadowMap::Height()const
 {
     return mHeight;
 }
+
+//step3: The shadow mapping algorithm requires two render passes:
+//a)we render the scene depth from the viewpoint of the light into the shadow map;
+//b)we render the scene as normal to the back buffer from our “player” camera,
+//Use the shadow map as a shader input to implement the shadowing algorithm.
+//We provide methods to access the shader resource and its views :
 
 ID3D12Resource*  ShadowMap::Resource()
 {

@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Default.hlsl by Frank Luna (C) 2015 All Rights Reserved.
+// Default.hlsl 
 //***************************************************************************************
 
 // Defaults for number of lights.
@@ -74,8 +74,22 @@ float4 PS(VertexOut pin) : SV_Target
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
 	
+	//step1: use normal map(bumpedNormalW) instead of normal (pin.NormalW ) to compute the light
 	float4 normalMapSample = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.TexC);
 	float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample.rgb, pin.NormalW, pin.TangentW);
+
+	//// Uncompress each component from [0,1] to [-1,1].
+	//float3 normalT = 2.0f * normalMapSample.rgb - 1.0f;
+	//// Build orthonormal basis.
+	//float3 N = pin.NormalW;
+	//float3 T = normalize(pin.TangentW - dot(pin.TangentW, N) * N);
+	//float3 B = cross(N, T);
+
+	//float3x3 TBN = float3x3(T, B, N);
+
+	//// Transform from tangent space to world space.
+	//float3 bumpedNormalW = mul(normalT, TBN);
+
 
 	// Uncomment to turn off normal mapping.
 	//bumpedNormalW = pin.NormalW;
@@ -108,5 +122,4 @@ float4 PS(VertexOut pin) : SV_Target
 
     return litColor;
 }
-
 
