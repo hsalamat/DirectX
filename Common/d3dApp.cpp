@@ -450,7 +450,7 @@ bool D3DApp::InitDirect3D()
 
 		ThrowIfFailed(D3D12CreateDevice(
 			pWarpAdapter.Get(),
-			D3D_FEATURE_LEVEL_11_0,
+			D3D_FEATURE_LEVEL_12_0,
 			IID_PPV_ARGS(&md3dDevice)));
 	}
 
