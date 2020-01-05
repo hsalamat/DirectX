@@ -50,14 +50,11 @@ int main()
 	XMVECTOR scaledMinPoint = XMVector4Transform(minPoint , S);
 	XMVECTOR scaledMaxPoint = XMVector4Transform(maxPoint , S);
 
-
-
 	cout << "scaledMinPoint = minPoint x S = " << endl << scaledMinPoint << endl;
 	cout << "scaledMinPoint = maxPoint x S = " << endl << scaledMaxPoint << endl;
 
 	XMVECTOR scaledMinPoint3D = XMVector3Transform(minPoint, S);
 	XMVECTOR scaledMaxPoint3D = XMVector3Transform(maxPoint, S);
-
 
 	cout << "scaledMinPoint3D = minPoint x S = " << endl << scaledMinPoint << endl;
 	cout << "scaledMinPoint3D = maxPoint x S = " << endl << scaledMaxPoint << endl;
