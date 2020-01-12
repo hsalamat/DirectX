@@ -335,24 +335,23 @@ void TriangleAPP::BuildPSO()
 	//We can query the number of quality levels for a given texture format and sample count using the ID3D12Device::CheckFeatureSupport method like so :
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
 	msQualityLevels.Format = mBackBufferFormat;
-	msQualityLevels.SampleCount = 4;
+	msQualityLevels.SampleCount = 32;
 	msQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 	msQualityLevels.NumQualityLevels = 0;
 
 	//Note that the second parameter is both an input and output parameter. For the input,
 	//we must specify the texture format, sample count, and flag we want to query
 	//multisampling support for.The function will then fill out the quality level as the output.
-	//Valid quality levels for a texture formatand sample count combination range from zero to NumQualityLevels–1.
+	//Valid quality levels for a texture format and sample count combination range from zero to NumQualityLevels–1.
 	//The maximum number of samples that can be taken per pixel is defined by : #define D3D12_MAX_MULTISAMPLE_SAMPLE_COUNT ( 32 )
 
 	ThrowIfFailed(md3dDevice->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msQualityLevels, sizeof(msQualityLevels)));
 
 
 	//psoDesc.SampleDesc.Count = 1;	
+	m4xMsaaState = true;
 	psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;   //The Count member specifies the number of samples to take per pixel
 	psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0; //Quality member is used to specify the desired quality level (what “quality level” means can vary across hardware manufacturers).
-
-
 
 
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
