@@ -1,8 +1,12 @@
 
 #include "../../Common/d3dApp.h"
 #include <DirectXColors.h>
+#include <stdlib.h>
+#include <string>
+#include <comdef.h>
 
 using namespace DirectX;
+using namespace std;
 
 class InitDirect3DApp : public D3DApp
 {
@@ -108,6 +112,37 @@ bool InitDirect3DApp::Initialize()
 	text += maxSupport;
 	text += L"\n";
 	OutputDebugString(text.c_str());
+
+	//https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ne-d3d12-d3d12_feature?redirectedfrom=MSDN
+
+	   //Indicates a query for the level of support for basic Direct3D 12 feature options.
+
+	D3D12_FEATURE_DATA_D3D12_OPTIONS tiers;
+
+	if (md3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &tiers, sizeof(tiers))) {
+		OutputDebugString(L"Failed to query the options for adapter ");
+	}
+
+	else {
+		OutputDebugString(L"Options query for adapter succeeded");
+	}
+
+
+
+
+
+	//Indicates a query for the adapter's architectural details, so that your application can better optimize for certain adapter properties.
+	//For example UMA: Unified Memory Architecture: a technology that allows a Graphics Processing Unit to share system memory
+
+	D3D12_FEATURE_DATA_ARCHITECTURE1 arch;
+
+	md3dDevice->CheckFeatureSupport(D3D12_FEATURE_ARCHITECTURE1, &arch, sizeof(arch));
+
+	wstring gpuNode = L"Number of GPU node: ";
+
+	gpuNode += to_wstring(md3dDevice->GetNodeCount());
+
+	OutputDebugString(gpuNode.c_str());
 
 	return true;
 }
