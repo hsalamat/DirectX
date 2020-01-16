@@ -1,6 +1,7 @@
 //***************************************************************************************
-// Shows how to draw a triangle in Direct3D 12.
-//
+// Backface culling!
+// By default, Direct3D treats triangles with a clockwise winding order (with respect to the viewer) as front-facing, 
+//and triangles with a counterclockwise winding order (with respect to the viewer) as back-facing. 
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -84,6 +85,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Backface Culling Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -240,8 +242,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 {
 	HRESULT hr = S_OK;
 	//Take a look at HLSL compiler, change the output directory, set it "Vertex shader", pay attention to "main" as an entry point, the version of hlsl...
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "main", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "main", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "main", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "main", "ps_5_1");
 
 
 	mInputLayout =
@@ -253,30 +255,7 @@ void TriangleAPP::BuildShadersAndInputLayout()
 void TriangleAPP::BuildTriangleGeometry()
 {
 
-	 // Define the geometry for a triangle.
-	 Vertex triangleVertices[] =
-	{
-		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f)}),
-		Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) }),
-
-		//step 1: why don't we see this triangle? because you are setting up the vertices counterclockwise!
-		//by default, system does backface culling
-		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-
-		//LET'S FIX THAT!
-		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-
-		//STILL NOT WORKING?? GO TO STEP2 TO FIX IT
-		//end
-	};
-
-	 // step 2: comment this out and let's move trianglevertices somewhere else
-	//const UINT vertexBufferSize = sizeof(triangleVertices);
+	 // step 1
  vertices =
 	{
 
@@ -296,7 +275,7 @@ void TriangleAPP::BuildTriangleGeometry()
 		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
 	};
 
-	//step4: //now let's replace vertexBufferSize with vbBufferSize
+
 	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);
 
 	// Note: using upload heaps to transfer static data like vert buffers is not 

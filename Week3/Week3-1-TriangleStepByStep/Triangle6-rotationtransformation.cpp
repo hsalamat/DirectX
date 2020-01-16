@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Use constant buffer to do rotation
+// Use constant buffer to do a rotation
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -107,6 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Rotation Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -173,7 +174,7 @@ void TriangleAPP::Update(const GameTimer& gt)
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
 	//step2 a rotation around z axis
-	mTheta2 += 0.1f;
+	mTheta2 += 0.01f;
 	world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 	//
 

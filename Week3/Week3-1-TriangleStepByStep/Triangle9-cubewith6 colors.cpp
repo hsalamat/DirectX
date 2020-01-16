@@ -1,5 +1,6 @@
 //***************************************************************************************
 // Cube with different face colors
+//In this demo, we are adding another constant buffers to send the colors to the shader
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -38,11 +39,11 @@ const ObjectConstant2 cb2 =
 {
 	{
 		{1.0f, 0.0f, 1.0f, 1.0f },
-		{1.0f, 1.0f, 0.0f, 1.0f },
-		{1.0f, 1.0f, 1.0f , 1.0f},
-		{0.0f, 1.0f, 1.0f , 1.0f },
-		{0.0f, 1.0f, 0.0f , 1.0f},
-		{0.0f, 0.0f, 1.0f, 1.0f }
+		{0.0f, 1.0f, 0.0f, 1.0f },
+		{0.0f, 0.0f, 1.0f , 1.0f},
+		{1.0f, 1.0f, 1.0f , 1.0f },
+		{0.0f, 1.0f, 1.0f , 1.0f},
+		{1.0f, 0.0f, 1.0f, 1.0f }
 	}
 };
 
@@ -131,6 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 BoxApp::BoxApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Cube with difference face colors Demo ";
 }
 
 BoxApp::~BoxApp()
@@ -345,8 +347,8 @@ void BoxApp::BuildShadersAndInputLayout()
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
 	//step3: refactoring the vertex shader to use structs for both ins and outs parameters
 	//note that I changed "main" to PS and VS
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS4.hlsl", nullptr, "VS", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS4.hlsl", nullptr, "PS", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS4.hlsl", nullptr, "VS", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS4.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{

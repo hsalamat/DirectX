@@ -38,7 +38,7 @@ private:
 	void BuildPSO();
 
 private:
-	//step1
+	//step1-1
 	ComPtr<ID3D12Resource> mVertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW mVertexBufferView;
 	//
@@ -52,6 +52,9 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
+
+	//step1-2
+	std::array<Vertex, 3> vertices;
 
 };
 
@@ -81,7 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
-	mMainWndCaption = L"Triangle";
+	mMainWndCaption = L"Simple Triangle Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -266,14 +269,14 @@ void TriangleAPP::BuildTriangleGeometry()
 	//step2
 
 	 // Define the geometry for a triangle.
-	Vertex triangleVertices[] =
+	vertices =
 		{
 			Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f)}),
 			Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) }),
 			Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) }),
 		};
 
-	const UINT vertexBufferSize = sizeof(triangleVertices);
+	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);
 
 	// Note: using upload heaps to transfer static data like vert buffers is not 
 	// recommended. Every time the GPU needs it, the upload heap will be marshalled 
@@ -282,7 +285,7 @@ void TriangleAPP::BuildTriangleGeometry()
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+		&CD3DX12_RESOURCE_DESC::Buffer(vbBufferSize),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&mVertexBuffer));
@@ -290,14 +293,14 @@ void TriangleAPP::BuildTriangleGeometry()
 	// Copy the triangle data to the vertex buffer.
 	UINT8* pVertexDataBegin;
 	CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-	mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin));
-	memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
+	mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)); //allocates a CPU virtual address range for the resource. 
+	memcpy(pVertexDataBegin, &vertices, sizeof(vertices)); //Copies the values of num bytes from the location pointed to by vertices directly to the memory block pointed to by pVertexDataBegin.
 	mVertexBuffer->Unmap(0, nullptr);
 
 	//Initialize the vertex buffer view.
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
 	mVertexBufferView.StrideInBytes = sizeof(Vertex);
-	mVertexBufferView.SizeInBytes = vertexBufferSize;
+	mVertexBufferView.SizeInBytes = vbBufferSize;
 
 	
 

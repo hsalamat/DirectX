@@ -111,6 +111,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Constant Buffer Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -322,8 +323,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 	//step 13: we are making two new shaders so it doesn't mess up the old codes!
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS2.hlsl", nullptr, "main", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS2.hlsl", nullptr, "main", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS2.hlsl", nullptr, "main", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS2.hlsl", nullptr, "main", "ps_5_1");
 	// at the end of this step, do a build, make sure everything compiles well and cso files are getting created. step14 is inside vertex shader VS2.hlsl!
 
 

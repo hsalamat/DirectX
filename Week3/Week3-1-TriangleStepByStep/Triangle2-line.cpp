@@ -1,5 +1,5 @@
 //***************************************************************************************
-// Shows how to draw a triangle in Direct3D 12.
+// Shows how to draw a Octagon using D3D_PRIMITIVE_TOPOLOGY_LINESTRIP.
 //
 //***************************************************************************************
 
@@ -54,7 +54,7 @@ private:
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
 
-	std::array<Vertex, 9> vertices;
+	std::array<Vertex, 10> vertices;
 
 };
 
@@ -84,6 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Line Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -241,8 +242,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 {
 	HRESULT hr = S_OK;
 	//Take a look at HLSL compiler, change the output directory, set it "Vertex shader", pay attention to "main" as an entry point, the version of hlsl...
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "main", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "main", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "main", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "main", "ps_5_1");
 
 
 	mInputLayout =
@@ -256,20 +257,16 @@ void TriangleAPP::BuildTriangleGeometry()
  vertices =
 	{
 
-		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f)}),
-		Vertex({ XMFLOAT3(+0.0f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) }),
-
-		//why don't we see this triangle? because you are setting up the vertices counterclockwise!
-		//by default, system does backface culling
-		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-
-		//LET'S FIX THAT!
-		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
-		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(-0.25f, +0.5f, 0.0f)}),
+		Vertex({ XMFLOAT3(+0.25f, +0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(+0.5f, +0.25f, 0.0f) }),
+		Vertex({ XMFLOAT3(+0.5f, +0.25f, 0.0f)}),
+		Vertex({ XMFLOAT3(+0.5f, -0.25f, 0.0f) }),
+		Vertex({ XMFLOAT3(+.25f, -0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(-0.25f, -0.5f, 0.0f)}),
+		Vertex({ XMFLOAT3(-0.5f, -0.25f, 0.0f) }),
+		Vertex({ XMFLOAT3(-0.5f, +0.25f, 0.0f) }),
+		Vertex({ XMFLOAT3(-0.25f, +0.5f, 0.0f)}),
 	};
 
 	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);

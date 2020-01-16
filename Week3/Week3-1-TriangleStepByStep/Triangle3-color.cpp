@@ -76,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 		return theApp.Run();
 	}
-	catch (DxException& e)
+	catch (DxException & e)
 	{
 		MessageBox(nullptr, e.ToString().c_str(), L"HR Failed", MB_OK);
 		return 0;
@@ -86,6 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Simple Triangle with Color Demo";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -240,8 +241,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 	//Take a look at HLSL compiler, change the output directory, set it "Vertex shader", pay attention to "main" as an entry point, the version of hlsl...
 	//step6 use our new shaders PS1 and VS1
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS1.hlsl", nullptr, "main", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS1.hlsl", nullptr, "main", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS1.hlsl", nullptr, "main", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS1.hlsl", nullptr, "main", "ps_5_1");
 
 
 	mInputLayout =
@@ -255,7 +256,7 @@ void TriangleAPP::BuildShadersAndInputLayout()
 void TriangleAPP::BuildTriangleGeometry()
 {
 
-  vertices =
+	vertices =
 	{
 
 		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(Colors::Red)}),
@@ -264,10 +265,10 @@ void TriangleAPP::BuildTriangleGeometry()
 	};
 
 	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);
-   // Note: using upload heaps to transfer static data like vert buffers is not 
-   // recommended. Every time the GPU needs it, the upload heap will be marshalled 
-   // over. Please read up on Default Heap usage. An upload heap is used here for 
-   // code simplicity and because there are very few verts to actually transfer.
+	// Note: using upload heaps to transfer static data like vert buffers is not 
+	// recommended. Every time the GPU needs it, the upload heap will be marshalled 
+	// over. Please read up on Default Heap usage. An upload heap is used here for 
+	// code simplicity and because there are very few verts to actually transfer.
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
@@ -279,12 +280,12 @@ void TriangleAPP::BuildTriangleGeometry()
 	// Copy the triangle data to the vertex buffer.
 	UINT8* pVertexDataBegin;
 
-CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)); //Gets a CPU pointer to the specified subresource in the resource
-memcpy(pVertexDataBegin, &vertices, sizeof(vertices));  //Copies count bytes from the object pointed to by &vertices to the object pointed to by pVertexDataBegin.
-mVertexBuffer->Unmap(0, nullptr);   //Invalidates the CPU pointer to the specified subresource in the resource.
+	CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
+	mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)); //Gets a CPU pointer to the specified subresource in the resource
+	memcpy(pVertexDataBegin, &vertices, sizeof(vertices));  //Copies count bytes from the object pointed to by &vertices to the object pointed to by pVertexDataBegin.
+	mVertexBuffer->Unmap(0, nullptr);   //Invalidates the CPU pointer to the specified subresource in the resource.
 
-	//Initialize the vertex buffer view.
+		//Initialize the vertex buffer view.
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
 	mVertexBufferView.StrideInBytes = sizeof(Vertex);
 	mVertexBufferView.SizeInBytes = vbBufferSize;

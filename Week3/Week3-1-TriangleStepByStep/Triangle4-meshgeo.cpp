@@ -1,6 +1,6 @@
 //***************************************************************************************
 // Shows how to draw a triangle in Direct3D 12.
-// Adding MeshGeometry
+// Using MeshGeometry
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TriangleAPP::TriangleAPP(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	mMainWndCaption = L"Simple Triangle Demo using Mesh Geometry";
 }
 
 TriangleAPP::~TriangleAPP()
@@ -249,8 +250,8 @@ void TriangleAPP::BuildRootSignature()
 void TriangleAPP::BuildShadersAndInputLayout()
 {
 	HRESULT hr = S_OK;
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS1.hlsl", nullptr, "main", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS1.hlsl", nullptr, "main", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS1.hlsl", nullptr, "main", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS1.hlsl", nullptr, "main", "ps_5_1");
 
 
 	mInputLayout =
@@ -285,6 +286,7 @@ void TriangleAPP::BuildTriangleGeometry()
 	mBoxGeo = std::make_unique<MeshGeometry>();
 	mBoxGeo->Name = "triangleGeo";
 
+	//D3DCreateBlob creates a buffer given a size
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &mBoxGeo->VertexBufferCPU));
 	CopyMemory(mBoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
