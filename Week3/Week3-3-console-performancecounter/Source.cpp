@@ -52,20 +52,20 @@ int main()
 
 	GameTimer mTimer;
 
-	mTimer.Reset();
+	mTimer.Reset(); //the first frame of animation, there is no previous frame. This initializes mPrevTime to the current time
 
 	int message = 10;
 
 	while (message != 0)
 	{
-			mTimer.Start();
-			mTimer.Tick();
+			mTimer.Start();  //Call when unpaused.
+			mTimer.Tick();   //Call every frame.
 
 			cout << "the delta time now is : " << mTimer.DeltaTime() * 1000 << endl; //in milliseconds
 			
 			// Returns the total time elapsed since Reset() was called, NOT counting any  time when the clock is stopped.
 			cout << "the total time now is : " << mTimer.TotalTime() * 1000 << endl; //in milliseconds
-			mTimer.Stop();
+			mTimer.Stop(); //Call when paused.
 
 			Sleep(1000);	
 			message--;
