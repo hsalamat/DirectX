@@ -19,6 +19,9 @@ int main()
 	cout << "How long does it take to execute this line?" << endl;
 	QueryPerformanceCounter(&EndingTime);
 
+	cout << "Starting Time: " << StartingTime.QuadPart << endl;
+	cout << "Ending Time: " << EndingTime.QuadPart << endl;
+
 	//To get the frequency(counts per second) of the performance timer
 	//the number of seconds (or fractions of a second) per count is just the reciprocal of the counts per second : mSecondsPerCount = 1.0 / (double)countsPerSec;
 	QueryPerformanceFrequency(&frequency);
@@ -27,7 +30,11 @@ int main()
 	//Every LargeInteger is a union of High Part (long:156 ) and Low Part (unsigned long: 629310124)
 
 
-	DifferenceOfTime.QuadPart = EndingTime.QuadPart - StartingTime.QuadPart;	 
+	DifferenceOfTime.QuadPart = EndingTime.QuadPart - StartingTime.QuadPart;
+
+	cout << "Difference Of Time: " << DifferenceOfTime.QuadPart << endl;
+	cout << "Frequency: " << frequency.QuadPart << endl;
+
 	//how about calculating this directly without quadpart
 	//deltaTime = EndingTime - StartingTime; //no operator matches this operands . Because a large integer is a union!
 
@@ -36,7 +43,7 @@ int main()
 	//To convert a time reading valueInCounts to microseconds, we just divide it by frequency
 	DifferenceOfTime.QuadPart /= frequency.QuadPart; //For Tick per seconds
 
-	DifferenceOfTime.QuadPart /= 1000; //the value is in millisecond now
+	DifferenceOfTime.QuadPart /= 1000; //the value is in milliseconds now
 
 	cout << "Execution Time in milliseconds is : " << DifferenceOfTime.QuadPart << endl;
 
@@ -54,10 +61,10 @@ int main()
 			mTimer.Start();
 			mTimer.Tick();
 
-			cout << "the delta time now is : " << mTimer.DeltaTime() * 1000000 << endl; //in milliseconds
+			cout << "the delta time now is : " << mTimer.DeltaTime() * 1000 << endl; //in milliseconds
 			
 			// Returns the total time elapsed since Reset() was called, NOT counting any  time when the clock is stopped.
-			cout << "the total time now is : " << mTimer.TotalTime() * 1000000 << endl; //in milliseconds
+			cout << "the total time now is : " << mTimer.TotalTime() * 1000 << endl; //in milliseconds
 			mTimer.Stop();
 
 			Sleep(1000);	
