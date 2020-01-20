@@ -179,10 +179,9 @@ void BoxApp::Update(const GameTimer& gt)
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
 	//step2 a rotation around z axis
-	mTheta2 += 0.01f;
+	//mTheta2 += 0.01f;
+	mTheta2 += gt.DeltaTime();
 	world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
-	//
-
 
 	float angle = (-XM_PI + mTheta2) / 6.0f;
 	float c = std::cos(angle);
