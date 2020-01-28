@@ -1,5 +1,5 @@
 //***************************************************************************************
-// BoxApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
+// BoxApp.cpp 
 //
 // Shows how to draw a box in Direct3D 12.
 //
