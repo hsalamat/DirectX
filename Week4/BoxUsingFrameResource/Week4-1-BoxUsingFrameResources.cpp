@@ -227,18 +227,12 @@ void ShapesApp::Update(const GameTimer& gt)
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-	std::wstring text = L"Current Frame Resource Index= " + std::to_wstring(mCurrFrameResourceIndex)+ L"\n";
-	text += L"Current Fence = " + std::to_wstring(mCurrentFence) + L"\n";
-
-	// Has the GPU finished processing the commands of the current frame resource?
-	// If not, wait until the GPU has completed commands up to this fence point.
-	text += L"CPU has added commands up to this Fence Number for current frame resource = " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
-	text += L"GPU has completed commands up to Fence Number = " + std::to_wstring(mFence->GetCompletedValue()) + L"\n";
-	OutputDebugString(text.c_str());
-
 	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
 	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
+		std::wstring text2 = L"GPU Completed " + std::to_wstring(mFence->GetCompletedValue()) + L" but current fence is " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
+		OutputDebugString(text2.c_str());
+
 		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
 		ThrowIfFailed(mFence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
@@ -318,6 +312,7 @@ void ShapesApp::Draw(const GameTimer& gt)
 	//For every frame, the CPU and GPU are idling at some point.
 	//	FlushCommandQueue();
 
+
 	//step9:  Advance the fence value to mark commands up to this fence point.
 	mCurrFrameResource->Fence = ++mCurrentFence;
 
@@ -327,8 +322,17 @@ void ShapesApp::Draw(const GameTimer& gt)
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 	// Note that GPU could still be working on commands from previous
-		// frames, but that is okay, because we are not touching any frame
-		// resources associated with those frames.
+	// frames, but that is okay, because we are not touching any frame
+	// resources associated with those frames.
+
+	std::wstring text = L"Current Frame Resource Index= " + std::to_wstring(mCurrFrameResourceIndex) + L"\n";
+	text += L"Current Fence = " + std::to_wstring(mCurrentFence) + L"\n";
+
+	// Has the GPU finished processing the commands of the current frame resource?
+	// If not, wait until the GPU has completed commands up to this fence point.
+	text += L"CPU has added commands up to this Fence Number for current frame resource = " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
+	text += L"GPU has completed commands up to Fence Number = " + std::to_wstring(mFence->GetCompletedValue()) + L"\n";
+	OutputDebugString(text.c_str());
 
 }
 
