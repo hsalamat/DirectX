@@ -875,6 +875,7 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
+	//step1
 	//Multiplying: Suppose that we want to multiply a source pixel with its corresponding destination pixel. To do this, we set 
 	//source blend factor : D3D12_BLEND_ZERO,
 	//destination blend factor : D3D12_BLEND_SRC_COLOR,

@@ -882,7 +882,7 @@ void BlendApp::BuildPSOs()
 	//destination blend factor = D3D12_BLEND_ONE,
 	//blend operator =  D3D12_BLEND_OP_ADD.
 	//The following adds source and destination color. Adding creates a brighter image since color is being added.
-
+	//step1
 	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ONE;
 	transparencyBlendDesc.DestBlend = D3D12_BLEND_ONE;
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,

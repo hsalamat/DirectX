@@ -59,6 +59,7 @@ struct RenderItem
 enum class RenderLayer : int
 {
 	Opaque = 0,
+	//step1
 	Transparent,
 	AlphaTested,
 	Count
@@ -294,15 +295,18 @@ void BlendApp::Draw(const GameTimer& gt)
 
     DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::Opaque]);
 
+	//step 2
 	mCommandList->SetPipelineState(mPSOs["alphaTested"].Get());
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[(int)RenderLayer::AlphaTested]);
 
 	//when you draw, you can set the blend factor that modulate values for a pixel shader, render target, or both.
-	//You could also use the following blend factor when you set your blend to D3D12_BLEND_BLEND_FACTOR in PSO like following:
+	//You could also use the following blend factor when you set your blend to D3D12_BLEND_BLEND_FACTOR in PSO like following:	
 	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
 	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+	//and then we set the blend factor here!
 
-	//float blendFactor[4] = { 0.5f, 0.5f, 0.5f, 1.f };
+	//float blendFactor[4] = { 0.9f, 0.9f, 0.9f, 1.f };  //change that water to high opacity
+	//float blendFactor[4] = { 0.3f, 0.3f, 0.3f, 1.f };  //change the water to high transparency
 	//mCommandList->OMSetBlendFactor(blendFactor);
 
 	mCommandList->SetPipelineState(mPSOs["transparent"].Get());
@@ -658,6 +662,7 @@ void BlendApp::BuildDescriptorHeaps()
 
 void BlendApp::BuildShadersAndInputLayout()
 {
+	//step3
 	const D3D_SHADER_MACRO defines[] =
 	{
 		"FOG", "1",
@@ -671,9 +676,9 @@ void BlendApp::BuildShadersAndInputLayout()
 		NULL, NULL
 	};
 
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_0");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", defines, "PS", "ps_5_0");
-	mShaders["alphaTestedPS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", alphaTestDefines, "PS", "ps_5_0");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", defines, "PS", "ps_5_1");
+	mShaders["alphaTestedPS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 	
     mInputLayout =
     {
@@ -876,7 +881,7 @@ void BlendApp::BuildPSOs()
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
     ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
-	//
+	// step1:
 	// PSO for transparent objects
 	//
 
@@ -886,7 +891,7 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
-	//suppose that we want to blend the sourceand destination pixels based on the opacity of the source pixel :
+	//suppose that we want to blend the source and destination pixels based on the opacity of the source pixel :
 	//source blend factor : D3D12_BLEND_SRC_ALPHA
 	//destination blend factor : D3D12_BLEND_INV_SRC_ALPHA
 	//blend operator : D3D12_BLEND_OP_ADD
@@ -900,7 +905,7 @@ void BlendApp::BuildPSOs()
 	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
 	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
 
-	//Hooman: try different blend operators to see the blending effect
+	//Hooman: try different blend operators to see the blending effects
 	//D3D12_BLEND_OP_ADD,
 	//D3D12_BLEND_OP_SUBTRACT,
 	//D3D12_BLEND_OP_REV_SUBTRACT,

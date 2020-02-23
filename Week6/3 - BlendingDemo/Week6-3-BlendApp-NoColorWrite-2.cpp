@@ -892,6 +892,7 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	//step1
 	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	transparencyBlendDesc.RenderTargetWriteMask = 0;
 	//Direct3D supports rendering to up to eight render targets simultaneously.

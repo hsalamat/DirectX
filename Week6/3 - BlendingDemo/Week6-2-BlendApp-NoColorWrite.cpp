@@ -877,6 +877,7 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
+	//step1
 	//No Color Write: To do this, set the source pixel blend factor to D3D12_BLEND_ZERO, the destination
 	//blend factor to D3D12_BLEND_ONE, and the blend operator to D3D12_BLEND_OP_ADD.
 

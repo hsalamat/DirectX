@@ -882,7 +882,7 @@ void BlendApp::BuildPSOs()
 	//destination blend factor = D3D12_BLEND_ONE,
 	//blend operator =  D3D12_BLEND_OP_SUBTRACT.
 	//The following subtracts source from  destination color. Subtracting creates a darker image since color is being subtracted.
-
+	//step1
 	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ONE;
 	transparencyBlendDesc.DestBlend = D3D12_BLEND_ONE;
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_SUBTRACT,
