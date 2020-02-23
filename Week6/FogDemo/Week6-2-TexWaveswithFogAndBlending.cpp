@@ -55,6 +55,7 @@ struct RenderItem
 enum class RenderLayer : int
 {
 	Opaque = 0,
+	//step1
 	Transparent,
 	Count
 };
@@ -900,7 +901,7 @@ void TexWavesApp::BuildMaterials()
 	water->Name = "water";
 	water->MatCBIndex = 1;
 	water->DiffuseSrvHeapIndex = 1;
-	//step 6: what happens if you change the alpha to 1.0?
+	//step 6: what happens if you change the alpha to 1.0? 100% water and no blending?
 	water->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f);
 	water->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
@@ -935,7 +936,7 @@ void TexWavesApp::BuildRenderItems()
 	//// we use mVavesRitem in updatewaves() to set the dynamic VB of the wave renderitem to the current frame VB.
 	mWavesRitem = wavesRitem.get();
 
-	//step3
+	//step5
 	//mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
 	mRitemLayer[(int)RenderLayer::Transparent].push_back(wavesRitem.get());
 
@@ -950,6 +951,7 @@ void TexWavesApp::BuildRenderItems()
 	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 
+	//Removing grass land from the scene
 	//mRitemLayer[(int)RenderLayer::Opaque].push_back(gridRitem.get());
 
 	auto boxRitem = std::make_unique<RenderItem>();
