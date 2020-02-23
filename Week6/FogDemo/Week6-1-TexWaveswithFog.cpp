@@ -1,5 +1,11 @@
 //***************************************************************************************
 // TexWavesAppWithFog.cpp 
+//We specify a fog color, a fog start distance from the camera and a fog range (i.e., the range from the fog start distance until the fog completely hides any objects). 
+//FrameResource.h has been changed! PassConstant structure now adds the following:
+//DirectX::XMFLOAT4 FogColor = { 0.7f, 0.7f, 0.7f, 1.0f };
+//float gFogStart = 5.0f;
+//float gFogRange = 150.0f;
+//DirectX::XMFLOAT2 cbPerObjectPad2;
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -44,7 +50,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
 	// Primitive topology.
-	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	// DrawIndexedInstanced parameters.
 	UINT IndexCount = 0;
@@ -272,7 +278,7 @@ void TexWavesApp::Draw(const GameTimer& gt)
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// Clear the back buffer and depth buffer.
-	//step6: 
+	//step1: 
 	//mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), (float*)& mMainPassCB.FogColor, 0, nullptr);
 
@@ -640,7 +646,7 @@ void TexWavesApp::BuildDescriptorHeaps()
 
 void TexWavesApp::BuildShadersAndInputLayout()
 {
-	//step3
+	//step2
 	const D3D_SHADER_MACRO defines[] =
 	{
 		"FOG", "1",
