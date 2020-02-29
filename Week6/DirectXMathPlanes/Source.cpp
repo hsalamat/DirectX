@@ -56,7 +56,7 @@ int main()
 		cout << "v is in negative half-space." << endl;
 
 	//This returns the dot product of the plane normal vector and the given 3D vector which is (5.0f, 5.0f, 5.0f, 5.0f), 
-	//it means the shortest distance to the plane equals to 5. 
+	//it means the shortest distance to the plane equals to p.v = 5 where p is the normal and v is a point. 
 	XMVECTOR d =  XMPlaneDotNormal(p, v);
 	cout << "The shortest distance to the plane: " << d << endl;
 
@@ -70,19 +70,19 @@ int main()
     //XMVECTOR XMPlaneFromPoints(XMVECTOR Point1, XMVECTOR Point2, XMVECTOR Point3);
 
 
-	XMVECTOR p0 = XMVectorSet(0.5f, 1.0f, 0.0f, 1.0f);
-	XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 0.5f, 1.0f);
-	XMVECTOR p2 = XMVectorSet(-0.5f, 1.0f, 0.0f, 1.0f);
-	cout << "Construct a plane vector (n,d) from three points: " << XMPlaneFromPoints(p0, p1, p2) << endl; //(0, -1, 0, 1)
+	XMVECTOR p0 = XMVectorSet(5.0f, 1.0f, 0.0f, 1.0f);
+	XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 5.0f, 1.0f);
+	XMVECTOR p2 = XMVectorSet(5.0f, 1.0f, 5.0f, 1.0f);
+	cout << "Construct a plane vector (n,d) from three points: " << XMPlaneFromPoints(p0, p1, p2) << endl; //(0, 1, 0, -1)
 
 
-	//Sometimes we might have a planeand would like to normalize the normal vector.At first thought, 
+	//Sometimes we might have a plane and would like to normalize the normal vector.At first thought, 
 	//it would seem that we could just normalize the normal vector as we would any other vector.
 	//But recall that the d component also depends on the normal vector : d = −n · p0.Therefore, 
 	//if we normalize the normal vector, we must also recalculate d.
 	//We can use the following DirectX Math function to normalize a plane’s normal vector :
 	//XMVECTOR XMPlaneNormalize(XMVECTOR P);
-	cout << "To normalize a plane’s normal vector :" << XMPlaneNormalize(p) << endl; //(0, -1, 0, 1)
+	cout << "To normalize a plane’s normal vector :" << XMPlaneNormalize(p) << endl; //(0, 1, 0, 0)
 
 	//The set of intersection points found by shooting a ray through each of the object’s vertices with the plane
 	//defines the projected geometry of the shadow. For a vertex p, its shadow projection is given by:
