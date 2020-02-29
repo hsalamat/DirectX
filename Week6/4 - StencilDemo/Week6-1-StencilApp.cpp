@@ -173,6 +173,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 StencilApp::StencilApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
+	mMainWndCaption = L"Stencil Demo";
 }
 
 StencilApp::~StencilApp()
@@ -410,6 +411,7 @@ void StencilApp::OnKeyboardInput(const GameTimer& gt)
 
 	// Update reflection world matrix.
 	XMVECTOR mirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); // xy plane
+	//Builds a transformation matrix designed to reflect vectors through a given plane.
 	XMMATRIX R = XMMatrixReflect(mirrorPlane);
 	XMStoreFloat4x4(&mReflectedSkullRitem->World, skullWorld * R);
 
@@ -524,6 +526,9 @@ void StencilApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
+//Note: when drawing the image, we need to reflect the light source on the mirror plane. Otherwise, the light in the image is not true.
+
+
 void StencilApp::UpdateReflectedPassCB(const GameTimer& gt)
 {
 	mReflectedPassCB = mMainPassCB;
@@ -535,6 +540,8 @@ void StencilApp::UpdateReflectedPassCB(const GameTimer& gt)
 	for(int i = 0; i < 3; ++i)
 	{
 		XMVECTOR lightDir = XMLoadFloat3(&mMainPassCB.Lights[i].Direction);
+		//DirectXMath uses a completely wrong and misleading name. It has nothing to do with normals which typically require a special transform since they originate from cross products.
+		//XMVector3TransformNormal() transforms 3D directions (w-coordinate is implicitly set to 0), XMVector3TransformCoord() transforms 3D points (w-coordinate is implicitly set to 1).
 		XMVECTOR reflectedLightDir = XMVector3TransformNormal(lightDir, R);
 		XMStoreFloat3(&mReflectedPassCB.Lights[i].Direction, reflectedLightDir);
 	}

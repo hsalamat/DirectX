@@ -177,6 +177,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 StencilApp::StencilApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
+	mMainWndCaption = L"Shadow Demo";
 }
 
 StencilApp::~StencilApp()
@@ -388,7 +389,7 @@ void StencilApp::OnMouseMove(WPARAM btnState, int x, int y)
  
 void StencilApp::OnKeyboardInput(const GameTimer& gt)
 {
-	//
+	// step14
 	// Allow user to move skull.
 	//
 
