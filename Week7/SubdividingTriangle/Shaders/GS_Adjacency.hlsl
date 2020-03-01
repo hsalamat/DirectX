@@ -22,7 +22,7 @@ struct GeoOut
 
 
 [maxvertexcount(12)]
-void GS(triangleadj VertexOut gin[6], //PrimitiveType InputVertexType InputName[NumElements]-> one vertex for a point, two for aline, threefor atriangle, four for line with adjacency, and six for a triangle with adjacency.
+void GS(triangleadj VertexOut gin[6], //PrimitiveType InputVertexType InputName[NumElements]-> one vertex for a point, two for aline, three for atriangle, four for line with adjacency, and six for a triangle with adjacency.
         //uint primID : SV_PrimitiveID, //inout StreamOutputObject<OutputVertexType>
         inout TriangleStream<GeoOut> triStream)  //OutputName
 {
@@ -48,6 +48,8 @@ void GS(triangleadj VertexOut gin[6], //PrimitiveType InputVertexType InputName[
         triStream.Append(gout[i]);
     }
     
+
+
     triStream.RestartStrip();
 
     for (uint i = 2; i < 5; i++)
@@ -58,18 +60,5 @@ void GS(triangleadj VertexOut gin[6], //PrimitiveType InputVertexType InputName[
         triStream.Append(gout[i]);
     }
     
-    triStream.RestartStrip();
-
-    for (uint i = 4; i <= 6; i++)
-    {
-        if (i == 6)
-            i = 0;
-        // Transform to homogeneous clip space.
-        gout[i].PosH = mul(float4(gin[i].PosW, 1.0f), gWorldViewProj);
-        gout[i].Color = gin[i].Color;
-        triStream.Append(gout[i]);
-    }
-    
-    triStream.RestartStrip();
 
 }

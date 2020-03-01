@@ -24,7 +24,8 @@ VertexOut VS(VertexIn vin)
 
 	// Just pass data over to geometry shader.
 
-    vout.PosW = float4(vin.PosL, 1.0f);
+    //vout.PosW = float4(vin.PosL, 1.0f);
+    vout.PosW = vin.PosL;
 
 	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;
