@@ -32,7 +32,7 @@ VertexOut VS(VertexIn vin, uint vertID : SV_VertexID)
     vout.PosW = float4(vin.PosL, 1.0f);
 
 	// Just pass vertex color into the pixel shader.
-    float4 color = (1.0f, 1.0f, 1.0f, 1.0f);
+    float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
     if(vertID % 3 == 0  ) 
     color = float4(1.0f, 0.0f, 0.0f, 1.0f);
 
