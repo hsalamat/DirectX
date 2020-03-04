@@ -110,6 +110,7 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;
+	ComPtr<ID3D12PipelineState> mWireframePSO = nullptr;
 
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
@@ -128,6 +129,8 @@ private:
 	float mRadius = 2.5f;
 
 	POINT mLastMousePos;
+
+	bool mIsWireframe = false;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -241,8 +244,16 @@ void CrateApp::Draw(const GameTimer& gt)
 	ThrowIfFailed(cmdListAlloc->Reset());
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
-	// Reusing the command list reuses memory.
-	ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mOpaquePSO.Get()));
+	// Reusing the command list reuses memory.	
+
+	if (mIsWireframe)
+	{
+		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mOpaquePSO.Get()));
+	}
+	else
+	{
+		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mWireframePSO.Get()));
+	}
 
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
@@ -266,7 +277,11 @@ void CrateApp::Draw(const GameTimer& gt)
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	mCommandList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
+
+
 	DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+
+
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -339,6 +354,16 @@ void CrateApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 void CrateApp::OnKeyboardInput(const GameTimer& gt)
 {
+	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
+//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
+//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.
+//if (GetAsyncKeyState('1') & 0x8000)
+
+	short key = GetAsyncKeyState('1');
+	if (key & 0x8000)  //if one is pressed, 0x8000 = 32767 , key = -32767 = FFFFFFFFFFFF8001
+		mIsWireframe = true;
+	else
+		mIsWireframe = false;
 }
 
 void CrateApp::UpdateCamera(const GameTimer& gt)
@@ -562,7 +587,7 @@ void CrateApp::BuildShadersAndInputLayout()
 
 void CrateApp::BuildShapeGeometry()
 {
-	GeometryGenerator geoGen;
+	//GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box;
 
 
@@ -692,6 +717,14 @@ void CrateApp::BuildPSOs()
 	opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mOpaquePSO)));
+
+	//
+// PSO for opaque wireframe objects.
+//
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = opaquePsoDesc;
+	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mWireframePSO)));
 }
 
 void CrateApp::BuildFrameResources()

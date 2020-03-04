@@ -7,8 +7,8 @@ cbuffer cbPerObject : register(b0)
 struct VertexOut
 {
     float3 CenterW : POSITION;
-    float2 SizeW : SIZE;
     float4 Color : COLOR;
+    float2 SizeW : SIZE;
 };
 
 struct GeoOut
@@ -30,12 +30,11 @@ void GS(point VertexOut gin[1], //PrimitiveType InputVertexType InputName[NumEle
         inout TriangleStream<GeoOut> triStream)  //OutputName
 {
 
-    	// Compute the local coordinate system of the sprite relative to the world
+    // Compute the local coordinate system of the sprite relative to the world
 	// space such that the billboard is aligned with the y-axis and faces the eye.
 	//
 
     float3 up = float3(0.0f, 1.0f, 0.0f);
-    //float3 look = gEyePosW - gin[0].CenterW;
     float3 look = float3(0.0f, 0.0f, 1.0f);
     look.y = 0.0f; // y-axis aligned, so project to xz-plane
     look = normalize(look);

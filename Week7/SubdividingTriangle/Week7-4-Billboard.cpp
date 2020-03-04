@@ -16,6 +16,7 @@ struct Vertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT4 Color;
+	XMFLOAT2 Size;
 };
 
 
@@ -175,8 +176,8 @@ void TriangleAPP::Update(const GameTimer& gt)
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
 	//step2 a rotation around z axis
-	mTheta2 += 0.05f;
-	world = XMMatrixRotationX((-XM_PI+ mTheta2) / 6.0f);
+	mTheta2 += gt.DeltaTime()*2.0f;
+	world = XMMatrixRotationX((XM_PI+ mTheta2) );
 	//
 
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -322,8 +323,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 }
 
@@ -331,9 +332,9 @@ void TriangleAPP::BuildTriangleGeometry()
 {
 	std::array<Vertex, 3> vertices =
 	{
-				Vertex({ XMFLOAT3(0.5f, +0.5f, 0.0f) , XMFLOAT4(Colors::GreenYellow)}),
-				Vertex({ XMFLOAT3(-0.5f, 0.0f, 0.0f), XMFLOAT4(Colors::Red)}),
-				Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Green) }),
+				Vertex({ XMFLOAT3(0.5f, 0.5f, 0.0f) , XMFLOAT4(Colors::GreenYellow), XMFLOAT2(1.0f, 1.0f)}),
+				Vertex({ XMFLOAT3(-0.5f, 0.0f, 0.0f), XMFLOAT4(Colors::Red), XMFLOAT2(1.0f, 1.0f)}),
+				Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Green), XMFLOAT2(1.0f, 1.0f)}),
 				/*Vertex({ XMFLOAT3(+0.5f, +0.0f, 0.0f) , XMFLOAT4(Colors::Blue) }),
 				Vertex({ XMFLOAT3(+0.0f, -0.5f, 0.0f) , XMFLOAT4(Colors::Pink) }),*/
 	};
