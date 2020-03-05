@@ -1,11 +1,12 @@
 //***************************************************************************************
-// TreeBillboardsApp.cpp
+// FlagBillboardsApp.cpp
 //When objects are far away, a billboarding technique is used for efficiency.That is,
 //instead of rendering the geometry for a fully 3D object, a quad with a picture of a 3D object is
 //painted on it. From a distance, you cannot tell that a billboard is being
 //used.However, the trick is to make sure that the billboard always faces the camera
 //Assuming the y-axis is up and the xz-plane is the ground plane, the  billboards
 //will generally be aligned with the y - axis and just face the camera in the xz - plane.
+//Note that we are only using TreeSprile.hlsl for all shaders including GS!
 //***************************************************************************************
 
 #include "../../Common/d3dApp.h"
@@ -67,13 +68,13 @@ enum class RenderLayer : int
 	Count
 };
 
-class TreeBillboardsApp : public D3DApp
+class FlagBillboardsApp : public D3DApp
 {
 public:
-    TreeBillboardsApp(HINSTANCE hInstance);
-    TreeBillboardsApp(const TreeBillboardsApp& rhs) = delete;
-    TreeBillboardsApp& operator=(const TreeBillboardsApp& rhs) = delete;
-    ~TreeBillboardsApp();
+    FlagBillboardsApp(HINSTANCE hInstance);
+    FlagBillboardsApp(const FlagBillboardsApp& rhs) = delete;
+    FlagBillboardsApp& operator=(const FlagBillboardsApp& rhs) = delete;
+    ~FlagBillboardsApp();
 
     virtual bool Initialize()override;
 
@@ -160,7 +161,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
-        TreeBillboardsApp theApp(hInstance);
+        FlagBillboardsApp theApp(hInstance);
         if(!theApp.Initialize())
             return 0;
 
@@ -173,18 +174,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     }
 }
 
-TreeBillboardsApp::TreeBillboardsApp(HINSTANCE hInstance)
+FlagBillboardsApp::FlagBillboardsApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
 }
 
-TreeBillboardsApp::~TreeBillboardsApp()
+FlagBillboardsApp::~FlagBillboardsApp()
 {
     if(md3dDevice != nullptr)
         FlushCommandQueue();
 }
 
-bool TreeBillboardsApp::Initialize()
+bool FlagBillboardsApp::Initialize()
 {
     if(!D3DApp::Initialize())
         return false;
@@ -218,7 +219,7 @@ bool TreeBillboardsApp::Initialize()
     return true;
 }
  
-void TreeBillboardsApp::OnResize()
+void FlagBillboardsApp::OnResize()
 {
     D3DApp::OnResize();
 
@@ -227,7 +228,7 @@ void TreeBillboardsApp::OnResize()
     XMStoreFloat4x4(&mProj, P);
 }
 
-void TreeBillboardsApp::Update(const GameTimer& gt)
+void FlagBillboardsApp::Update(const GameTimer& gt)
 {
     OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -251,7 +252,7 @@ void TreeBillboardsApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void TreeBillboardsApp::Draw(const GameTimer& gt)
+void FlagBillboardsApp::Draw(const GameTimer& gt)
 {
     auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -312,7 +313,7 @@ void TreeBillboardsApp::Draw(const GameTimer& gt)
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void TreeBillboardsApp::OnMouseDown(WPARAM btnState, int x, int y)
+void FlagBillboardsApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
     mLastMousePos.x = x;
     mLastMousePos.y = y;
@@ -320,12 +321,12 @@ void TreeBillboardsApp::OnMouseDown(WPARAM btnState, int x, int y)
     SetCapture(mhMainWnd);
 }
 
-void TreeBillboardsApp::OnMouseUp(WPARAM btnState, int x, int y)
+void FlagBillboardsApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
     ReleaseCapture();
 }
 
-void TreeBillboardsApp::OnMouseMove(WPARAM btnState, int x, int y)
+void FlagBillboardsApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
     if((btnState & MK_LBUTTON) != 0)
     {
@@ -357,11 +358,11 @@ void TreeBillboardsApp::OnMouseMove(WPARAM btnState, int x, int y)
     mLastMousePos.y = y;
 }
  
-void TreeBillboardsApp::OnKeyboardInput(const GameTimer& gt)
+void FlagBillboardsApp::OnKeyboardInput(const GameTimer& gt)
 {
 }
  
-void TreeBillboardsApp::UpdateCamera(const GameTimer& gt)
+void FlagBillboardsApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);
@@ -377,7 +378,7 @@ void TreeBillboardsApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-void TreeBillboardsApp::UpdateObjectCBs(const GameTimer& gt)
+void FlagBillboardsApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for(auto& e : mAllRitems)
@@ -401,7 +402,7 @@ void TreeBillboardsApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-void TreeBillboardsApp::UpdateMaterialCBs(const GameTimer& gt)
+void FlagBillboardsApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
 	for(auto& e : mMaterials)
@@ -427,7 +428,7 @@ void TreeBillboardsApp::UpdateMaterialCBs(const GameTimer& gt)
 	}
 }
 
-void TreeBillboardsApp::UpdateMainPassCB(const GameTimer& gt)
+void FlagBillboardsApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -462,7 +463,7 @@ void TreeBillboardsApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void TreeBillboardsApp::LoadTextures()
+void FlagBillboardsApp::LoadTextures()
 {
 	auto treeArrayTex = std::make_unique<Texture>();
 	treeArrayTex->Name = "treeArrayTex";
@@ -474,7 +475,7 @@ void TreeBillboardsApp::LoadTextures()
 	mTextures[treeArrayTex->Name] = std::move(treeArrayTex);
 }
 
-void TreeBillboardsApp::BuildRootSignature()
+void FlagBillboardsApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
@@ -514,7 +515,7 @@ void TreeBillboardsApp::BuildRootSignature()
         IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void TreeBillboardsApp::BuildDescriptorHeaps()
+void FlagBillboardsApp::BuildDescriptorHeaps()
 {
 	//
 	// Create the SRV heap.
@@ -548,7 +549,7 @@ void TreeBillboardsApp::BuildDescriptorHeaps()
 	md3dDevice->CreateShaderResourceView(treeArrayTex.Get(), &srvDesc, hDescriptor);
 }
 
-void TreeBillboardsApp::BuildShadersAndInputLayouts()
+void FlagBillboardsApp::BuildShadersAndInputLayouts()
 {
 	const D3D_SHADER_MACRO defines[] =
 	{
@@ -576,9 +577,9 @@ void TreeBillboardsApp::BuildShadersAndInputLayouts()
 	};
 }
 
-void TreeBillboardsApp::BuildTreeSpritesGeometry()
+void FlagBillboardsApp::BuildTreeSpritesGeometry()
 {
-	//step5
+	//step4  (step5 and 6 are in TreeSprite.hlsl)
 	struct TreeSpriteVertex
 	{
 		XMFLOAT3 Pos;
@@ -593,7 +594,7 @@ void TreeBillboardsApp::BuildTreeSpritesGeometry()
 		float z = MathHelper::RandF(-25.0f, 25.0f);
 		float y = GetHillsHeight(x, z);
 
-		// Move tree slightly above land height.
+		// Move flags slightly above.
 		y += 8.0f;
 
 		vertices[i].Pos = XMFLOAT3(x, y, z);
@@ -638,7 +639,7 @@ void TreeBillboardsApp::BuildTreeSpritesGeometry()
 	mGeometries["treeSpritesGeo"] = std::move(geo);
 }
 
-void TreeBillboardsApp::BuildPSOs()
+void FlagBillboardsApp::BuildPSOs()
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -691,7 +692,7 @@ void TreeBillboardsApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&treeSpritePsoDesc, IID_PPV_ARGS(&mPSOs["treeSprites"])));
 }
 
-void TreeBillboardsApp::BuildFrameResources()
+void FlagBillboardsApp::BuildFrameResources()
 {
     for(int i = 0; i < gNumFrameResources; ++i)
     {
@@ -700,7 +701,7 @@ void TreeBillboardsApp::BuildFrameResources()
     }
 }
 
-void TreeBillboardsApp::BuildMaterials()
+void FlagBillboardsApp::BuildMaterials()
 {
 	auto treeSprites = std::make_unique<Material>();
 	treeSprites->Name = "treeSprites";
@@ -714,7 +715,7 @@ void TreeBillboardsApp::BuildMaterials()
 	mMaterials["treeSprites"] = std::move(treeSprites);
 }
 
-void TreeBillboardsApp::BuildRenderItems()
+void FlagBillboardsApp::BuildRenderItems()
 {
 
 	auto treeSpritesRitem = std::make_unique<RenderItem>();
@@ -734,7 +735,7 @@ void TreeBillboardsApp::BuildRenderItems()
 	mAllRitems.push_back(std::move(treeSpritesRitem));
 }
 
-void TreeBillboardsApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void FlagBillboardsApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
@@ -766,7 +767,7 @@ void TreeBillboardsApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, cons
     }
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> TreeBillboardsApp::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> FlagBillboardsApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	// and keep them available as part of the root signature.  
@@ -823,12 +824,12 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> TreeBillboardsApp::GetStaticSam
 		anisotropicWrap, anisotropicClamp };
 }
 
-float TreeBillboardsApp::GetHillsHeight(float x, float z)const
+float FlagBillboardsApp::GetHillsHeight(float x, float z)const
 {
     return 0.3f*(z*sinf(0.1f*x) + x*cosf(0.1f*z));
 }
 
-XMFLOAT3 TreeBillboardsApp::GetHillsNormal(float x, float z)const
+XMFLOAT3 FlagBillboardsApp::GetHillsNormal(float x, float z)const
 {
     // n = (-df/dx, 1, -df/dz)
     XMFLOAT3 n(
