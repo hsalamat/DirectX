@@ -9,9 +9,9 @@ void Subdivide(VertexOut inVerts[3], out VertexOut outVerts[6])
     m[2].PosL = 0.5f * (inVerts[2].PosL + inVerts[0].PosL);
 
     // Project onto unit sphere
-    m[0].PosL = normalize(m[0].PosL);
-    m[1].PosL = normalize(m[1].PosL);
-    m[2].PosL = normalize(m[2].PosL);
+    //m[0].PosL = normalize(m[0].PosL);
+    //m[1].PosL = normalize(m[1].PosL);
+    //m[2].PosL = normalize(m[2].PosL);
 
     //Derive normals
     m[0].NormalL = m[0].PosL;
@@ -30,6 +30,7 @@ void Subdivide(VertexOut inVerts[3], out VertexOut outVerts[6])
     outVerts[3] = m[1];
     outVerts[4] = inVerts[2];
     outVerts[5] = inVerts[1];
+
 };
 
 void OutputSubdivision(VertexOut v[6], inout TriangleStream<GeoOut> triStream)
