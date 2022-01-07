@@ -1,5 +1,6 @@
 var NAVTREEINDEX33 =
 {
+"class_stencil_app.html#a4cb2b6b4774e4862d69cf4b7fd39390b":[3,0,74,43],
 "class_stencil_app.html#a5be1b8a45e5712ba9fecd56aa0a9ca5a":[3,0,74,38],
 "class_stencil_app.html#a5bf5a8744b1ee0069ae196304ac9e02a":[3,0,74,30],
 "class_stencil_app.html#a5bf5a8744b1ee0069ae196304ac9e02a":[3,0,74,31],
@@ -248,6 +249,5 @@ var NAVTREEINDEX33 =
 "class_tex_waves_app.html#a2bac66734afa748e8fa5770b2fa2a120":[3,0,80,66],
 "class_tex_waves_app.html#a2d7164d69e9bf6adba9b7aa4ba628137":[3,0,80,103],
 "class_tex_waves_app.html#a3046ad742a07311bc073f808b92210c3":[3,0,80,62],
-"class_tex_waves_app.html#a3046ad742a07311bc073f808b92210c3":[3,0,80,60],
-"class_tex_waves_app.html#a3046ad742a07311bc073f808b92210c3":[3,0,80,61]
+"class_tex_waves_app.html#a3046ad742a07311bc073f808b92210c3":[3,0,80,60]
 };

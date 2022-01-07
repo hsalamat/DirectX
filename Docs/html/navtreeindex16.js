@@ -1,5 +1,6 @@
 var NAVTREEINDEX16 =
 {
+"_week6-2-_tex_waveswith_fog_and_blending_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,1,5,2,104],
 "_week6-2-_tex_waveswith_fog_and_blending_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,1,5,2,62],
 "_week6-2-_tex_waveswith_fog_and_blending_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,1,5,2,49],
 "_week6-2-_tex_waveswith_fog_and_blending_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,1,5,2,51],
@@ -248,6 +249,5 @@ var NAVTREEINDEX16 =
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,41],
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,83],
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,70],
-"_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,113],
-"_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,2]
+"_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,113]
 };

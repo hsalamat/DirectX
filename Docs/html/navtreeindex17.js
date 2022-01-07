@@ -1,5 +1,6 @@
 var NAVTREEINDEX17 =
 {
+"_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,2],
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,29],
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,89],
 "_week6-4-_blend_app-_multiplying_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,7,2,66],
@@ -248,6 +249,5 @@ var NAVTREEINDEX17 =
 "_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,89],
 "_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,9],
 "_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,5],
-"_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,2],
-"_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,122]
+"_week6-6-_blend_app-_subtractive_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9":[4,0,12,2,9,2,2]
 };

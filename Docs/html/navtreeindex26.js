@@ -1,5 +1,6 @@
 var NAVTREEINDEX26 =
 {
+"class_d_x_app.html#aa4a5cb90053a25d4925394276384714b":[3,0,23,5],
 "class_d_x_app.html#ab947d4f4ef100fb247d500c0e5ebbc18":[3,0,23,19],
 "class_d_x_app.html#ac7dcbcd30f5c5b2da87c840b9dcbc6e6":[3,0,23,0],
 "class_d_x_app.html#ac7dcbcd30f5c5b2da87c840b9dcbc6e6":[3,0,23,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX26 =
 "class_gpu_waves.html#ae0bdf26ea38119a8d6747cc3a00d9bac":[3,0,32,51],
 "class_gpu_waves.html#ae3f90f8069a891066c4576bd9729c105":[3,0,32,34],
 "class_gpu_waves.html#aeffe9db249c1fb9d98e8f88a6fae7cdf":[3,0,32,37],
-"class_gpu_waves.html#afb810c387d2fea8b27ae98a9d538cbe0":[3,0,32,40],
-"class_gpu_waves.html#afd268de45afff2dc44dc10615902feb5":[3,0,32,35]
+"class_gpu_waves.html#afb810c387d2fea8b27ae98a9d538cbe0":[3,0,32,40]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX39 =
 {
+"struct_mesh_geometry.html":[3,0,49],
 "struct_mesh_geometry.html#a0b2c5e9269169fb7c5d838240957fd10":[3,0,49,9],
 "struct_mesh_geometry.html#a0b2e69dc595217c3f600147e500a4a31":[3,0,49,8],
 "struct_mesh_geometry.html#a0e4b64b879b617fb5eabc824bb5dedb6":[3,0,49,6],
@@ -229,15 +230,15 @@ var NAVTREEINDEX39 =
 "struct_vertex.html#ae2152b82b92f1522812a1e2bb8c32ba5":[3,0,87,0],
 "struct_vertex.html#ae2152b82b92f1522812a1e2bb8c32ba5":[3,0,87,4],
 "struct_vertex.html#af07583772f2c7eee146e655826467dcb":[3,0,87,9],
-"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html":[4,0,1,0,4],
-"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#a930dd2922807652f1babff30313137f6":[4,0,1,0,4,1],
-"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4":[4,0,1,0,4,0],
-"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#ae78fc3f791d5bdba6ceebac9374f5e23":[4,0,1,0,4,2],
-"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source.html":[4,0,1,0,4],
-"week1-7-_01preprocessor-macros_8cpp.html":[4,0,1,0,7],
-"week1-7-_01preprocessor-macros_8cpp.html#ae16e8b392c8ffd539e895b641eee100e":[4,0,1,0,7,0],
-"week1-7-_01preprocessor-macros_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4":[4,0,1,0,7,1],
-"week1-7-_01preprocessor-macros_8cpp_source.html":[4,0,1,0,7],
+"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html":[4,0,1,0,3],
+"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#a930dd2922807652f1babff30313137f6":[4,0,1,0,3,1],
+"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4":[4,0,1,0,3,0],
+"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp.html#ae78fc3f791d5bdba6ceebac9374f5e23":[4,0,1,0,3,2],
+"week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source.html":[4,0,1,0,3],
+"week1-8-preprocessor-macros_8cpp.html":[4,0,1,0,7],
+"week1-8-preprocessor-macros_8cpp.html#ae16e8b392c8ffd539e895b641eee100e":[4,0,1,0,7,0],
+"week1-8-preprocessor-macros_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4":[4,0,1,0,7,1],
+"week1-8-preprocessor-macros_8cpp_source.html":[4,0,1,0,7],
 "week2-0-_initialize_d3_d_8cpp.html":[4,0,8,2,0],
 "week2-0-_initialize_d3_d_8cpp.html#aabcda87589d774901aa87061b8fd0176":[4,0,8,2,0,1],
 "week2-0-_initialize_d3_d_8cpp_source.html":[4,0,8,2,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX39 =
 "week2-2-_m_s_s_a_8cpp.html#aabcda87589d774901aa87061b8fd0176":[4,0,8,2,2,1],
 "week2-2-_m_s_s_a_8cpp_source.html":[4,0,8,2,2],
 "week2-3-logadapters_8cpp.html":[4,0,8,2,3],
-"week2-3-logadapters_8cpp.html#aabcda87589d774901aa87061b8fd0176":[4,0,8,2,3,1],
-"week2-3-logadapters_8cpp_source.html":[4,0,8,2,3]
+"week2-3-logadapters_8cpp.html#aabcda87589d774901aa87061b8fd0176":[4,0,8,2,3,1]
 };

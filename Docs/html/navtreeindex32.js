@@ -1,5 +1,6 @@
 var NAVTREEINDEX32 =
 {
+"class_sobel_app.html#a63e61ec331261b33da54e6f328300708":[3,0,69,18],
 "class_sobel_app.html#a6a867e97942686b7d52dcc2418fecf44":[3,0,69,15],
 "class_sobel_app.html#a7567031925668a57ef0e3cd7b6ba6c56":[3,0,69,56],
 "class_sobel_app.html#a774f9c508d08be71d69e21fc92957160":[3,0,69,48],
@@ -248,6 +249,5 @@ var NAVTREEINDEX32 =
 "class_stencil_app.html#a43384bfb17e07e7e211e3c78d945c224":[3,0,74,29],
 "class_stencil_app.html#a455aa33d0ca8c8a05258409f47edeb1c":[3,0,74,50],
 "class_stencil_app.html#a455aa33d0ca8c8a05258409f47edeb1c":[3,0,74,51],
-"class_stencil_app.html#a4c1ac5a883aa6b8210ab5a72202d0132":[3,0,74,86],
-"class_stencil_app.html#a4cb2b6b4774e4862d69cf4b7fd39390b":[3,0,74,43]
+"class_stencil_app.html#a4c1ac5a883aa6b8210ab5a72202d0132":[3,0,74,86]
 };

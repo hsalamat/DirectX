@@ -1,0 +1,56 @@
+\hypertarget{week1-8-_01preprocessor-macros_8cpp_source}{}\doxysection{week1-\/8-\/ preprocessor-\/macros.cpp}
+\label{week1-8-_01preprocessor-macros_8cpp_source}\index{Week1/DirectXMath Examples/week1-\/8-\/ preprocessor-\/macros.cpp@{Week1/DirectXMath Examples/week1-\/8-\/ preprocessor-\/macros.cpp}}
+\mbox{\hyperlink{week1-8-_01preprocessor-macros_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00019}00019 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00020}00020 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00021}00021 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00022}00022 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00023}00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00024}\mbox{\hyperlink{week1-8-_01preprocessor-macros_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00024}} \textcolor{keywordtype}{int} \mbox{\hyperlink{week1-8-_01preprocessor-macros_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}() \{}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00026}00026 \textcolor{preprocessor}{\#if (defined(\_M\_IX86)) }\textcolor{comment}{//Defined as the integer literal value 600 for compilations that target x86 processors.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00027}00027     cout << \_M\_IX86 << endl;;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00028}00028 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00030}00030 \textcolor{preprocessor}{\#if (defined(\_M\_X64)) }\textcolor{comment}{// Defined as the integer literal value 100 for compilations that target x64 processors.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00031}00031     cout << \_M\_X64 << endl;;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00032}00032 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00034}00034 \textcolor{preprocessor}{\#if (defined(\_M\_ARM\_))  }\textcolor{comment}{//Defined as the integer literal value 7 for compilations that target ARM processors. Otherwise, undefined.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00035}00035     cout << \_M\_ARM\_ << endl;;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00036}00036 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00039}00039 \textcolor{preprocessor}{\#define \_XM\_NO\_INTRINSICS\_}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00040}00040     \textcolor{comment}{//When \_XM\_NO\_INTRINSICS\_ is defined, DirectXMath operations are implemented without using any platform -\/ specific intrinsics.Instead, DirectXMath uses only standard floating point operations.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00041}00041 \textcolor{preprocessor}{\#if (defined(\_XM\_NO\_INTRINSICS\_))  }\textcolor{comment}{//Defined as the integer literal value 7 for compilations that target ARM processors. Otherwise, undefined.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00042}00042     cout << \textcolor{stringliteral}{"{}\_XM\_NO\_INTRINSICS\_ on -\/-\/> standard floating point operation"{}} << endl;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00043}00043 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00045}00045 \textcolor{comment}{//\_\_declspec The extended attribute syntax for specifying storage-\/class information uses the \_\_declspec keyword, }}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00046}00046 \textcolor{comment}{//which specifies that an instance of a given type is to be stored with a Microsoft-\/specific storage-\/class attribute}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00048}00048 \textcolor{comment}{//Use \_\_declspec(align(\#)) to precisely control the alignment of user-\/defined data }}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00049}00049     \_\_declspec(align(32)) \textcolor{keyword}{struct }Str1 \{}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00050}00050         \textcolor{keywordtype}{int} a, b, c, d, e;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00051}00051     \};}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00053}00053     \textcolor{comment}{//This means that all static and automatic instances start on a 32-\/byte boundary.}}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00055}00055     cout << \textcolor{keyword}{sizeof}(\textcolor{keyword}{struct }Str1) << endl;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00057}00057     Str1 str1 = \{ 1,2,3,4,5 \};}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00058}00058     }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00059}00059     cout << str1.a << endl;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00060}00060     cout << \textcolor{keyword}{sizeof}(str1.a) << endl;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00062}00062     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{week1-8-_01preprocessor-macros_8cpp_source_l00064}00064 \}}
+
+\end{DoxyCode}

@@ -1,5 +1,6 @@
 var NAVTREEINDEX37 =
 {
+"d3d_util_8h.html#a3654e541e465ac5978e40d2fc5e7fdfa":[4,0,0,5,8],
 "d3d_util_8h.html#a7c82b7821d2662eb6e0cfdc08a6c4bd4":[4,0,0,5,15],
 "d3d_util_8h.html#a8eea9d84f47bf09194e47e7cffe1ef0d":[4,0,0,5,14],
 "d3d_util_8h.html#a945382836f0cc7b4a16495f63cc76975":[4,0,0,5,11],
@@ -248,6 +249,5 @@ var NAVTREEINDEX37 =
 "struct_data.html":[3,0,19],
 "struct_data.html#acd4edcc3fb10273d39d5b81c41aaa470":[3,0,19,1],
 "struct_data.html#ad1293ed75bfc142b7f0bd4f63e2e6c83":[3,0,19,0],
-"struct_frame_resource.html":[3,0,28],
-"struct_frame_resource.html#a0104724fb215a261c5480e5f331a6ac8":[3,0,28,30]
+"struct_frame_resource.html":[3,0,28]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"class_tex_waves_app.html#a3046ad742a07311bc073f808b92210c3":[3,0,80,61],
 "class_tex_waves_app.html#a3106516ae98050d0d071bd8c6326fce0":[3,0,80,82],
 "class_tex_waves_app.html#a3106516ae98050d0d071bd8c6326fce0":[3,0,80,83],
 "class_tex_waves_app.html#a34cbb85befb3e9a2aa297a1bf21292bc":[3,0,80,37],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8":[3,0,82,168],
 "class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8":[3,0,82,169],
 "class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8":[3,0,82,167],
-"class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9":[3,0,82,77],
-"class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9":[3,0,82,76]
+"class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9":[3,0,82,77]
 };
