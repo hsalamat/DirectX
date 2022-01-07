@@ -1,0 +1,750 @@
+\hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source}{}\doxysection{Week9-\/2-\/\+Triangle\+Tessellation\+Basedon\+Distance.cpp}
+\label{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source}\index{Week9/TrinagleTessellation/Week9-\/2-\/TriangleTessellationBasedonDistance.cpp@{Week9/TrinagleTessellation/Week9-\/2-\/TriangleTessellationBasedonDistance.cpp}}
+\mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00002}00002 \textcolor{comment}{// Triangle Tessellation}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00003}00003 \textcolor{comment}{//Use Right mouse button to zoom in and out}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00004}00004 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00005}00005 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00010}00010 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00015}00015 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00016}00016 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00017}00017 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00019}00019 \textcolor{comment}{//Our application class will then instantiate a vector of three frame resources, }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00020}\mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00020}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00022}00022 \textcolor{comment}{//Lightweight structure stores parameters to draw a shape.  This will vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00023}00023 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00024}00024 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00025}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00025}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00027}00027     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00028}00028     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00029}00029     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00030}00030     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00032}00032     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00033}00033     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00034}00034     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify object data, we should set }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00035}00035     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00036}00036     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00038}00038     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00039}00039     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00041}00041     \textcolor{comment}{// Geometry associated with this render-\/item. Note that multiple}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00042}00042     \textcolor{comment}{// render-\/items can share the same geometry.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00043}00043     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00045}00045     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00046}00046     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00048}00048     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00049}00049     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0; \textcolor{comment}{//Number of indices read from the index buffer for each instance.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00050}00050     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0; \textcolor{comment}{//The location of the first index read by the GPU from the index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00051}00051     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0; \textcolor{comment}{//A value added to each index before reading a vertex from the vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00052}00052 \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00054}00054 \textcolor{keyword}{class }\mbox{\hyperlink{class_triangle_tessellation_app}{TriangleTessellationApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00055}00055 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00056}00056 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00057}\mbox{\hyperlink{class_triangle_tessellation_app_a2273ba7ce142bc94ad8fa3b09284ed25}{00057}}     \mbox{\hyperlink{class_triangle_tessellation_app_a2273ba7ce142bc94ad8fa3b09284ed25}{TriangleTessellationApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00058}\mbox{\hyperlink{class_triangle_tessellation_app_aa1cd4b09585a2facf6a8fe8cf93323ad}{00058}}     \mbox{\hyperlink{class_triangle_tessellation_app_aa1cd4b09585a2facf6a8fe8cf93323ad}{TriangleTessellationApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_triangle_tessellation_app}{TriangleTessellationApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00059}\mbox{\hyperlink{class_triangle_tessellation_app_affeb74fd2966c6c490102131e65199d3}{00059}}     \mbox{\hyperlink{class_triangle_tessellation_app}{TriangleTessellationApp}}\& \mbox{\hyperlink{class_triangle_tessellation_app_affeb74fd2966c6c490102131e65199d3}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_triangle_tessellation_app}{TriangleTessellationApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00060}\mbox{\hyperlink{class_triangle_tessellation_app_afea7d66adbd28b63b234f2dd6560465c}{00060}}     \mbox{\hyperlink{class_triangle_tessellation_app_afea7d66adbd28b63b234f2dd6560465c}{\string~TriangleTessellationApp}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00062}\mbox{\hyperlink{class_triangle_tessellation_app_a1d9832ac89ef9e74b113ddba83440309}{00062}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_triangle_tessellation_app_a1d9832ac89ef9e74b113ddba83440309}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00064}00064 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00065}\mbox{\hyperlink{class_triangle_tessellation_app_ac26f3550f308b9391da65f0bc1ad48cd}{00065}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ac26f3550f308b9391da65f0bc1ad48cd}{OnResize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00066}\mbox{\hyperlink{class_triangle_tessellation_app_a8ba9bf22e4a62870eeeed0f23ff3fae9}{00066}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a8ba9bf22e4a62870eeeed0f23ff3fae9}{Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00067}\mbox{\hyperlink{class_triangle_tessellation_app_a007817e0c3c80e24619a42f22c45a3be}{00067}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a007817e0c3c80e24619a42f22c45a3be}{Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00069}\mbox{\hyperlink{class_triangle_tessellation_app_a75934bb5d5ff8ee6531f4b804284639d}{00069}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a75934bb5d5ff8ee6531f4b804284639d}{OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00070}\mbox{\hyperlink{class_triangle_tessellation_app_aa3c04892018d25bed4dd5f8d64f37bdd}{00070}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aa3c04892018d25bed4dd5f8d64f37bdd}{OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00071}\mbox{\hyperlink{class_triangle_tessellation_app_a36d3b75ffc66e8096ed54a467cc44c2e}{00071}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a36d3b75ffc66e8096ed54a467cc44c2e}{OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00073}\mbox{\hyperlink{class_triangle_tessellation_app_af0bfda0db8e97c40085788b67512d7fb}{00073}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_af0bfda0db8e97c40085788b67512d7fb}{OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00074}\mbox{\hyperlink{class_triangle_tessellation_app_ab20af1c21ab523663d16d171eb1ed824}{00074}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ab20af1c21ab523663d16d171eb1ed824}{UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00075}\mbox{\hyperlink{class_triangle_tessellation_app_a9c1a7345bf32c194601c3819f53bab21}{00075}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a9c1a7345bf32c194601c3819f53bab21}{UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00076}\mbox{\hyperlink{class_triangle_tessellation_app_ae572a5fd8e59d73d0f5557e9b60515b5}{00076}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ae572a5fd8e59d73d0f5557e9b60515b5}{UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00077}00077 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00078}\mbox{\hyperlink{class_triangle_tessellation_app_ae774f0661ac48a2a59c68c5bb6c0b284}{00078}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ae774f0661ac48a2a59c68c5bb6c0b284}{BuildDescriptorHeaps}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00079}\mbox{\hyperlink{class_triangle_tessellation_app_aba41a9e006e7dc4e6830481410798507}{00079}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aba41a9e006e7dc4e6830481410798507}{BuildConstantBufferViews}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00080}\mbox{\hyperlink{class_triangle_tessellation_app_a00618bbab1e4cddc3c192d141694b894}{00080}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a00618bbab1e4cddc3c192d141694b894}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00081}\mbox{\hyperlink{class_triangle_tessellation_app_a7888e8bd3ad4f6aa57d5073330cd612a}{00081}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a7888e8bd3ad4f6aa57d5073330cd612a}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00082}\mbox{\hyperlink{class_triangle_tessellation_app_a25ded136ff76dc710977541f28e194ac}{00082}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a25ded136ff76dc710977541f28e194ac}{BuildShapeGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00083}\mbox{\hyperlink{class_triangle_tessellation_app_aa350aec97b375af84e63526616e4cfb0}{00083}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aa350aec97b375af84e63526616e4cfb0}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00084}\mbox{\hyperlink{class_triangle_tessellation_app_a7e53a68dee9d416aed6b639b79e18bb0}{00084}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a7e53a68dee9d416aed6b639b79e18bb0}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00085}\mbox{\hyperlink{class_triangle_tessellation_app_acccb0a9dfc2a8b7ba7611e47120c1834}{00085}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_acccb0a9dfc2a8b7ba7611e47120c1834}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00086}\mbox{\hyperlink{class_triangle_tessellation_app_a52773d0411db661b8b20c5f5cbdb5af0}{00086}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a52773d0411db661b8b20c5f5cbdb5af0}{DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00088}00088 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00090}00090     \textcolor{comment}{//keep member variables to track the current frame resource :}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00091}00091     std::vector<std::unique\_ptr<FrameResource>> \mbox{\hyperlink{class_triangle_tessellation_app_aef77af5d88db303482138b6c6621c34c}{mFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00092}00092     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00093}00093     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00095}00095     ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_triangle_tessellation_app_a684243038fd933e7d4d89325a9432ff5}{mRootSignature}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00096}00096     ComPtr<ID3D12DescriptorHeap> \mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00098}00098     ComPtr<ID3D12DescriptorHeap> \mbox{\hyperlink{class_triangle_tessellation_app_a85d5e179950f3fceb95057c9af781329}{mSrvDescriptorHeap}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00099}00099 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00100}00100     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> \mbox{\hyperlink{class_triangle_tessellation_app_a70dac35c40feb8653511643e6157e598}{mGeometries}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00101}00101     std::unordered\_map<std::string, ComPtr<ID3DBlob>> \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00102}00102     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> \mbox{\hyperlink{class_triangle_tessellation_app_af2a958dba61fcf2c0eb842a1802ab1e8}{mPSOs}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00104}00104     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> \mbox{\hyperlink{class_triangle_tessellation_app_a334c06257beea340f96b8369a781156b}{mInputLayout}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00106}00106     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00107}00107     std::vector<std::unique\_ptr<RenderItem>> \mbox{\hyperlink{class_triangle_tessellation_app_abf54157d407c2ed19dc220866dfaf978}{mAllRitems}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00109}00109     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00110}00110     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00112}00112     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00113}00113     std::vector<RenderItem*> \mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00115}00115     \textcolor{comment}{//std::vector<RenderItem*> mTransparentRitems;  //we could have render items for transparant items}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00119}00119     \textcolor{comment}{//this mMainPassCB stores constant data that is fixed over a given}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00120}00120     \textcolor{comment}{//rendering pass such as the eye position, the view and projection matrices, and information}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00121}00121     \textcolor{comment}{//about the screen(render target) dimensions; it also includes game timing information,}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00122}00122     \textcolor{comment}{//which is useful data to have access to in shader programs.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00124}00124     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00126}00126     UINT \mbox{\hyperlink{class_triangle_tessellation_app_a4b9bfda385fd9ecee6a7af3b5b884222}{mPassCbvOffset}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00128}00128     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_triangle_tessellation_app_aae59607088bbab9d850235b540292a1a}{mIsWireframe}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00130}00130     XMFLOAT3 \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}} = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00131}00131     XMFLOAT4X4 \mbox{\hyperlink{class_triangle_tessellation_app_acb62fbbf7929cf41388c8220b18e31b8}{mView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00132}00132     XMFLOAT4X4 \mbox{\hyperlink{class_triangle_tessellation_app_a2dfcdbe5dbdf84f6fee01f3176100c5d}{mProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00133}00133 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00134}00134     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_triangle_tessellation_app_a50aa8d7c0a8e53558aafec65f37d2960}{mTheta}} = 1.5f * XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00135}00135     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}} = 0.2f * XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00136}00136     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} = 15.0f;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00137}00137 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00138}00138     POINT \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00139}00139 \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00141}\mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_aabcda87589d774901aa87061b8fd0176}{00141}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00142}00142     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00143}00143 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00144}00144     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00145}00145 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00146}00146     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00147}00147 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00148}00148 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00149}00149     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00150}00150     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00151}00151         \mbox{\hyperlink{class_triangle_tessellation_app}{TriangleTessellationApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00152}00152         \textcolor{keywordflow}{if} (!theApp.\mbox{\hyperlink{class_triangle_tessellation_app_a9c9252ac22a0252a53ca3fc3a3cfb4a1}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00153}00153             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00154}00154 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00155}00155         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00156}00156     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00157}00157     \textcolor{keywordflow}{catch} (\mbox{\hyperlink{class_dx_exception}{DxException}} \& e)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00158}00158     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00159}00159         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00160}00160         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00161}00161     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00162}00162 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00163}00163 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00164}00164 \mbox{\hyperlink{class_triangle_tessellation_app_a2273ba7ce142bc94ad8fa3b09284ed25}{TriangleTessellationApp::TriangleTessellationApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00165}00165     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00166}00166 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00167}00167 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00169}00169 \mbox{\hyperlink{class_triangle_tessellation_app_afea7d66adbd28b63b234f2dd6560465c}{TriangleTessellationApp::\string~TriangleTessellationApp}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00170}00170 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00171}00171     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00172}00172         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00173}00173 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00174}00174 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00175}00175 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_triangle_tessellation_app_a9c9252ac22a0252a53ca3fc3a3cfb4a1}{TriangleTessellationApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00176}00176 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00177}00177     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00178}00178         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00180}00180     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00181}00181     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00183}00183     \mbox{\hyperlink{class_triangle_tessellation_app_a00618bbab1e4cddc3c192d141694b894}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00184}00184     \mbox{\hyperlink{class_triangle_tessellation_app_a7888e8bd3ad4f6aa57d5073330cd612a}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00185}00185     \mbox{\hyperlink{class_triangle_tessellation_app_a25ded136ff76dc710977541f28e194ac}{BuildShapeGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00186}00186     \mbox{\hyperlink{class_triangle_tessellation_app_acccb0a9dfc2a8b7ba7611e47120c1834}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00187}00187     \mbox{\hyperlink{class_triangle_tessellation_app_a7e53a68dee9d416aed6b639b79e18bb0}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00188}00188     \mbox{\hyperlink{class_triangle_tessellation_app_ae774f0661ac48a2a59c68c5bb6c0b284}{BuildDescriptorHeaps}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00189}00189     \mbox{\hyperlink{class_triangle_tessellation_app_aba41a9e006e7dc4e6830481410798507}{BuildConstantBufferViews}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00190}00190     \mbox{\hyperlink{class_triangle_tessellation_app_aa350aec97b375af84e63526616e4cfb0}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00191}00191 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00192}00192     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00193}00193     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00194}00194     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00195}00195     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00196}00196 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00197}00197     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00198}00198     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00200}00200     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00201}00201 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00202}00202 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00203}00203 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a2a516860d27b586f14f46a63405911f8}{TriangleTessellationApp::OnResize}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00204}00204 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00205}00205     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00207}00207     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00208}00208     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00209}00209     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a2dfcdbe5dbdf84f6fee01f3176100c5d}{mProj}}, P);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00210}00210 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00211}00211 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00212}00212 \textcolor{comment}{//for CPU frame n, the algorithm}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00213}00213 \textcolor{comment}{//1. Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00214}00214 \textcolor{comment}{//2. Wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00215}00215 \textcolor{comment}{//3. Update resources in mCurrFrameResource (like cbuffers).}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00217}00217 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a4deb017b233d23dade836f1d4075cc13}{TriangleTessellationApp::Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00218}00218 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00219}00219     \mbox{\hyperlink{class_triangle_tessellation_app_af0bfda0db8e97c40085788b67512d7fb}{OnKeyboardInput}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00220}00220     \mbox{\hyperlink{class_triangle_tessellation_app_ab20af1c21ab523663d16d171eb1ed824}{UpdateCamera}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00221}00221 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00222}00222     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00223}00223     \mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}} = (\mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}} + 1) \% \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00224}00224     \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}} = \mbox{\hyperlink{class_triangle_tessellation_app_aef77af5d88db303482138b6c6621c34c}{mFrameResources}}[\mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}}].get();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00225}00225 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00226}00226     \textcolor{comment}{//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00227}00227     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00228}00228     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00229}00229         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00230}00230         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(\mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00231}00231         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00232}00232         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00233}00233     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00235}00235     \textcolor{comment}{//The idea of these changes is to group constants based on update frequency. The per}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00236}00236     \textcolor{comment}{//pass constants only need to be updated once per rendering pass, and the object constants}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00237}00237     \textcolor{comment}{//only need to change when an object’s world matrix changes.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00238}00238     \mbox{\hyperlink{class_triangle_tessellation_app_a9c1a7345bf32c194601c3819f53bab21}{UpdateObjectCBs}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00239}00239     \mbox{\hyperlink{class_triangle_tessellation_app_ae572a5fd8e59d73d0f5557e9b60515b5}{UpdateMainPassCB}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00240}00240 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00241}00241 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00242}00242 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a110a360a35d26db86f36e75c2c4d8cdb}{TriangleTessellationApp::Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00243}00243 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00244}00244     \textcolor{keyword}{auto} cmdListAlloc = \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00245}00245 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00246}00246     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00247}00247     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00248}00248     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00249}00249 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00250}00250     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00251}00251     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00252}00252     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_triangle_tessellation_app_aae59607088bbab9d850235b540292a1a}{mIsWireframe}})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00253}00253     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00254}00254         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), \mbox{\hyperlink{class_triangle_tessellation_app_af2a958dba61fcf2c0eb842a1802ab1e8}{mPSOs}}[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00255}00255     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00256}00256     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00257}00257     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00258}00258         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), \mbox{\hyperlink{class_triangle_tessellation_app_af2a958dba61fcf2c0eb842a1802ab1e8}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00259}00259     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00260}00260 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00261}00261     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00262}00262     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00263}00263 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00264}00264     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00265}00265     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00266}00266         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00267}00267 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00268}00268     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00269}00269     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00270}00270     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00272}00272     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00273}00273     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00274}00274 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00275}00275     ID3D12DescriptorHeap* descriptorHeaps[] = \{ \mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00276}00276     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00277}00277 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00278}00278     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(\mbox{\hyperlink{class_triangle_tessellation_app_a684243038fd933e7d4d89325a9432ff5}{mRootSignature}}.Get());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00279}00279 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00280}00280     \textcolor{keywordtype}{int} passCbvIndex = \mbox{\hyperlink{class_triangle_tessellation_app_a4b9bfda385fd9ecee6a7af3b5b884222}{mPassCbvOffset}} + \mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00281}00281     \textcolor{keyword}{auto} passCbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(\mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}}-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00282}00282     passCbvHandle.Offset(passCbvIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00283}00283     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootDescriptorTable(1, passCbvHandle);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00284}00284 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00285}00285     \mbox{\hyperlink{class_triangle_tessellation_app_a52773d0411db661b8b20c5f5cbdb5af0}{DrawRenderItems}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), \mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00286}00286 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00287}00287     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00288}00288     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00289}00289         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00290}00290 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00291}00291     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00292}00292     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00293}00293 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00294}00294     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00295}00295     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00296}00296     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00297}00297 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00298}00298     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00299}00299     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00300}00300     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00301}00301 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00302}00302 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00303}00303     \textcolor{comment}{//we have been calling D3DApp::FlushCommandQueue at the end of every}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00304}00304     \textcolor{comment}{//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00305}00305     \textcolor{comment}{//For every frame, the CPU and GPU are idling at some point.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00306}00306     \textcolor{comment}{//  FlushCommandQueue();}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00307}00307 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00308}00308     \textcolor{comment}{//Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00309}00309     \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00310}00310 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00311}00311     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00312}00312     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00313}00313     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00314}00314     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00315}00315 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00316}00316     \textcolor{comment}{// Note that GPU could still be working on commands from previous}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00317}00317         \textcolor{comment}{// frames, but that is okay, because we are not touching any frame}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00318}00318         \textcolor{comment}{// resources associated with those frames.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00319}00319 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00320}00320 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00321}00321 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00322}00322 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aed943f4dea2a14307e4d7dea5920285f}{TriangleTessellationApp::OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00323}00323 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00324}00324     \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00325}00325     \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00326}00326 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00327}00327     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00328}00328 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00329}00329 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00330}00330 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a989552a40652927fdd052bd430d9a085}{TriangleTessellationApp::OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00331}00331 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00332}00332     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00333}00333 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00334}00334 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00335}00335 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aa098efadf1d8a85e0343f416ff913411}{TriangleTessellationApp::OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00336}00336 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00337}00337     \textcolor{keywordflow}{if} ((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00338}00338     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00339}00339         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00340}00340         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.x));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00341}00341         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.y));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00342}00342 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00343}00343         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00344}00344         \mbox{\hyperlink{class_triangle_tessellation_app_a50aa8d7c0a8e53558aafec65f37d2960}{mTheta}} += dx;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00345}00345         \mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}} += dy;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00346}00346 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00347}00347         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00348}00348         \mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}}, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00349}00349     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00350}00350     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00351}00351     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00352}00352         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00353}00353         \textcolor{keywordtype}{float} dx = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.x);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00354}00354         \textcolor{keywordtype}{float} dy = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.y);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00355}00355 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00356}00356         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00357}00357         \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00358}00358 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00359}00359         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00360}00360         \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}}, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00361}00361     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00362}00362 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00363}00363     \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00364}00364     \mbox{\hyperlink{class_triangle_tessellation_app_a0ad85f8ec935e73dd6682b5f2f784c92}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00365}00365 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00366}00366 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00367}00367 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_af0bfda0db8e97c40085788b67512d7fb}{TriangleTessellationApp::OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00368}00368 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00369}00369     \textcolor{comment}{//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00370}00370     \textcolor{comment}{//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00371}00371     \textcolor{comment}{//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00372}00372     \textcolor{comment}{//if (GetAsyncKeyState('1') \& 0x8000)}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00373}00373 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00374}00374     \textcolor{keywordtype}{short} key = GetAsyncKeyState(\textcolor{charliteral}{'1'});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00375}00375     \textcolor{keywordflow}{if} (key \& 0x8000)  \textcolor{comment}{//if one is pressed, 0x8000 = 32767 , key = -\/32767 = FFFFFFFFFFFF8001}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00376}00376         \mbox{\hyperlink{class_triangle_tessellation_app_aae59607088bbab9d850235b540292a1a}{mIsWireframe}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00377}00377     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00378}00378         \mbox{\hyperlink{class_triangle_tessellation_app_aae59607088bbab9d850235b540292a1a}{mIsWireframe}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00379}00379 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00380}00380 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00381}00381 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ab20af1c21ab523663d16d171eb1ed824}{TriangleTessellationApp::UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00382}00382 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00383}00383     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00384}00384     \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.x = \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} * sinf(\mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}}) * cosf(\mbox{\hyperlink{class_triangle_tessellation_app_a50aa8d7c0a8e53558aafec65f37d2960}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00385}00385     \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.z = \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} * sinf(\mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}}) * sinf(\mbox{\hyperlink{class_triangle_tessellation_app_a50aa8d7c0a8e53558aafec65f37d2960}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00386}00386     \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.y = \mbox{\hyperlink{class_triangle_tessellation_app_add1475e2c888ae28681c8d08a0252285}{mRadius}} * cosf(\mbox{\hyperlink{class_triangle_tessellation_app_a1d302c300a4212df5f1685f5d9880c10}{mPhi}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00387}00387 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00388}00388     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00389}00389     XMVECTOR pos = XMVectorSet(\mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.x, \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.y, \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}}.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00390}00390     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00391}00391     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00392}00392 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00393}00393     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00394}00394     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_acb62fbbf7929cf41388c8220b18e31b8}{mView}}, view);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00395}00395 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00396}00396 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00397}00397 \textcolor{comment}{//Update resources (cbuffers) in mCurrFrameResource}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00398}00398 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a9c1a7345bf32c194601c3819f53bab21}{TriangleTessellationApp::UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00399}00399 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00400}00400     \textcolor{keyword}{auto} currObjectCB = \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00401}00401     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_triangle_tessellation_app_abf54157d407c2ed19dc220866dfaf978}{mAllRitems}})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00402}00402     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00403}00403         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00404}00404         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00405}00405         \textcolor{keywordflow}{if} (e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00406}00406         \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00407}00407             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00408}00408 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00409}00409             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00410}00410             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00411}00411 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00412}00412             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00413}00413 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00414}00414             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00415}00415             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00416}00416         \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00417}00417     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00418}00418 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00419}00419 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00420}00420 \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00421}00421 \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00422}00422 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ae572a5fd8e59d73d0f5557e9b60515b5}{TriangleTessellationApp::UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00423}00423 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00424}00424     XMMATRIX view = XMLoadFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_acb62fbbf7929cf41388c8220b18e31b8}{mView}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00425}00425     XMMATRIX proj = XMLoadFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a2dfcdbe5dbdf84f6fee01f3176100c5d}{mProj}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00426}00426 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00427}00427     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00428}00428     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00429}00429     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00430}00430     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00431}00431 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00432}00432     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00433}00433     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00434}00434     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00435}00435     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00436}00436     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00437}00437     XMStoreFloat4x4(\&\mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00438}00438     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \mbox{\hyperlink{class_triangle_tessellation_app_a33a245d9d48f2f1d4e66f9a8398c3da0}{mEyePos}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00439}00439     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00440}00440     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00441}00441     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00442}00442     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00443}00443     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00444}00444     \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00445}00445 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00446}00446     \textcolor{keyword}{auto} currPassCB = \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00447}00447     currPassCB-\/>CopyData(0, \mbox{\hyperlink{class_triangle_tessellation_app_a5a294fef1d59ebdecb7450456c316ab3}{mMainPassCB}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00448}00448 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00449}00449 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00450}00450 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_ae774f0661ac48a2a59c68c5bb6c0b284}{TriangleTessellationApp::BuildDescriptorHeaps}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00451}00451 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00452}00452     UINT objCount = (UINT)\mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}}.size();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00453}00453 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00454}00454     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource,}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00455}00455     \textcolor{comment}{// +1 for the perPass CBV for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00456}00456     UINT numDescriptors = (objCount + 1) * \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00457}00457 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00458}00458     \textcolor{comment}{// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00459}00459     \mbox{\hyperlink{class_triangle_tessellation_app_a4b9bfda385fd9ecee6a7af3b5b884222}{mPassCbvOffset}} = objCount * \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00460}00460 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00461}00461     D3D12\_DESCRIPTOR\_HEAP\_DESC cbvHeapDesc;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00462}00462     cbvHeapDesc.NumDescriptors = numDescriptors;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00463}00463     cbvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00464}00464     cbvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00465}00465     cbvHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00466}00466     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(\&cbvHeapDesc,}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00467}00467         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}})));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00468}00468 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00469}00469 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00470}00470 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aba41a9e006e7dc4e6830481410798507}{TriangleTessellationApp::BuildConstantBufferViews}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00471}00471 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00472}00472     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00473}00473 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00474}00474     UINT objCount = (UINT)\mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}}.size();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00475}00475 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00476}00476     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00477}00477     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++frameIndex)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00478}00478     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00479}00479         \textcolor{keyword}{auto} objectCB = \mbox{\hyperlink{class_triangle_tessellation_app_aef77af5d88db303482138b6c6621c34c}{mFrameResources}}[frameIndex]-\/>ObjectCB-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00480}00480         \textcolor{keywordflow}{for} (UINT i = 0; i < objCount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00481}00481         \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00482}00482             D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = objectCB-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00483}00483 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00484}00484             \textcolor{comment}{// Offset to the ith object constant buffer in the buffer.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00485}00485             cbAddress += i * objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00486}00486 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00487}00487             \textcolor{comment}{// Offset to the object cbv in the descriptor heap.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00488}00488             \textcolor{keywordtype}{int} heapIndex = frameIndex * objCount + i;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00489}00489             \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(\mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}}-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00490}00490             handle.Offset(heapIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00491}00491 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00492}00492             D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00493}00493             cbvDesc.BufferLocation = cbAddress;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00494}00494             cbvDesc.SizeInBytes = objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00495}00495 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00496}00496             \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateConstantBufferView(\&cbvDesc, handle);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00497}00497         \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00498}00498     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00499}00499 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00500}00500     UINT passCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_pass_constants}{PassConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00501}00501 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00502}00502     \textcolor{comment}{// Last three descriptors are the pass CBVs for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00503}00503     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++frameIndex)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00504}00504     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00505}00505         \textcolor{keyword}{auto} passCB = \mbox{\hyperlink{class_triangle_tessellation_app_aef77af5d88db303482138b6c6621c34c}{mFrameResources}}[frameIndex]-\/>PassCB-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00506}00506         D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = passCB-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00507}00507 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00508}00508         \textcolor{comment}{// Offset to the pass cbv in the descriptor heap.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00509}00509         \textcolor{keywordtype}{int} heapIndex = \mbox{\hyperlink{class_triangle_tessellation_app_a4b9bfda385fd9ecee6a7af3b5b884222}{mPassCbvOffset}} + frameIndex;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00510}00510         \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(\mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}}-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00511}00511         handle.Offset(heapIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00512}00512 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00513}00513         D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00514}00514         cbvDesc.BufferLocation = cbAddress;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00515}00515         cbvDesc.SizeInBytes = passCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00516}00516 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00517}00517         \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateConstantBufferView(\&cbvDesc, handle);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00518}00518     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00519}00519 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00520}00520 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00521}00521 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a00618bbab1e4cddc3c192d141694b894}{TriangleTessellationApp::BuildRootSignature}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00522}00522 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00523}00523     \textcolor{comment}{//The resources that our shaders expect have changed; therefore, we need to update the}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00524}00524     \textcolor{comment}{//root signature accordingly to take two descriptor tables(we need two tables because the}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00525}00525     \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00526}00526     \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item) :}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00527}00527 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00528}00528     CD3DX12\_DESCRIPTOR\_RANGE cbvTable0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00529}00529     cbvTable0.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00530}00530 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00531}00531     CD3DX12\_DESCRIPTOR\_RANGE cbvTable1;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00532}00532     cbvTable1.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 1);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00533}00533 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00534}00534     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00535}00535     CD3DX12\_ROOT\_PARAMETER slotRootParameter[2];}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00536}00536 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00537}00537     \textcolor{comment}{// Create root CBVs.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00538}00538     slotRootParameter[0].InitAsDescriptorTable(1, \&cbvTable0);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00539}00539     slotRootParameter[1].InitAsDescriptorTable(1, \&cbvTable1);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00540}00540 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00541}00541     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00542}00542     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(2, slotRootParameter, 0, \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00543}00543         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00544}00544 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00545}00545     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00546}00546     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00547}00547     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00548}00548     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00549}00549         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00550}00550 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00551}00551     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00552}00552     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00553}00553         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00554}00554     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00555}00555     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00556}00556 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00557}00557     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00558}00558         0,}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00559}00559         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00560}00560         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00561}00561         IID\_PPV\_ARGS(\mbox{\hyperlink{class_triangle_tessellation_app_a684243038fd933e7d4d89325a9432ff5}{mRootSignature}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00562}00562 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00563}00563 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00564}00564 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a7888e8bd3ad4f6aa57d5073330cd612a}{TriangleTessellationApp::BuildShadersAndInputLayout}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00565}00565 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00566}00566     \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00567}00567     \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00568}00568 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00569}00569     \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessHS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Tessellation2.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}HS"{}}, \textcolor{stringliteral}{"{}hs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00570}00570     \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessDS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Tessellation2.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}DS"{}}, \textcolor{stringliteral}{"{}ds\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00571}00571 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00572}00572     \mbox{\hyperlink{class_triangle_tessellation_app_a334c06257beea340f96b8369a781156b}{mInputLayout}} =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00573}00573     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00574}00574         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00575}00575         \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32A32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00576}00576     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00577}00577 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00578}00578 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00579}00579 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a25ded136ff76dc710977541f28e194ac}{TriangleTessellationApp::BuildShapeGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00580}00580 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00581}00581     std::array<Vertex, 3> vertices =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00582}00582     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00583}00583                 \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(-\/1.5f, -\/1.5f, 0.0f), XMFLOAT4(Colors::Red)\}),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00584}00584                 \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(+1.5f, +1.5f, 0.0f) , XMFLOAT4(Colors::Green) \}),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00585}00585                 \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(+1.5f, -\/1.5f, 0.0f) , XMFLOAT4(Colors::Blue)\}),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00586}00586 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00587}00587     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00588}00588 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00589}00589 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00590}00590     std::array<std::uint16\_t, 3> indices =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00591}00591     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00592}00592 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00593}00593         0, 1, 2}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00594}00594     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00595}00595 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00596}00596 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00597}00597 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00598}00598     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00599}00599     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00600}00600 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00601}00601     \textcolor{keyword}{auto} mBoxGeo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00602}00602     mBoxGeo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00603}00603 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00604}00604     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&mBoxGeo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00605}00605     CopyMemory(mBoxGeo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00606}00606 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00607}00607     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&mBoxGeo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00608}00608     CopyMemory(mBoxGeo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00609}00609 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00610}00610     mBoxGeo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00611}00611         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, mBoxGeo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00612}00612 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00613}00613     mBoxGeo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00614}00614         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, mBoxGeo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00615}00615 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00616}00616     mBoxGeo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00617}00617     mBoxGeo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00618}00618     mBoxGeo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00619}00619     mBoxGeo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00620}00620 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00621}00621     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00622}00622     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00623}00623     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00624}00624     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00625}00625 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00626}00626     mBoxGeo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00627}00627 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00628}00628 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00629}00629     \mbox{\hyperlink{class_triangle_tessellation_app_a70dac35c40feb8653511643e6157e598}{mGeometries}}[mBoxGeo-\/>Name] = std::move(mBoxGeo);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00630}00630 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00631}00631 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00632}00632 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00633}00633 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_aa350aec97b375af84e63526616e4cfb0}{TriangleTessellationApp::BuildPSOs}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00634}00634 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00635}00635     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00636}00636 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00637}00637     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00638}00638     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00639}00639     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00640}00640     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00641}00641     opaquePsoDesc.InputLayout = \{ \mbox{\hyperlink{class_triangle_tessellation_app_a334c06257beea340f96b8369a781156b}{mInputLayout}}.data(), (UINT)\mbox{\hyperlink{class_triangle_tessellation_app_a334c06257beea340f96b8369a781156b}{mInputLayout}}.size() \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00642}00642     opaquePsoDesc.pRootSignature = \mbox{\hyperlink{class_triangle_tessellation_app_a684243038fd933e7d4d89325a9432ff5}{mRootSignature}}.Get();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00643}00643     opaquePsoDesc.VS =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00644}00644     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00645}00645         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00646}00646         \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00647}00647     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00648}00648     opaquePsoDesc.PS =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00649}00649     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00650}00650         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00651}00651         \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00652}00652     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00653}00653 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00654}00654     opaquePsoDesc.HS =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00655}00655     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00656}00656         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00657}00657         \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00658}00658     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00659}00659     opaquePsoDesc.DS =}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00660}00660     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00661}00661         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00662}00662         \mbox{\hyperlink{class_triangle_tessellation_app_ab1202730bc9b9f9e5242e228a9de4ad2}{mShaders}}[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00663}00663     \};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00664}00664 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00665}00665     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00666}00666     opaquePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00667}00667     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00668}00668     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00669}00669     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00670}00670     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_PATCH;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00671}00671     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00672}00672     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00673}00673     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00674}00674     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00675}00675     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00676}00676     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_tessellation_app_af2a958dba61fcf2c0eb842a1802ab1e8}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00677}00677 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00678}00678 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00679}00679     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00680}00680     \textcolor{comment}{// PSO for opaque wireframe objects.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00681}00681     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00682}00682 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00683}00683     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00684}00684     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_SOLID;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00685}00685     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_tessellation_app_af2a958dba61fcf2c0eb842a1802ab1e8}{mPSOs}}[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00686}00686 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00687}00687 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00688}00688 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00689}00689 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a7e53a68dee9d416aed6b639b79e18bb0}{TriangleTessellationApp::BuildFrameResources}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00690}00690 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00691}00691     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_week9-2-_triangle_tessellation_basedon_distance_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00692}00692     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00693}00693         \mbox{\hyperlink{class_triangle_tessellation_app_aef77af5d88db303482138b6c6621c34c}{mFrameResources}}.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00694}00694             1, (UINT)\mbox{\hyperlink{class_triangle_tessellation_app_abf54157d407c2ed19dc220866dfaf978}{mAllRitems}}.size()));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00695}00695     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00696}00696 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00697}00697 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00698}00698 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_acccb0a9dfc2a8b7ba7611e47120c1834}{TriangleTessellationApp::BuildRenderItems}}()}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00699}00699 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00700}00700     \textcolor{keyword}{auto} boxRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00701}00701     XMStoreFloat4x4(\&boxRitem-\/>World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00702}00702     boxRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00703}00703     boxRitem-\/>Geo = \mbox{\hyperlink{class_triangle_tessellation_app_a70dac35c40feb8653511643e6157e598}{mGeometries}}[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00704}00704     boxRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_3\_CONTROL\_POINT\_PATCHLIST;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00705}00705     boxRitem-\/>IndexCount = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].IndexCount;  \textcolor{comment}{//36}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00706}00706     boxRitem-\/>StartIndexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].StartIndexLocation; \textcolor{comment}{//0}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00707}00707     boxRitem-\/>BaseVertexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].BaseVertexLocation; \textcolor{comment}{//0}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00708}00708     \mbox{\hyperlink{class_triangle_tessellation_app_abf54157d407c2ed19dc220866dfaf978}{mAllRitems}}.push\_back(std::move(boxRitem));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00709}00709 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00710}00710 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00711}00711     \textcolor{comment}{// All the render items are opaque.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00712}00712     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00713}00713     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00714}00714     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_triangle_tessellation_app_abf54157d407c2ed19dc220866dfaf978}{mAllRitems}})}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00715}00715         \mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}}.push\_back(e.get());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00716}00716 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00717}00717 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00718}00718 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_tessellation_app_a52773d0411db661b8b20c5f5cbdb5af0}{TriangleTessellationApp::DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00719}00719 \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00720}00720     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00721}00721 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00722}00722     \textcolor{keyword}{auto} objectCB = \mbox{\hyperlink{class_triangle_tessellation_app_ae257ea3816b05c6c7681664753cd08dc}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00723}00723 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00724}00724     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00725}00725     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00726}00726     \{}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00727}00727         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00728}00728 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00729}00729         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00730}00730         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00731}00731         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00732}00732 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00733}00733         \textcolor{comment}{// Offset to the CBV in the descriptor heap for this object and for this frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00734}00734         UINT cbvIndex = \mbox{\hyperlink{class_triangle_tessellation_app_a30b799522b2e86fff75e5b53681da664}{mCurrFrameResourceIndex}} * (UINT)\mbox{\hyperlink{class_triangle_tessellation_app_a98db34f26d4c8075d59eb977300f3409}{mOpaqueRitems}}.size() + ri-\/>ObjCBIndex;}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00735}00735         \textcolor{keyword}{auto} cbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(\mbox{\hyperlink{class_triangle_tessellation_app_ac8db82377ce9f61ff38a182ac9d408ae}{mCbvHeap}}-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00736}00736         cbvHandle.Offset(cbvIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00737}00737 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00738}00738         cmdList-\/>SetGraphicsRootDescriptorTable(0, cbvHandle);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00739}00739 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00740}00740         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00741}00741     \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00742}00742 \}}
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00743}00743 }
+\DoxyCodeLine{\Hypertarget{_week9-2-_triangle_tessellation_basedon_distance_8cpp_source_l00744}00744 }
+
+\end{DoxyCode}

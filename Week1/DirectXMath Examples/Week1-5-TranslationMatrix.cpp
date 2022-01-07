@@ -1,4 +1,21 @@
-﻿#include <windows.h> // for XMVerifyCPUSupport
+﻿/** @file Week1-5-TranslationMatrix.cpp
+ *  @brief Translation Demo using XMVector4Transform or XMMatrixTranslation or XMMatrixTranslationFromVector
+ *
+ *  Constructs a translation matrix:
+ *  XMMATRIX XM_CALLCONV XMMatrixTranslation(
+ *  float OffsetX,
+ *  float OffsetY,
+ *  float OffsetZ); // Translation factors
+ *
+ *
+ *  Constructs a translation matrix from components in a vector:
+ *  XMMATRIX XM_CALLCONV XMMatrixTranslationFromVector(FXMVECTOR Offset); // Translation factors (tx,ty, tz)
+ *
+ *  @author Hooman Salamat
+ *  @bug No known bugs.
+ */
+
+#include <windows.h> // for XMVerifyCPUSupport
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <iostream>
@@ -55,6 +72,13 @@ int main()
 			   0.0f, 1.0f, 0.0f, 0.0f,
 			   0.0f, 0.0f, 1.0f, 0.0f,
 			   12.0f, -10.0f, 0.0f, 1.0f);
+
+	XMMATRIX T2 = XMMatrixTranslation(12.0f, -10.0f, 0.0f);
+
+	XMVECTOR Tr = XMVectorSet(12.0f, -10.0f, 0.0f, 0.0f);
+	XMMATRIX T3 = XMMatrixTranslationFromVector(Tr);
+
+	// @note T, T2, and T3 are all the same
 
 	XMVECTOR translatedMinPoint = XMVector4Transform(minPoint, T);
 	XMVECTOR translatedMaxPoint = XMVector4Transform(maxPoint, T);

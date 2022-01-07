@@ -1,3 +1,20 @@
+/** @file Week1-6-ScalingMatrix.cpp
+ *  @brief Scaling Demo using XMVector3Transform or XMMatrixScaling or XMMatrixScalingFromVector
+ *  
+ *  Constructs a scaling matrix:
+ *  XMMATRIX XM_CALLCONV XMMatrixScaling(
+ *  float ScaleX,
+ *  float ScaleY,
+ *  float ScaleZ); // Scaling factors
+ * 
+ * 
+ *  Constructs a scaling matrix from components in vector:
+ *  XMMATRIX XM_CALLCONV XMMatrixScalingFromVector( FXMVECTOR Scale); // Scaling factors (sx, sy,sz)
+ *
+ *  @author Hooman Salamat
+ *  @bug No known bugs.
+ */
+
 #include <windows.h> // for XMVerifyCPUSupport
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
@@ -43,6 +60,14 @@ int main()
 			   0.0f, 2.0f, 0.0f, 0.0f,
 			   0.0f, 0.0f, 1.0f, 0.0f,
 			   0.0f, 0.0f, 0.0f, 0.0f);
+
+	XMMATRIX S2 = XMMatrixScaling(0.5f, 2.0f, 1.0f);
+
+	XMVECTOR Sc = XMVectorSet(0.5f, 2.0f, 1.0f, 1.0f);
+
+	XMMATRIX S3 = XMMatrixScalingFromVector(Sc);
+
+	// @note S1, S2, and S3 are all equal
 
 	XMVECTOR minPoint = XMVectorSet(-4.0f, -4.0f, 0.0f, 0.0f);
 	XMVECTOR maxPoint = XMVectorSet(4.0f, 4.0f, 0.0f, 0.0f);

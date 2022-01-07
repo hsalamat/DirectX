@@ -1,0 +1,269 @@
+\hypertarget{class_sobel_filter}{}\doxysection{Sobel\+Filter Class Reference}
+\label{class_sobel_filter}\index{SobelFilter@{SobelFilter}}
+
+
+{\ttfamily \#include $<$Sobel\+Filter.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_sobel_filter_a5f2b4d8831d7088834c780d5b458c1e9}{Sobel\+Filter}} (ID3\+D12\+Device $\ast$device, UINT width, UINT height, DXGI\+\_\+\+FORMAT format)
+\begin{DoxyCompactList}\small\item\em The width and height should match the dimensions of the input texture to apply the filter. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_sobel_filter_a11ddae3f042851f8c6397794e0ad0dac}{Sobel\+Filter}} (const \mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \&rhs)=delete
+\item 
+\mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \& \mbox{\hyperlink{class_sobel_filter_a543778b1457272b56657eeff2fb80896}{operator=}} (const \mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \&rhs)=delete
+\item 
+\mbox{\hyperlink{class_sobel_filter_adefb7d00c361a26aff15d88964194f4d}{$\sim$\+Sobel\+Filter}} ()=default
+\item 
+CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_sobel_filter_a1cc3d1b1aa9c9c0ddef8d0a74ec9a0f9}{Output\+Srv}} ()
+\item 
+UINT \mbox{\hyperlink{class_sobel_filter_a32cbc064a252b0b8e74d7b07685b0bd8}{Descriptor\+Count}} () const
+\item 
+void \mbox{\hyperlink{class_sobel_filter_a82b36db6e36d721b39af35cb03961848}{Build\+Descriptors}} (CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Cpu\+Descriptor, CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Gpu\+Descriptor, UINT descriptor\+Size)
+\item 
+void \mbox{\hyperlink{class_sobel_filter_a43d720be9379cccc4459dadf4cace502}{On\+Resize}} (UINT new\+Width, UINT new\+Height)
+\item 
+void \mbox{\hyperlink{class_sobel_filter_a8d0cc4de3f8cd98e62f52080e87359f0}{Execute}} (ID3\+D12\+Graphics\+Command\+List $\ast$cmd\+List, ID3\+D12\+Root\+Signature $\ast$root\+Sig, ID3\+D12\+Pipeline\+State $\ast$pso, CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE input)
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_sobel_filter_a37757ce1a1fe71e8f94b637c9469d493}{Build\+Descriptors}} ()
+\item 
+void \mbox{\hyperlink{class_sobel_filter_a29b66cfcfeb193f91239cca8c713795d}{Build\+Resource}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+ID3\+D12\+Device $\ast$ \mbox{\hyperlink{class_sobel_filter_aec857ea9d57a87a8ca4138557a622f0b}{md3d\+Device}} = nullptr
+\item 
+UINT \mbox{\hyperlink{class_sobel_filter_a08bd21fec5274f27ee7238afce994695}{m\+Width}} = 0
+\item 
+UINT \mbox{\hyperlink{class_sobel_filter_ab33f0d4b43efa0a5bf86975b50e5724d}{m\+Height}} = 0
+\item 
+DXGI\+\_\+\+FORMAT \mbox{\hyperlink{class_sobel_filter_ad680d8a5a9821112fc3208d92d0d2146}{m\+Format}} = DXGI\+\_\+\+FORMAT\+\_\+\+R8\+G8\+B8\+A8\+\_\+\+UNORM
+\item 
+CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_sobel_filter_a7b936aa7d96b6b6959a3d82ccdb5f523}{mh\+Cpu\+Srv}}
+\item 
+CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_sobel_filter_ace7b96287271eef54da013b6d7dccf23}{mh\+Cpu\+Uav}}
+\item 
+CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_sobel_filter_a1992eea3293c23dda2a2bd66019ad0c7}{mh\+Gpu\+Srv}}
+\item 
+CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_sobel_filter_a0bc74a5b8c09df3ee9bbfc291877122b}{mh\+Gpu\+Uav}}
+\item 
+Microsoft\+::\+WRL\+::\+Com\+Ptr$<$ ID3\+D12\+Resource $>$ \mbox{\hyperlink{class_sobel_filter_a838ff68507c88102437acde57221ffdf}{m\+Output}} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00011}{11}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_sobel_filter_a5f2b4d8831d7088834c780d5b458c1e9}\label{class_sobel_filter_a5f2b4d8831d7088834c780d5b458c1e9}} 
+\index{SobelFilter@{SobelFilter}!SobelFilter@{SobelFilter}}
+\index{SobelFilter@{SobelFilter}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{SobelFilter()}{SobelFilter()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Sobel\+Filter\+::\+Sobel\+Filter (\begin{DoxyParamCaption}\item[{ID3\+D12\+Device $\ast$}]{device,  }\item[{UINT}]{width,  }\item[{UINT}]{height,  }\item[{DXGI\+\_\+\+FORMAT}]{format }\end{DoxyParamCaption})}
+
+
+
+The width and height should match the dimensions of the input texture to apply the filter. 
+
+Recreate when the screen is resized. /summary\texorpdfstring{$>$}{>} 
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00007}{7}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a11ddae3f042851f8c6397794e0ad0dac}\label{class_sobel_filter_a11ddae3f042851f8c6397794e0ad0dac}} 
+\index{SobelFilter@{SobelFilter}!SobelFilter@{SobelFilter}}
+\index{SobelFilter@{SobelFilter}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{SobelFilter()}{SobelFilter()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Sobel\+Filter\+::\+Sobel\+Filter (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+\mbox{\Hypertarget{class_sobel_filter_adefb7d00c361a26aff15d88964194f4d}\label{class_sobel_filter_adefb7d00c361a26aff15d88964194f4d}} 
+\index{SobelFilter@{SobelFilter}!````~SobelFilter@{$\sim$SobelFilter}}
+\index{````~SobelFilter@{$\sim$SobelFilter}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{$\sim$SobelFilter()}{~SobelFilter()}}
+{\footnotesize\ttfamily Sobel\+Filter\+::$\sim$\+Sobel\+Filter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_sobel_filter_a37757ce1a1fe71e8f94b637c9469d493}\label{class_sobel_filter_a37757ce1a1fe71e8f94b637c9469d493}} 
+\index{SobelFilter@{SobelFilter}!BuildDescriptors@{BuildDescriptors}}
+\index{BuildDescriptors@{BuildDescriptors}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{BuildDescriptors()}{BuildDescriptors()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Sobel\+Filter\+::\+Build\+Descriptors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00081}{81}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a82b36db6e36d721b39af35cb03961848}\label{class_sobel_filter_a82b36db6e36d721b39af35cb03961848}} 
+\index{SobelFilter@{SobelFilter}!BuildDescriptors@{BuildDescriptors}}
+\index{BuildDescriptors@{BuildDescriptors}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{BuildDescriptors()}{BuildDescriptors()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Sobel\+Filter\+::\+Build\+Descriptors (\begin{DoxyParamCaption}\item[{CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Cpu\+Descriptor,  }\item[{CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Gpu\+Descriptor,  }\item[{UINT}]{descriptor\+Size }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00030}{30}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a29b66cfcfeb193f91239cca8c713795d}\label{class_sobel_filter_a29b66cfcfeb193f91239cca8c713795d}} 
+\index{SobelFilter@{SobelFilter}!BuildResource@{BuildResource}}
+\index{BuildResource@{BuildResource}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{BuildResource()}{BuildResource()}}
+{\footnotesize\ttfamily void Sobel\+Filter\+::\+Build\+Resource (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00100}{100}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a32cbc064a252b0b8e74d7b07685b0bd8}\label{class_sobel_filter_a32cbc064a252b0b8e74d7b07685b0bd8}} 
+\index{SobelFilter@{SobelFilter}!DescriptorCount@{DescriptorCount}}
+\index{DescriptorCount@{DescriptorCount}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{DescriptorCount()}{DescriptorCount()}}
+{\footnotesize\ttfamily UINT Sobel\+Filter\+::\+Descriptor\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00025}{25}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a8d0cc4de3f8cd98e62f52080e87359f0}\label{class_sobel_filter_a8d0cc4de3f8cd98e62f52080e87359f0}} 
+\index{SobelFilter@{SobelFilter}!Execute@{Execute}}
+\index{Execute@{Execute}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{Execute()}{Execute()}}
+{\footnotesize\ttfamily void Sobel\+Filter\+::\+Execute (\begin{DoxyParamCaption}\item[{ID3\+D12\+Graphics\+Command\+List $\ast$}]{cmd\+List,  }\item[{ID3\+D12\+Root\+Signature $\ast$}]{root\+Sig,  }\item[{ID3\+D12\+Pipeline\+State $\ast$}]{pso,  }\item[{CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{input }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00057}{57}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a43d720be9379cccc4459dadf4cace502}\label{class_sobel_filter_a43d720be9379cccc4459dadf4cace502}} 
+\index{SobelFilter@{SobelFilter}!OnResize@{OnResize}}
+\index{OnResize@{OnResize}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{OnResize()}{OnResize()}}
+{\footnotesize\ttfamily void Sobel\+Filter\+::\+On\+Resize (\begin{DoxyParamCaption}\item[{UINT}]{new\+Width,  }\item[{UINT}]{new\+Height }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00043}{43}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a543778b1457272b56657eeff2fb80896}\label{class_sobel_filter_a543778b1457272b56657eeff2fb80896}} 
+\index{SobelFilter@{SobelFilter}!operator=@{operator=}}
+\index{operator=@{operator=}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \& Sobel\+Filter\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_sobel_filter}{Sobel\+Filter}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+\mbox{\Hypertarget{class_sobel_filter_a1cc3d1b1aa9c9c0ddef8d0a74ec9a0f9}\label{class_sobel_filter_a1cc3d1b1aa9c9c0ddef8d0a74ec9a0f9}} 
+\index{SobelFilter@{SobelFilter}!OutputSrv@{OutputSrv}}
+\index{OutputSrv@{OutputSrv}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{OutputSrv()}{OutputSrv()}}
+{\footnotesize\ttfamily CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Sobel\+Filter\+::\+Output\+Srv (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8cpp_source_l00020}{20}} of file \mbox{\hyperlink{_sobel_filter_8cpp_source}{Sobel\+Filter.\+cpp}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_sobel_filter_aec857ea9d57a87a8ca4138557a622f0b}\label{class_sobel_filter_aec857ea9d57a87a8ca4138557a622f0b}} 
+\index{SobelFilter@{SobelFilter}!md3dDevice@{md3dDevice}}
+\index{md3dDevice@{md3dDevice}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{md3dDevice}{md3dDevice}}
+{\footnotesize\ttfamily ID3\+D12\+Device$\ast$ Sobel\+Filter\+::md3d\+Device = nullptr\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00049}{49}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_ad680d8a5a9821112fc3208d92d0d2146}\label{class_sobel_filter_ad680d8a5a9821112fc3208d92d0d2146}} 
+\index{SobelFilter@{SobelFilter}!mFormat@{mFormat}}
+\index{mFormat@{mFormat}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mFormat}{mFormat}}
+{\footnotesize\ttfamily DXGI\+\_\+\+FORMAT Sobel\+Filter\+::m\+Format = DXGI\+\_\+\+FORMAT\+\_\+\+R8\+G8\+B8\+A8\+\_\+\+UNORM\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00053}{53}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a7b936aa7d96b6b6959a3d82ccdb5f523}\label{class_sobel_filter_a7b936aa7d96b6b6959a3d82ccdb5f523}} 
+\index{SobelFilter@{SobelFilter}!mhCpuSrv@{mhCpuSrv}}
+\index{mhCpuSrv@{mhCpuSrv}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mhCpuSrv}{mhCpuSrv}}
+{\footnotesize\ttfamily CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Sobel\+Filter\+::mh\+Cpu\+Srv\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00055}{55}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_ace7b96287271eef54da013b6d7dccf23}\label{class_sobel_filter_ace7b96287271eef54da013b6d7dccf23}} 
+\index{SobelFilter@{SobelFilter}!mhCpuUav@{mhCpuUav}}
+\index{mhCpuUav@{mhCpuUav}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mhCpuUav}{mhCpuUav}}
+{\footnotesize\ttfamily CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Sobel\+Filter\+::mh\+Cpu\+Uav\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00056}{56}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_ab33f0d4b43efa0a5bf86975b50e5724d}\label{class_sobel_filter_ab33f0d4b43efa0a5bf86975b50e5724d}} 
+\index{SobelFilter@{SobelFilter}!mHeight@{mHeight}}
+\index{mHeight@{mHeight}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mHeight}{mHeight}}
+{\footnotesize\ttfamily UINT Sobel\+Filter\+::m\+Height = 0\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00052}{52}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a1992eea3293c23dda2a2bd66019ad0c7}\label{class_sobel_filter_a1992eea3293c23dda2a2bd66019ad0c7}} 
+\index{SobelFilter@{SobelFilter}!mhGpuSrv@{mhGpuSrv}}
+\index{mhGpuSrv@{mhGpuSrv}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mhGpuSrv}{mhGpuSrv}}
+{\footnotesize\ttfamily CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Sobel\+Filter\+::mh\+Gpu\+Srv\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00058}{58}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a0bc74a5b8c09df3ee9bbfc291877122b}\label{class_sobel_filter_a0bc74a5b8c09df3ee9bbfc291877122b}} 
+\index{SobelFilter@{SobelFilter}!mhGpuUav@{mhGpuUav}}
+\index{mhGpuUav@{mhGpuUav}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mhGpuUav}{mhGpuUav}}
+{\footnotesize\ttfamily CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Sobel\+Filter\+::mh\+Gpu\+Uav\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00059}{59}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a838ff68507c88102437acde57221ffdf}\label{class_sobel_filter_a838ff68507c88102437acde57221ffdf}} 
+\index{SobelFilter@{SobelFilter}!mOutput@{mOutput}}
+\index{mOutput@{mOutput}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mOutput}{mOutput}}
+{\footnotesize\ttfamily Microsoft\+::\+WRL\+::\+Com\+Ptr$<$ID3\+D12\+Resource$>$ Sobel\+Filter\+::m\+Output = nullptr\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00061}{61}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+\mbox{\Hypertarget{class_sobel_filter_a08bd21fec5274f27ee7238afce994695}\label{class_sobel_filter_a08bd21fec5274f27ee7238afce994695}} 
+\index{SobelFilter@{SobelFilter}!mWidth@{mWidth}}
+\index{mWidth@{mWidth}!SobelFilter@{SobelFilter}}
+\doxysubsubsection{\texorpdfstring{mWidth}{mWidth}}
+{\footnotesize\ttfamily UINT Sobel\+Filter\+::m\+Width = 0\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_sobel_filter_8h_source_l00051}{51}} of file \mbox{\hyperlink{_sobel_filter_8h_source}{Sobel\+Filter.\+h}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Week8/\+Sobel\+Filter/\mbox{\hyperlink{_sobel_filter_8h}{Sobel\+Filter.\+h}}\item 
+Week8/\+Sobel\+Filter/\mbox{\hyperlink{_sobel_filter_8cpp}{Sobel\+Filter.\+cpp}}\end{DoxyCompactItemize}

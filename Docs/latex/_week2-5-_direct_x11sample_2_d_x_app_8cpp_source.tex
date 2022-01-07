@@ -1,0 +1,218 @@
+\hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source}{}\doxysection{DXApp.\+cpp}
+\label{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source}\index{Week2/Week2-\/5-\/DirectX11sample/DXApp.cpp@{Week2/Week2-\/5-\/DirectX11sample/DXApp.cpp}}
+\mbox{\hyperlink{_week2-5-_direct_x11sample_2_d_x_app_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-5-_direct_x11sample_2_d_x_app_8h}{DXApp.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00003}00003 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00004}00004 \textcolor{keyword}{namespace }\{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00005}00005     \textcolor{comment}{//used to forward messages to user defined proc function}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00006}00006     \mbox{\hyperlink{class_d_x_app}{DXApp}}* g\_App = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00007}00007 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00009}\mbox{\hyperlink{_week2-5-_direct_x11sample_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{00009}} LRESULT CALLBACK \mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00010}00010 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00011}00011     \textcolor{keywordflow}{if} (g\_App) g\_App-\/>MsgProc(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00012}00012     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00013}00013         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00014}00014 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00016}00016 \mbox{\hyperlink{class_d_x_app_ac7dcbcd30f5c5b2da87c840b9dcbc6e6}{DXApp::DXApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00017}00017 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00018}00018     \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}} = hInstance;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00019}00019     \mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}} = NULL; \textcolor{comment}{//we don't have a window yet}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00020}00020     \mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}} = 800;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00021}00021     \mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}} = 800;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00022}00022     \mbox{\hyperlink{class_d_x_app_a7b17a8c07b5f5700fe7e3fa24a448612}{m\_AppTitle}} = \textcolor{stringliteral}{"{}DirectX12 Application"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00023}00023     \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}} = WS\_OVERLAPPEDWINDOW; \textcolor{comment}{//basic maximize, minimize, etc.. }}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00024}00024     g\_App = \textcolor{keyword}{this}; \textcolor{comment}{//otherwise app doesn't stop when windows closes!}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00025}00025     }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00026}00026     \mbox{\hyperlink{class_d_x_app_a5e8a204d67fb0919a5bfecc2a66803cb}{m\_pDevice}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00027}00027     \mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00028}00028     \mbox{\hyperlink{class_d_x_app_a995d5d21375aef0f19e9c3316cbce21c}{m\_pRenderTargetView}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00029}00029     \mbox{\hyperlink{class_d_x_app_ad5cd43cbfc7f8f2fd562bf1e5bb9103c}{m\_pSwapChain}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00030}00030 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00032}00032 \mbox{\hyperlink{class_d_x_app_a6414f22a20a4b5a0e26920fc55a279db}{DXApp::\string~DXApp}}()}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00033}00033 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00034}00034     \textcolor{comment}{//Cleanup Direct3D}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00036}00036     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}}) \mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}}-\/>ClearState();}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00037}00037     \mbox{\hyperlink{namespace_memory_a30c980d6aca3adaa563b89e39aec984e}{Memory::SafeRelease}}(\mbox{\hyperlink{class_d_x_app_a995d5d21375aef0f19e9c3316cbce21c}{m\_pRenderTargetView}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00038}00038     \mbox{\hyperlink{namespace_memory_a30c980d6aca3adaa563b89e39aec984e}{Memory::SafeRelease}}(\mbox{\hyperlink{class_d_x_app_ad5cd43cbfc7f8f2fd562bf1e5bb9103c}{m\_pSwapChain}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00039}00039     \mbox{\hyperlink{namespace_memory_a30c980d6aca3adaa563b89e39aec984e}{Memory::SafeRelease}}(\mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00040}00040     \mbox{\hyperlink{namespace_memory_a30c980d6aca3adaa563b89e39aec984e}{Memory::SafeRelease}}(\mbox{\hyperlink{class_d_x_app_a5e8a204d67fb0919a5bfecc2a66803cb}{m\_pDevice}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00041}00041 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00043}00043 \textcolor{keywordtype}{int} \mbox{\hyperlink{class_d_x_app_a9826ef8d4adc442a7a5252d6c9790bc1}{DXApp::Run}}()}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00044}00044 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00045}00045     \textcolor{comment}{//Main Message Loop}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00046}00046     MSG msg = \{ 0 \};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00047}00047     \textcolor{keywordflow}{while} (WM\_QUIT != msg.message)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00048}00048     \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00049}00049         \textcolor{keywordflow}{if} (PeekMessage(\&msg, NULL, NULL, NULL, PM\_REMOVE)) \textcolor{comment}{//peek and remove from the stack}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00050}00050         \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00051}00051             TranslateMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00052}00052             DispatchMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00053}00053         \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00054}00054         \textcolor{keywordflow}{else} }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00055}00055         \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00056}00056             \textcolor{comment}{//In off-\/time we update and render}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00057}00057             \mbox{\hyperlink{class_d_x_app_a00be75553e31cedea9c444b9bab788a3}{Update}}(0.0);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00058}00058             \mbox{\hyperlink{class_d_x_app_a8bab68e83895597156bdf097e18abefd}{Render}}(0.0);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00059}00059         \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00060}00060     \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00062}00062     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(msg.wParam);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00063}00063 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00065}00065 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d_x_app_a80f7022aebbe880d8a8b35835c5a851f}{DXApp::Init}}()}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00066}00066 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00067}00067     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d_x_app_a41ce52cbd69650798c342aed6b1d21fd}{InitWindow}}())}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00068}00068     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00069}00069     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d_x_app_a2757c034c4cbb81b2448a6f2a788c11e}{InitDirect3D}}())}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00070}00070         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00072}00072     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00073}00073 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00075}00075 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d_x_app_a41ce52cbd69650798c342aed6b1d21fd}{DXApp::InitWindow}}()}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00076}00076 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00077}00077     \textcolor{comment}{//WNDCLASSEX -\/ Bear in mind that the only difference between CreateWindow and CreateWindowEx is the addition of extended styles to the latter. You can use either type of window class structure with them.}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00078}00078     WNDCLASSEX wcex;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00079}00079     ZeroMemory(\&wcex, \textcolor{keyword}{sizeof}(WNDCLASSEX)); \textcolor{comment}{//Fills a block of memory with zeros.}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00080}00080     wcex.style = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00081}00081     wcex.lpfnWndProc = \mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00082}00082     wcex.cbClsExtra = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00083}00083     wcex.cbWndExtra = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00084}00084     wcex.cbSize = \textcolor{keyword}{sizeof}(WNDCLASSEX);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00085}00085     wcex.hInstance = \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00086}00086     wcex.hIcon = LoadIcon(0, IDI\_APPLICATION);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00087}00087     wcex.hCursor = LoadCursor(0, IDC\_ARROW);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00088}00088     wcex.hbrBackground = (HBRUSH)GetStockObject(NULL\_BRUSH);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00089}00089     wcex.lpszMenuName = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00090}00090     wcex.lpszClassName = L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00091}00091 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00092}00092     \textcolor{comment}{//register with Windows OS}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00093}00093     \textcolor{keywordflow}{if} (!RegisterClassEx(\&wcex))}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00094}00094     \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00095}00095         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window Class\(\backslash\)n"{}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00096}00096         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00097}00097     \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00098}00098 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00099}00099     RECT r = \{ 0,0, \mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}}, \mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}} \};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00100}00100     AdjustWindowRect(\&r, \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}}, FALSE);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00101}00101     UINT width = r.right -\/ r.left;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00102}00102     UINT height = r.bottom -\/ r.top;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00103}00103     UINT x = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ width / 2;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00104}00104     UINT y = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ height / 2;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00105}00105     \mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}} = CreateWindow(L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}}, L\textcolor{stringliteral}{"{}test"{}}, \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}}, x, y, width, height, NULL, NULL, \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}}, NULL);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00107}00107     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}}) \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00108}00108         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window \(\backslash\)n"{}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00109}00109         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00110}00110     \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00112}00112     ShowWindow(\mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}}, SW\_SHOW);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00113}00113 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00114}00114     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00115}00115 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00117}\mbox{\hyperlink{class_d_x_app_a2757c034c4cbb81b2448a6f2a788c11e}{00117}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d_x_app_a2757c034c4cbb81b2448a6f2a788c11e}{DXApp::InitDirect3D}}()}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00118}00118 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00119}00119     UINT createDeviceFlags = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00120}00120 \textcolor{preprocessor}{\#ifdef \_DEBUG }}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00121}00121 createDeviceFlags |= D3D11\_CREATE\_DEVICE\_DEBUG;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00122}00122 \textcolor{preprocessor}{\#endif }\textcolor{comment}{//\_DEBUG }}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00124}00124 D3D\_DRIVER\_TYPE driverTypes[] =}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00125}00125 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00126}00126     D3D\_DRIVER\_TYPE\_HARDWARE, \textcolor{comment}{//graphics card}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00127}00127     D3D\_DRIVER\_TYPE\_WARP,     \textcolor{comment}{//if you don't have graphics card}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00128}00128     D3D\_DRIVER\_TYPE\_REFERENCE }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00129}00129 \};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00131}00131 UINT numDriverTypes = ARRAYSIZE(driverTypes);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00132}00132 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00133}00133 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00134}00134 D3D\_FEATURE\_LEVEL featureLevels[] = }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00135}00135 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00136}00136     D3D\_FEATURE\_LEVEL\_11\_0,}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00137}00137     D3D\_FEATURE\_LEVEL\_10\_1,}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00138}00138     D3D\_FEATURE\_LEVEL\_10\_0,}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00139}00139     D3D\_FEATURE\_LEVEL\_9\_3}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00140}00140 \};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00141}00141 UINT numFeatureLevels = ARRAYSIZE(featureLevels);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00143}00143 DXGI\_SWAP\_CHAIN\_DESC swapDesc;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00144}00144 ZeroMemory(\&swapDesc, \textcolor{keyword}{sizeof}(DXGI\_SWAP\_CHAIN\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00145}00145 swapDesc.BufferCount = 1; \textcolor{comment}{//double buffer}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00146}00146 swapDesc.BufferDesc.Width = \mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00147}00147 swapDesc.BufferDesc.Height = \mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00148}00148 swapDesc.BufferDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00149}00149 swapDesc.BufferDesc.RefreshRate.Numerator = 60;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00150}00150 swapDesc.BufferDesc.RefreshRate.Denominator = 1;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00151}00151 swapDesc.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00152}00152 swapDesc.OutputWindow = \mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00153}00153 swapDesc.SwapEffect = DXGI\_SWAP\_EFFECT\_DISCARD;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00154}00154 swapDesc.Windowed = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00155}00155 swapDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00156}00156 swapDesc.SampleDesc.Quality = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00157}00157 swapDesc.Flags = DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH; \textcolor{comment}{//alt\_enter full screen}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00158}00158 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00159}00159 HRESULT result;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00160}00160 \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i=0; i< numDriverTypes; i++)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00161}00161 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00162}00162     result = D3D11CreateDeviceAndSwapChain(NULL, driverTypes[i], NULL, createDeviceFlags,}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00163}00163     featureLevels, numFeatureLevels, D3D11\_SDK\_VERSION, \&swapDesc, \&\mbox{\hyperlink{class_d_x_app_ad5cd43cbfc7f8f2fd562bf1e5bb9103c}{m\_pSwapChain}}, \&\mbox{\hyperlink{class_d_x_app_a5e8a204d67fb0919a5bfecc2a66803cb}{m\_pDevice}},}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00164}00164     \&\mbox{\hyperlink{class_d_x_app_a064a800574d7c0cb6a998183a516807a}{m\_FeatureLevel}}, \&\mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00165}00165 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00166}00166     \textcolor{keywordflow}{if} (SUCCEEDED(result)) \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00167}00167         \mbox{\hyperlink{class_d_x_app_a0acfa7e4a012e5bbcbf9e735c085ea20}{m\_DriverType}} = driverTypes[i];}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00168}00168         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00169}00169     \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00170}00170 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00172}00172 \textcolor{keywordflow}{if} (FAILED(result)) \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00173}00173     OutputDebugString(L\textcolor{stringliteral}{"{}Failed To Create Device and Swap chain"{}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00174}00174     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00175}00175 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00176}00176 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00177}00177 \textcolor{comment}{//CREATE RENDER TARGET VIEW}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00178}00178 ID3D11Texture2D* m\_pBackBufferTex = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00179}00179 \mbox{\hyperlink{class_d_x_app_ad5cd43cbfc7f8f2fd562bf1e5bb9103c}{m\_pSwapChain}}-\/>GetBuffer(NULL, \_\_uuidof(ID3D11Texture2D), \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&m\_pBackBufferTex));}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00180}00180 \mbox{\hyperlink{class_d_x_app_a5e8a204d67fb0919a5bfecc2a66803cb}{m\_pDevice}}-\/>CreateRenderTargetView(m\_pBackBufferTex, \textcolor{keyword}{nullptr}, \&\mbox{\hyperlink{class_d_x_app_a995d5d21375aef0f19e9c3316cbce21c}{m\_pRenderTargetView}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00181}00181 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00182}00182 \textcolor{comment}{//BIND RENDER TARGETVIEW}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00183}00183 \mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d_x_app_a995d5d21375aef0f19e9c3316cbce21c}{m\_pRenderTargetView}}, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00184}00184 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00185}00185 \textcolor{comment}{//VIEWPORT CREATION}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00186}00186 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.Width = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (\mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00187}00187 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.Height = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (\mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00188}00188 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00189}00189 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.TopLeftX = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00190}00190 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.TopLeftY = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00191}00191 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.MinDepth = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00192}00192 \mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}}.MaxDepth = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00193}00193 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00194}00194 \textcolor{comment}{//BIND Viewport}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00195}00195 \mbox{\hyperlink{class_d_x_app_a53dd438f1f338f2ea159091edc777abd}{m\_pImmediateContext}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d_x_app_a8eaffa9b4a86d0f4e05b845f4ed53b36}{m\_Viewport}});}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00196}00196 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00197}00197 \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00198}00198 \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00200}00200 LRESULT \mbox{\hyperlink{class_d_x_app_a6c039fb823620467b3f8e78fdb1ebc7e}{DXApp::MsgProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00201}00201 \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00202}00202     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00203}00203     \{}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00204}00204     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00205}00205     PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00206}00206     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00207}00207 }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00208}00208     \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00209}00209         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam); \textcolor{comment}{//wParam, lParam..mouse position..ket down...}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00210}00210     \}}
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00211}00211     }
+\DoxyCodeLine{\Hypertarget{_week2-5-_direct_x11sample_2_d_x_app_8cpp_source_l00212}00212 \}}
+
+\end{DoxyCode}

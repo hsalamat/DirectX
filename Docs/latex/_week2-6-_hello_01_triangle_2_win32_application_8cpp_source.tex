@@ -1,0 +1,125 @@
+\hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source}{}\doxysection{Win32\+Application.\+cpp}
+\label{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source}\index{Week2/Week2-\/6-\/Hello Triangle/Win32Application.cpp@{Week2/Week2-\/6-\/Hello Triangle/Win32Application.cpp}}
+\mbox{\hyperlink{_week2-6-_hello_01_triangle_2_win32_application_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00001}00001 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00002}00002 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00003}00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00004}00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00005}00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00006}00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00007}00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00008}00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00009}00009 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00010}00010 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2stdafx_8h}{stdafx.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2_win32_application_8h}{Win32Application.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00015}00015 HWND \mbox{\hyperlink{class_win32_application_a8390943d79c489117850ada97fd6eaaa}{Win32Application::m\_hwnd}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00017}\mbox{\hyperlink{class_win32_application_a44c0a8b1eef2a7f360884bce5a14d630}{00017}} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_win32_application_a44c0a8b1eef2a7f360884bce5a14d630}{Win32Application::Run}}(\mbox{\hyperlink{class_d_x_sample}{DXSample}}* pSample, HINSTANCE hInstance, \textcolor{keywordtype}{int} nCmdShow)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00018}00018 \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00019}00019     \textcolor{comment}{// Parse the command line parameters}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00020}00020     \textcolor{keywordtype}{int} argc;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00021}00021     LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), \&argc);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00022}00022     pSample-\/>\mbox{\hyperlink{class_d_x_sample_a1feb438eb581b4f9f8621e1dfcba529d}{ParseCommandLineArgs}}(argv, argc);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00023}00023     LocalFree(argv);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00025}00025     \textcolor{comment}{// Initialize the window class.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00026}00026     WNDCLASSEX windowClass = \{ 0 \};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00027}00027     windowClass.cbSize = \textcolor{keyword}{sizeof}(WNDCLASSEX);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00028}00028     windowClass.style = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00029}00029     windowClass.lpfnWndProc = \mbox{\hyperlink{class_win32_application_abd4aa7724448d60d3ba2453db7ce577e}{WindowProc}};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00030}00030     windowClass.hInstance = hInstance;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00031}00031     windowClass.hCursor = LoadCursor(NULL, IDC\_ARROW);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00032}00032     windowClass.lpszClassName = L\textcolor{stringliteral}{"{}DXSampleClass"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00033}00033     RegisterClassEx(\&windowClass);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00035}00035     RECT windowRect = \{ 0, 0, \textcolor{keyword}{static\_cast<}LONG\textcolor{keyword}{>}(pSample-\/>\mbox{\hyperlink{class_d_x_sample_a27ec8e6f1ffe4e5f3b4b1ea8f15eebe6}{GetWidth}}()), \textcolor{keyword}{static\_cast<}LONG\textcolor{keyword}{>}(pSample-\/>\mbox{\hyperlink{class_d_x_sample_ae46312585c9df75fd5fc99cbbfebdfa1}{GetHeight}}()) \};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00036}00036     AdjustWindowRect(\&windowRect, WS\_OVERLAPPEDWINDOW, FALSE);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00038}00038     \textcolor{comment}{// Create the window and store a handle to it.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00039}00039     \mbox{\hyperlink{class_win32_application_a8390943d79c489117850ada97fd6eaaa}{m\_hwnd}} = CreateWindow(}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00040}00040         windowClass.lpszClassName,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00041}00041         pSample-\/>\mbox{\hyperlink{class_d_x_sample_a5b02da5e179635afbf643dc95b73e315}{GetTitle}}(),}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00042}00042         WS\_OVERLAPPEDWINDOW,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00043}00043         CW\_USEDEFAULT,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00044}00044         CW\_USEDEFAULT,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00045}00045         windowRect.right -\/ windowRect.left,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00046}00046         windowRect.bottom -\/ windowRect.top,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00047}00047         \textcolor{keyword}{nullptr},        \textcolor{comment}{// We have no parent window.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00048}00048         \textcolor{keyword}{nullptr},        \textcolor{comment}{// We aren't using menus.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00049}00049         hInstance,}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00050}00050         pSample);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00052}00052     \textcolor{comment}{// Initialize the sample. OnInit is defined in each child-\/implementation of DXSample.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00053}00053     pSample-\/>\mbox{\hyperlink{class_d_x_sample_a94359df1bd27ba75a67747d73ae36acb}{OnInit}}();}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00055}00055     ShowWindow(\mbox{\hyperlink{class_win32_application_a8390943d79c489117850ada97fd6eaaa}{m\_hwnd}}, nCmdShow);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00057}00057     \textcolor{comment}{// Main sample loop.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00058}00058     MSG msg = \{\};}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00059}00059     \textcolor{keywordflow}{while} (msg.message != WM\_QUIT)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00060}00060     \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00061}00061         \textcolor{comment}{// Process any messages in the queue.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00062}00062         \textcolor{keywordflow}{if} (PeekMessage(\&msg, NULL, 0, 0, PM\_REMOVE))}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00063}00063         \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00064}00064             TranslateMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00065}00065             DispatchMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00066}00066         \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00067}00067     \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00069}00069     pSample-\/>\mbox{\hyperlink{class_d_x_sample_afccf22f22b12929ae2b8a04949326d69}{OnDestroy}}();}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00071}00071     \textcolor{comment}{// Return this part of the WM\_QUIT message to Windows.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00072}00072     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(msg.wParam);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00073}00073 \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00075}00075 \textcolor{comment}{// Main message handler for the sample.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00076}\mbox{\hyperlink{class_win32_application_abd4aa7724448d60d3ba2453db7ce577e}{00076}} LRESULT CALLBACK \mbox{\hyperlink{class_win32_application_abd4aa7724448d60d3ba2453db7ce577e}{Win32Application::WindowProc}}(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00077}00077 \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00078}00078     \mbox{\hyperlink{class_d_x_sample}{DXSample}}* pSample = \textcolor{keyword}{reinterpret\_cast<}\mbox{\hyperlink{class_d_x_sample}{DXSample}}*\textcolor{keyword}{>}(GetWindowLongPtr(hWnd, GWLP\_USERDATA));}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00080}00080     \textcolor{keywordflow}{switch} (message)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00081}00081     \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00082}00082     \textcolor{keywordflow}{case} WM\_CREATE:}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00083}00083         \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00084}00084             \textcolor{comment}{// Save the DXSample* passed in to CreateWindow.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00085}00085             LPCREATESTRUCT pCreateStruct = \textcolor{keyword}{reinterpret\_cast<}LPCREATESTRUCT\textcolor{keyword}{>}(lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00086}00086             SetWindowLongPtr(hWnd, GWLP\_USERDATA, \textcolor{keyword}{reinterpret\_cast<}LONG\_PTR\textcolor{keyword}{>}(pCreateStruct-\/>lpCreateParams));}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00087}00087         \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00088}00088         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00090}00090     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00091}00091         \textcolor{keywordflow}{if} (pSample)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00092}00092         \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00093}00093             pSample-\/>\mbox{\hyperlink{class_d_x_sample_a19f1721aeb0d947e274fe5c88c0d917f}{OnKeyDown}}(\textcolor{keyword}{static\_cast<}UINT8\textcolor{keyword}{>}(wParam));}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00094}00094         \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00095}00095         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00097}00097     \textcolor{keywordflow}{case} WM\_KEYUP:}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00098}00098         \textcolor{keywordflow}{if} (pSample)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00099}00099         \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00100}00100             pSample-\/>\mbox{\hyperlink{class_d_x_sample_a9f4bab67ec6b31d385964e6a7b8d02b5}{OnKeyUp}}(\textcolor{keyword}{static\_cast<}UINT8\textcolor{keyword}{>}(wParam));}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00101}00101         \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00102}00102         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00104}00104     \textcolor{keywordflow}{case} WM\_PAINT:}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00105}00105         \textcolor{keywordflow}{if} (pSample)}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00106}00106         \{}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00107}00107             pSample-\/>\mbox{\hyperlink{class_d_x_sample_a03bed3bb1475bb28a070c8f69d047d30}{OnUpdate}}();}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00108}00108             pSample-\/>\mbox{\hyperlink{class_d_x_sample_a88f026c91eb3dd35cb3218154bcbf8c4}{OnRender}}();}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00109}00109         \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00110}00110         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00112}00112     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00113}00113         PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00114}00114         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00115}00115     \}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00117}00117     \textcolor{comment}{// Handle any messages the switch statement didn't.}}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00118}00118     \textcolor{keywordflow}{return} DefWindowProc(hWnd, message, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-6-_hello_01_triangle_2_win32_application_8cpp_source_l00119}00119 \}}
+
+\end{DoxyCode}

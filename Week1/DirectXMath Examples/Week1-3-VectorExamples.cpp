@@ -1,3 +1,18 @@
+/** @file Week1-3-VectorExamples.cpp
+ *  @brief using vector operations Demo
+ *
+ *  1. Use XMVECTOR for local or global variables.XMVECTOR needs to be 16-byte aligned. This is automatically done for local and global variables.
+ *  2. Use XMFLOAT2, XMFLOAT3, and XMFLOAT4 for class data members.
+ *  3. Use loading functions to convert from XMFLOATn to XMVECTOR before doing calculations.
+ *  4. Do calculations with XMVECTOR instances.
+ *  5. Use storage functions to convert from XMVECTOR to XMFLOATn.
+ *  6. The calling convention annotation XM_CALLCONV must be
+ *     specified before the function name so that the proper calling convention is used
+ * 
+ *  @author Hooman Salamat
+ *  @bug No known bugs.
+ */
+
 
 #include <windows.h> // for XMVerifyCPUSupport
 #include <DirectXMath.h>
@@ -20,6 +35,7 @@ ostream& XM_CALLCONV operator << (ostream& os, FXMVECTOR v)
 
 int main()
 {
+	//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values
 	cout.setf(ios_base::boolalpha);
 
 	// Check support for SSE2 (Pentium4, AMD K8, and above).
@@ -56,7 +72,10 @@ int main()
 	XMVECTOR e = XMVector3Cross(u, v);
 
 	// Find proj_n(w) and perp_n(w)
-	XMVECTOR projW;
+	// If we interpret w as a force, projW can be thought of as the portion of the force w that acts in
+	// the direction n.Likewise, the vector perpW = perpn(w) = w – p is the portion of the force v that
+	// acts orthogonal to the direction n
+	XMVECTOR projW;  //projW the orthogonal projection of w on n,
 	XMVECTOR perpW;
 	XMVector3ComponentsFromNormal(&projW, &perpW, w, n);
 

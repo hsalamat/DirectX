@@ -1,0 +1,1045 @@
+\hypertarget{_week5-1-_tex_waves_app_8cpp_source}{}\doxysection{Week5-\/1-\/\+Tex\+Waves\+App.cpp}
+\label{_week5-1-_tex_waves_app_8cpp_source}\index{Week5/TexWaves/Week5-\/1-\/TexWavesApp.cpp@{Week5/TexWaves/Week5-\/1-\/TexWavesApp.cpp}}
+\mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00002}00002 \textcolor{comment}{// TexWavesApp.cpp }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00010}00010 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week8_2_blur_2_waves_8h}{Waves.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00012}00012 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00013}00013 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00014}00014 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00019}\mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00019}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00021}00021 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00022}00022 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00023}00023 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00024}00024 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00025}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00025}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00026}00026  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00027}00027     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00028}00028     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00029}00029     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00030}00030     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00032}00032     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_ac6799548474209d172cbb3d337f56074}{TexTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00034}00034     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00035}00035     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00036}00036     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00037}00037     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00038}00038     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00040}00040     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00041}00041     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00043}00043     \mbox{\hyperlink{struct_material}{Material}}* \mbox{\hyperlink{struct_render_item_a47f9e6fad8619fccc9caa92e3c7c9793}{Mat}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00044}00044     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00046}00046     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00047}00047     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D11\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00049}00049     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00050}00050     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00051}00051     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00052}00052     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00053}00053 \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00055}\mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_aa63ede3e7371d4bc358f651428d23159}{00055}} \textcolor{keyword}{enum class} \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159}{RenderLayer}} : int}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00056}00056 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00057}00057     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{Opaque}} = 0,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00058}00058     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{Count}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00059}00059 \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00061}\mbox{\hyperlink{class_tex_waves_app}{00061}} \textcolor{keyword}{class }\mbox{\hyperlink{class_tex_waves_app}{TexWavesApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00062}00062 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00063}00063 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00064}00064     \mbox{\hyperlink{class_tex_waves_app_a71245245b5aff601a381a6738be3f71c}{TexWavesApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00065}\mbox{\hyperlink{class_tex_waves_app_a6864e26605c74574091b58ca22b7e81a}{00065}}     \mbox{\hyperlink{class_tex_waves_app_a6864e26605c74574091b58ca22b7e81a}{TexWavesApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_tex_waves_app}{TexWavesApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00066}\mbox{\hyperlink{class_tex_waves_app_ad5c1ab04bf67c76c75af52c091502a92}{00066}}     \mbox{\hyperlink{class_tex_waves_app}{TexWavesApp}}\& \mbox{\hyperlink{class_tex_waves_app_ad5c1ab04bf67c76c75af52c091502a92}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_tex_waves_app}{TexWavesApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00067}00067     \mbox{\hyperlink{class_tex_waves_app_a951fbbca842a682ab98ee89aa2ab8640}{\string~TexWavesApp}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00069}00069     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_tex_waves_app_abc6e385234f7f4d35ce7638595aa83da}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00071}00071 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00072}00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a14d1c827b7fc09ad69aa165509a593cc}{OnResize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00073}00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a9847699f7630f742874c6203b5ba3331}{Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00074}00074     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a1f1c1b77277cfcc6ca5df7d0bdd7cbfd}{Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00075}00075 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00076}00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a2bac66734afa748e8fa5770b2fa2a120}{OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00077}00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ae09db1fb703039b26590fb5f4fc93889}{OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00078}00078     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aea9bc2787b3402b261ec3a068d69f4f4}{OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00080}00080     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a03a3ab897a01beff47b24e14970cc098}{OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00081}00081     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a079a58d144fe7c8616e63b1213d54d81}{UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00082}00082     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aa76c8e45ceda9a1c3d2737d9970a69bc}{AnimateMaterials}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00083}00083     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a0424dea4971076d3ff8a363826d339ee}{UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00084}00084     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a2135535595908259c0d5ffbd54482dcf}{UpdateMaterialCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00085}00085     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ad691abdcdbe67d522b4739cedb4b3cef}{UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00086}00086     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aa5f261dd7a295e9fcde6d08c31819aea}{UpdateWaves}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt); }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00088}00088     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a3046ad742a07311bc073f808b92210c3}{LoadTextures}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00089}00089     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_af0ed1223bda70c58259939c9b0608b93}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00090}00090     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a872af9c6ae842af7f890531c406d83ee}{BuildDescriptorHeaps}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00091}00091     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a34cbb85befb3e9a2aa297a1bf21292bc}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00092}00092     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a484fb5617caf450545eda0b080cdaa1b}{BuildLandGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00093}00093     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a291775c23653a0c21e0229b09e7f1a9c}{BuildWavesGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00094}00094     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_acdb63040e4b7856d5c2bfecc121c6d2b}{BuildBoxGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00095}00095     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a8f937aee0db054621b79e3080a30120e}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00096}00096     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_af0e7c600c0ef0a2f6fc4085651b963fa}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00097}00097     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ac689cbeef7a7a77dd336477cf1296551}{BuildMaterials}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00098}00098     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a1104ef928f1b523e04e7aba64d7fba1d}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00099}00099     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a04e9e9a7eb75e5908aced693e226099d}{DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00101}00101     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> \mbox{\hyperlink{class_tex_waves_app_ae1429dec115ac32cd34291a2927b7b14}{GetStaticSamplers}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00102}00102 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00103}00103     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_tex_waves_app_a05afd2bffc54fb585b24fc42aee20658}{GetHillsHeight}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00104}00104     XMFLOAT3 \mbox{\hyperlink{class_tex_waves_app_a81220deabb86b0937bc0e06036b878ab}{GetHillsNormal}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00106}00106 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00107}00107 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00108}\mbox{\hyperlink{class_tex_waves_app_a9f27c1bc3281d0dc6de684d9790b1a5b}{00108}}     std::vector<std::unique\_ptr<FrameResource>> \mbox{\hyperlink{class_tex_waves_app_a9f27c1bc3281d0dc6de684d9790b1a5b}{mFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00109}\mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{00109}}     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00110}\mbox{\hyperlink{class_tex_waves_app_ac8586724ab035a7c55115d84bb87ace6}{00110}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_tex_waves_app_ac8586724ab035a7c55115d84bb87ace6}{mCurrFrameResourceIndex}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00112}\mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{00112}}     UINT \mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{mCbvSrvDescriptorSize}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00113}00113 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00114}\mbox{\hyperlink{class_tex_waves_app_a382717e66b6b0711947aa521c75d8291}{00114}}     ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_tex_waves_app_a382717e66b6b0711947aa521c75d8291}{mRootSignature}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00116}\mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{00116}}     ComPtr<ID3D12DescriptorHeap> \mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{mSrvDescriptorHeap}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00118}\mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{00118}}     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00119}\mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{00119}}     std::unordered\_map<std::string, std::unique\_ptr<Material>> \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00120}\mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{00120}}     std::unordered\_map<std::string, std::unique\_ptr<Texture>> \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00121}\mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{00121}}     std::unordered\_map<std::string, ComPtr<ID3DBlob>> \mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00122}\mbox{\hyperlink{class_tex_waves_app_adcd20df48c28d8b32473fe7e70e99a9c}{00122}}     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> \mbox{\hyperlink{class_tex_waves_app_adcd20df48c28d8b32473fe7e70e99a9c}{mPSOs}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00124}\mbox{\hyperlink{class_tex_waves_app_a6a40ee9cdd31ba0145e6c5d94417ea5d}{00124}}     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> \mbox{\hyperlink{class_tex_waves_app_a6a40ee9cdd31ba0145e6c5d94417ea5d}{mInputLayout}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00125}00125  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00126}\mbox{\hyperlink{class_tex_waves_app_aae0947be04334b4659d6cb6b4e52f91d}{00126}}     \mbox{\hyperlink{struct_render_item}{RenderItem}}* \mbox{\hyperlink{class_tex_waves_app_aae0947be04334b4659d6cb6b4e52f91d}{mWavesRitem}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00128}00128     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00129}\mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{00129}}     std::vector<std::unique\_ptr<RenderItem>> \mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00131}00131     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00132}\mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{00132}}     std::vector<RenderItem*> \mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{RenderLayer::Count}}];}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00133}00133 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00134}\mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{00134}}     std::unique\_ptr<Waves> \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00135}00135 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00136}\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{00136}}     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00137}00137 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00138}\mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{00138}}     XMFLOAT3 \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}} = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00139}\mbox{\hyperlink{class_tex_waves_app_a8a4e717a1fb102d77feb072371c15270}{00139}}     XMFLOAT4X4 \mbox{\hyperlink{class_tex_waves_app_a8a4e717a1fb102d77feb072371c15270}{mView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00140}\mbox{\hyperlink{class_tex_waves_app_aa23429eb4d11a3b33f4570c17e7f6b1c}{00140}}     XMFLOAT4X4 \mbox{\hyperlink{class_tex_waves_app_aa23429eb4d11a3b33f4570c17e7f6b1c}{mProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00141}00141 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00142}\mbox{\hyperlink{class_tex_waves_app_a814dec253514d2c101202b6d03fcde95}{00142}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_tex_waves_app_a814dec253514d2c101202b6d03fcde95}{mTheta}} = 1.5f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00143}\mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{00143}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}} = XM\_PIDIV2 -\/ 0.1f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00144}\mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{00144}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}} = 50.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00145}00145 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00146}\mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{00146}}     POINT \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00147}00147 \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00148}00148 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00149}\mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_aabcda87589d774901aa87061b8fd0176}{00149}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00150}00150     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00151}00151 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00152}00152     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00153}00153 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00154}00154     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00155}00155 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00156}00156 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00157}00157     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00158}00158     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00159}00159         \mbox{\hyperlink{class_tex_waves_app}{TexWavesApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00160}00160         \textcolor{keywordflow}{if}(!theApp.\mbox{\hyperlink{class_tex_waves_app_abc6e385234f7f4d35ce7638595aa83da}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00161}00161             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00162}00162 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00163}00163         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00164}00164     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00165}00165     \textcolor{keywordflow}{catch}(\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00166}00166     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00167}00167         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00168}00168         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00169}00169     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00170}00170 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00172}\mbox{\hyperlink{class_tex_waves_app_a71245245b5aff601a381a6738be3f71c}{00172}} \mbox{\hyperlink{class_tex_waves_app_a71245245b5aff601a381a6738be3f71c}{TexWavesApp::TexWavesApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00173}00173     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00174}00174 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00175}00175 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00176}00176 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00177}\mbox{\hyperlink{class_tex_waves_app_a951fbbca842a682ab98ee89aa2ab8640}{00177}} \mbox{\hyperlink{class_tex_waves_app_a951fbbca842a682ab98ee89aa2ab8640}{TexWavesApp::\string~TexWavesApp}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00178}00178 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00179}00179     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00180}00180         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00181}00181 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00183}\mbox{\hyperlink{class_tex_waves_app_abc6e385234f7f4d35ce7638595aa83da}{00183}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_tex_waves_app_abc6e385234f7f4d35ce7638595aa83da}{TexWavesApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00184}00184 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00185}00185     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00186}00186         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00187}00187 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00188}00188     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00189}00189     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00190}00190 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00191}00191     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00192}00192     \textcolor{comment}{// so we have to query this information.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00193}00193     \mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{mCbvSrvDescriptorSize}} = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00194}00194 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00195}00195     \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}} = std::make\_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00196}00196  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00197}00197     \mbox{\hyperlink{class_tex_waves_app_a3046ad742a07311bc073f808b92210c3}{LoadTextures}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00198}00198     \mbox{\hyperlink{class_tex_waves_app_af0ed1223bda70c58259939c9b0608b93}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00199}00199     \mbox{\hyperlink{class_tex_waves_app_a872af9c6ae842af7f890531c406d83ee}{BuildDescriptorHeaps}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00200}00200     \mbox{\hyperlink{class_tex_waves_app_a34cbb85befb3e9a2aa297a1bf21292bc}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00201}00201     \mbox{\hyperlink{class_tex_waves_app_a484fb5617caf450545eda0b080cdaa1b}{BuildLandGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00202}00202     \mbox{\hyperlink{class_tex_waves_app_a291775c23653a0c21e0229b09e7f1a9c}{BuildWavesGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00203}00203     \mbox{\hyperlink{class_tex_waves_app_acdb63040e4b7856d5c2bfecc121c6d2b}{BuildBoxGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00204}00204     \mbox{\hyperlink{class_tex_waves_app_ac689cbeef7a7a77dd336477cf1296551}{BuildMaterials}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00205}00205     \mbox{\hyperlink{class_tex_waves_app_a1104ef928f1b523e04e7aba64d7fba1d}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00206}00206     \mbox{\hyperlink{class_tex_waves_app_af0e7c600c0ef0a2f6fc4085651b963fa}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00207}00207     \mbox{\hyperlink{class_tex_waves_app_a8f937aee0db054621b79e3080a30120e}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00208}00208 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00209}00209     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00210}00210     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00211}00211     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00212}00212     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00213}00213 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00214}00214     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00215}00215     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00217}00217     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00218}00218 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00219}00219  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00220}\mbox{\hyperlink{class_tex_waves_app_a14d1c827b7fc09ad69aa165509a593cc}{00220}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a14d1c827b7fc09ad69aa165509a593cc}{TexWavesApp::OnResize}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00221}00221 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00222}00222     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00223}00223 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00224}00224     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00225}00225     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00226}00226     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_aa23429eb4d11a3b33f4570c17e7f6b1c}{mProj}}, P);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00227}00227 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00229}\mbox{\hyperlink{class_tex_waves_app_a9847699f7630f742874c6203b5ba3331}{00229}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a9847699f7630f742874c6203b5ba3331}{TexWavesApp::Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00230}00230 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00231}00231     \mbox{\hyperlink{class_tex_waves_app_a03a3ab897a01beff47b24e14970cc098}{OnKeyboardInput}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00232}00232     \mbox{\hyperlink{class_tex_waves_app_a079a58d144fe7c8616e63b1213d54d81}{UpdateCamera}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00233}00233 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00234}00234     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00235}00235     \mbox{\hyperlink{class_tex_waves_app_ac8586724ab035a7c55115d84bb87ace6}{mCurrFrameResourceIndex}} = (\mbox{\hyperlink{class_tex_waves_app_ac8586724ab035a7c55115d84bb87ace6}{mCurrFrameResourceIndex}} + 1) \% \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00236}00236     \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}} = \mbox{\hyperlink{class_tex_waves_app_a9f27c1bc3281d0dc6de684d9790b1a5b}{mFrameResources}}[\mbox{\hyperlink{class_tex_waves_app_ac8586724ab035a7c55115d84bb87ace6}{mCurrFrameResourceIndex}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00237}00237 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00238}00238     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00239}00239     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00240}00240     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00241}00241     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00242}00242         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00243}00243         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(\mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00244}00244         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00245}00245         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00246}00246     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00247}00247 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00248}00248     \mbox{\hyperlink{class_tex_waves_app_aa76c8e45ceda9a1c3d2737d9970a69bc}{AnimateMaterials}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00249}00249     \mbox{\hyperlink{class_tex_waves_app_a0424dea4971076d3ff8a363826d339ee}{UpdateObjectCBs}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00250}00250     \mbox{\hyperlink{class_tex_waves_app_a2135535595908259c0d5ffbd54482dcf}{UpdateMaterialCBs}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00251}00251     \mbox{\hyperlink{class_tex_waves_app_ad691abdcdbe67d522b4739cedb4b3cef}{UpdateMainPassCB}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00252}00252     \mbox{\hyperlink{class_tex_waves_app_aa5f261dd7a295e9fcde6d08c31819aea}{UpdateWaves}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00253}00253 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00254}00254 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00255}\mbox{\hyperlink{class_tex_waves_app_a1f1c1b77277cfcc6ca5df7d0bdd7cbfd}{00255}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a1f1c1b77277cfcc6ca5df7d0bdd7cbfd}{TexWavesApp::Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00256}00256 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00257}00257     \textcolor{keyword}{auto} cmdListAlloc = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00258}00258 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00259}00259     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00260}00260     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00261}00261     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00262}00262 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00263}00263     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00264}00264     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00265}00265     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), \mbox{\hyperlink{class_tex_waves_app_adcd20df48c28d8b32473fe7e70e99a9c}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00266}00266 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00267}00267     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00268}00268     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00269}00269 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00270}00270     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00271}00271     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00272}00272         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00273}00273 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00274}00274     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00275}00275     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00276}00276     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00277}00277 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00278}00278     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00279}00279     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00280}00280 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00281}00281     ID3D12DescriptorHeap* descriptorHeaps[] = \{ \mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{mSrvDescriptorHeap}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00282}00282     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00283}00283 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00284}00284     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(\mbox{\hyperlink{class_tex_waves_app_a382717e66b6b0711947aa521c75d8291}{mRootSignature}}.Get());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00285}00285 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00286}00286     \textcolor{keyword}{auto} passCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00287}00287     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00288}00288 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00289}00289     \mbox{\hyperlink{class_tex_waves_app_a04e9e9a7eb75e5908aced693e226099d}{DrawRenderItems}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), \mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{mRitemLayer}}[(\textcolor{keywordtype}{int})\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}]);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00290}00290 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00291}00291     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00292}00292     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00293}00293         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00294}00294 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00295}00295     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00296}00296     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00297}00297 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00298}00298     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00299}00299     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00300}00300     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00301}00301 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00302}00302     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00303}00303     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00304}00304     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00305}00305 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00306}00306     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00307}00307     \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00308}00308 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00309}00309     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00310}00310     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00311}00311     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00312}00312     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00313}00313 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00314}00314 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00315}\mbox{\hyperlink{class_tex_waves_app_a2bac66734afa748e8fa5770b2fa2a120}{00315}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a2bac66734afa748e8fa5770b2fa2a120}{TexWavesApp::OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00316}00316 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00317}00317     \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00318}00318     \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00319}00319 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00320}00320     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00321}00321 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00322}00322 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00323}\mbox{\hyperlink{class_tex_waves_app_ae09db1fb703039b26590fb5f4fc93889}{00323}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ae09db1fb703039b26590fb5f4fc93889}{TexWavesApp::OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00324}00324 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00325}00325     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00326}00326 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00327}00327 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00328}\mbox{\hyperlink{class_tex_waves_app_aea9bc2787b3402b261ec3a068d69f4f4}{00328}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aea9bc2787b3402b261ec3a068d69f4f4}{TexWavesApp::OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00329}00329 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00330}00330     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00331}00331     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00332}00332         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00333}00333         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.x));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00334}00334         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.y));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00335}00335 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00336}00336         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00337}00337         \mbox{\hyperlink{class_tex_waves_app_a814dec253514d2c101202b6d03fcde95}{mTheta}} += dx;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00338}00338         \mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}} += dy;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00339}00339 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00340}00340         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00341}00341         \mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}}, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00342}00342     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00343}00343     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00344}00344     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00345}00345         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00346}00346         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.x);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00347}00347         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.y);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00348}00348 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00349}00349         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00350}00350         \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}} += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00351}00351 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00352}00352         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00353}00353         \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}}, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00354}00354     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00355}00355 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00356}00356     \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00357}00357     \mbox{\hyperlink{class_tex_waves_app_af9575622b7947bbebfa2055fff9949fe}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00358}00358 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00359}00359  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00360}\mbox{\hyperlink{class_tex_waves_app_a03a3ab897a01beff47b24e14970cc098}{00360}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a03a3ab897a01beff47b24e14970cc098}{TexWavesApp::OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00361}00361 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00362}00362 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00363}00363  }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00364}\mbox{\hyperlink{class_tex_waves_app_a079a58d144fe7c8616e63b1213d54d81}{00364}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a079a58d144fe7c8616e63b1213d54d81}{TexWavesApp::UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00365}00365 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00366}00366     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00367}00367     \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.x = \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}}*sinf(\mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}})*cosf(\mbox{\hyperlink{class_tex_waves_app_a814dec253514d2c101202b6d03fcde95}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00368}00368     \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.z = \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}}*sinf(\mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}})*sinf(\mbox{\hyperlink{class_tex_waves_app_a814dec253514d2c101202b6d03fcde95}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00369}00369     \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.y = \mbox{\hyperlink{class_tex_waves_app_a557c7dee0364fd36eb106083f60c7138}{mRadius}}*cosf(\mbox{\hyperlink{class_tex_waves_app_af40669ec9856eaafbf0086e63fba0904}{mPhi}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00370}00370 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00371}00371     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00372}00372     XMVECTOR pos = XMVectorSet(\mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.x, \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.y, \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}}.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00373}00373     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00374}00374     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00375}00375 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00376}00376     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00377}00377     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a8a4e717a1fb102d77feb072371c15270}{mView}}, view);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00378}00378 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00379}00379 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00380}\mbox{\hyperlink{class_tex_waves_app_aa76c8e45ceda9a1c3d2737d9970a69bc}{00380}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aa76c8e45ceda9a1c3d2737d9970a69bc}{TexWavesApp::AnimateMaterials}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00381}00381 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00382}00382     \textcolor{comment}{// Scroll the water material texture coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00383}00383     \textcolor{keyword}{auto} waterMat = \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}water"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00384}00384 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00385}00385     \textcolor{keywordtype}{float}\& tu = waterMat-\/>MatTransform(3, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00386}00386     \textcolor{keywordtype}{float}\& tv = waterMat-\/>MatTransform(3, 1);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00387}00387 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00388}00388     tu += 0.1f * gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00389}00389     tv += 0.02f * gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00390}00390 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00391}00391     \textcolor{keywordflow}{if}(tu >= 1.0f)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00392}00392         tu -\/= 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00393}00393 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00394}00394     \textcolor{keywordflow}{if}(tv >= 1.0f)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00395}00395         tv -\/= 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00396}00396 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00397}00397     waterMat-\/>MatTransform(3, 0) = tu;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00398}00398     waterMat-\/>MatTransform(3, 1) = tv;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00399}00399 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00400}00400     \textcolor{comment}{// Material has changed, so need to update cbuffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00401}00401     waterMat-\/>NumFramesDirty = \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00402}00402 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00403}00403 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00404}\mbox{\hyperlink{class_tex_waves_app_a0424dea4971076d3ff8a363826d339ee}{00404}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a0424dea4971076d3ff8a363826d339ee}{TexWavesApp::UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00405}00405 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00406}00406     \textcolor{keyword}{auto} currObjectCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00407}00407     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00408}00408     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00409}00409         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00410}00410         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00411}00411         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00412}00412         \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00413}00413             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00414}00414             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00415}00415 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00416}00416             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00417}00417             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00418}00418             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_a0a7f8e4817a18595707569b307060a42}{TexTransform}}, XMMatrixTranspose(texTransform));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00419}00419 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00420}00420             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00421}00421 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00422}00422             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00423}00423             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00424}00424         \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00425}00425     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00426}00426 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00427}00427 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00428}\mbox{\hyperlink{class_tex_waves_app_a2135535595908259c0d5ffbd54482dcf}{00428}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a2135535595908259c0d5ffbd54482dcf}{TexWavesApp::UpdateMaterialCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00429}00429 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00430}00430     \textcolor{keyword}{auto} currMaterialCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00431}00431     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00432}00432     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00433}00433         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00434}00434         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00435}00435         \mbox{\hyperlink{struct_material}{Material}}* mat = e.second.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00436}00436         \textcolor{keywordflow}{if}(mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00437}00437         \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00438}00438             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00439}00439 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00440}00440             \mbox{\hyperlink{struct_material_constants}{MaterialConstants}} matConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00441}00441             matConstants.\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = mat-\/>\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00442}00442             matConstants.\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = mat-\/>\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00443}00443             matConstants.\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = mat-\/>\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00444}00444             XMStoreFloat4x4(\&matConstants.\mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}}, XMMatrixTranspose(matTransform));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00445}00445 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00446}00446             currMaterialCB-\/>CopyData(mat-\/>\mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{MatCBIndex}}, matConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00447}00447 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00448}00448             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00449}00449             mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}}-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00450}00450         \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00451}00451     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00452}00452 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00453}00453 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00454}\mbox{\hyperlink{class_tex_waves_app_ad691abdcdbe67d522b4739cedb4b3cef}{00454}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ad691abdcdbe67d522b4739cedb4b3cef}{TexWavesApp::UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00455}00455 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00456}00456     XMMATRIX view = XMLoadFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a8a4e717a1fb102d77feb072371c15270}{mView}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00457}00457     XMMATRIX proj = XMLoadFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_aa23429eb4d11a3b33f4570c17e7f6b1c}{mProj}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00458}00458 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00459}00459     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00460}00460     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00461}00461     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00462}00462     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00463}00463 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00464}00464     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00465}00465     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00466}00466     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00467}00467     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00468}00468     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00469}00469     XMStoreFloat4x4(\&\mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00470}00470     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \mbox{\hyperlink{class_tex_waves_app_a2d7164d69e9bf6adba9b7aa4ba628137}{mEyePos}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00471}00471     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00472}00472     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00473}00473     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00474}00474     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00475}00475     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00476}00476     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00477}00477     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00478}00478     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00479}00479     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.9f, 0.9f, 0.9f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00480}00480     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00481}00481     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.5f, 0.5f, 0.5f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00482}00482     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.0f, -\/0.707f, -\/0.707f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00483}00483     \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.2f, 0.2f, 0.2f \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00484}00484 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00485}00485     \textcolor{keyword}{auto} currPassCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00486}00486     currPassCB-\/>CopyData(0, \mbox{\hyperlink{class_tex_waves_app_a403ef750014c9d77f2b0b96752712bc5}{mMainPassCB}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00487}00487 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00488}00488 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00489}\mbox{\hyperlink{class_tex_waves_app_aa5f261dd7a295e9fcde6d08c31819aea}{00489}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_aa5f261dd7a295e9fcde6d08c31819aea}{TexWavesApp::UpdateWaves}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00490}00490 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00491}00491     \textcolor{comment}{// Every quarter second, generate a random wave.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00492}00492     \textcolor{keyword}{static} \textcolor{keywordtype}{float} t\_base = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00493}00493     \textcolor{keywordflow}{if}((\mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}() -\/ t\_base) >= 0.25f)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00494}00494     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00495}00495         t\_base += 0.25f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00496}00496 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00497}00497         \textcolor{keywordtype}{int} i = \mbox{\hyperlink{class_math_helper_ab957edc5bcaf8d4966a1fde0e7c5fe38}{MathHelper::Rand}}(4, \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>RowCount() -\/ 5);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00498}00498         \textcolor{keywordtype}{int} j = \mbox{\hyperlink{class_math_helper_ab957edc5bcaf8d4966a1fde0e7c5fe38}{MathHelper::Rand}}(4, \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>ColumnCount() -\/ 5);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00499}00499 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00500}00500         \textcolor{keywordtype}{float} r = \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(0.2f, 0.5f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00501}00501 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00502}00502         \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Disturb(i, j, r);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00503}00503     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00504}00504 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00505}00505     \textcolor{comment}{// Update the wave simulation.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00506}00506     \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Update(gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00507}00507 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00508}00508     \textcolor{comment}{// Update the wave vertex buffer with the new solution.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00509}00509     \textcolor{keyword}{auto} currWavesVB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a36a43467f17b51ef358f55084a5fb132}{WavesVB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00510}00510     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>VertexCount(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00511}00511     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00512}00512         \mbox{\hyperlink{struct_vertex}{Vertex}} v;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00513}00513 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00514}00514         v.\mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}} = \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Position(i);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00515}00515         v.\mbox{\hyperlink{struct_vertex_a553ed48ae98dda36da8e57cfa53877d4}{Normal}} = \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Normal(i);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00516}00516         }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00517}00517         \textcolor{comment}{// Derive tex-\/coords from position by }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00518}00518         \textcolor{comment}{// mapping [-\/w/2,w/2] -\/-\/> [0,1]}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00519}00519         v.\mbox{\hyperlink{struct_vertex_a43e8c374e56c6ed3acc708ba2de1c70c}{TexC}}.x = 0.5f + v.\mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}}.x / \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Width();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00520}00520         v.\mbox{\hyperlink{struct_vertex_a43e8c374e56c6ed3acc708ba2de1c70c}{TexC}}.y = 0.5f -\/ v.\mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}}.z / \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>Depth();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00521}00521 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00522}00522         currWavesVB-\/>CopyData(i, v);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00523}00523     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00524}00524 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00525}00525     \textcolor{comment}{// Set the dynamic VB of the wave renderitem to the current frame VB.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00526}00526     \mbox{\hyperlink{class_tex_waves_app_aae0947be04334b4659d6cb6b4e52f91d}{mWavesRitem}}-\/>\mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}}-\/>\mbox{\hyperlink{struct_mesh_geometry_afc3be274ba79e6984225407560350438}{VertexBufferGPU}} = currWavesVB-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00527}00527 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00528}00528 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00529}\mbox{\hyperlink{class_tex_waves_app_a3046ad742a07311bc073f808b92210c3}{00529}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a3046ad742a07311bc073f808b92210c3}{TexWavesApp::LoadTextures}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00530}00530 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00531}00531     \textcolor{keyword}{auto} grassTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00532}00532     grassTex-\/>Name = \textcolor{stringliteral}{"{}grassTex"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00533}00533     grassTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/grass.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00534}00534     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00535}00535         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), grassTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00536}00536         grassTex-\/>Resource, grassTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00537}00537 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00538}00538     \textcolor{keyword}{auto} waterTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00539}00539     waterTex-\/>Name = \textcolor{stringliteral}{"{}waterTex"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00540}00540     waterTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/water1.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00541}00541     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00542}00542         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), waterTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00543}00543         waterTex-\/>Resource, waterTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00544}00544 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00545}00545     \textcolor{keyword}{auto} fenceTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00546}00546     fenceTex-\/>Name = \textcolor{stringliteral}{"{}fenceTex"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00547}00547     fenceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/WoodCrate01.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00548}00548     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00549}00549         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), fenceTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00550}00550         fenceTex-\/>Resource, fenceTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00551}00551 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00552}00552     \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[grassTex-\/>Name] = std::move(grassTex);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00553}00553     \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[waterTex-\/>Name] = std::move(waterTex);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00554}00554     \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[fenceTex-\/>Name] = std::move(fenceTex);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00555}00555 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00556}00556 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00557}\mbox{\hyperlink{class_tex_waves_app_af0ed1223bda70c58259939c9b0608b93}{00557}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_af0ed1223bda70c58259939c9b0608b93}{TexWavesApp::BuildRootSignature}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00558}00558 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00559}00559     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00560}00560     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00561}00561 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00562}00562     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00563}00563     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00564}00564 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00565}00565     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00566}00566     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00567}00567     slotRootParameter[1].InitAsConstantBufferView(0);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00568}00568     slotRootParameter[2].InitAsConstantBufferView(1);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00569}00569     slotRootParameter[3].InitAsConstantBufferView(2);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00570}00570 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00571}00571     \textcolor{keyword}{auto} staticSamplers = \mbox{\hyperlink{class_tex_waves_app_ae1429dec115ac32cd34291a2927b7b14}{GetStaticSamplers}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00572}00572 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00573}00573     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00574}00574     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00575}00575         (UINT)staticSamplers.size(), staticSamplers.data(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00576}00576         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00577}00577 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00578}00578     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00579}00579     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00580}00580     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00581}00581     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00582}00582         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00583}00583 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00584}00584     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00585}00585     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00586}00586         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00587}00587     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00588}00588     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00589}00589 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00590}00590     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00591}00591         0,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00592}00592         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00593}00593         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00594}00594         IID\_PPV\_ARGS(\mbox{\hyperlink{class_tex_waves_app_a382717e66b6b0711947aa521c75d8291}{mRootSignature}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00595}00595 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00596}00596 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00597}\mbox{\hyperlink{class_tex_waves_app_a872af9c6ae842af7f890531c406d83ee}{00597}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a872af9c6ae842af7f890531c406d83ee}{TexWavesApp::BuildDescriptorHeaps}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00598}00598 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00599}00599     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00600}00600     \textcolor{comment}{// Create the SRV heap.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00601}00601     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00602}00602     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00603}00603     srvHeapDesc.NumDescriptors = 3;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00604}00604     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00605}00605     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00606}00606     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{mSrvDescriptorHeap}})));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00607}00607 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00608}00608     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00609}00609     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00610}00610     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00611}00611     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(\mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{mSrvDescriptorHeap}}-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00612}00612 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00613}00613     \textcolor{keyword}{auto} grassTex = \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[\textcolor{stringliteral}{"{}grassTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00614}00614     \textcolor{keyword}{auto} waterTex = \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[\textcolor{stringliteral}{"{}waterTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00615}00615     \textcolor{keyword}{auto} fenceTex = \mbox{\hyperlink{class_tex_waves_app_a876d8bbdf75a16d52ca30498d1936beb}{mTextures}}[\textcolor{stringliteral}{"{}fenceTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00616}00616 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00617}00617     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00618}00618     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00619}00619     srvDesc.Format = grassTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00620}00620     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00621}00621     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00622}00622     srvDesc.Texture2D.MipLevels = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00623}00623     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(grassTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00624}00624 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00625}00625     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00626}00626     hDescriptor.Offset(1, \mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{mCbvSrvDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00627}00627 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00628}00628     srvDesc.Format = waterTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00629}00629     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(waterTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00630}00630 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00631}00631     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00632}00632     hDescriptor.Offset(1, \mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{mCbvSrvDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00633}00633 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00634}00634     srvDesc.Format = fenceTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00635}00635     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(fenceTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00636}00636 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00637}00637 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00638}\mbox{\hyperlink{class_tex_waves_app_a34cbb85befb3e9a2aa297a1bf21292bc}{00638}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a34cbb85befb3e9a2aa297a1bf21292bc}{TexWavesApp::BuildShadersAndInputLayout}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00639}00639 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00640}00640     \mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00641}00641     \mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00642}00642     }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00643}00643     \mbox{\hyperlink{class_tex_waves_app_a6a40ee9cdd31ba0145e6c5d94417ea5d}{mInputLayout}} =}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00644}00644     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00645}00645         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00646}00646         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00647}00647         \{ \textcolor{stringliteral}{"{}TEXCOORD"{}}, 0, DXGI\_FORMAT\_R32G32\_FLOAT, 0, 24, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00648}00648     \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00649}00649 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00650}00650 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00651}\mbox{\hyperlink{class_tex_waves_app_a484fb5617caf450545eda0b080cdaa1b}{00651}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a484fb5617caf450545eda0b080cdaa1b}{TexWavesApp::BuildLandGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00652}00652 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00653}00653     \mbox{\hyperlink{class_geometry_generator}{GeometryGenerator}} geoGen;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00654}00654     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{GeometryGenerator::MeshData}} grid = geoGen.\mbox{\hyperlink{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}{CreateGrid}}(160.0f, 160.0f, 50, 50);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00655}00655 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00656}00656     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00657}00657     \textcolor{comment}{// Extract the vertex elements we are interested and apply the height function to}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00658}00658     \textcolor{comment}{// each vertex.  In addition, color the vertices based on their height so we have}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00659}00659     \textcolor{comment}{// sandy looking beaches, grassy low hills, and snow mountain peaks.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00660}00660     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00661}00661 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00662}00662     std::vector<Vertex> vertices(grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00663}00663     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00664}00664     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00665}00665         \textcolor{keyword}{auto}\& p = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Position;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00666}00666         vertices[i].Pos = p;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00667}00667         vertices[i].Pos.y = \mbox{\hyperlink{class_tex_waves_app_a05afd2bffc54fb585b24fc42aee20658}{GetHillsHeight}}(p.x, p.z);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00668}00668         vertices[i].Normal = \mbox{\hyperlink{class_tex_waves_app_a81220deabb86b0937bc0e06036b878ab}{GetHillsNormal}}(p.x, p.z);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00669}00669         vertices[i].TexC = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].TexC;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00670}00670     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00671}00671 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00672}00672     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00673}00673 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00674}00674     std::vector<std::uint16\_t> indices = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00675}00675     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00676}00676 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00677}00677     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00678}00678     geo-\/>Name = \textcolor{stringliteral}{"{}landGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00679}00679 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00680}00680     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00681}00681     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00682}00682 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00683}00683     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00684}00684     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00685}00685 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00686}00686     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00687}00687         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00688}00688 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00689}00689     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00690}00690         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00691}00691 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00692}00692     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00693}00693     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00694}00694     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00695}00695     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00696}00696 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00697}00697     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00698}00698     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00699}00699     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00700}00700     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00701}00701 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00702}00702     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00703}00703 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00704}00704     \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}landGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00705}00705 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00706}00706 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00707}\mbox{\hyperlink{class_tex_waves_app_a291775c23653a0c21e0229b09e7f1a9c}{00707}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a291775c23653a0c21e0229b09e7f1a9c}{TexWavesApp::BuildWavesGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00708}00708 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00709}00709     std::vector<std::uint16\_t> indices(3 * \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>TriangleCount()); \textcolor{comment}{// 3 indices per face}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00710}00710     assert(\mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>VertexCount() < 0x0000ffff);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00711}00711 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00712}00712     \textcolor{comment}{// Iterate over each quad.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00713}00713     \textcolor{keywordtype}{int} m = \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>RowCount();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00714}00714     \textcolor{keywordtype}{int} n = \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>ColumnCount();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00715}00715     \textcolor{keywordtype}{int} k = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00716}00716     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < m -\/ 1; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00717}00717     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00718}00718         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < n -\/ 1; ++j)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00719}00719         \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00720}00720             indices[k] = i*n + j;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00721}00721             indices[k + 1] = i*n + j + 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00722}00722             indices[k + 2] = (i + 1)*n + j;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00723}00723 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00724}00724             indices[k + 3] = (i + 1)*n + j;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00725}00725             indices[k + 4] = i*n + j + 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00726}00726             indices[k + 5] = (i + 1)*n + j + 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00727}00727 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00728}00728             k += 6; \textcolor{comment}{// next quad}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00729}00729         \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00730}00730     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00731}00731 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00732}00732     UINT vbByteSize = \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>VertexCount()*\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00733}00733     UINT ibByteSize = (UINT)indices.size()*\textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00734}00734 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00735}00735     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00736}00736     geo-\/>Name = \textcolor{stringliteral}{"{}waterGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00737}00737 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00738}00738     \textcolor{comment}{// Set dynamically.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00739}00739     geo-\/>VertexBufferCPU = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00740}00740     geo-\/>VertexBufferGPU = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00741}00741 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00742}00742     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00743}00743     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00744}00744 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00745}00745     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00746}00746         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00747}00747 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00748}00748     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00749}00749     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00750}00750     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00751}00751     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00752}00752 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00753}00753     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00754}00754     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00755}00755     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00756}00756     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00757}00757 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00758}00758     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00759}00759 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00760}00760     \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}waterGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00761}00761 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00762}00762 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00763}\mbox{\hyperlink{class_tex_waves_app_acdb63040e4b7856d5c2bfecc121c6d2b}{00763}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_acdb63040e4b7856d5c2bfecc121c6d2b}{TexWavesApp::BuildBoxGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00764}00764 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00765}00765     \mbox{\hyperlink{class_geometry_generator}{GeometryGenerator}} geoGen;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00766}00766     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{GeometryGenerator::MeshData}} box = geoGen.\mbox{\hyperlink{class_geometry_generator_a9ebf88d1bee287c6e211bff43fbdd3a0}{CreateBox}}(8.0f, 8.0f, 8.0f, 3);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00767}00767 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00768}00768     std::vector<Vertex> vertices(box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00769}00769     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00770}00770     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00771}00771         \textcolor{keyword}{auto}\& p = box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Position;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00772}00772         vertices[i].Pos = p;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00773}00773         vertices[i].Normal = box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Normal;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00774}00774         vertices[i].TexC = box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].TexC;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00775}00775     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00776}00776 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00777}00777     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00778}00778 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00779}00779     std::vector<std::uint16\_t> indices = box.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00780}00780     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00781}00781 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00782}00782     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00783}00783     geo-\/>Name = \textcolor{stringliteral}{"{}boxGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00784}00784 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00785}00785     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00786}00786     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00787}00787 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00788}00788     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00789}00789     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00790}00790 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00791}00791     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00792}00792         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00793}00793 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00794}00794     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00795}00795         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00796}00796 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00797}00797     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00798}00798     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00799}00799     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00800}00800     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00801}00801 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00802}00802     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00803}00803     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00804}00804     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00805}00805     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00806}00806 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00807}00807     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00808}00808 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00809}00809     \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}boxGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00810}00810 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00811}00811 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00812}\mbox{\hyperlink{class_tex_waves_app_a8f937aee0db054621b79e3080a30120e}{00812}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a8f937aee0db054621b79e3080a30120e}{TexWavesApp::BuildPSOs}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00813}00813 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00814}00814     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00815}00815 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00816}00816     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00817}00817     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00818}00818     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00819}00819     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00820}00820     opaquePsoDesc.InputLayout = \{ \mbox{\hyperlink{class_tex_waves_app_a6a40ee9cdd31ba0145e6c5d94417ea5d}{mInputLayout}}.data(), (UINT)\mbox{\hyperlink{class_tex_waves_app_a6a40ee9cdd31ba0145e6c5d94417ea5d}{mInputLayout}}.size() \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00821}00821     opaquePsoDesc.pRootSignature = \mbox{\hyperlink{class_tex_waves_app_a382717e66b6b0711947aa521c75d8291}{mRootSignature}}.Get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00822}00822     opaquePsoDesc.VS = }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00823}00823     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00824}00824         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00825}00825         \mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00826}00826     \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00827}00827     opaquePsoDesc.PS = }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00828}00828     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00829}00829         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00830}00830         \mbox{\hyperlink{class_tex_waves_app_a6e63797471841efa74dae96589aa32fa}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00831}00831     \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00832}00832     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00833}00833     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00834}00834     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00835}00835     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00836}00836     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00837}00837     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00838}00838     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00839}00839     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00840}00840     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00841}00841     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00842}00842     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_tex_waves_app_adcd20df48c28d8b32473fe7e70e99a9c}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00843}00843 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00844}00844 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00845}\mbox{\hyperlink{class_tex_waves_app_af0e7c600c0ef0a2f6fc4085651b963fa}{00845}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_af0e7c600c0ef0a2f6fc4085651b963fa}{TexWavesApp::BuildFrameResources}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00846}00846 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00847}00847     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_week5-1-_tex_waves_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00848}00848     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00849}00849         \mbox{\hyperlink{class_tex_waves_app_a9f27c1bc3281d0dc6de684d9790b1a5b}{mFrameResources}}.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00850}00850             1, (UINT)\mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}}.size(), (UINT)\mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}.size(), \mbox{\hyperlink{class_tex_waves_app_a1774e707e163ad6736c0adeca9554157}{mWaves}}-\/>VertexCount()));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00851}00851     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00852}00852 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00853}00853 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00854}\mbox{\hyperlink{class_tex_waves_app_ac689cbeef7a7a77dd336477cf1296551}{00854}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_ac689cbeef7a7a77dd336477cf1296551}{TexWavesApp::BuildMaterials}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00855}00855 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00856}00856     \textcolor{keyword}{auto} grass = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00857}00857     grass-\/>Name = \textcolor{stringliteral}{"{}grass"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00858}00858     grass-\/>MatCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00859}00859     grass-\/>DiffuseSrvHeapIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00860}00860     grass-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00861}00861     grass-\/>FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00862}00862     grass-\/>Roughness = 0.125f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00863}00863 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00864}00864     \textcolor{comment}{// This is not a good water material definition, but we do not have all the rendering}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00865}00865     \textcolor{comment}{// tools we need (transparency, environment reflection), so we fake it for now.}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00866}00866     \textcolor{keyword}{auto} water = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00867}00867     water-\/>Name = \textcolor{stringliteral}{"{}water"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00868}00868     water-\/>MatCBIndex = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00869}00869     water-\/>DiffuseSrvHeapIndex = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00870}00870     water-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00871}00871     water-\/>FresnelR0 = XMFLOAT3(0.2f, 0.2f, 0.2f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00872}00872     water-\/>Roughness = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00873}00873 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00874}00874     \textcolor{keyword}{auto} wirefence = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00875}00875     wirefence-\/>Name = \textcolor{stringliteral}{"{}wirefence"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00876}00876     wirefence-\/>MatCBIndex = 2;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00877}00877     wirefence-\/>DiffuseSrvHeapIndex = 2;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00878}00878     wirefence-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00879}00879     wirefence-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00880}00880     wirefence-\/>Roughness = 0.25f;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00881}00881 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00882}00882     \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}grass"{}}] = std::move(grass);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00883}00883     \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}water"{}}] = std::move(water);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00884}00884     \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}wirefence"{}}] = std::move(wirefence);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00885}00885 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00886}00886 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00887}\mbox{\hyperlink{class_tex_waves_app_a1104ef928f1b523e04e7aba64d7fba1d}{00887}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a1104ef928f1b523e04e7aba64d7fba1d}{TexWavesApp::BuildRenderItems}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00888}00888 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00889}00889     \textcolor{keyword}{auto} wavesRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00890}00890     wavesRitem-\/>World = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00891}00891     XMStoreFloat4x4(\&wavesRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00892}00892     wavesRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00893}00893     wavesRitem-\/>Mat = \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}water"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00894}00894     wavesRitem-\/>Geo = \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}waterGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00895}00895     wavesRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00896}00896     wavesRitem-\/>IndexCount = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00897}00897     wavesRitem-\/>StartIndexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00898}00898     wavesRitem-\/>BaseVertexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00899}00899 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00901}00901     \mbox{\hyperlink{class_tex_waves_app_aae0947be04334b4659d6cb6b4e52f91d}{mWavesRitem}} = wavesRitem.get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00902}00902 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00903}00903     \mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}].push\_back(wavesRitem.get());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00904}00904 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00905}00905     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00906}00906     gridRitem-\/>World = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00907}00907     XMStoreFloat4x4(\&gridRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00908}00908     gridRitem-\/>ObjCBIndex = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00909}00909     gridRitem-\/>Mat = \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}grass"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00910}00910     gridRitem-\/>Geo = \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}landGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00911}00911     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00912}00912     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00913}00913     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00914}00914     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00915}00915 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00916}00916     \mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}].push\_back(gridRitem.get());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00917}00917 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00918}00918     \textcolor{keyword}{auto} boxRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00919}00919     XMStoreFloat4x4(\&boxRitem-\/>World, XMMatrixTranslation(3.0f, 2.0f, -\/9.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00920}00920     boxRitem-\/>ObjCBIndex = 2;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00921}00921     boxRitem-\/>Mat = \mbox{\hyperlink{class_tex_waves_app_a71a12845897c4bebd6eb66f731574b14}{mMaterials}}[\textcolor{stringliteral}{"{}wirefence"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00922}00922     boxRitem-\/>Geo = \mbox{\hyperlink{class_tex_waves_app_a57eb96719e4f660225f8ef3f0dade2a0}{mGeometries}}[\textcolor{stringliteral}{"{}boxGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00923}00923     boxRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00924}00924     boxRitem-\/>IndexCount = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00925}00925     boxRitem-\/>StartIndexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00926}00926     boxRitem-\/>BaseVertexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00927}00927 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00928}00928     \mbox{\hyperlink{class_tex_waves_app_a5cc275e888a08dc279deb96bc3f47fb6}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}].push\_back(boxRitem.get());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00929}00929 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00930}00930     \mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}}.push\_back(std::move(wavesRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00931}00931     \mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}}.push\_back(std::move(gridRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00932}00932     \mbox{\hyperlink{class_tex_waves_app_aa59948a7fb7a88c5496e1865646a39ef}{mAllRitems}}.push\_back(std::move(boxRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00933}00933 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00934}00934 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00935}\mbox{\hyperlink{class_tex_waves_app_a04e9e9a7eb75e5908aced693e226099d}{00935}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_tex_waves_app_a04e9e9a7eb75e5908aced693e226099d}{TexWavesApp::DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00936}00936 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00937}00937     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00938}00938     UINT matCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00939}00939 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00940}00940     \textcolor{keyword}{auto} objectCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00941}00941     \textcolor{keyword}{auto} matCB = \mbox{\hyperlink{class_tex_waves_app_a909a705f086d06a3266078fe3a21d29e}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00942}00942 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00943}00943     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00944}00944     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00945}00945     \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00946}00946         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00947}00947 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00948}00948         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00949}00949         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00950}00950         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00951}00951 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00952}00952         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(\mbox{\hyperlink{class_tex_waves_app_a3c232078739c02195e21b52b88684c63}{mSrvDescriptorHeap}}-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00953}00953         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, \mbox{\hyperlink{class_tex_waves_app_ac2621b15c2e127689d32070c23fd0a97}{mCbvSrvDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00954}00954 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00955}00955         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00956}00956         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00957}00957 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00958}00958         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00959}00959         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00960}00960         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00961}00961 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00962}00962         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00963}00963     \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00964}00964 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00965}00965 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00966}\mbox{\hyperlink{class_tex_waves_app_ae1429dec115ac32cd34291a2927b7b14}{00966}} std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> \mbox{\hyperlink{class_tex_waves_app_ae1429dec115ac32cd34291a2927b7b14}{TexWavesApp::GetStaticSamplers}}()}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00967}00967 \{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00968}00968     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00969}00969     \textcolor{comment}{// and keep them available as part of the root signature.  }}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00970}00970 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00971}00971     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00972}00972         0, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00973}00973         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00974}00974         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00975}00975         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00976}00976         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00977}00977 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00978}00978     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00979}00979         1, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00980}00980         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00981}00981         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00982}00982         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00983}00983         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00984}00984 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00985}00985     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00986}00986         2, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00987}00987         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00988}00988         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00989}00989         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00990}00990         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00991}00991 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00992}00992     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00993}00993         3, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00994}00994         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00995}00995         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00996}00996         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00997}00997         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00998}00998 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l00999}00999     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01000}01000         4, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01001}01001         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01002}01002         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01003}01003         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01004}01004         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01005}01005         0.0f,                             \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01006}01006         8);                               \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01007}01007 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01008}01008     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01009}01009         5, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01010}01010         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01011}01011         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01012}01012         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01013}01013         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01014}01014         0.0f,                              \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01015}01015         8);                                \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01016}01016 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01017}01017     \textcolor{keywordflow}{return} \{ }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01018}01018         pointWrap, pointClamp,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01019}01019         linearWrap, linearClamp, }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01020}01020         anisotropicWrap, anisotropicClamp \};}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01021}01021 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01022}01022 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01023}\mbox{\hyperlink{class_tex_waves_app_a05afd2bffc54fb585b24fc42aee20658}{01023}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_tex_waves_app_a05afd2bffc54fb585b24fc42aee20658}{TexWavesApp::GetHillsHeight}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01024}01024 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01025}01025     \textcolor{keywordflow}{return} 0.3f*(z*sinf(0.1f*x) + x*cosf(0.1f*z));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01026}01026 \}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01027}01027 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01028}\mbox{\hyperlink{class_tex_waves_app_a81220deabb86b0937bc0e06036b878ab}{01028}} XMFLOAT3 \mbox{\hyperlink{class_tex_waves_app_a81220deabb86b0937bc0e06036b878ab}{TexWavesApp::GetHillsNormal}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01029}01029 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01030}01030     \textcolor{comment}{// n = (-\/df/dx, 1, -\/df/dz)}}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01031}01031     XMFLOAT3 n(}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01032}01032         -\/0.03f*z*cosf(0.1f*x) -\/ 0.3f*cosf(0.1f*z),}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01033}01033         1.0f,}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01034}01034         -\/0.3f*sinf(0.1f*x) + 0.03f*x*sinf(0.1f*z));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01035}01035 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01036}01036     XMVECTOR unitNormal = XMVector3Normalize(XMLoadFloat3(\&n));}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01037}01037     XMStoreFloat3(\&n, unitNormal);}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01038}01038 }
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01039}01039     \textcolor{keywordflow}{return} n;}
+\DoxyCodeLine{\Hypertarget{_week5-1-_tex_waves_app_8cpp_source_l01040}01040 \}}
+
+\end{DoxyCode}

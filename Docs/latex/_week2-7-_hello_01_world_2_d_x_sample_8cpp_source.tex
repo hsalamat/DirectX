@@ -1,0 +1,97 @@
+\hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source}{}\doxysection{DXSample.\+cpp}
+\label{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source}\index{Week2/Week2-\/7-\/Hello World/DXSample.cpp@{Week2/Week2-\/7-\/Hello World/DXSample.cpp}}
+\mbox{\hyperlink{_week2-7-_hello_01_world_2_d_x_sample_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00001}00001 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00002}00002 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00003}00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00004}00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00005}00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00006}00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00007}00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00008}00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00009}00009 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00010}00010 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2stdafx_8h}{stdafx.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2_d_x_sample_8h}{DXSample.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00015}00015 \textcolor{keyword}{using namespace }Microsoft::WRL;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00017}00017 \mbox{\hyperlink{class_d_x_sample_a5a9d2d6b92848db0bdc3df5e6ce22b83}{DXSample::DXSample}}(UINT width, UINT height, std::wstring name) :}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00018}00018     m\_width(width),}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00019}00019     m\_height(height),}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00020}00020     m\_title(name),}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00021}00021     m\_useWarpDevice(true)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00022}00022 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00023}00023     WCHAR assetsPath[512];}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00024}00024     \mbox{\hyperlink{_week2-6-_hello_01_triangle_2_d_x_sample_helper_8h_aa69372c36ad00903033ece932a927208}{GetAssetsPath}}(assetsPath, \_countof(assetsPath));}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00025}00025     m\_assetsPath = assetsPath;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00027}00027     m\_aspectRatio = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(width) / \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(height);}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00028}00028 \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00030}00030 \mbox{\hyperlink{class_d_x_sample_a89e6a3441060e84065d956ef30977e36}{DXSample::\string~DXSample}}()}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00032}00032 \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00034}00034 \textcolor{comment}{// Helper function for resolving the full path of assets.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00035}00035 std::wstring \mbox{\hyperlink{class_d_x_sample_a8327b28527a9eaf45ae1abad5710ba4c}{DXSample::GetAssetFullPath}}(LPCWSTR assetName)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00036}00036 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00037}00037     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d_x_sample_a204f2581ce2e2197412083acf85cf07a}{m\_assetsPath}} + assetName;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00038}00038 \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00040}00040 \textcolor{comment}{// Helper function for acquiring the first available hardware adapter that supports Direct3D 12.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00041}00041 \textcolor{comment}{// If no such adapter can be found, *ppAdapter will be set to nullptr.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00042}00042 \mbox{\hyperlink{_d_d_s_texture_loader_8h_a3150346626fcea3ad7afe5dfb4ce27d8}{\_Use\_decl\_annotations\_}}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00043}00043 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d_x_sample_aa375adcf3d2f476c9d2a5e8dad6e5f84}{DXSample::GetHardwareAdapter}}(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00044}00044 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00045}00045     ComPtr<IDXGIAdapter1> adapter;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00046}00046     *ppAdapter = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00048}00048     \textcolor{keywordflow}{for} (UINT adapterIndex = 0; DXGI\_ERROR\_NOT\_FOUND != pFactory-\/>EnumAdapters1(adapterIndex, \&adapter); ++adapterIndex)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00049}00049     \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00050}00050         DXGI\_ADAPTER\_DESC1 desc;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00051}00051         adapter-\/>GetDesc1(\&desc);}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00053}00053         \textcolor{keywordflow}{if} (desc.Flags \& DXGI\_ADAPTER\_FLAG\_SOFTWARE)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00054}00054         \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00055}00055             \textcolor{comment}{// Don't select the Basic Render Driver adapter.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00056}00056             \textcolor{comment}{// If you want a software adapter, pass in "{}/warp"{} on the command line.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00057}00057             \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00058}00058         \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00060}00060         \textcolor{comment}{// Check to see if the adapter supports Direct3D 12, but don't create the}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00061}00061         \textcolor{comment}{// actual device yet.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00062}00062         \textcolor{keywordflow}{if} (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D\_FEATURE\_LEVEL\_11\_0, \_uuidof(ID3D12Device), \textcolor{keyword}{nullptr})))}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00063}00063         \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00064}00064             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00065}00065         \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00066}00066     \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00068}00068     *ppAdapter = adapter.Detach();}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00069}00069 \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00071}00071 \textcolor{comment}{// Helper function for setting the window's title text.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00072}00072 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d_x_sample_a57daa7205a38431871fa3d5abccef731}{DXSample::SetCustomWindowText}}(LPCWSTR text)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00073}00073 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00074}00074     std::wstring windowText = \mbox{\hyperlink{class_d_x_sample_a38c4154f6bbcc09a2561b7784f716385}{m\_title}} + L\textcolor{stringliteral}{"{}: "{}} + text;}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00075}00075     SetWindowText(\mbox{\hyperlink{class_win32_application_a998822a640e56d38e51a4ffb580f5044}{Win32Application::GetHwnd}}(), windowText.c\_str());}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00076}00076 \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00077}00077 }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00078}00078 \textcolor{comment}{// Helper function for parsing any supplied command line args.}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00079}00079 \mbox{\hyperlink{_d_d_s_texture_loader_8h_a3150346626fcea3ad7afe5dfb4ce27d8}{\_Use\_decl\_annotations\_}}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00080}00080 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d_x_sample_a1feb438eb581b4f9f8621e1dfcba529d}{DXSample::ParseCommandLineArgs}}(WCHAR* argv[], \textcolor{keywordtype}{int} argc)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00081}00081 \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00082}00082     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 1; i < argc; ++i)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00083}00083     \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00084}00084         \textcolor{keywordflow}{if} (\_wcsnicmp(argv[i], L\textcolor{stringliteral}{"{}-\/warp"{}}, wcslen(argv[i])) == 0 || }
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00085}00085             \_wcsnicmp(argv[i], L\textcolor{stringliteral}{"{}/warp"{}}, wcslen(argv[i])) == 0)}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00086}00086         \{}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00087}00087             \mbox{\hyperlink{class_d_x_sample_a00b60a6d941dcaa6d750ee1c31f2a5f1}{m\_useWarpDevice}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00088}00088             \mbox{\hyperlink{class_d_x_sample_a38c4154f6bbcc09a2561b7784f716385}{m\_title}} = \mbox{\hyperlink{class_d_x_sample_a38c4154f6bbcc09a2561b7784f716385}{m\_title}} + L\textcolor{stringliteral}{"{} (WARP)"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00089}00089         \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00090}00090     \}}
+\DoxyCodeLine{\Hypertarget{_week2-7-_hello_01_world_2_d_x_sample_8cpp_source_l00091}00091 \}}
+
+\end{DoxyCode}

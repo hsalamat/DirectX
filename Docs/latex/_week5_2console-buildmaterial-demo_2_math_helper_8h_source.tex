@@ -1,0 +1,106 @@
+\hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source}{}\doxysection{Math\+Helper.\+h}
+\label{_week5_2console-buildmaterial-demo_2_math_helper_8h_source}\index{Week5/console-\/buildmaterial-\/demo/MathHelper.h@{Week5/console-\/buildmaterial-\/demo/MathHelper.h}}
+\mbox{\hyperlink{_week5_2console-buildmaterial-demo_2_math_helper_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00002}00002 \textcolor{comment}{// MathHelper.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00003}00003 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00004}00004 \textcolor{comment}{// Helper math class.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00005}00005 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00007}00007 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00009}00009 \textcolor{preprocessor}{\#include <Windows.h>}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00010}00010 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00011}00011 \textcolor{preprocessor}{\#include <cstdint>}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00013}00013 \textcolor{keyword}{class }\mbox{\hyperlink{class_math_helper}{MathHelper}}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00014}00014 \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00015}00015 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00016}00016     \textcolor{comment}{// Returns random float in [0, 1).}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00017}\mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{00017}}     \textcolor{keyword}{static} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{RandF}}()}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00018}00018     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00019}00019         \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})(rand()) / (\textcolor{keywordtype}{float})RAND\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00020}00020     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00022}00022     \textcolor{comment}{// Returns random float in [a, b).}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00023}\mbox{\hyperlink{class_math_helper_a5b45a90302f9791a4961d943d473d6bb}{00023}}     \textcolor{keyword}{static} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_a5b45a90302f9791a4961d943d473d6bb}{RandF}}(\textcolor{keywordtype}{float} a, \textcolor{keywordtype}{float} b)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00024}00024     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00025}00025         \textcolor{keywordflow}{return} a + \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{RandF}}()*(b-\/a);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00026}00026     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00028}\mbox{\hyperlink{class_math_helper_ab957edc5bcaf8d4966a1fde0e7c5fe38}{00028}}     \textcolor{keyword}{static} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_math_helper_ab957edc5bcaf8d4966a1fde0e7c5fe38}{Rand}}(\textcolor{keywordtype}{int} a, \textcolor{keywordtype}{int} b)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00029}00029     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00030}00030         \textcolor{keywordflow}{return} a + rand() \% ((b -\/ a) + 1);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00031}00031     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00033}00033     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00034}\mbox{\hyperlink{class_math_helper_a5609539d1b530660438b48c74af2e1f4}{00034}}     \textcolor{keyword}{static} T \mbox{\hyperlink{class_math_helper_a5609539d1b530660438b48c74af2e1f4}{Min}}(\textcolor{keyword}{const} T\& a, \textcolor{keyword}{const} T\& b)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00035}00035     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00036}00036         \textcolor{keywordflow}{return} a < b ? a : b;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00037}00037     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00039}00039     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00040}\mbox{\hyperlink{class_math_helper_a0c33d72533f7bb85d56ab384e6867771}{00040}}     \textcolor{keyword}{static} T \mbox{\hyperlink{class_math_helper_a0c33d72533f7bb85d56ab384e6867771}{Max}}(\textcolor{keyword}{const} T\& a, \textcolor{keyword}{const} T\& b)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00041}00041     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00042}00042         \textcolor{keywordflow}{return} a > b ? a : b;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00043}00043     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00044}00044      }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00045}00045     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00046}\mbox{\hyperlink{class_math_helper_a1dfdb08dbd787c42bc5a42f41dd9b64c}{00046}}     \textcolor{keyword}{static} T \mbox{\hyperlink{class_math_helper_a1dfdb08dbd787c42bc5a42f41dd9b64c}{Lerp}}(\textcolor{keyword}{const} T\& a, \textcolor{keyword}{const} T\& b, \textcolor{keywordtype}{float} t)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00047}00047     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00048}00048         \textcolor{keywordflow}{return} a + (b-\/a)*t;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00049}00049     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00051}00051     \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00052}\mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{00052}}     \textcolor{keyword}{static} T \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{Clamp}}(\textcolor{keyword}{const} T\& x, \textcolor{keyword}{const} T\& low, \textcolor{keyword}{const} T\& high)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00053}00053     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00054}00054         \textcolor{keywordflow}{return} x < low ? low : (x > high ? high : x); }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00055}00055     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00057}00057     \textcolor{comment}{// Returns the polar angle of the point (x,y) in [0, 2*PI).}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00058}\mbox{\hyperlink{class_math_helper_a075adcd3d98edf8a6f218109c0911ff5}{00058}}     \textcolor{keyword}{static} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_a075adcd3d98edf8a6f218109c0911ff5}{AngleFromXY}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00060}\mbox{\hyperlink{class_math_helper_a592137b14c704600422afa7654f0d441}{00060}}     \textcolor{keyword}{static} DirectX::XMVECTOR \mbox{\hyperlink{class_math_helper_a592137b14c704600422afa7654f0d441}{SphericalToCartesian}}(\textcolor{keywordtype}{float} radius, \textcolor{keywordtype}{float} theta, \textcolor{keywordtype}{float} phi)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00061}00061     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00062}00062         \textcolor{keywordflow}{return} DirectX::XMVectorSet(}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00063}00063             radius*sinf(phi)*cosf(theta),}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00064}00064             radius*cosf(phi),}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00065}00065             radius*sinf(phi)*sinf(theta),}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00066}00066             1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00067}00067     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00069}\mbox{\hyperlink{class_math_helper_aaad3761266ef094f5448993a8b2992a5}{00069}}     \textcolor{keyword}{static} DirectX::XMMATRIX \mbox{\hyperlink{class_math_helper_aaad3761266ef094f5448993a8b2992a5}{InverseTranspose}}(DirectX::CXMMATRIX M)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00070}00070     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00071}00071         \textcolor{comment}{// Inverse-\/transpose is just applied to normals.  So zero out }}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00072}00072         \textcolor{comment}{// translation row so that it doesn't get into our inverse-\/transpose}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00073}00073         \textcolor{comment}{// calculation-\/-\/we don't want the inverse-\/transpose of the translation.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00074}00074         DirectX::XMMATRIX A = M;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00075}00075         A.r[3] = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00077}00077         DirectX::XMVECTOR det = DirectX::XMMatrixDeterminant(A);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00078}00078         \textcolor{keywordflow}{return} DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(\&det, A));}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00079}00079     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00081}\mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{00081}}     \textcolor{keyword}{static} DirectX::XMFLOAT4X4 \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{Identity4x4}}()}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00082}00082     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00083}00083         \textcolor{keyword}{static} DirectX::XMFLOAT4X4 I(}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00084}00084             1.0f, 0.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00085}00085             0.0f, 1.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00086}00086             0.0f, 0.0f, 1.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00087}00087             0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00088}00088 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00089}00089         \textcolor{keywordflow}{return} I;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00090}00090     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00091}00091 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00092}\mbox{\hyperlink{class_math_helper_acd368af4b8b18a89dbd7bd3503751508}{00092}}     \textcolor{keyword}{static} DirectX::XMVECTOR \mbox{\hyperlink{class_math_helper_acd368af4b8b18a89dbd7bd3503751508}{RandUnitVec3}}();}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00093}\mbox{\hyperlink{class_math_helper_a9bde27abe2ead37dcd4e559f18025273}{00093}}     \textcolor{keyword}{static} DirectX::XMVECTOR \mbox{\hyperlink{class_math_helper_a9bde27abe2ead37dcd4e559f18025273}{RandHemisphereUnitVec3}}(DirectX::XMVECTOR n);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00095}00095     \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_afc6585db4fa6c09d5c16f898e6883175}{Infinity}};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00096}00096     \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{Pi}};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00098}00098 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00099}00099 \};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8h_source_l00100}00100 }
+
+\end{DoxyCode}

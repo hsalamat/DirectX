@@ -1,0 +1,102 @@
+\hypertarget{_geometry_generator_8h_source}{}\doxysection{Geometry\+Generator.\+h}
+\label{_geometry_generator_8h_source}\index{Common/GeometryGenerator.h@{Common/GeometryGenerator.h}}
+\mbox{\hyperlink{_geometry_generator_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00002}00002 \textcolor{comment}{// GeometryGenerator.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00003}00003 \textcolor{comment}{//   }}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00004}00004 \textcolor{comment}{// Defines a static class for procedurally generating the geometry of }}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00005}00005 \textcolor{comment}{// common mathematical objects.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00006}00006 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00007}00007 \textcolor{comment}{// All triangles are generated "{}outward"{} facing.  If you want "{}inward"{} }}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00008}00008 \textcolor{comment}{// facing triangles (for example, if you want to place the camera inside}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00009}00009 \textcolor{comment}{// a sphere to simulate a sky), you will need to:}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00010}00010 \textcolor{comment}{//   1. Change the Direct3D cull mode or manually reverse the winding order.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00011}00011 \textcolor{comment}{//   2. Invert the normal.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00012}00012 \textcolor{comment}{//   3. Update the texture coordinates and tangent vectors.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00013}00013 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00015}00015 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00017}00017 \textcolor{preprocessor}{\#include <cstdint>}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00018}00018 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00019}00019 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00021}\mbox{\hyperlink{class_geometry_generator}{00021}} \textcolor{keyword}{class }\mbox{\hyperlink{class_geometry_generator}{GeometryGenerator}}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00022}00022 \{}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00023}00023 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00025}\mbox{\hyperlink{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}{00025}}     \textcolor{keyword}{using} \mbox{\hyperlink{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}{uint16}} = std::uint16\_t;}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00026}\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{00026}}     \textcolor{keyword}{using} \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} = std::uint32\_t;}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00028}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{00028}}     \textcolor{keyword}{struct }\mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00029}00029     \{}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00030}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_aa102c6b22eed04a61aa0021149b198e5}{00030}}         \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_aa102c6b22eed04a61aa0021149b198e5}{Vertex}}()\{\}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00031}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a322406351e5c5e6acda529490c61996b}{00031}}         \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a322406351e5c5e6acda529490c61996b}{Vertex}}(}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00032}00032             \textcolor{keyword}{const} DirectX::XMFLOAT3\& p, }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00033}00033             \textcolor{keyword}{const} DirectX::XMFLOAT3\& n, }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00034}00034             \textcolor{keyword}{const} DirectX::XMFLOAT3\& t, }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00035}00035             \textcolor{keyword}{const} DirectX::XMFLOAT2\& uv) :}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00036}00036             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ad31c2a7a30542745c70422a0cb34d22d}{Position}}(p), }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00037}00037             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab09e39b41f227072d8d24768b464eaa8}{Normal}}(n), }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00038}00038             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a717df2eee4e35bb0eb8f4ecf262edf4f}{TangentU}}(t), }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00039}00039             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab18dadcdb6a57e997bfd6d0e53e426c6}{TexC}}(uv)\{\}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00040}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a2df7807f385db53fb4bbb6f6f42e8493}{00040}}         \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a2df7807f385db53fb4bbb6f6f42e8493}{Vertex}}(}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00041}00041             \textcolor{keywordtype}{float} px, \textcolor{keywordtype}{float} py, \textcolor{keywordtype}{float} pz, }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00042}00042             \textcolor{keywordtype}{float} nx, \textcolor{keywordtype}{float} ny, \textcolor{keywordtype}{float} nz,}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00043}00043             \textcolor{keywordtype}{float} tx, \textcolor{keywordtype}{float} ty, \textcolor{keywordtype}{float} tz,}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00044}00044             \textcolor{keywordtype}{float} u, \textcolor{keywordtype}{float} v) : }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00045}00045             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ad31c2a7a30542745c70422a0cb34d22d}{Position}}(px,py,pz), }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00046}00046             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab09e39b41f227072d8d24768b464eaa8}{Normal}}(nx,ny,nz),}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00047}00047             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a717df2eee4e35bb0eb8f4ecf262edf4f}{TangentU}}(tx, ty, tz), }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00048}00048             \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab18dadcdb6a57e997bfd6d0e53e426c6}{TexC}}(u,v)\{\}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00050}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ad31c2a7a30542745c70422a0cb34d22d}{00050}}         DirectX::XMFLOAT3 \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ad31c2a7a30542745c70422a0cb34d22d}{Position}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00051}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab09e39b41f227072d8d24768b464eaa8}{00051}}         DirectX::XMFLOAT3 \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab09e39b41f227072d8d24768b464eaa8}{Normal}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00052}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a717df2eee4e35bb0eb8f4ecf262edf4f}{00052}}         DirectX::XMFLOAT3 \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_a717df2eee4e35bb0eb8f4ecf262edf4f}{TangentU}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00053}\mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab18dadcdb6a57e997bfd6d0e53e426c6}{00053}}         DirectX::XMFLOAT2 \mbox{\hyperlink{struct_geometry_generator_1_1_vertex_ab18dadcdb6a57e997bfd6d0e53e426c6}{TexC}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00054}00054     \};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00056}\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{00056}}     \textcolor{keyword}{struct }\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00057}00057     \{}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00058}\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{00058}}         std::vector<Vertex> \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00059}\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{00059}}         std::vector<uint32> \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00061}\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{00061}}         std::vector<uint16>\& \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}()}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00062}00062         \{}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00063}00063             \textcolor{keywordflow}{if}(\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{mIndices16}}.empty())}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00064}00064             \{}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00065}00065                 \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{mIndices16}}.resize(\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}}.size());}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00066}00066                 \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00067}00067                     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{mIndices16}}[i] = \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}{uint16}}\textcolor{keyword}{>}(\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}}[i]);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00068}00068             \}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00070}00070             \textcolor{keywordflow}{return} \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{mIndices16}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00071}00071         \}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00073}00073     \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00074}\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{00074}}         std::vector<uint16> \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a6e75112a6afb0829bb271ff1d1971140}{mIndices16}};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00075}00075     \};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00081}00081     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_a9ebf88d1bee287c6e211bff43fbdd3a0}{CreateBox}}(\textcolor{keywordtype}{float} width, \textcolor{keywordtype}{float} height, \textcolor{keywordtype}{float} depth, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} numSubdivisions);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00087}00087     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_a61677b3472294c52b544670722d22f0b}{CreateSphere}}(\textcolor{keywordtype}{float} radius, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} sliceCount, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stackCount);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00088}00088 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00093}00093     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_ac29d9710556efda67adf2969b3d59efe}{CreateGeosphere}}(\textcolor{keywordtype}{float} radius, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} numSubdivisions);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00098}00098     \textcolor{comment}{// cylinders.  The slices and stacks parameters control the degree of tessellation.}}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00100}00100 \textcolor{comment}{}    \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_a6d2867280024eaf02c0643c765dfdd2b}{CreateCylinder}}(\textcolor{keywordtype}{float} bottomRadius, \textcolor{keywordtype}{float} topRadius, \textcolor{keywordtype}{float} height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} sliceCount, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stackCount);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00106}00106     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}{CreateGrid}}(\textcolor{keywordtype}{float} width, \textcolor{keywordtype}{float} depth, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} m, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} n);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00107}00107 }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00111}00111     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}} \mbox{\hyperlink{class_geometry_generator_af9ce9e29c19dc145d8a964f44359ae90}{CreateQuad}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y, \textcolor{keywordtype}{float} w, \textcolor{keywordtype}{float} h, \textcolor{keywordtype}{float} depth);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00112}00112     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_geometry_generator_ad670e32318f22a917b2771cb9719f6a9}{Subdivide}}(\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}}\& meshData);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00113}00113 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00114}00114     }
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00115}00115     \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \mbox{\hyperlink{class_geometry_generator_a1a2bcb829312312463ae4cbed9357445}{MidPoint}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}}\& v0, \textcolor{keyword}{const} \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}}\& v1);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00116}00116     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_geometry_generator_aa26957ba52636b68c234d284759116b0}{BuildCylinderTopCap}}(\textcolor{keywordtype}{float} bottomRadius, \textcolor{keywordtype}{float} topRadius, \textcolor{keywordtype}{float} height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} sliceCount, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stackCount, \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}}\& meshData);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00117}00117     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_geometry_generator_a623d5e6167d7e9454a55f57e84bbcb35}{BuildCylinderBottomCap}}(\textcolor{keywordtype}{float} bottomRadius, \textcolor{keywordtype}{float} topRadius, \textcolor{keywordtype}{float} height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} sliceCount, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stackCount, \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{MeshData}}\& meshData);}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00118}00118 \};}
+\DoxyCodeLine{\Hypertarget{_geometry_generator_8h_source_l00119}00119 }
+
+\end{DoxyCode}

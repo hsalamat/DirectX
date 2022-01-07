@@ -1,0 +1,282 @@
+\hypertarget{_d_d_s_texture_loader_8cpp}{}\doxysection{Common/\+DDSTexture\+Loader.cpp File Reference}
+\label{_d_d_s_texture_loader_8cpp}\index{Common/DDSTextureLoader.cpp@{Common/DDSTextureLoader.cpp}}
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$wrl.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}DDSTexture\+Loader.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_d_d_s___p_i_x_e_l_f_o_r_m_a_t}{DDS\+\_\+\+PIXELFORMAT}}
+\item 
+struct \mbox{\hyperlink{struct_d_d_s___h_e_a_d_e_r}{DDS\+\_\+\+HEADER}}
+\item 
+struct \mbox{\hyperlink{struct_d_d_s___h_e_a_d_e_r___d_x_t10}{DDS\+\_\+\+HEADER\+\_\+\+DXT10}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a706a9d1784b228428ecc412848c32d83}{MAKEFOURCC}}(ch0,  ch1,  ch2,  ch3)
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a2c73ce18aa59e9c09bad644d3cd38f7e}{DDS\+\_\+\+FOURCC}}~0x00000004
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_aafd89dda1de1811a688e12f7a072ec7e}{DDS\+\_\+\+RGB}}~0x00000040
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_ae0df87c2d6347a447db359608609c0a3}{DDS\+\_\+\+LUMINANCE}}~0x00020000
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a75e12df564981d3c86486a6c7cad19a0}{DDS\+\_\+\+ALPHA}}~0x00000002
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a0c021e5677bab064ae37ee539c4a9b4e}{DDS\+\_\+\+HEADER\+\_\+\+FLAGS\+\_\+\+VOLUME}}~0x00800000
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a1dbab38792e5046fad186caff7acc125}{DDS\+\_\+\+HEIGHT}}~0x00000002
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_ac8593d411747ce06a8bbbd19ec6315eb}{DDS\+\_\+\+WIDTH}}~0x00000004
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a216c8712237c7b41faf310b35c65b52e}{DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEX}}~0x00000600
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a3dfbca9e03f9955987bc7b887dc55c0c}{DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEX}}~0x00000a00
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a0b12b4e1d02a7581bd0f726238acca08}{DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEY}}~0x00001200
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a03a6ab9fbec5ea4b9d015dbfa8b5c8f5}{DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEY}}~0x00002200
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_aa729efae8a7dff9c01b7b6c4d92aad3e}{DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEZ}}~0x00004200
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_ab71a7eedeb0594c5388a8e52c8616d3d}{DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEZ}}~0x00008200
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_ac52c764f13e42597d987a5a9214a1b4c}{DDS\+\_\+\+CUBEMAP\+\_\+\+ALLFACES}}
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a525b838e7170cac17efbab6e867ebd79}{DDS\+\_\+\+CUBEMAP}}~0x00000200
+\item 
+\#define \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a5f3918f64c6ea8f31c0cd931b0578017}{ISBITMASK}}(r,  g,  b,  a)~( ddpf.\+RBit\+Mask == r \&\& ddpf.\+GBit\+Mask == g \&\& ddpf.\+BBit\+Mask == b \&\& ddpf.\+ABit\+Mask == a )
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9b}{DDS\+\_\+\+MISC\+\_\+\+FLAGS2}} \{ \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9ba71bd814696c66086b68666bc85c63d04}{DDS\+\_\+\+MISC\+\_\+\+FLAGS2\+\_\+\+ALPHA\+\_\+\+MODE\+\_\+\+MASK}} = 0x7L
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const uint32\+\_\+t \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a0b37de835f7ff26eca52db17170cb24a}{DDS\+\_\+\+MAGIC}} = 0x20534444
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a75e12df564981d3c86486a6c7cad19a0}\label{_d_d_s_texture_loader_8cpp_a75e12df564981d3c86486a6c7cad19a0}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_ALPHA@{DDS\_ALPHA}}
+\index{DDS\_ALPHA@{DDS\_ALPHA}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_ALPHA}{DDS\_ALPHA}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+ALPHA~0x00000002}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00069}{69}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a525b838e7170cac17efbab6e867ebd79}\label{_d_d_s_texture_loader_8cpp_a525b838e7170cac17efbab6e867ebd79}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP@{DDS\_CUBEMAP}}
+\index{DDS\_CUBEMAP@{DDS\_CUBEMAP}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP}{DDS\_CUBEMAP}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP~0x00000200}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00087}{87}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_ac52c764f13e42597d987a5a9214a1b4c}\label{_d_d_s_texture_loader_8cpp_ac52c764f13e42597d987a5a9214a1b4c}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_ALLFACES@{DDS\_CUBEMAP\_ALLFACES}}
+\index{DDS\_CUBEMAP\_ALLFACES@{DDS\_CUBEMAP\_ALLFACES}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_ALLFACES}{DDS\_CUBEMAP\_ALLFACES}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+ALLFACES}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{                               ( \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a216c8712237c7b41faf310b35c65b52e}{DDS\_CUBEMAP\_POSITIVEX}} | \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a3dfbca9e03f9955987bc7b887dc55c0c}{DDS\_CUBEMAP\_NEGATIVEX}} |\(\backslash\)}
+\DoxyCodeLine{                               DDS\_CUBEMAP\_POSITIVEY | \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_a03a6ab9fbec5ea4b9d015dbfa8b5c8f5}{DDS\_CUBEMAP\_NEGATIVEY}} |\(\backslash\)}
+\DoxyCodeLine{                               DDS\_CUBEMAP\_POSITIVEZ | \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_ab71a7eedeb0594c5388a8e52c8616d3d}{DDS\_CUBEMAP\_NEGATIVEZ}} )}
+
+\end{DoxyCode}
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00083}{83}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a3dfbca9e03f9955987bc7b887dc55c0c}\label{_d_d_s_texture_loader_8cpp_a3dfbca9e03f9955987bc7b887dc55c0c}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_NEGATIVEX@{DDS\_CUBEMAP\_NEGATIVEX}}
+\index{DDS\_CUBEMAP\_NEGATIVEX@{DDS\_CUBEMAP\_NEGATIVEX}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_NEGATIVEX}{DDS\_CUBEMAP\_NEGATIVEX}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEX~0x00000a00}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00077}{77}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a03a6ab9fbec5ea4b9d015dbfa8b5c8f5}\label{_d_d_s_texture_loader_8cpp_a03a6ab9fbec5ea4b9d015dbfa8b5c8f5}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_NEGATIVEY@{DDS\_CUBEMAP\_NEGATIVEY}}
+\index{DDS\_CUBEMAP\_NEGATIVEY@{DDS\_CUBEMAP\_NEGATIVEY}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_NEGATIVEY}{DDS\_CUBEMAP\_NEGATIVEY}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEY~0x00002200}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00079}{79}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_ab71a7eedeb0594c5388a8e52c8616d3d}\label{_d_d_s_texture_loader_8cpp_ab71a7eedeb0594c5388a8e52c8616d3d}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_NEGATIVEZ@{DDS\_CUBEMAP\_NEGATIVEZ}}
+\index{DDS\_CUBEMAP\_NEGATIVEZ@{DDS\_CUBEMAP\_NEGATIVEZ}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_NEGATIVEZ}{DDS\_CUBEMAP\_NEGATIVEZ}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+NEGATIVEZ~0x00008200}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00081}{81}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a216c8712237c7b41faf310b35c65b52e}\label{_d_d_s_texture_loader_8cpp_a216c8712237c7b41faf310b35c65b52e}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_POSITIVEX@{DDS\_CUBEMAP\_POSITIVEX}}
+\index{DDS\_CUBEMAP\_POSITIVEX@{DDS\_CUBEMAP\_POSITIVEX}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_POSITIVEX}{DDS\_CUBEMAP\_POSITIVEX}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEX~0x00000600}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00076}{76}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a0b12b4e1d02a7581bd0f726238acca08}\label{_d_d_s_texture_loader_8cpp_a0b12b4e1d02a7581bd0f726238acca08}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_POSITIVEY@{DDS\_CUBEMAP\_POSITIVEY}}
+\index{DDS\_CUBEMAP\_POSITIVEY@{DDS\_CUBEMAP\_POSITIVEY}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_POSITIVEY}{DDS\_CUBEMAP\_POSITIVEY}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEY~0x00001200}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00078}{78}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_aa729efae8a7dff9c01b7b6c4d92aad3e}\label{_d_d_s_texture_loader_8cpp_aa729efae8a7dff9c01b7b6c4d92aad3e}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_CUBEMAP\_POSITIVEZ@{DDS\_CUBEMAP\_POSITIVEZ}}
+\index{DDS\_CUBEMAP\_POSITIVEZ@{DDS\_CUBEMAP\_POSITIVEZ}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_CUBEMAP\_POSITIVEZ}{DDS\_CUBEMAP\_POSITIVEZ}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+CUBEMAP\+\_\+\+POSITIVEZ~0x00004200}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00080}{80}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a2c73ce18aa59e9c09bad644d3cd38f7e}\label{_d_d_s_texture_loader_8cpp_a2c73ce18aa59e9c09bad644d3cd38f7e}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_FOURCC@{DDS\_FOURCC}}
+\index{DDS\_FOURCC@{DDS\_FOURCC}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_FOURCC}{DDS\_FOURCC}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+FOURCC~0x00000004}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00066}{66}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a0c021e5677bab064ae37ee539c4a9b4e}\label{_d_d_s_texture_loader_8cpp_a0c021e5677bab064ae37ee539c4a9b4e}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_HEADER\_FLAGS\_VOLUME@{DDS\_HEADER\_FLAGS\_VOLUME}}
+\index{DDS\_HEADER\_FLAGS\_VOLUME@{DDS\_HEADER\_FLAGS\_VOLUME}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_HEADER\_FLAGS\_VOLUME}{DDS\_HEADER\_FLAGS\_VOLUME}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+HEADER\+\_\+\+FLAGS\+\_\+\+VOLUME~0x00800000}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00071}{71}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a1dbab38792e5046fad186caff7acc125}\label{_d_d_s_texture_loader_8cpp_a1dbab38792e5046fad186caff7acc125}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_HEIGHT@{DDS\_HEIGHT}}
+\index{DDS\_HEIGHT@{DDS\_HEIGHT}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_HEIGHT}{DDS\_HEIGHT}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+HEIGHT~0x00000002}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00073}{73}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_ae0df87c2d6347a447db359608609c0a3}\label{_d_d_s_texture_loader_8cpp_ae0df87c2d6347a447db359608609c0a3}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_LUMINANCE@{DDS\_LUMINANCE}}
+\index{DDS\_LUMINANCE@{DDS\_LUMINANCE}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_LUMINANCE}{DDS\_LUMINANCE}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+LUMINANCE~0x00020000}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00068}{68}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_aafd89dda1de1811a688e12f7a072ec7e}\label{_d_d_s_texture_loader_8cpp_aafd89dda1de1811a688e12f7a072ec7e}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_RGB@{DDS\_RGB}}
+\index{DDS\_RGB@{DDS\_RGB}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_RGB}{DDS\_RGB}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+RGB~0x00000040}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00067}{67}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_ac8593d411747ce06a8bbbd19ec6315eb}\label{_d_d_s_texture_loader_8cpp_ac8593d411747ce06a8bbbd19ec6315eb}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_WIDTH@{DDS\_WIDTH}}
+\index{DDS\_WIDTH@{DDS\_WIDTH}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_WIDTH}{DDS\_WIDTH}}
+{\footnotesize\ttfamily \#define DDS\+\_\+\+WIDTH~0x00000004}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00074}{74}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a5f3918f64c6ea8f31c0cd931b0578017}\label{_d_d_s_texture_loader_8cpp_a5f3918f64c6ea8f31c0cd931b0578017}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!ISBITMASK@{ISBITMASK}}
+\index{ISBITMASK@{ISBITMASK}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{ISBITMASK}{ISBITMASK}}
+{\footnotesize\ttfamily \#define ISBITMASK(\begin{DoxyParamCaption}\item[{}]{r,  }\item[{}]{g,  }\item[{}]{b,  }\item[{}]{a }\end{DoxyParamCaption})~( ddpf.\+RBit\+Mask == r \&\& ddpf.\+GBit\+Mask == g \&\& ddpf.\+BBit\+Mask == b \&\& ddpf.\+ABit\+Mask == a )}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00555}{555}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a706a9d1784b228428ecc412848c32d83}\label{_d_d_s_texture_loader_8cpp_a706a9d1784b228428ecc412848c32d83}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!MAKEFOURCC@{MAKEFOURCC}}
+\index{MAKEFOURCC@{MAKEFOURCC}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{MAKEFOURCC}{MAKEFOURCC}}
+{\footnotesize\ttfamily \#define MAKEFOURCC(\begin{DoxyParamCaption}\item[{}]{ch0,  }\item[{}]{ch1,  }\item[{}]{ch2,  }\item[{}]{ch3 }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{                ((uint32\_t)(uint8\_t)(ch0) | ((uint32\_t)(uint8\_t)(ch1) << 8) |       \(\backslash\)}
+\DoxyCodeLine{                ((uint32\_t)(uint8\_t)(ch2) << 16) | ((uint32\_t)(uint8\_t)(ch3) << 24 ))}
+
+\end{DoxyCode}
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00040}{40}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9b}\label{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9b}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_MISC\_FLAGS2@{DDS\_MISC\_FLAGS2}}
+\index{DDS\_MISC\_FLAGS2@{DDS\_MISC\_FLAGS2}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_MISC\_FLAGS2}{DDS\_MISC\_FLAGS2}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9b}{DDS\+\_\+\+MISC\+\_\+\+FLAGS2}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DDS\_MISC\_FLAGS2\_ALPHA\_MODE\_MASK@{DDS\_MISC\_FLAGS2\_ALPHA\_MODE\_MASK}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_MISC\_FLAGS2\_ALPHA\_MODE\_MASK@{DDS\_MISC\_FLAGS2\_ALPHA\_MODE\_MASK}}}\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9ba71bd814696c66086b68666bc85c63d04}\label{_d_d_s_texture_loader_8cpp_acc0dacc4184dc0896d673ced30262f9ba71bd814696c66086b68666bc85c63d04}} 
+DDS\+\_\+\+MISC\+\_\+\+FLAGS2\+\_\+\+ALPHA\+\_\+\+MODE\+\_\+\+MASK&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00089}{89}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{_d_d_s_texture_loader_8cpp_a0b37de835f7ff26eca52db17170cb24a}\label{_d_d_s_texture_loader_8cpp_a0b37de835f7ff26eca52db17170cb24a}} 
+\index{DDSTextureLoader.cpp@{DDSTextureLoader.cpp}!DDS\_MAGIC@{DDS\_MAGIC}}
+\index{DDS\_MAGIC@{DDS\_MAGIC}!DDSTextureLoader.cpp@{DDSTextureLoader.cpp}}
+\doxysubsubsection{\texorpdfstring{DDS\_MAGIC}{DDS\_MAGIC}}
+{\footnotesize\ttfamily const uint32\+\_\+t DDS\+\_\+\+MAGIC = 0x20534444}
+
+
+
+Definition at line \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source_l00052}{52}} of file \mbox{\hyperlink{_d_d_s_texture_loader_8cpp_source}{DDSTexture\+Loader.\+cpp}}.
+

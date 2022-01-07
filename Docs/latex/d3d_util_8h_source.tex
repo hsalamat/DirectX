@@ -1,0 +1,322 @@
+\hypertarget{d3d_util_8h_source}{}\doxysection{d3d\+Util.\+h}
+\label{d3d_util_8h_source}\index{Common/d3dUtil.h@{Common/d3dUtil.h}}
+\mbox{\hyperlink{d3d_util_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00003}00003 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00005}00005 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00006}00006 \textcolor{preprocessor}{\#include <wrl.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00007}00007 \textcolor{preprocessor}{\#include <dxgi1\_4.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00008}00008 \textcolor{preprocessor}{\#include <d3d12.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00009}00009 \textcolor{preprocessor}{\#include <D3Dcompiler.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00010}00010 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00011}00011 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00012}00012 \textcolor{preprocessor}{\#include <DirectXColors.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00013}00013 \textcolor{preprocessor}{\#include <DirectXCollision.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00014}00014 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00015}00015 \textcolor{preprocessor}{\#include <memory>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00016}00016 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00017}00017 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00018}00018 \textcolor{preprocessor}{\#include <array>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00019}00019 \textcolor{preprocessor}{\#include <unordered\_map>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00020}00020 \textcolor{preprocessor}{\#include <cstdint>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00021}00021 \textcolor{preprocessor}{\#include <fstream>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00022}00022 \textcolor{preprocessor}{\#include <sstream>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00023}00023 \textcolor{preprocessor}{\#include <cassert>}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00024}00024 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2_2_week2-7-_hello_01_world_2d3dx12_8h}{d3dx12.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00025}00025 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_d_d_s_texture_loader_8h}{DDSTextureLoader.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00026}00026 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week5_2console-buildmaterial-demo_2_math_helper_8h}{MathHelper.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00028}00028 \textcolor{keyword}{extern} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{d3d_util_8h_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00030}\mbox{\hyperlink{d3d_util_8h_a8eea9d84f47bf09194e47e7cffe1ef0d}{00030}} \textcolor{keyword}{inline} \textcolor{keywordtype}{void} \mbox{\hyperlink{d3d_util_8h_a8eea9d84f47bf09194e47e7cffe1ef0d}{d3dSetDebugName}}(IDXGIObject* obj, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00032}00032     \textcolor{keywordflow}{if} (obj)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00033}00033     \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00034}00034         obj-\/>SetPrivateData(WKPDID\_D3DDebugObjectName, lstrlenA(name), name);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00035}00035     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00036}00036 \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00037}\mbox{\hyperlink{d3d_util_8h_a30106e226f471b23181adaf7d9a422a3}{00037}} \textcolor{keyword}{inline} \textcolor{keywordtype}{void} \mbox{\hyperlink{d3d_util_8h_a8eea9d84f47bf09194e47e7cffe1ef0d}{d3dSetDebugName}}(ID3D12Device* obj, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00038}00038 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00039}00039     \textcolor{keywordflow}{if} (obj)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00040}00040     \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00041}00041         obj-\/>SetPrivateData(WKPDID\_D3DDebugObjectName, lstrlenA(name), name);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00042}00042     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00043}00043 \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00044}\mbox{\hyperlink{d3d_util_8h_a096d87a02e29abc03ea7fd0d1b3e64d9}{00044}} \textcolor{keyword}{inline} \textcolor{keywordtype}{void} \mbox{\hyperlink{d3d_util_8h_a8eea9d84f47bf09194e47e7cffe1ef0d}{d3dSetDebugName}}(ID3D12DeviceChild* obj, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00045}00045 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00046}00046     \textcolor{keywordflow}{if} (obj)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00047}00047     \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00048}00048         obj-\/>SetPrivateData(WKPDID\_D3DDebugObjectName, lstrlenA(name), name);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00049}00049     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00050}00050 \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00052}\mbox{\hyperlink{d3d_util_8h_a945382836f0cc7b4a16495f63cc76975}{00052}} \textcolor{keyword}{inline} std::wstring \mbox{\hyperlink{d3d_util_8h_a945382836f0cc7b4a16495f63cc76975}{AnsiToWString}}(\textcolor{keyword}{const} std::string\& str)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00053}00053 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00054}00054     WCHAR buffer[512];}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00055}00055     MultiByteToWideChar(CP\_ACP, 0, str.c\_str(), -\/1, buffer, 512);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00056}00056     \textcolor{keywordflow}{return} std::wstring(buffer);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00057}00057 \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00059}00059 \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00060}00060 \textcolor{comment}{\#if defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00061}00061 \textcolor{comment}{    \#ifndef Assert}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00062}00062 \textcolor{comment}{    \#define Assert(x, description)                                  \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00063}00063 \textcolor{comment}{    \{                                                               \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00064}00064 \textcolor{comment}{        static bool ignoreAssert = false;                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00065}00065 \textcolor{comment}{        if(!ignoreAssert \&\& !(x))                                   \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00066}00066 \textcolor{comment}{        \{                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00067}00067 \textcolor{comment}{            Debug::AssertResult result = Debug::ShowAssertDialog(   \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00068}00068 \textcolor{comment}{            (L\#x), description, AnsiToWString(\_\_FILE\_\_), \_\_LINE\_\_); \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00069}00069 \textcolor{comment}{        if(result == Debug::AssertIgnore)                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00070}00070 \textcolor{comment}{        \{                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00071}00071 \textcolor{comment}{            ignoreAssert = true;                                    \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00072}00072 \textcolor{comment}{        \}                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00073}00073 \textcolor{comment}{                    else if(result == Debug::AssertBreak)           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00074}00074 \textcolor{comment}{        \{                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00075}00075 \textcolor{comment}{            \_\_debugbreak();                                         \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00076}00076 \textcolor{comment}{        \}                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00077}00077 \textcolor{comment}{        \}                                                           \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00078}00078 \textcolor{comment}{    \}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00079}00079 \textcolor{comment}{    \#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00080}00080 \textcolor{comment}{\#else}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00081}00081 \textcolor{comment}{    \#ifndef Assert}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00082}00082 \textcolor{comment}{    \#define Assert(x, description)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00083}00083 \textcolor{comment}{    \#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00084}00084 \textcolor{comment}{\#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00085}00085 \textcolor{comment}{    */}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00087}\mbox{\hyperlink{classd3d_util}{00087}} \textcolor{keyword}{class }\mbox{\hyperlink{classd3d_util}{d3dUtil}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00088}00088 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00089}00089 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00090}00090 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00091}00091     \textcolor{keyword}{static} \textcolor{keywordtype}{bool} \mbox{\hyperlink{classd3d_util_a2e43ccad934a5f8de92c10de835e7d14}{IsKeyDown}}(\textcolor{keywordtype}{int} vkeyCode);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00092}00092 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00093}\mbox{\hyperlink{classd3d_util_ae0b7d841076df11833db2564c86faefe}{00093}}     \textcolor{keyword}{static} std::string \mbox{\hyperlink{classd3d_util_ae0b7d841076df11833db2564c86faefe}{ToString}}(HRESULT hr);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00095}\mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{00095}}     \textcolor{keyword}{static} UINT \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{CalcConstantBufferByteSize}}(UINT byteSize)}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00096}00096     \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00097}00097         \textcolor{comment}{// Constant buffers must be a multiple of the minimum hardware}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00098}00098         \textcolor{comment}{// allocation size (usually 256 bytes).  So round up to nearest}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00099}00099         \textcolor{comment}{// multiple of 256.  We do this by adding 255 and then masking off}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00100}00100         \textcolor{comment}{// the lower 2 bytes which store all bits < 256.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00101}00101         \textcolor{comment}{// Example: Suppose byteSize = 300.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00102}00102         \textcolor{comment}{// (300 + 255) \& \string~255}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00103}00103         \textcolor{comment}{// 555 \& \string~255}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00104}00104         \textcolor{comment}{// 0x022B \& \string~0x00ff}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00105}00105         \textcolor{comment}{// 0x022B \& 0xff00}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00106}00106         \textcolor{comment}{// 0x0200}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00107}00107         \textcolor{comment}{// 512}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00108}00108         \textcolor{keywordflow}{return} (byteSize + 255) \& \string~255;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00109}00109     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00111}00111     \textcolor{keyword}{static} Microsoft::WRL::ComPtr<ID3DBlob> \mbox{\hyperlink{classd3d_util_a374c360bb2668c34223e74fbf0f1402b}{LoadBinary}}(\textcolor{keyword}{const} std::wstring\& filename);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00113}00113     \textcolor{keyword}{static} Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{CreateDefaultBuffer}}(}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00114}00114         ID3D12Device* device,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00115}00115         ID3D12GraphicsCommandList* cmdList,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00116}00116         \textcolor{keyword}{const} \textcolor{keywordtype}{void}* initData,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00117}00117         UINT64 byteSize,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00118}00118         Microsoft::WRL::ComPtr<ID3D12Resource>\& uploadBuffer);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00119}00119 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00120}00120     \textcolor{keyword}{static} Microsoft::WRL::ComPtr<ID3DBlob> \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{CompileShader}}(}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00121}00121         \textcolor{keyword}{const} std::wstring\& filename,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00122}00122         \textcolor{keyword}{const} D3D\_SHADER\_MACRO* defines,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00123}00123         \textcolor{keyword}{const} std::string\& entrypoint,}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00124}00124         \textcolor{keyword}{const} std::string\& target);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00125}00125 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00127}\mbox{\hyperlink{class_dx_exception}{00127}} \textcolor{keyword}{class }\mbox{\hyperlink{class_dx_exception}{DxException}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00128}00128 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00129}00129 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00130}\mbox{\hyperlink{class_dx_exception_ae199bbd54f33491ced59c33517f44fe6}{00130}}     \mbox{\hyperlink{class_dx_exception_ae199bbd54f33491ced59c33517f44fe6}{DxException}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00131}00131     \mbox{\hyperlink{class_dx_exception_ae199bbd54f33491ced59c33517f44fe6}{DxException}}(HRESULT hr, \textcolor{keyword}{const} std::wstring\& functionName, \textcolor{keyword}{const} std::wstring\& filename, \textcolor{keywordtype}{int} lineNumber);}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00132}00132 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00133}00133     std::wstring \mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00135}\mbox{\hyperlink{class_dx_exception_ad772fc53a8ebf75f54718213aa45d635}{00135}}     HRESULT \mbox{\hyperlink{class_dx_exception_ad772fc53a8ebf75f54718213aa45d635}{ErrorCode}} = S\_OK;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00136}\mbox{\hyperlink{class_dx_exception_a8fa7d58ba60cc972f4eb4993dfd5bc56}{00136}}     std::wstring \mbox{\hyperlink{class_dx_exception_a8fa7d58ba60cc972f4eb4993dfd5bc56}{FunctionName}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00137}\mbox{\hyperlink{class_dx_exception_a5b68341d8c7730eb9ae00b7ebcccdd69}{00137}}     std::wstring \mbox{\hyperlink{class_dx_exception_a5b68341d8c7730eb9ae00b7ebcccdd69}{Filename}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00138}\mbox{\hyperlink{class_dx_exception_aee30e6d56dfd40d6a73852503ebd8b7f}{00138}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_dx_exception_aee30e6d56dfd40d6a73852503ebd8b7f}{LineNumber}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00139}00139 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00141}00141 \textcolor{comment}{// Defines a subrange of geometry in a MeshGeometry.  This is for when multiple}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00142}00142 \textcolor{comment}{// geometries are stored in one vertex and index buffer.  It provides the offsets}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00143}00143 \textcolor{comment}{// and data needed to draw a subset of geometry stores in the vertex and index }}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00144}00144 \textcolor{comment}{// buffers so that we can implement the technique described by Figure 6.3.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00145}\mbox{\hyperlink{struct_submesh_geometry}{00145}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00146}00146 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00147}\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{00147}}     UINT \mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00148}\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{00148}}     UINT \mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00149}\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{00149}}     INT \mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00150}00150 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00151}00151     \textcolor{comment}{// Bounding box of the geometry defined by this submesh. }}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00152}00152     \textcolor{comment}{// This is used in later chapters of the book.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00153}\mbox{\hyperlink{struct_submesh_geometry_ac79bad539c71ede2aa15b2527cacaa97}{00153}}     DirectX::BoundingBox \mbox{\hyperlink{struct_submesh_geometry_ac79bad539c71ede2aa15b2527cacaa97}{Bounds}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00154}00154 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00156}\mbox{\hyperlink{struct_mesh_geometry}{00156}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00157}00157 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00158}00158 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00159}00159     \textcolor{comment}{// Give it a name so we can look it up by name.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00160}\mbox{\hyperlink{struct_mesh_geometry_a9cfdc0d2b907a9059b32fccae59d9813}{00160}}     std::string \mbox{\hyperlink{struct_mesh_geometry_a9cfdc0d2b907a9059b32fccae59d9813}{Name}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00162}00162     \textcolor{comment}{// System memory copies.  Use Blobs because the vertex/index format can be generic.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00163}00163     \textcolor{comment}{// It is up to the client to cast appropriately. }}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00164}00164 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00165}\mbox{\hyperlink{struct_mesh_geometry_a79e5e540605f4205197154469bf4194e}{00165}}     Microsoft::WRL::ComPtr<ID3DBlob> \mbox{\hyperlink{struct_mesh_geometry_a79e5e540605f4205197154469bf4194e}{VertexBufferCPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00166}\mbox{\hyperlink{struct_mesh_geometry_aa9a4e934b370f9c716217b01c15bad32}{00166}}     Microsoft::WRL::ComPtr<ID3DBlob> \mbox{\hyperlink{struct_mesh_geometry_aa9a4e934b370f9c716217b01c15bad32}{IndexBufferCPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00167}\mbox{\hyperlink{struct_mesh_geometry_a281ef611d2f40f2baa0993134c6a14d7}{00167}}     Microsoft::WRL::ComPtr<ID3DBlob> \mbox{\hyperlink{struct_mesh_geometry_a281ef611d2f40f2baa0993134c6a14d7}{ColorBufferCPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00169}00169 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00170}\mbox{\hyperlink{struct_mesh_geometry_afc3be274ba79e6984225407560350438}{00170}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_afc3be274ba79e6984225407560350438}{VertexBufferGPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00171}\mbox{\hyperlink{struct_mesh_geometry_a98d981b7fd0627dbe53c31ce83d23d8f}{00171}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_a98d981b7fd0627dbe53c31ce83d23d8f}{IndexBufferGPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00172}\mbox{\hyperlink{struct_mesh_geometry_a0e4b64b879b617fb5eabc824bb5dedb6}{00172}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_a0e4b64b879b617fb5eabc824bb5dedb6}{ColorBufferGPU}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00173}00173 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00174}00174 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00175}\mbox{\hyperlink{struct_mesh_geometry_a99726cbb8b6acc9599ccaae768032104}{00175}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_a99726cbb8b6acc9599ccaae768032104}{VertexBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00176}\mbox{\hyperlink{struct_mesh_geometry_a49a2735dd265091e5451c26c7e4fceb9}{00176}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_a49a2735dd265091e5451c26c7e4fceb9}{IndexBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00177}\mbox{\hyperlink{struct_mesh_geometry_ae9e4ca59e40ccbae59680a6726457a94}{00177}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_mesh_geometry_ae9e4ca59e40ccbae59680a6726457a94}{ColorBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00178}00178 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00180}00180 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00181}00181     \textcolor{comment}{// Data about the buffers.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00182}\mbox{\hyperlink{struct_mesh_geometry_a809bd47a42dcf1f8512c55c663354fe9}{00182}}     UINT \mbox{\hyperlink{struct_mesh_geometry_a809bd47a42dcf1f8512c55c663354fe9}{VertexByteStride}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00183}\mbox{\hyperlink{struct_mesh_geometry_a95d475544535050a64a841489a0e3269}{00183}}     UINT \mbox{\hyperlink{struct_mesh_geometry_a95d475544535050a64a841489a0e3269}{VertexBufferByteSize}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00184}\mbox{\hyperlink{struct_mesh_geometry_a4ab6fed21b08b6008850e43f8e912506}{00184}}     DXGI\_FORMAT \mbox{\hyperlink{struct_mesh_geometry_a4ab6fed21b08b6008850e43f8e912506}{IndexFormat}} = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00185}\mbox{\hyperlink{struct_mesh_geometry_ada154aecae7686cb96099c259fa49946}{00185}}     UINT \mbox{\hyperlink{struct_mesh_geometry_ada154aecae7686cb96099c259fa49946}{IndexBufferByteSize}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00186}\mbox{\hyperlink{struct_mesh_geometry_a0b2e69dc595217c3f600147e500a4a31}{00186}}     UINT \mbox{\hyperlink{struct_mesh_geometry_a0b2e69dc595217c3f600147e500a4a31}{ColorByteStride}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00187}\mbox{\hyperlink{struct_mesh_geometry_a1298a377fa7b61bfdbf198cc80e14e3c}{00187}}     UINT \mbox{\hyperlink{struct_mesh_geometry_a1298a377fa7b61bfdbf198cc80e14e3c}{ColorBufferByteSize}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00188}00188 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00189}00189 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00190}00190     \textcolor{comment}{// A MeshGeometry may store multiple geometries in one vertex/index buffer.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00191}00191     \textcolor{comment}{// Use this container to define the Submesh geometries so we can draw}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00192}00192     \textcolor{comment}{// the Submeshes individually.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00193}00193 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00194}\mbox{\hyperlink{struct_mesh_geometry_a0b2c5e9269169fb7c5d838240957fd10}{00194}}     std::unordered\_map<std::string, SubmeshGeometry> \mbox{\hyperlink{struct_mesh_geometry_a0b2c5e9269169fb7c5d838240957fd10}{DrawArgs}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00195}00195 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00196}\mbox{\hyperlink{struct_mesh_geometry_acec2bf9adf97ea1263702d66a69c8513}{00196}}     D3D12\_VERTEX\_BUFFER\_VIEW \mbox{\hyperlink{struct_mesh_geometry_acec2bf9adf97ea1263702d66a69c8513}{VertexBufferView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00197}00197 \textcolor{keyword}{}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00198}00198 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00199}00199         D3D12\_VERTEX\_BUFFER\_VIEW vbv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00200}00200         vbv.BufferLocation = \mbox{\hyperlink{struct_mesh_geometry_afc3be274ba79e6984225407560350438}{VertexBufferGPU}}-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00201}00201         vbv.StrideInBytes = \mbox{\hyperlink{struct_mesh_geometry_a809bd47a42dcf1f8512c55c663354fe9}{VertexByteStride}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00202}00202         vbv.SizeInBytes = \mbox{\hyperlink{struct_mesh_geometry_a95d475544535050a64a841489a0e3269}{VertexBufferByteSize}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00203}00203 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00204}00204         \textcolor{keywordflow}{return} vbv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00205}00205     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00207}\mbox{\hyperlink{struct_mesh_geometry_a93ffd50cd07c380b0cade539ba82e8a5}{00207}}     D3D12\_INDEX\_BUFFER\_VIEW \mbox{\hyperlink{struct_mesh_geometry_a93ffd50cd07c380b0cade539ba82e8a5}{IndexBufferView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00208}00208 \textcolor{keyword}{}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00209}00209 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00210}00210         D3D12\_INDEX\_BUFFER\_VIEW ibv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00211}00211         ibv.BufferLocation = \mbox{\hyperlink{struct_mesh_geometry_a98d981b7fd0627dbe53c31ce83d23d8f}{IndexBufferGPU}}-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00212}00212         ibv.Format = \mbox{\hyperlink{struct_mesh_geometry_a4ab6fed21b08b6008850e43f8e912506}{IndexFormat}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00213}00213         ibv.SizeInBytes = \mbox{\hyperlink{struct_mesh_geometry_ada154aecae7686cb96099c259fa49946}{IndexBufferByteSize}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00214}00214 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00215}00215         \textcolor{keywordflow}{return} ibv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00216}00216     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00217}00217 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00218}\mbox{\hyperlink{struct_mesh_geometry_a249c29b781bbed54661c76f9c4342dcc}{00218}}     D3D12\_VERTEX\_BUFFER\_VIEW \mbox{\hyperlink{struct_mesh_geometry_a249c29b781bbed54661c76f9c4342dcc}{ColorBufferView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00219}00219 \textcolor{keyword}{}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00220}00220 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00221}00221         D3D12\_VERTEX\_BUFFER\_VIEW cbv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00222}00222         cbv.BufferLocation = \mbox{\hyperlink{struct_mesh_geometry_a0e4b64b879b617fb5eabc824bb5dedb6}{ColorBufferGPU}}-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00223}00223         cbv.StrideInBytes = \mbox{\hyperlink{struct_mesh_geometry_a0b2e69dc595217c3f600147e500a4a31}{ColorByteStride}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00224}00224         cbv.SizeInBytes = \mbox{\hyperlink{struct_mesh_geometry_a1298a377fa7b61bfdbf198cc80e14e3c}{ColorBufferByteSize}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00225}00225 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00226}00226         \textcolor{keywordflow}{return} cbv;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00227}00227     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00229}00229 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00230}00230     \textcolor{comment}{// We can free this memory after we finish upload to the GPU.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00231}\mbox{\hyperlink{struct_mesh_geometry_aba9e36f1f4439a88bed25a48cc337ece}{00231}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_mesh_geometry_aba9e36f1f4439a88bed25a48cc337ece}{DisposeUploaders}}()}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00232}00232     \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00233}00233         \mbox{\hyperlink{struct_mesh_geometry_a99726cbb8b6acc9599ccaae768032104}{VertexBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00234}00234         \mbox{\hyperlink{struct_mesh_geometry_a49a2735dd265091e5451c26c7e4fceb9}{IndexBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00235}00235         \mbox{\hyperlink{struct_mesh_geometry_ae9e4ca59e40ccbae59680a6726457a94}{ColorBufferUploader}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00236}00236     \}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00237}00237 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00238}00238 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00239}00239 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00240}00240 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00241}00241 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00242}00242 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00243}\mbox{\hyperlink{struct_light}{00243}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_light}{Light}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00244}00244 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00245}\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{00245}}     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.5f, 0.5f, 0.5f \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00246}\mbox{\hyperlink{struct_light_a21cc24ec9f914edbbc090bb3460fc645}{00246}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_light_a21cc24ec9f914edbbc090bb3460fc645}{FalloffStart}} = 1.0f;                          \textcolor{comment}{// point/spot light only}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00247}\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{00247}}     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.0f, -\/1.0f, 0.0f \};\textcolor{comment}{// directional/spot light only}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00248}\mbox{\hyperlink{struct_light_a38fa90b8cea6b266b13c3dc865828a14}{00248}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_light_a38fa90b8cea6b266b13c3dc865828a14}{FalloffEnd}} = 10.0f;                           \textcolor{comment}{// point/spot light only}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00249}\mbox{\hyperlink{struct_light_a759c2228a71bfc669460ae4210a48e52}{00249}}     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_light_a759c2228a71bfc669460ae4210a48e52}{Position}} = \{ 0.0f, 0.0f, 0.0f \};  \textcolor{comment}{// point/spot light only}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00250}\mbox{\hyperlink{struct_light_a7202d90f1b073d3ac170c18451f0bc92}{00250}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_light_a7202d90f1b073d3ac170c18451f0bc92}{SpotPower}} = 64.0f;                            \textcolor{comment}{// spot light only}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00251}00251 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00252}00252 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00253}\mbox{\hyperlink{d3d_util_8h_a3654e541e465ac5978e40d2fc5e7fdfa}{00253}} \textcolor{preprocessor}{\#define MaxLights 16}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00254}00254 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00255}\mbox{\hyperlink{struct_material_constants}{00255}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00256}00256 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00257}\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{00257}}     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00258}\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{00258}}     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = \{ 0.01f, 0.01f, 0.01f \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00259}\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{00259}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = 0.25f;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00260}00260 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00261}00261     \textcolor{comment}{// Used in texture mapping.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00262}\mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{00262}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00263}00263 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00264}00264 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00265}00265 \textcolor{comment}{// Simple struct to represent a material for our demos.  A production 3D engine}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00266}00266 \textcolor{comment}{// would likely create a class hierarchy of Materials.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00267}\mbox{\hyperlink{struct_material}{00267}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_material}{Material}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00268}00268 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00269}00269     \textcolor{comment}{// Unique material name for lookup.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00270}\mbox{\hyperlink{struct_material_a793dc9034c137caf3d8b3b4b0f9d451b}{00270}}     std::string \mbox{\hyperlink{struct_material_a793dc9034c137caf3d8b3b4b0f9d451b}{Name}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00272}00272     \textcolor{comment}{// Index into constant buffer corresponding to this material.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00273}\mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{00273}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{MatCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00274}00274 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00275}00275     \textcolor{comment}{// Index into SRV heap for diffuse texture.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00276}\mbox{\hyperlink{struct_material_ae0af64dd847942c26368b71faefe747e}{00276}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_material_ae0af64dd847942c26368b71faefe747e}{DiffuseSrvHeapIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00277}00277 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00278}00278     \textcolor{comment}{// Index into SRV heap for normal texture.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00279}\mbox{\hyperlink{struct_material_af6139531ff098c78d4d03d2fa232f27e}{00279}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_material_af6139531ff098c78d4d03d2fa232f27e}{NormalSrvHeapIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00280}00280 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00281}00281     \textcolor{comment}{// Dirty flag indicating the material has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00282}00282     \textcolor{comment}{// Because we have a material constant buffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00283}00283     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify a material we should set }}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00284}00284     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00285}\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{00285}}     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} = \mbox{\hyperlink{d3d_util_8h_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00286}00286 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00287}00287     \textcolor{comment}{// Material constant buffer data used for shading.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00288}\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{00288}}     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}} = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00289}\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{00289}}     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}} = \{ 0.01f, 0.01f, 0.01f \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00290}\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{00290}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}} = .25f;}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00291}\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{00291}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00292}00292 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00293}00293 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00294}\mbox{\hyperlink{struct_texture}{00294}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_texture}{Texture}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00295}00295 \{}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00296}00296     \textcolor{comment}{// Unique material name for lookup.}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00297}\mbox{\hyperlink{struct_texture_aff942a6e6a80c06965b239a73ad04a2d}{00297}}     std::string \mbox{\hyperlink{struct_texture_aff942a6e6a80c06965b239a73ad04a2d}{Name}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00298}00298 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00299}\mbox{\hyperlink{struct_texture_a4c7d999ed2653374b600a75eb8a307f7}{00299}}     std::wstring \mbox{\hyperlink{struct_texture_a4c7d999ed2653374b600a75eb8a307f7}{Filename}};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00300}00300 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00301}\mbox{\hyperlink{struct_texture_ae273d56b160aa483303d13b903e00122}{00301}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_texture_ae273d56b160aa483303d13b903e00122}{Resource}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00302}\mbox{\hyperlink{struct_texture_a9e4e92ab08debca51ed2635cd3f9c5a7}{00302}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{struct_texture_a9e4e92ab08debca51ed2635cd3f9c5a7}{UploadHeap}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00303}00303 \};}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00304}00304 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00305}00305 \textcolor{preprocessor}{\#ifndef ThrowIfFailed}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00306}\mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{00306}} \textcolor{preprocessor}{\#define ThrowIfFailed(x)                                              \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00307}00307 \textcolor{preprocessor}{\{                                                                     \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00308}00308 \textcolor{preprocessor}{    HRESULT hr\_\_ = (x);                                               \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00309}00309 \textcolor{preprocessor}{    std::wstring wfn = AnsiToWString(\_\_FILE\_\_);                       \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00310}00310 \textcolor{preprocessor}{    if(FAILED(hr\_\_)) \{ throw DxException(hr\_\_, L\#x, wfn, \_\_LINE\_\_); \} \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00311}00311 \textcolor{preprocessor}{\}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00312}00312 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00313}00313 }
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00314}00314 \textcolor{preprocessor}{\#ifndef ReleaseCom}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00315}\mbox{\hyperlink{d3d_util_8h_a0670b8f550c413fb123fa6df8dc87267}{00315}} \textcolor{preprocessor}{\#define ReleaseCom(x) \{ if(x)\{ x-\/>Release(); x = 0; \} \}}}
+\DoxyCodeLine{\Hypertarget{d3d_util_8h_source_l00316}00316 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

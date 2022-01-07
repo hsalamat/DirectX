@@ -1,0 +1,41 @@
+\hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source}{}\doxysection{Week1-\/2-\/\+Constant\+XMVECTOR.cpp}
+\label{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source}\index{Week1/DirectXMath Examples/Week1-\/2-\/ConstantXMVECTOR.cpp@{Week1/DirectXMath Examples/Week1-\/2-\/ConstantXMVECTOR.cpp}}
+\mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00017}00017 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00018}00018 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00019}00019 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00021}\mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00021}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00022}00022 \{}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00024}00024     \textcolor{comment}{//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00025}00025     cout.setf(ios\_base::boolalpha);}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00027}00027     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00028}00028     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00029}00029     \{}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00030}00030         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00031}00031         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00032}00032     \}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00034}00034     \textcolor{comment}{//Constant XMVECTOR instances should use the XMVECTORF32 type.}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00035}00035     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vHalfVector = \{ 0.5f, 0.5f, 0.5f, 0.5f \};}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00036}00036     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vZero = \{ 0.0f, 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00038}00038     \textcolor{comment}{//The XMVECTORF32, XMVECTORU32, XMVECTORI32, and XMVECTORU8 structures are provided as a mechanism }}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00039}00039     \textcolor{comment}{//for creating XMVECTOR from different constant data types (floating point, unsigned integer, integer, and byte) using initializers.}}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00040}00040     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORU32 vGrabY = \{0x00000000,0xFFFFFFFF,0x00000000,0x00000000\};}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00041}00041     XMVECTOR data;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00042}00042     data = vGrabY;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00044}00044     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00045}00045 \}}
+
+\end{DoxyCode}

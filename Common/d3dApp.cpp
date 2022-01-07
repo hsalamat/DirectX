@@ -436,8 +436,8 @@ bool D3DApp::InitDirect3D()
 	}
 	// Try to create hardware device.
 	HRESULT hardwareResult = D3D12CreateDevice(
-		nullptr,             // default adapter
-		//adapterList[1],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter
+		//nullptr,             // default adapter
+		adapterList[1],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter
 		D3D_FEATURE_LEVEL_12_0,
 		IID_PPV_ARGS(&md3dDevice));
 

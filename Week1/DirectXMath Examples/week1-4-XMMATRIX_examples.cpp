@@ -1,3 +1,21 @@
+/** @file week1-4-XMMATRIX_examples.cpp
+ *  @brief using Matrix operations Demo
+ *
+ *  XMMATRIX uses four XMVECTOR instances to use SIMD
+ *  Just as we use XMFLOAT2 (2D), XMFLOAT3 (3D), and XMFLOAT4 (4D) when storing
+ *  vectors in a class, it is recommended, by the DirectXMath documentation to use the
+ *  XMFLOAT4X4 type to store matrices as class data members
+ * 
+ *  We use the following method to load data from XMFLOAT4X4 into XMMATRIX:
+ *  inline XMMATRIX XM_CALLCONV XMLoadFloat4x4(const XMFLOAT4X4* pSource);
+ * 
+ *  We use the following method to store data from XMMATRIX into XMFLOAT4X4:
+ *  inline void XM_CALLCONV XMStoreFloat4x4(XMFLOAT4X4* pDestination, FXMMATRIXM);
+ *
+ *  @author Hooman Salamat
+ *  @bug No known bugs.
+ */
+
 #include <windows.h> // for XMVerifyCPUSupport
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>

@@ -1,0 +1,96 @@
+\hypertarget{_sobel_filter_2_gpu_waves_8h_source}{}\doxysection{Gpu\+Waves.\+h}
+\label{_sobel_filter_2_gpu_waves_8h_source}\index{Week8/SobelFilter/GpuWaves.h@{Week8/SobelFilter/GpuWaves.h}}
+\mbox{\hyperlink{_sobel_filter_2_gpu_waves_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00002}00002 \textcolor{comment}{// GpuWaves.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00003}00003 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00004}00004 \textcolor{comment}{// Performs the calculations for the wave simulation using the ComputeShader on the GPU.  }}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00005}00005 \textcolor{comment}{// The solution is saved to a floating-\/point texture.  The client must then set this }}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00006}00006 \textcolor{comment}{// texture as a SRV and do the displacement mapping in the vertex shader over a grid.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00007}00007 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00009}00009 \textcolor{preprocessor}{\#ifndef GPUWAVES\_H}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00010}00010 \textcolor{preprocessor}{\#define GPUWAVES\_H}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00012}00012 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00013}00013 \textcolor{preprocessor}{\#include "{}../../Common/GameTimer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00015}\mbox{\hyperlink{class_gpu_waves}{00015}} \textcolor{keyword}{class }\mbox{\hyperlink{class_gpu_waves}{GpuWaves}}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00016}00016 \{}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00017}00017 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00018}00018     \textcolor{comment}{// Note that m,n should be divisible by 16 so there is no }}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00019}00019     \textcolor{comment}{// remainder when we divide into thread groups.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00020}00020     \mbox{\hyperlink{class_gpu_waves_a9487783e430ef97348ae52b5797c3402}{GpuWaves}}(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, \textcolor{keywordtype}{int} m, \textcolor{keywordtype}{int} n, \textcolor{keywordtype}{float} dx, \textcolor{keywordtype}{float} dt, \textcolor{keywordtype}{float} speed, \textcolor{keywordtype}{float} damping);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00021}\mbox{\hyperlink{class_gpu_waves_a25655d61a9b3db14932aba74927289fa}{00021}}     \mbox{\hyperlink{class_gpu_waves_a25655d61a9b3db14932aba74927289fa}{GpuWaves}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_gpu_waves}{GpuWaves}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00022}\mbox{\hyperlink{class_gpu_waves_ab1bfc201e6840fd32b4039ecc6df611f}{00022}}     \mbox{\hyperlink{class_gpu_waves}{GpuWaves}}\& \mbox{\hyperlink{class_gpu_waves_ab1bfc201e6840fd32b4039ecc6df611f}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_gpu_waves}{GpuWaves}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00023}\mbox{\hyperlink{class_gpu_waves_a953f0c3269b5069119c962137d437f33}{00023}}     \mbox{\hyperlink{class_gpu_waves_a953f0c3269b5069119c962137d437f33}{\string~GpuWaves}}()=\textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00025}00025     UINT \mbox{\hyperlink{class_gpu_waves_a84d04cbbb718c58e12d0f2f4bfda2649}{RowCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00026}00026     UINT \mbox{\hyperlink{class_gpu_waves_a662021f18057d8ae8034cd8a3089745c}{ColumnCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00027}00027     UINT \mbox{\hyperlink{class_gpu_waves_a2f371b11109e17f9b78840e9d123d3a0}{VertexCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00028}00028     UINT \mbox{\hyperlink{class_gpu_waves_ac8e3846846ae096017fc6ba74c76c4c4}{TriangleCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00029}00029     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_a890f37be78dbbd942f49b2345f32750d}{Width}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00030}00030     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_a371b36b990579ef35295d628933e50b6}{Depth}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00031}00031     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_a16bd4867b148acaabbde05fa491a3e51}{SpatialStep}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00033}00033     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_a2358a99643fa9f038c0b15a61fb8744c}{DisplacementMap}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00035}00035     UINT \mbox{\hyperlink{class_gpu_waves_a3df039351d3e20447dc7f5b67926baa2}{DescriptorCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00036}00036 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00037}00037     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_gpu_waves_a8fd56fdcb898818bdcec48294f71ce5a}{BuildResources}}(ID3D12GraphicsCommandList* cmdList);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00039}00039     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_gpu_waves_a14eb7b5c2bcef1792148ca4720df5d58}{BuildDescriptors}}(}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00040}00040         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDescriptor,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00041}00041         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuDescriptor,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00042}00042         UINT descriptorSize);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00044}00044     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_gpu_waves_a2548b9758ce6c2dcfb4f8188633d2ec8}{Update}}(}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00045}00045         \textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00046}00046         ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00047}00047         ID3D12RootSignature* rootSig,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00048}00048         ID3D12PipelineState* pso);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00050}00050     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_gpu_waves_a59d7d270d236cb8f9a32242c82eb85aa}{Disturb}}(}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00051}00051         ID3D12GraphicsCommandList* cmdList,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00052}00052         ID3D12RootSignature* rootSig,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00053}00053         ID3D12PipelineState* pso, }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00054}00054         UINT i, UINT j, }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00055}00055         \textcolor{keywordtype}{float} magnitude);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00057}00057 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00059}\mbox{\hyperlink{class_gpu_waves_a07afd2906fdfc0dbdce2cf01311d7458}{00059}}     UINT \mbox{\hyperlink{class_gpu_waves_a07afd2906fdfc0dbdce2cf01311d7458}{mNumRows}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00060}\mbox{\hyperlink{class_gpu_waves_ac928366bbec52ce0cea8d799484b09c1}{00060}}     UINT \mbox{\hyperlink{class_gpu_waves_ac928366bbec52ce0cea8d799484b09c1}{mNumCols}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00062}\mbox{\hyperlink{class_gpu_waves_ae018b85d9671926524fa2569e0b18b8b}{00062}}     UINT \mbox{\hyperlink{class_gpu_waves_ae018b85d9671926524fa2569e0b18b8b}{mVertexCount}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00063}\mbox{\hyperlink{class_gpu_waves_ae0bdf26ea38119a8d6747cc3a00d9bac}{00063}}     UINT \mbox{\hyperlink{class_gpu_waves_ae0bdf26ea38119a8d6747cc3a00d9bac}{mTriangleCount}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00065}00065     \textcolor{comment}{// Simulation constants we can precompute.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00066}\mbox{\hyperlink{class_gpu_waves_a7c33ed3c1d0a476b62d74989c2b76628}{00066}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_a7c33ed3c1d0a476b62d74989c2b76628}{mK}}[3];}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00068}\mbox{\hyperlink{class_gpu_waves_ab3fb3e03505dc0209c43d19562b52862}{00068}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_ab3fb3e03505dc0209c43d19562b52862}{mTimeStep}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00069}\mbox{\hyperlink{class_gpu_waves_abfb35386d0606bb5a0ce02a35120a3ee}{00069}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_gpu_waves_abfb35386d0606bb5a0ce02a35120a3ee}{mSpatialStep}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00071}\mbox{\hyperlink{class_gpu_waves_a2f0113f724d4cb9142407bd802abe11e}{00071}}     ID3D12Device* \mbox{\hyperlink{class_gpu_waves_a2f0113f724d4cb9142407bd802abe11e}{md3dDevice}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00073}\mbox{\hyperlink{class_gpu_waves_a09c3a75481933a3a4ba5b8bc6e197ad9}{00073}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_a09c3a75481933a3a4ba5b8bc6e197ad9}{mPrevSolSrv}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00074}\mbox{\hyperlink{class_gpu_waves_afd268de45afff2dc44dc10615902feb5}{00074}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_afd268de45afff2dc44dc10615902feb5}{mCurrSolSrv}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00075}\mbox{\hyperlink{class_gpu_waves_a62588697cf9a09491e19f0301929b0ac}{00075}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_a62588697cf9a09491e19f0301929b0ac}{mNextSolSrv}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00077}\mbox{\hyperlink{class_gpu_waves_aad6d2e10b480c1ca6888d4931786a802}{00077}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_aad6d2e10b480c1ca6888d4931786a802}{mPrevSolUav}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00078}\mbox{\hyperlink{class_gpu_waves_ac6149e0e9ef1c6b19891478295a44b03}{00078}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_ac6149e0e9ef1c6b19891478295a44b03}{mCurrSolUav}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00079}\mbox{\hyperlink{class_gpu_waves_a12b99744c08ff43bdb57794a5622bbbb}{00079}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_gpu_waves_a12b99744c08ff43bdb57794a5622bbbb}{mNextSolUav}};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00081}00081     \textcolor{comment}{// Two for ping-\/ponging the textures.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00082}\mbox{\hyperlink{class_gpu_waves_a3b6d79ca72ace6eb2f6123834255061d}{00082}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_gpu_waves_a3b6d79ca72ace6eb2f6123834255061d}{mPrevSol}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00083}\mbox{\hyperlink{class_gpu_waves_ae3f90f8069a891066c4576bd9729c105}{00083}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_gpu_waves_ae3f90f8069a891066c4576bd9729c105}{mCurrSol}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00084}\mbox{\hyperlink{class_gpu_waves_afb810c387d2fea8b27ae98a9d538cbe0}{00084}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_gpu_waves_afb810c387d2fea8b27ae98a9d538cbe0}{mNextSol}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00085}00085 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00086}\mbox{\hyperlink{class_gpu_waves_a5447a01bb89a90ba6d73a8025af66ecf}{00086}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_gpu_waves_a5447a01bb89a90ba6d73a8025af66ecf}{mPrevUploadBuffer}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00087}\mbox{\hyperlink{class_gpu_waves_aeffe9db249c1fb9d98e8f88a6fae7cdf}{00087}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_gpu_waves_aeffe9db249c1fb9d98e8f88a6fae7cdf}{mCurrUploadBuffer}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00088}00088 \};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_2_gpu_waves_8h_source_l00090}00090 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// GPUWAVES\_H}}
+
+\end{DoxyCode}

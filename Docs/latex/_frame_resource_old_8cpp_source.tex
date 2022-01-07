@@ -1,0 +1,24 @@
+\hypertarget{_frame_resource_old_8cpp_source}{}\doxysection{Frame\+Resource\+Old.\+cpp}
+\label{_frame_resource_old_8cpp_source}\index{Week10/CameraAndDynamicIndexing/FrameResourceOld.cpp@{Week10/CameraAndDynamicIndexing/FrameResourceOld.cpp}}
+\mbox{\hyperlink{_frame_resource_old_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_frame_resource_old_8h}{FrameResourceOld.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00003}\mbox{\hyperlink{struct_frame_resource_old_a2e6728d3f4763799261b18eb1b62b69c}{00003}} \mbox{\hyperlink{struct_frame_resource_old_a2e6728d3f4763799261b18eb1b62b69c}{FrameResourceOld::FrameResourceOld}}(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount)}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00004}00004 \{}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00005}00005     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(device-\/>CreateCommandAllocator(}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00006}00006         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00007}00007         IID\_PPV\_ARGS(\mbox{\hyperlink{struct_frame_resource_old_ac3de54a920c30dc9016cc786321541fa}{CmdListAlloc}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00009}00009   \textcolor{comment}{//  FrameCB = std::make\_unique<UploadBuffer<FrameConstants>>(device, 1, true);}}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00010}00010     \mbox{\hyperlink{struct_frame_resource_old_ae428bd22a1ad1b7510f70e5637d3db61}{PassCB}} = std::make\_unique<UploadBuffer<PassConstants>>(device, passCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00011}00011     \mbox{\hyperlink{struct_frame_resource_old_a1bfbffa4fa8842660eeefa5fbedf85ba}{MaterialCB}} = std::make\_unique<UploadBuffer<MaterialConstants>>(device, materialCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00012}00012     \mbox{\hyperlink{struct_frame_resource_old_a8c5af3ab4a66ca67c7bc132add148a8b}{ObjectCB}} = std::make\_unique<UploadBuffer<ObjectConstants>>(device, objectCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00013}00013 \}}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00015}\mbox{\hyperlink{struct_frame_resource_old_a1f28ea09f91a1639d9b5584b9cbe25e8}{00015}} \mbox{\hyperlink{struct_frame_resource_old_a1f28ea09f91a1639d9b5584b9cbe25e8}{FrameResourceOld::\string~FrameResourceOld}}()}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00016}00016 \{}
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_frame_resource_old_8cpp_source_l00018}00018 \}}
+
+\end{DoxyCode}

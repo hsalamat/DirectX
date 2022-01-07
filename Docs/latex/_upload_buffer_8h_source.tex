@@ -1,0 +1,70 @@
+\hypertarget{_upload_buffer_8h_source}{}\doxysection{Upload\+Buffer.\+h}
+\label{_upload_buffer_8h_source}\index{Common/UploadBuffer.h@{Common/UploadBuffer.h}}
+\mbox{\hyperlink{_upload_buffer_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00001}00001 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00003}00003 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{d3d_util_8h}{d3dUtil.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00005}00005 \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00006}\mbox{\hyperlink{class_upload_buffer}{00006}} \textcolor{keyword}{class }\mbox{\hyperlink{class_upload_buffer}{UploadBuffer}}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00007}00007 \{}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00008}00008 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00009}\mbox{\hyperlink{class_upload_buffer_a622fad9645e52e4d6074a2e533165855}{00009}}     \mbox{\hyperlink{class_upload_buffer_a622fad9645e52e4d6074a2e533165855}{UploadBuffer}}(ID3D12Device* device, UINT elementCount, \textcolor{keywordtype}{bool} isConstantBuffer) : }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00010}00010         \mbox{\hyperlink{class_upload_buffer_a6490e380d1e19ce5f1bcedf4c17e9efa}{mIsConstantBuffer}}(isConstantBuffer)}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00011}00011     \{}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00012}00012         \mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{mElementByteSize}} = \textcolor{keyword}{sizeof}(T);}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00014}00014         \textcolor{comment}{// Constant buffer elements need to be multiples of 256 bytes.}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00015}00015         \textcolor{comment}{// This is because the hardware can only view constant data }}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00016}00016         \textcolor{comment}{// at m*256 byte offsets and of n*256 byte lengths. }}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00017}00017         \textcolor{comment}{// typedef struct D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC \{}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00018}00018         \textcolor{comment}{// UINT64 OffsetInBytes; // multiple of 256}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00019}00019         \textcolor{comment}{// UINT   SizeInBytes;   // multiple of 256}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00020}00020         \textcolor{comment}{// \} D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC;}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00021}00021         \textcolor{keywordflow}{if}(isConstantBuffer)}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00022}00022             \mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{mElementByteSize}} = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(T));}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00024}00024         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(device-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00025}00025             \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00026}00026             D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00027}00027             \&CD3DX12\_RESOURCE\_DESC::Buffer(\mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{mElementByteSize}}*elementCount),}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00028}00028             D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00029}00029             \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00030}00030             IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}})));}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00032}00032         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}}-\/>Map(0, \textcolor{keyword}{nullptr}, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&\mbox{\hyperlink{class_upload_buffer_ac6fafc831194166f9e27364d06e2aa6b}{mMappedData}})));}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00034}00034         \textcolor{comment}{// We do not need to unmap until we are done with the resource.  However, we must not write to}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00035}00035         \textcolor{comment}{// the resource while it is in use by the GPU (so we must use synchronization techniques).}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00036}00036     \}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00038}\mbox{\hyperlink{class_upload_buffer_aa6d59b50f752d27d3d13cc40fe34db85}{00038}}     \mbox{\hyperlink{class_upload_buffer_aa6d59b50f752d27d3d13cc40fe34db85}{UploadBuffer}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_upload_buffer}{UploadBuffer}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00039}\mbox{\hyperlink{class_upload_buffer_a279ae8958cebcdb24f5e167a675ad9ce}{00039}}     \mbox{\hyperlink{class_upload_buffer}{UploadBuffer}}\& \mbox{\hyperlink{class_upload_buffer_a279ae8958cebcdb24f5e167a675ad9ce}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_upload_buffer}{UploadBuffer}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00040}\mbox{\hyperlink{class_upload_buffer_a0e530159492ad21fe575ce0f43e9ebe7}{00040}}     \mbox{\hyperlink{class_upload_buffer_a0e530159492ad21fe575ce0f43e9ebe7}{\string~UploadBuffer}}()}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00041}00041     \{}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00042}00042         \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00043}00043             \mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}}-\/>Unmap(0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00045}00045         \mbox{\hyperlink{class_upload_buffer_ac6fafc831194166f9e27364d06e2aa6b}{mMappedData}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00046}00046     \}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00048}\mbox{\hyperlink{class_upload_buffer_a54b62594f77aed67c502512053addf1f}{00048}}     ID3D12Resource* \mbox{\hyperlink{class_upload_buffer_a54b62594f77aed67c502512053addf1f}{Resource}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00049}00049 \textcolor{keyword}{    }\{}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00050}00050         \textcolor{keywordflow}{return} \mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}}.Get();}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00051}00051     \}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00053}\mbox{\hyperlink{class_upload_buffer_a4d9230e295202629d9988c82cd0e78b2}{00053}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_upload_buffer_a4d9230e295202629d9988c82cd0e78b2}{CopyData}}(\textcolor{keywordtype}{int} elementIndex, \textcolor{keyword}{const} T\& data)}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00054}00054     \{}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00055}00055         memcpy(\&\mbox{\hyperlink{class_upload_buffer_ac6fafc831194166f9e27364d06e2aa6b}{mMappedData}}[elementIndex*\mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{mElementByteSize}}], \&data, \textcolor{keyword}{sizeof}(T));}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00056}00056     \}}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00058}00058 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00059}\mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{00059}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_upload_buffer_a8f2a2814e89f54ea7c6fdee6a040edc5}{mUploadBuffer}};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00060}\mbox{\hyperlink{class_upload_buffer_ac6fafc831194166f9e27364d06e2aa6b}{00060}}     BYTE* \mbox{\hyperlink{class_upload_buffer_ac6fafc831194166f9e27364d06e2aa6b}{mMappedData}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00062}\mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{00062}}     UINT \mbox{\hyperlink{class_upload_buffer_a02839c9c13c5922c25e8d40e8b675450}{mElementByteSize}} = 0;}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00063}\mbox{\hyperlink{class_upload_buffer_a6490e380d1e19ce5f1bcedf4c17e9efa}{00063}}     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_upload_buffer_a6490e380d1e19ce5f1bcedf4c17e9efa}{mIsConstantBuffer}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_upload_buffer_8h_source_l00064}00064 \};}
+
+\end{DoxyCode}

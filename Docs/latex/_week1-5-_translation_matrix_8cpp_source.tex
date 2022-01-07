@@ -1,0 +1,89 @@
+\hypertarget{_week1-5-_translation_matrix_8cpp_source}{}\doxysection{Week1-\/5-\/\+Translation\+Matrix.cpp}
+\label{_week1-5-_translation_matrix_8cpp_source}\index{Week1/DirectXMath Examples/Week1-\/5-\/TranslationMatrix.cpp@{Week1/DirectXMath Examples/Week1-\/5-\/TranslationMatrix.cpp}}
+\mbox{\hyperlink{_week1-5-_translation_matrix_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00002}00002 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00003}00003 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00004}00004 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00005}00005 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00006}00006 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00007}00007 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00008}00008 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00009}00009 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00011}00011 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00012}00012 \textcolor{comment}{// output XMVECTOR and XMMATRIX objects.}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00015}\mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{00015}} ostream\& XM\_CALLCONV \mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMVECTOR v)}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00016}00016 \{}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00017}00017     XMFLOAT4 dest;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00018}00018     XMStoreFloat4(\&dest, v);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00020}00020     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{}, "{}} << dest.w << \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00021}00021     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00022}00022 \}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00024}\mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_a930dd2922807652f1babff30313137f6}{00024}} ostream\& XM\_CALLCONV \mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMMATRIX m)}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00025}00025 \{}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00026}00026     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 4; ++i)}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00027}00027     \{}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00028}00028         os << XMVectorGetX(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00029}00029         os << XMVectorGetY(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00030}00030         os << XMVectorGetZ(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00031}00031         os << XMVectorGetW(m.r[i]);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00032}00032         os << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00033}00033     \}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00034}00034     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00035}00035 \}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00036}00036 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00039}\mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00039}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week1-5-_translation_matrix_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00040}00040 \{}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00041}00041     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00042}00042     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00043}00043     \{}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00044}00044         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00045}00045         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00046}00046     \}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00048}00048     \textcolor{comment}{//make sure w = 1.0 for points!}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00049}00049     XMVECTOR minPoint = XMVectorSet(-\/8.0f, 2.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00050}00050     XMVECTOR maxPoint = XMVectorSet(-\/2.0f, 8.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00051}00051     }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00052}00052     \textcolor{comment}{//Suppose now that we wish to translate the square 12 units on the x-\/axis, −10.0 units on the y -\/ axis,}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00054}00054     XMMATRIX T(1.0f, 0.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00055}00055                0.0f, 1.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00056}00056                0.0f, 0.0f, 1.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00057}00057                12.0f, -\/10.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00059}00059     XMVECTOR translatedMinPoint = XMVector4Transform(minPoint, T);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00060}00060     XMVECTOR translatedMaxPoint = XMVector4Transform(maxPoint, T);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00062}00062     cout << \textcolor{stringliteral}{"{}translatedMinPoint = minPoint x T = "{}} << endl << translatedMinPoint << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00063}00063     cout << \textcolor{stringliteral}{"{}translatedMaxPoint = maxPoint x T = "{}} << endl << translatedMaxPoint << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00065}00065     \textcolor{comment}{//The inverse of the translation matrix is given by :}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00066}00066     XMMATRIX TI(1.0f, 0.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00067}00067         0.0f, 1.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00068}00068         0.0f, 0.0f, 1.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00069}00069         -\/12.0f, 10.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00071}00071     cout << \textcolor{stringliteral}{"{}Let's apply the Inverse of Translation Matrix TI to new translated square: "{}} << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00073}00073     XMVECTOR inversedMinPoint = XMVector4Transform(translatedMinPoint, TI);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00074}00074     XMVECTOR inversedMaxPoint = XMVector4Transform(translatedMaxPoint, TI);}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00075}00075 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00076}00076     cout << \textcolor{stringliteral}{"{}inversedMinPoint = minPoint x TI = "{}} << endl << inversedMinPoint << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00077}00077     cout << \textcolor{stringliteral}{"{}inversedMaxPoint = maxPoint x TI = "{}} << endl << inversedMaxPoint << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00081}00081     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00082}00082 \}}
+\DoxyCodeLine{\Hypertarget{_week1-5-_translation_matrix_8cpp_source_l00083}00083 }
+
+\end{DoxyCode}

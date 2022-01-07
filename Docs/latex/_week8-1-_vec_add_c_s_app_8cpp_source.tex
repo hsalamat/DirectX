@@ -1,0 +1,318 @@
+\hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source}{}\doxysection{Week8-\/1-\/\+Vec\+Add\+CSApp.cpp}
+\label{_week8-1-_vec_add_c_s_app_8cpp_source}\index{Week8/VecAdd/Week8-\/1-\/VecAddCSApp.cpp@{Week8/VecAdd/Week8-\/1-\/VecAddCSApp.cpp}}
+\mbox{\hyperlink{_week8-1-_vec_add_c_s_app_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00002}00002 \textcolor{comment}{// VecAddCSApp.cpp how to add two sets of 32 vectors using 32 threads in the compute shader}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00009}00009 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00010}00010 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00011}00011 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00017}00017 \textcolor{comment}{//step1}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00018}\mbox{\hyperlink{struct_data}{00018}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_data}{Data}}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00019}00019 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00020}\mbox{\hyperlink{struct_data_ad1293ed75bfc142b7f0bd4f63e2e6c83}{00020}}     XMFLOAT3 \mbox{\hyperlink{struct_data_ad1293ed75bfc142b7f0bd4f63e2e6c83}{v1}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00021}\mbox{\hyperlink{struct_data_acd4edcc3fb10273d39d5b81c41aaa470}{00021}}     XMFLOAT2 \mbox{\hyperlink{struct_data_acd4edcc3fb10273d39d5b81c41aaa470}{v2}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00022}00022 \};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00025}\mbox{\hyperlink{class_vec_add_app}{00025}} \textcolor{keyword}{class }\mbox{\hyperlink{class_vec_add_app}{VecAddApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00026}00026 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00027}00027 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00028}00028     \mbox{\hyperlink{class_vec_add_app_ad449953a3e5adea01b08cd37e7fab3cc}{VecAddApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00029}\mbox{\hyperlink{class_vec_add_app_a752f9a765a5cf32d3bab87b028be1511}{00029}}     \mbox{\hyperlink{class_vec_add_app_a752f9a765a5cf32d3bab87b028be1511}{VecAddApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_vec_add_app}{VecAddApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00030}\mbox{\hyperlink{class_vec_add_app_aa43580a118e4e088e9cd466f3b90c244}{00030}}     \mbox{\hyperlink{class_vec_add_app}{VecAddApp}}\& \mbox{\hyperlink{class_vec_add_app_aa43580a118e4e088e9cd466f3b90c244}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_vec_add_app}{VecAddApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00031}00031     \mbox{\hyperlink{class_vec_add_app_ae8feaae778eeb9e29cf92607a2ff53c6}{\string~VecAddApp}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00033}00033     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_vec_add_app_a174f5d91cc758621d65ffdf82914c69a}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00035}00035 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00036}00036     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_ac043ff999079bde617659d6dd87b5469}{OnResize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00037}00037     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a4dfa9284b5b0d50dba0e4e3f547efd2a}{Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00038}00038     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_adf222823ab30ee7877c2ddc3762f0843}{Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00040}00040     \textcolor{comment}{//step2}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00041}00041     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a0b42413e0f2956d2cc161c18cd213839}{DoComputeWork}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00043}00043     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a445fe7cc916686e9d8b797eb99881ef3}{BuildBuffers}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00044}00044     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_ae99b8fa10a2f368466c4892b6e31150f}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00045}00045     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a98a9cb459f2a92aa24e3930966e8f851}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00046}00046     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a34597a8efc1cd92fbb268a7bbb53db5a}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00048}00048 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00050}\mbox{\hyperlink{class_vec_add_app_a6a9750408b0ed7035a84862047e44eac}{00050}}     ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_vec_add_app_a6a9750408b0ed7035a84862047e44eac}{mRootSignature}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00052}\mbox{\hyperlink{class_vec_add_app_a46342090fda121d6250f640df6d04cd2}{00052}}     std::unordered\_map<std::string, ComPtr<ID3DBlob>> \mbox{\hyperlink{class_vec_add_app_a46342090fda121d6250f640df6d04cd2}{mShaders}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00053}\mbox{\hyperlink{class_vec_add_app_a9885f14d626bd93f3ef9a369a1fd7d47}{00053}}     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> \mbox{\hyperlink{class_vec_add_app_a9885f14d626bd93f3ef9a369a1fd7d47}{mPSOs}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00055}\mbox{\hyperlink{class_vec_add_app_a1cd98dcea220cb41037ac9d93ba5c21c}{00055}}     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> \mbox{\hyperlink{class_vec_add_app_a1cd98dcea220cb41037ac9d93ba5c21c}{mInputLayout}};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00057}00057     \textcolor{comment}{//step3: we have 2 sets of 32 vectors that we want to add. Same operation for all vectors!}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00058}\mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{00058}}     \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{NumDataElements}} = 32;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00060}\mbox{\hyperlink{class_vec_add_app_ad5ce85546ed8f4ffc22e8305d298db08}{00060}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_ad5ce85546ed8f4ffc22e8305d298db08}{mInputBufferA}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00061}\mbox{\hyperlink{class_vec_add_app_a890b25958fbf7ba9c1f6fe278eac048c}{00061}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_a890b25958fbf7ba9c1f6fe278eac048c}{mInputUploadBufferA}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00062}\mbox{\hyperlink{class_vec_add_app_a08694f5cba4d84ca8e647d0677a8c32f}{00062}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_a08694f5cba4d84ca8e647d0677a8c32f}{mInputBufferB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00063}\mbox{\hyperlink{class_vec_add_app_a7e6d94f22650ff42fece4bf8278a6a97}{00063}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_a7e6d94f22650ff42fece4bf8278a6a97}{mInputUploadBufferB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00064}\mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{00064}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00065}\mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{00065}}     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{mReadBackBuffer}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00067}00067 \};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00069}\mbox{\hyperlink{_week8-1-_vec_add_c_s_app_8cpp_aabcda87589d774901aa87061b8fd0176}{00069}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week8-1-_vec_add_c_s_app_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00070}00070     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00071}00071 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00072}00072     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00073}00073 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00074}00074     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00075}00075 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00077}00077     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00078}00078     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00079}00079         \mbox{\hyperlink{class_vec_add_app}{VecAddApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00080}00080         \textcolor{keywordflow}{if}(!theApp.\mbox{\hyperlink{class_vec_add_app_a174f5d91cc758621d65ffdf82914c69a}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00081}00081             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00082}00082         \textcolor{comment}{//step 3: we don't need to have a game loop}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00083}00083        \textcolor{comment}{// return theApp.Run();}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00084}00084         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00085}00085     \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00086}00086     \textcolor{keywordflow}{catch}(\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00087}00087     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00088}00088         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00089}00089         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00090}00090     \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00091}00091 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00092}00092 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00093}\mbox{\hyperlink{class_vec_add_app_ad449953a3e5adea01b08cd37e7fab3cc}{00093}} \mbox{\hyperlink{class_vec_add_app_ad449953a3e5adea01b08cd37e7fab3cc}{VecAddApp::VecAddApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00094}00094     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00095}00095 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00096}00096 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00098}\mbox{\hyperlink{class_vec_add_app_ae8feaae778eeb9e29cf92607a2ff53c6}{00098}} \mbox{\hyperlink{class_vec_add_app_ae8feaae778eeb9e29cf92607a2ff53c6}{VecAddApp::\string~VecAddApp}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00099}00099 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00100}00100     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00101}00101         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00102}00102 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00104}\mbox{\hyperlink{class_vec_add_app_a174f5d91cc758621d65ffdf82914c69a}{00104}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_vec_add_app_a174f5d91cc758621d65ffdf82914c69a}{VecAddApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00105}00105 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00106}00106     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00107}00107         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00109}00109     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00110}00110     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00112}00112     \textcolor{comment}{//step4}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00113}00113     \mbox{\hyperlink{class_vec_add_app_a445fe7cc916686e9d8b797eb99881ef3}{BuildBuffers}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00114}00114     \mbox{\hyperlink{class_vec_add_app_ae99b8fa10a2f368466c4892b6e31150f}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00115}00115     \mbox{\hyperlink{class_vec_add_app_a98a9cb459f2a92aa24e3930966e8f851}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00116}00116     \mbox{\hyperlink{class_vec_add_app_a34597a8efc1cd92fbb268a7bbb53db5a}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00118}00118     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00119}00119     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00120}00120     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00121}00121     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00122}00122 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00123}00123     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00124}00124     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00126}00126     \mbox{\hyperlink{class_vec_add_app_a0b42413e0f2956d2cc161c18cd213839}{DoComputeWork}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00128}00128     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00129}00129 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00130}00130  }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00131}\mbox{\hyperlink{class_vec_add_app_ac043ff999079bde617659d6dd87b5469}{00131}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_ac043ff999079bde617659d6dd87b5469}{VecAddApp::OnResize}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00132}00132 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00133}00133 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00135}\mbox{\hyperlink{class_vec_add_app_a4dfa9284b5b0d50dba0e4e3f547efd2a}{00135}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a4dfa9284b5b0d50dba0e4e3f547efd2a}{VecAddApp::Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00136}00136 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00137}00137 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00138}00138 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00139}\mbox{\hyperlink{class_vec_add_app_adf222823ab30ee7877c2ddc3762f0843}{00139}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_adf222823ab30ee7877c2ddc3762f0843}{VecAddApp::Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00140}00140 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00141}00141 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00143}00143  \textcolor{comment}{//step 5}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00144}\mbox{\hyperlink{class_vec_add_app_a0b42413e0f2956d2cc161c18cd213839}{00144}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a0b42413e0f2956d2cc161c18cd213839}{VecAddApp::DoComputeWork}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00145}00145 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00146}00146     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00147}00147     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00148}00148     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00149}00149 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00150}00150     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00151}00151     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00152}00152     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \mbox{\hyperlink{class_vec_add_app_a9885f14d626bd93f3ef9a369a1fd7d47}{mPSOs}}[\textcolor{stringliteral}{"{}vecAdd"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00153}00153 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00154}00154     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootSignature(\mbox{\hyperlink{class_vec_add_app_a6a9750408b0ed7035a84862047e44eac}{mRootSignature}}.Get());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00156}00156     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootShaderResourceView(0, \mbox{\hyperlink{class_vec_add_app_ad5ce85546ed8f4ffc22e8305d298db08}{mInputBufferA}}-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00157}00157     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootShaderResourceView(1, \mbox{\hyperlink{class_vec_add_app_a08694f5cba4d84ca8e647d0677a8c32f}{mInputBufferB}}-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00158}00158     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootUnorderedAccessView(2, \mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}}-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00159}00159  }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00160}00160     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Dispatch(1, 1, 1);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00162}00162     \textcolor{comment}{// Schedule to copy the data to the default buffer to the readback buffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00163}00163 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00164}00164     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_SOURCE: The resource is used as the source in a copy operation. }}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00165}00165     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_DEST: The resource is used as the destination in a copy operation.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00167}00167     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}}.Get(), }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00168}00168         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS, D3D12\_RESOURCE\_STATE\_COPY\_SOURCE));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00169}00169 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00170}00170     \textcolor{comment}{//We need to read the data back from the GPU after computer shader does its calculation}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00171}00171     \textcolor{comment}{//mCommandList-\/>CopyResource(Destination: CPUData, Source: GPUData);}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00172}00172     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>CopyResource(\mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{mReadBackBuffer}}.Get(), \mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}}.Get());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00173}00173 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00174}00174     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00175}00175         D3D12\_RESOURCE\_STATE\_COPY\_SOURCE, D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00176}00176 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00177}00177 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00178}00178     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00179}00179     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00180}00180 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00181}00181     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00182}00182     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00183}00183     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00184}00184 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00185}00185     \textcolor{comment}{// Wait for the work to finish.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00186}00186     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00187}00187 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00188}00188     \textcolor{comment}{// Map the data so we can read it on CPU.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00189}00189     \mbox{\hyperlink{struct_data}{Data}}* mappedData = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00190}00190     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{mReadBackBuffer}}-\/>Map(0, \textcolor{keyword}{nullptr}, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&mappedData)));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00191}00191 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00192}00192     std::ofstream fout(\textcolor{stringliteral}{"{}results.txt"{}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00193}00193 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00194}00194     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{NumDataElements}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00195}00195     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00196}00196         fout << \textcolor{stringliteral}{"{}("{}} << mappedData[i].\mbox{\hyperlink{struct_data_ad1293ed75bfc142b7f0bd4f63e2e6c83}{v1}}.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_data_ad1293ed75bfc142b7f0bd4f63e2e6c83}{v1}}.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_data_ad1293ed75bfc142b7f0bd4f63e2e6c83}{v1}}.z <<}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00197}00197             \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_data_acd4edcc3fb10273d39d5b81c41aaa470}{v2}}.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_data_acd4edcc3fb10273d39d5b81c41aaa470}{v2}}.y << \textcolor{stringliteral}{"{})"{}} << std::endl;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00198}00198     \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00200}00200     \mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{mReadBackBuffer}}-\/>Unmap(0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00201}00201 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00202}00202 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00203}\mbox{\hyperlink{class_vec_add_app_a445fe7cc916686e9d8b797eb99881ef3}{00203}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a445fe7cc916686e9d8b797eb99881ef3}{VecAddApp::BuildBuffers}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00204}00204 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00205}00205     \textcolor{comment}{// Generate some data.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00206}00206     std::vector<Data> dataA(\mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{NumDataElements}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00207}00207     std::vector<Data> dataB(\mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{NumDataElements}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00208}00208     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{class_vec_add_app_aa329d8f3d4377bf1e4fa4ca348c9bd7d}{NumDataElements}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00209}00209     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00210}00210         dataA[i].v1 = XMFLOAT3((\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00211}00211         dataA[i].v2 = XMFLOAT2((\textcolor{keywordtype}{float})i, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00212}00212 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00213}00213         dataB[i].v1 = XMFLOAT3(-\/(\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00214}00214         dataB[i].v2 = XMFLOAT2(0.0f, -\/(\textcolor{keywordtype}{float})i);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00215}00215     \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00217}00217     UINT64 byteSize = dataA.size()*\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_data}{Data}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00218}00218 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00219}00219     \textcolor{comment}{// Create some buffers to be used as SRVs.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00220}00220     \mbox{\hyperlink{class_vec_add_app_ad5ce85546ed8f4ffc22e8305d298db08}{mInputBufferA}} = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00221}00221         \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00222}00222         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00223}00223         dataA.data(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00224}00224         byteSize,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00225}00225         \mbox{\hyperlink{class_vec_add_app_a890b25958fbf7ba9c1f6fe278eac048c}{mInputUploadBufferA}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00226}00226 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00227}00227     \mbox{\hyperlink{class_vec_add_app_a08694f5cba4d84ca8e647d0677a8c32f}{mInputBufferB}} = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00228}00228         \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00229}00229         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00230}00230         dataB.data(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00231}00231         byteSize,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00232}00232         \mbox{\hyperlink{class_vec_add_app_a7e6d94f22650ff42fece4bf8278a6a97}{mInputUploadBufferB}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00233}00233 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00234}00234     \textcolor{comment}{// Create the buffer that will be a UAV.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00235}00235     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00236}00236         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00237}00237         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00238}00238         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize, D3D12\_RESOURCE\_FLAG\_ALLOW\_UNORDERED\_ACCESS),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00239}00239         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00240}00240         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00241}00241         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_vec_add_app_ac652d645520ffb7a125e3fa5622b28d1}{mOutputBuffer}})));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00242}00242     }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00243}00243     \textcolor{comment}{//Specifies a heap used for reading back. This heap type has CPU access optimized for reading data back from the GPU, }}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00244}00244     \textcolor{comment}{//but does not experience the maximum amount of bandwidth for the GPU. This heap type is best for GPU-\/write-\/once, }}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00245}00245     \textcolor{comment}{//CPU-\/readable data. The CPU cache behavior is write-\/back, which is conducive for multiple sub-\/cache-\/line CPU reads.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00246}00246     \textcolor{comment}{//Resources in this heap must be created with D3D12\_RESOURCE\_STATE\_COPY\_DEST, and cannot be changed away from this}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00247}00247     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00248}00248         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_READBACK),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00249}00249         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00250}00250         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00251}00251         D3D12\_RESOURCE\_STATE\_COPY\_DEST,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00252}00252         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00253}00253         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_vec_add_app_aa34ff3ab8600eca858cdeea65ae98ddf}{mReadBackBuffer}})));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00254}00254 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00255}00255 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00256}\mbox{\hyperlink{class_vec_add_app_ae99b8fa10a2f368466c4892b6e31150f}{00256}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_ae99b8fa10a2f368466c4892b6e31150f}{VecAddApp::BuildRootSignature}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00257}00257 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00258}00258     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00259}00259     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00260}00260 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00261}00261     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00262}00262     slotRootParameter[0].InitAsShaderResourceView(0);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00263}00263     slotRootParameter[1].InitAsShaderResourceView(1);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00264}00264     slotRootParameter[2].InitAsUnorderedAccessView(0);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00265}00265 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00266}00266     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00267}00267     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00268}00268         0, \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00269}00269         D3D12\_ROOT\_SIGNATURE\_FLAG\_NONE);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00270}00270 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00271}00271     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00272}00272     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00273}00273     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00274}00274     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00275}00275         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00276}00276 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00277}00277     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00278}00278     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00279}00279         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00280}00280     \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00281}00281     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00282}00282 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00283}00283     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00284}00284         0,}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00285}00285         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00286}00286         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00287}00287         IID\_PPV\_ARGS(\mbox{\hyperlink{class_vec_add_app_a6a9750408b0ed7035a84862047e44eac}{mRootSignature}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00288}00288 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00289}00289 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00290}00290 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00291}\mbox{\hyperlink{class_vec_add_app_a98a9cb459f2a92aa24e3930966e8f851}{00291}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a98a9cb459f2a92aa24e3930966e8f851}{VecAddApp::BuildShadersAndInputLayout}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00292}00292 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00293}00293     \mbox{\hyperlink{class_vec_add_app_a46342090fda121d6250f640df6d04cd2}{mShaders}}[\textcolor{stringliteral}{"{}vecAddCS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VecAdd.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}CS"{}}, \textcolor{stringliteral}{"{}cs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00294}00294 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00295}00295 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00296}\mbox{\hyperlink{class_vec_add_app_a34597a8efc1cd92fbb268a7bbb53db5a}{00296}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_vec_add_app_a34597a8efc1cd92fbb268a7bbb53db5a}{VecAddApp::BuildPSOs}}()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00297}00297 \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00298}00298     D3D12\_COMPUTE\_PIPELINE\_STATE\_DESC computePsoDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00299}00299     computePsoDesc.pRootSignature = \mbox{\hyperlink{class_vec_add_app_a6a9750408b0ed7035a84862047e44eac}{mRootSignature}}.Get();}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00300}00300     computePsoDesc.CS =}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00301}00301     \{}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00302}00302         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_vec_add_app_a46342090fda121d6250f640df6d04cd2}{mShaders}}[\textcolor{stringliteral}{"{}vecAddCS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00303}00303         \mbox{\hyperlink{class_vec_add_app_a46342090fda121d6250f640df6d04cd2}{mShaders}}[\textcolor{stringliteral}{"{}vecAddCS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00304}00304     \};}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00305}00305     computePsoDesc.Flags = D3D12\_PIPELINE\_STATE\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00306}00306     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateComputePipelineState(\&computePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_vec_add_app_a9885f14d626bd93f3ef9a369a1fd7d47}{mPSOs}}[\textcolor{stringliteral}{"{}vecAdd"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00307}00307 \}}
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00308}00308 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00309}00309 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00310}00310 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00311}00311 }
+\DoxyCodeLine{\Hypertarget{_week8-1-_vec_add_c_s_app_8cpp_source_l00312}00312 }
+
+\end{DoxyCode}

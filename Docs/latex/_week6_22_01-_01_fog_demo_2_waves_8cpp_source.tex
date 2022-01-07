@@ -1,0 +1,178 @@
+\hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source}{}\doxysection{Waves.\+cpp}
+\label{_week6_22_01-_01_fog_demo_2_waves_8cpp_source}\index{Week6/2 -\/ FogDemo/Waves.cpp@{Week6/2 -\/ FogDemo/Waves.cpp}}
+\mbox{\hyperlink{_week6_22_01-_01_fog_demo_2_waves_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00002}00002 \textcolor{comment}{// Waves.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week8_2_blur_2_waves_8h}{Waves.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include <ppl.h>}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include <cassert>}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00011}00011 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00013}00013 \mbox{\hyperlink{class_waves_af3ea21dbf5d9efdf3a4893a1a53c1b29}{Waves::Waves}}(\textcolor{keywordtype}{int} m, \textcolor{keywordtype}{int} n, \textcolor{keywordtype}{float} dx, \textcolor{keywordtype}{float} dt, \textcolor{keywordtype}{float} speed, \textcolor{keywordtype}{float} damping)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00014}00014 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00015}00015     \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}} = m;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00016}00016     \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}} = n;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00018}00018     \mbox{\hyperlink{class_waves_abf6b6641219ba9bd06cd0ede552dfc19}{mVertexCount}} = m*n;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00019}00019     \mbox{\hyperlink{class_waves_aec414c881a350e78eb2e7de2bcd8854f}{mTriangleCount}} = (m -\/ 1)*(n -\/ 1) * 2;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00021}00021     \mbox{\hyperlink{class_waves_ac7fd37a783aa9868c8655d5865c09408}{mTimeStep}} = dt;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00022}00022     \mbox{\hyperlink{class_waves_a5d5c82991fc15e6c17a3865c448622af}{mSpatialStep}} = dx;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00024}00024     \textcolor{keywordtype}{float} d = damping*dt + 2.0f;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00025}00025     \textcolor{keywordtype}{float} e = (speed*speed)*(dt*dt) / (dx*dx);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00026}00026     \mbox{\hyperlink{class_waves_a23a51819eda7d4e504aee2d242ef45ec}{mK1}} = (damping*dt -\/ 2.0f) / d;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00027}00027     \mbox{\hyperlink{class_waves_adb6810d7189db10ae11a4a7919c494d8}{mK2}} = (4.0f -\/ 8.0f*e) / d;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00028}00028     \mbox{\hyperlink{class_waves_a1bb7e7d104bede9e8b0dd9fc40418fa5}{mK3}} = (2.0f*e) / d;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00030}00030     \mbox{\hyperlink{class_waves_a945c5ef9d997baffa12738728eb7de22}{mPrevSolution}}.resize(m*n);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00031}00031     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}.resize(m*n);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00032}00032     \mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}.resize(m*n);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00033}00033     \mbox{\hyperlink{class_waves_af0c43af08c7047dcdc1bedc2ac21be03}{mTangentX}}.resize(m*n);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00035}00035     \textcolor{comment}{// Generate grid vertices in system memory.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00036}00036 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00037}00037     \textcolor{keywordtype}{float} halfWidth = (n -\/ 1)*dx*0.5f;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00038}00038     \textcolor{keywordtype}{float} halfDepth = (m -\/ 1)*dx*0.5f;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00039}00039     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < m; ++i)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00040}00040     \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00041}00041         \textcolor{keywordtype}{float} z = halfDepth -\/ i*dx;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00042}00042         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < n; ++j)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00043}00043         \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00044}00044             \textcolor{keywordtype}{float} x = -\/halfWidth + j*dx;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00046}00046             \mbox{\hyperlink{class_waves_a945c5ef9d997baffa12738728eb7de22}{mPrevSolution}}[i*n + j] = XMFLOAT3(x, 0.0f, z);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00047}00047             \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*n + j] = XMFLOAT3(x, 0.0f, z);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00048}00048             \mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*n + j] = XMFLOAT3(0.0f, 1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00049}00049             \mbox{\hyperlink{class_waves_af0c43af08c7047dcdc1bedc2ac21be03}{mTangentX}}[i*n + j] = XMFLOAT3(1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00050}00050         \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00051}00051     \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00052}00052 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00054}00054 \mbox{\hyperlink{class_waves_a59307381794b04e863e0c3bd3f26280d}{Waves::\string~Waves}}()}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00055}00055 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00056}00056 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00058}00058 \textcolor{keywordtype}{int} \mbox{\hyperlink{class_waves_a1eaed8603f6b08260a7191706f4b886f}{Waves::RowCount}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00059}00059 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00060}00060     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00061}00061 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00062}00062 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00063}00063 \textcolor{keywordtype}{int} \mbox{\hyperlink{class_waves_ae76ceb60f9a8a790c88a840febed9a42}{Waves::ColumnCount}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00064}00064 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00065}00065     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00066}00066 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00068}00068 \textcolor{keywordtype}{int} \mbox{\hyperlink{class_waves_a87d1ac253c4542985cb7bb04bccadd87}{Waves::VertexCount}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00069}00069 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00070}00070     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_abf6b6641219ba9bd06cd0ede552dfc19}{mVertexCount}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00071}00071 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00073}00073 \textcolor{keywordtype}{int} \mbox{\hyperlink{class_waves_ab8a010d118902a124b1fb0b46fa12aa9}{Waves::TriangleCount}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00074}00074 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00075}00075     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_aec414c881a350e78eb2e7de2bcd8854f}{mTriangleCount}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00076}00076 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00077}00077 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00078}00078 \textcolor{keywordtype}{float} \mbox{\hyperlink{class_waves_a40f19b6b0c1e2545f2c6be9fda099bd4}{Waves::Width}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00079}00079 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00080}00080     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}*\mbox{\hyperlink{class_waves_a5d5c82991fc15e6c17a3865c448622af}{mSpatialStep}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00081}00081 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00083}00083 \textcolor{keywordtype}{float} \mbox{\hyperlink{class_waves_af206b1aae5a55d7658f5bd70ea1f07de}{Waves::Depth}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00084}00084 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00085}00085     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}}*\mbox{\hyperlink{class_waves_a5d5c82991fc15e6c17a3865c448622af}{mSpatialStep}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00086}00086 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00088}00088 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_waves_a716d74e36e832c85f79583b3ec2b1bf0}{Waves::Update}}(\textcolor{keywordtype}{float} dt)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00089}00089 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00090}00090     \textcolor{keyword}{static} \textcolor{keywordtype}{float} t = 0;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00091}00091 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00092}00092     \textcolor{comment}{// Accumulate time.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00093}00093     t += dt;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00095}00095     \textcolor{comment}{// Only update the simulation at the specified time step.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00096}00096     \textcolor{keywordflow}{if}( t >= \mbox{\hyperlink{class_waves_ac7fd37a783aa9868c8655d5865c09408}{mTimeStep}} )}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00097}00097     \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00098}00098         \textcolor{comment}{// Only update interior points; we use zero boundary conditions.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00099}00099         concurrency::parallel\_for(1, \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}} -\/ 1, [\textcolor{keyword}{this}](\textcolor{keywordtype}{int} i)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00100}00100         \textcolor{comment}{//for(int i = 1; i < mNumRows-\/1; ++i)}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00101}00101         \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00102}00102             \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 1; j < \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}-\/1; ++j)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00103}00103             \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00104}00104                 \textcolor{comment}{// After this update we will be discarding the old previous}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00105}00105                 \textcolor{comment}{// buffer, so overwrite that buffer with the new update.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00106}00106                 \textcolor{comment}{// Note how we can do this inplace (read/write to same element) }}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00107}00107                 \textcolor{comment}{// because we won't need prev\_ij again and the assignment happens last.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00109}00109                 \textcolor{comment}{// Note j indexes x and i indexes z: h(x\_j, z\_i, t\_k)}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00110}00110                 \textcolor{comment}{// Moreover, our +z axis goes "{}down"{}; this is just to }}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00111}00111                 \textcolor{comment}{// keep consistent with our row indices going down.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00113}00113                 \mbox{\hyperlink{class_waves_a945c5ef9d997baffa12738728eb7de22}{mPrevSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y = }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00114}00114                     \mbox{\hyperlink{class_waves_a23a51819eda7d4e504aee2d242ef45ec}{mK1}}*\mbox{\hyperlink{class_waves_a945c5ef9d997baffa12738728eb7de22}{mPrevSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y +}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00115}00115                     \mbox{\hyperlink{class_waves_adb6810d7189db10ae11a4a7919c494d8}{mK2}}*\mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y +}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00116}00116                     \mbox{\hyperlink{class_waves_a1bb7e7d104bede9e8b0dd9fc40418fa5}{mK3}}*(\mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i+1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y + }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00117}00117                          \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i-\/1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y + }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00118}00118                          \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j+1].y + }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00119}00119                          \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j-\/1].y);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00120}00120             \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00121}00121         \});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00122}00122 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00123}00123         \textcolor{comment}{// We just overwrote the previous buffer with the new data, so}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00124}00124         \textcolor{comment}{// this data needs to become the current solution and the old}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00125}00125         \textcolor{comment}{// current solution becomes the new previous solution.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00126}00126         std::swap(\mbox{\hyperlink{class_waves_a945c5ef9d997baffa12738728eb7de22}{mPrevSolution}}, \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00128}00128         t = 0.0f; \textcolor{comment}{// reset time}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00130}00130         \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00131}00131         \textcolor{comment}{// Compute normals using finite difference scheme.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00132}00132         \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00133}00133         concurrency::parallel\_for(1, \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}} -\/ 1, [\textcolor{keyword}{this}](\textcolor{keywordtype}{int} i)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00134}00134         \textcolor{comment}{//for(int i = 1; i < mNumRows -\/ 1; ++i)}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00135}00135         \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00136}00136             \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 1; j < \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}-\/1; ++j)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00137}00137             \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00138}00138                 \textcolor{keywordtype}{float} l = \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j-\/1].y;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00139}00139                 \textcolor{keywordtype}{float} r = \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j+1].y;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00140}00140                 \textcolor{keywordtype}{float} t = \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i-\/1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00141}00141                 \textcolor{keywordtype}{float} b = \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i+1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00142}00142                 \mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].x = -\/r+l;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00143}00143                 \mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y = 2.0f*\mbox{\hyperlink{class_waves_a5d5c82991fc15e6c17a3865c448622af}{mSpatialStep}};}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00144}00144                 \mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].z = b-\/t;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00145}00145 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00146}00146                 XMVECTOR n = XMVector3Normalize(XMLoadFloat3(\&\mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j]));}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00147}00147                 XMStoreFloat3(\&\mbox{\hyperlink{class_waves_abf37ca1d1360f0da2c1f2396033795da}{mNormals}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j], n);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00148}00148 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00149}00149                 \mbox{\hyperlink{class_waves_af0c43af08c7047dcdc1bedc2ac21be03}{mTangentX}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j] = XMFLOAT3(2.0f*\mbox{\hyperlink{class_waves_a5d5c82991fc15e6c17a3865c448622af}{mSpatialStep}}, r-\/l, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00150}00150                 XMVECTOR T = XMVector3Normalize(XMLoadFloat3(\&\mbox{\hyperlink{class_waves_af0c43af08c7047dcdc1bedc2ac21be03}{mTangentX}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j]));}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00151}00151                 XMStoreFloat3(\&\mbox{\hyperlink{class_waves_af0c43af08c7047dcdc1bedc2ac21be03}{mTangentX}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j], T);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00152}00152             \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00153}00153         \});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00154}00154     \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00155}00155 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00156}00156 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00157}00157 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_waves_a3b0243eb41da0bae72aa1db7e1e365bd}{Waves::Disturb}}(\textcolor{keywordtype}{int} i, \textcolor{keywordtype}{int} j, \textcolor{keywordtype}{float} magnitude)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00158}00158 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00159}00159     \textcolor{comment}{// Don't disturb boundaries.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00160}00160     assert(i > 1 \&\& i < \mbox{\hyperlink{class_waves_a7cf77bea4c44873f60cb1e151b8ad08a}{mNumRows}}-\/2);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00161}00161     assert(j > 1 \&\& j < \mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}-\/2);}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00162}00162 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00163}00163     \textcolor{keywordtype}{float} halfMag = 0.5f*magnitude;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00164}00164 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00165}00165     \textcolor{comment}{// Disturb the ijth vertex height and its neighbors.}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00166}00166     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y     += magnitude;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00167}00167     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j+1].y   += halfMag;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00168}00168     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[i*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j-\/1].y   += halfMag;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00169}00169     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i+1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y += halfMag;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00170}00170     \mbox{\hyperlink{class_waves_a084cb5c856035f66dfca9e13eccc967e}{mCurrSolution}}[(i-\/1)*\mbox{\hyperlink{class_waves_a522d56b02200a3cc142b1bf2969d7bc5}{mNumCols}}+j].y += halfMag;}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00171}00171 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_fog_demo_2_waves_8cpp_source_l00172}00172     }
+
+\end{DoxyCode}

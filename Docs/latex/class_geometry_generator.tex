@@ -1,0 +1,206 @@
+\hypertarget{class_geometry_generator}{}\doxysection{Geometry\+Generator Class Reference}
+\label{class_geometry_generator}\index{GeometryGenerator@{GeometryGenerator}}
+
+
+{\ttfamily \#include $<$Geometry\+Generator.\+h$>$}
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}}
+\begin{DoxyCompactList}\small\item\em summary\texorpdfstring{$>$}{>} Creates a box centered at the origin with the given dimensions, where each face has m rows and n columns of vertices. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}{uint16}} = std\+::uint16\+\_\+t
+\item 
+using \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} = std\+::uint32\+\_\+t
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_a9ebf88d1bee287c6e211bff43fbdd3a0}{Create\+Box}} (float width, float height, float depth, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} num\+Subdivisions)
+\begin{DoxyCompactList}\small\item\em summary\texorpdfstring{$>$}{>} Creates a sphere centered at the origin with the given radius. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_a61677b3472294c52b544670722d22f0b}{Create\+Sphere}} (float radius, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} slice\+Count, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stack\+Count)
+\begin{DoxyCompactList}\small\item\em summary\texorpdfstring{$>$}{>} Creates a geosphere centered at the origin with the given radius. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_ac29d9710556efda67adf2969b3d59efe}{Create\+Geosphere}} (float radius, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} num\+Subdivisions)
+\begin{DoxyCompactList}\small\item\em summary\texorpdfstring{$>$}{>} Creates a cylinder parallel to the y-\/axis, and centered about the origin. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_a6d2867280024eaf02c0643c765dfdd2b}{Create\+Cylinder}} (float bottom\+Radius, float top\+Radius, float height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} slice\+Count, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stack\+Count)
+\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}{Create\+Grid}} (float width, float depth, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} m, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} n)
+\begin{DoxyCompactList}\small\item\em summary\texorpdfstring{$>$}{>} Creates a quad aligned with the screen. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \mbox{\hyperlink{class_geometry_generator_af9ce9e29c19dc145d8a964f44359ae90}{Create\+Quad}} (float x, float y, float w, float h, float depth)
+\item 
+void \mbox{\hyperlink{class_geometry_generator_ad670e32318f22a917b2771cb9719f6a9}{Subdivide}} (\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&mesh\+Data)
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \mbox{\hyperlink{class_geometry_generator_a1a2bcb829312312463ae4cbed9357445}{Mid\+Point}} (const \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \&v0, const \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \&v1)
+\item 
+void \mbox{\hyperlink{class_geometry_generator_aa26957ba52636b68c234d284759116b0}{Build\+Cylinder\+Top\+Cap}} (float bottom\+Radius, float top\+Radius, float height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} slice\+Count, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stack\+Count, \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&mesh\+Data)
+\item 
+void \mbox{\hyperlink{class_geometry_generator_a623d5e6167d7e9454a55f57e84bbcb35}{Build\+Cylinder\+Bottom\+Cap}} (float bottom\+Radius, float top\+Radius, float height, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} slice\+Count, \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}} stack\+Count, \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&mesh\+Data)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8h_source_l00021}{21}} of file \mbox{\hyperlink{_geometry_generator_8h_source}{Geometry\+Generator.\+h}}.
+
+
+
+\doxysubsection{Member Typedef Documentation}
+\mbox{\Hypertarget{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}\label{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}} 
+\index{GeometryGenerator@{GeometryGenerator}!uint16@{uint16}}
+\index{uint16@{uint16}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{uint16}{uint16}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{class_geometry_generator_a2b566f68436d7cca7976e6d7e3bae53d}{Geometry\+Generator\+::uint16}} =  std\+::uint16\+\_\+t}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8h_source_l00025}{25}} of file \mbox{\hyperlink{_geometry_generator_8h_source}{Geometry\+Generator.\+h}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}\label{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}} 
+\index{GeometryGenerator@{GeometryGenerator}!uint32@{uint32}}
+\index{uint32@{uint32}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{uint32}{uint32}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{Geometry\+Generator\+::uint32}} =  std\+::uint32\+\_\+t}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8h_source_l00026}{26}} of file \mbox{\hyperlink{_geometry_generator_8h_source}{Geometry\+Generator.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_geometry_generator_a623d5e6167d7e9454a55f57e84bbcb35}\label{class_geometry_generator_a623d5e6167d7e9454a55f57e84bbcb35}} 
+\index{GeometryGenerator@{GeometryGenerator}!BuildCylinderBottomCap@{BuildCylinderBottomCap}}
+\index{BuildCylinderBottomCap@{BuildCylinderBottomCap}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{BuildCylinderBottomCap()}{BuildCylinderBottomCap()}}
+{\footnotesize\ttfamily void Geometry\+Generator\+::\+Build\+Cylinder\+Bottom\+Cap (\begin{DoxyParamCaption}\item[{float}]{bottom\+Radius,  }\item[{float}]{top\+Radius,  }\item[{float}]{height,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{slice\+Count,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{stack\+Count,  }\item[{\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&}]{mesh\+Data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00512}{512}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_aa26957ba52636b68c234d284759116b0}\label{class_geometry_generator_aa26957ba52636b68c234d284759116b0}} 
+\index{GeometryGenerator@{GeometryGenerator}!BuildCylinderTopCap@{BuildCylinderTopCap}}
+\index{BuildCylinderTopCap@{BuildCylinderTopCap}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{BuildCylinderTopCap()}{BuildCylinderTopCap()}}
+{\footnotesize\ttfamily void Geometry\+Generator\+::\+Build\+Cylinder\+Top\+Cap (\begin{DoxyParamCaption}\item[{float}]{bottom\+Radius,  }\item[{float}]{top\+Radius,  }\item[{float}]{height,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{slice\+Count,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{stack\+Count,  }\item[{\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&}]{mesh\+Data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00476}{476}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a9ebf88d1bee287c6e211bff43fbdd3a0}\label{class_geometry_generator_a9ebf88d1bee287c6e211bff43fbdd3a0}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateBox@{CreateBox}}
+\index{CreateBox@{CreateBox}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateBox()}{CreateBox()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Box (\begin{DoxyParamCaption}\item[{float}]{width,  }\item[{float}]{height,  }\item[{float}]{depth,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{num\+Subdivisions }\end{DoxyParamCaption})}
+
+
+
+summary\texorpdfstring{$>$}{>} Creates a sphere centered at the origin with the given radius. 
+
+The slices and stacks parameters control the degree of tessellation. /summary\texorpdfstring{$>$}{>} 
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00010}{10}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a6d2867280024eaf02c0643c765dfdd2b}\label{class_geometry_generator_a6d2867280024eaf02c0643c765dfdd2b}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateCylinder@{CreateCylinder}}
+\index{CreateCylinder@{CreateCylinder}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateCylinder()}{CreateCylinder()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Cylinder (\begin{DoxyParamCaption}\item[{float}]{bottom\+Radius,  }\item[{float}]{top\+Radius,  }\item[{float}]{height,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{slice\+Count,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{stack\+Count }\end{DoxyParamCaption})}
+
+
+
+
+
+summary\texorpdfstring{$>$}{>} Creates an mxn grid in the xz-\/plane with m rows and n columns, centered at the origin with the specified width and depth. /summary\texorpdfstring{$>$}{>} 
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00382}{382}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_ac29d9710556efda67adf2969b3d59efe}\label{class_geometry_generator_ac29d9710556efda67adf2969b3d59efe}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateGeosphere@{CreateGeosphere}}
+\index{CreateGeosphere@{CreateGeosphere}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateGeosphere()}{CreateGeosphere()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Geosphere (\begin{DoxyParamCaption}\item[{float}]{radius,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{num\+Subdivisions }\end{DoxyParamCaption})}
+
+
+
+summary\texorpdfstring{$>$}{>} Creates a cylinder parallel to the y-\/axis, and centered about the origin. 
+
+~\newline
+ The bottom and top radius can vary to form various cone shapes rather than true 
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00307}{307}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}\label{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateGrid@{CreateGrid}}
+\index{CreateGrid@{CreateGrid}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateGrid()}{CreateGrid()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Grid (\begin{DoxyParamCaption}\item[{float}]{width,  }\item[{float}]{depth,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{m,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{n }\end{DoxyParamCaption})}
+
+
+
+summary\texorpdfstring{$>$}{>} Creates a quad aligned with the screen. 
+
+This is useful for postprocessing and screen effects. /summary\texorpdfstring{$>$}{>} 
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00551}{551}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_af9ce9e29c19dc145d8a964f44359ae90}\label{class_geometry_generator_af9ce9e29c19dc145d8a964f44359ae90}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateQuad@{CreateQuad}}
+\index{CreateQuad@{CreateQuad}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateQuad()}{CreateQuad()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Quad (\begin{DoxyParamCaption}\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{w,  }\item[{float}]{h,  }\item[{float}]{depth }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00616}{616}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a61677b3472294c52b544670722d22f0b}\label{class_geometry_generator_a61677b3472294c52b544670722d22f0b}} 
+\index{GeometryGenerator@{GeometryGenerator}!CreateSphere@{CreateSphere}}
+\index{CreateSphere@{CreateSphere}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{CreateSphere()}{CreateSphere()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Geometry\+Generator\+::\+Mesh\+Data}} Geometry\+Generator\+::\+Create\+Sphere (\begin{DoxyParamCaption}\item[{float}]{radius,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{slice\+Count,  }\item[{\mbox{\hyperlink{class_geometry_generator_a37fc6dd464913f90a718f59862a9beeb}{uint32}}}]{stack\+Count }\end{DoxyParamCaption})}
+
+
+
+summary\texorpdfstring{$>$}{>} Creates a geosphere centered at the origin with the given radius. 
+
+The depth controls the level of tessellation. /summary\texorpdfstring{$>$}{>} 
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00103}{103}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_a1a2bcb829312312463ae4cbed9357445}\label{class_geometry_generator_a1a2bcb829312312463ae4cbed9357445}} 
+\index{GeometryGenerator@{GeometryGenerator}!MidPoint@{MidPoint}}
+\index{MidPoint@{MidPoint}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{MidPoint()}{MidPoint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Geometry\+Generator\+::\+Vertex}} Geometry\+Generator\+::\+Mid\+Point (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \&}]{v0,  }\item[{const \mbox{\hyperlink{struct_geometry_generator_1_1_vertex}{Vertex}} \&}]{v1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00277}{277}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+\mbox{\Hypertarget{class_geometry_generator_ad670e32318f22a917b2771cb9719f6a9}\label{class_geometry_generator_ad670e32318f22a917b2771cb9719f6a9}} 
+\index{GeometryGenerator@{GeometryGenerator}!Subdivide@{Subdivide}}
+\index{Subdivide@{Subdivide}!GeometryGenerator@{GeometryGenerator}}
+\doxysubsubsection{\texorpdfstring{Subdivide()}{Subdivide()}}
+{\footnotesize\ttfamily void Geometry\+Generator\+::\+Subdivide (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{Mesh\+Data}} \&}]{mesh\+Data }\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{_geometry_generator_8cpp_source_l00214}{214}} of file \mbox{\hyperlink{_geometry_generator_8cpp_source}{Geometry\+Generator.\+cpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Common/\mbox{\hyperlink{_geometry_generator_8h}{Geometry\+Generator.\+h}}\item 
+Common/\mbox{\hyperlink{_geometry_generator_8cpp}{Geometry\+Generator.\+cpp}}\end{DoxyCompactItemize}

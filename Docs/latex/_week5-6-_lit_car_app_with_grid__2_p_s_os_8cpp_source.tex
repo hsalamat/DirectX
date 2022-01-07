@@ -1,0 +1,812 @@
+\hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source}{}\doxysection{Week5-\/6-\/\+Lit\+Car\+App\+With\+Grid\+\_\+2\+PSOs.cpp}
+\label{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source}\index{Week5/LitSkull/Week5-\/6-\/LitCarAppWithGrid\_2PSOs.cpp@{Week5/LitSkull/Week5-\/6-\/LitCarAppWithGrid\_2PSOs.cpp}}
+\mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00002}00002 \textcolor{comment}{// LitCarApp.cpp Car + Grid are lit using 2 PSOs}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00011}00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00012}00012 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00013}00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00018}\mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00018}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00020}00020 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00021}00021 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00022}00022 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00023}00023 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00024}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00024}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00026}00026     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00027}00027     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00028}00028     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00029}00029     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00032}00032     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00033}00033     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00034}00034     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00035}00035     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00036}00036     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00038}00038     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00039}00039     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00041}00041     \mbox{\hyperlink{struct_material}{Material}}* \mbox{\hyperlink{struct_render_item_a47f9e6fad8619fccc9caa92e3c7c9793}{Mat}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00042}00042     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00044}00044     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00045}00045     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00047}00047     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00048}00048     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00049}00049     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00050}00050     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00051}00051 \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00053}00053 \textcolor{comment}{//step1}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00054}\mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_aa63ede3e7371d4bc358f651428d23159}{00054}} \textcolor{keyword}{enum class} \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159}{RenderLayer}} : int}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00055}00055 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00056}00056     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{Opaque}} = 0,}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00057}00057     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}{Transparent}},}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00058}00058     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159a0627db3fa05f110738a259ea9a97a225}{AlphaTested}},}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00059}00059     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{Count}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00060}00060 \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00062}00062 \textcolor{keyword}{class }\mbox{\hyperlink{class_car_app}{CarApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00063}00063 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00064}00064 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00065}\mbox{\hyperlink{class_car_app_ad9474faf9319d0f5207b2b77ba7c92d8}{00065}}     \mbox{\hyperlink{class_car_app_ad9474faf9319d0f5207b2b77ba7c92d8}{CarApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00066}\mbox{\hyperlink{class_car_app_a509fc35438038dd84f62b9234a274bf1}{00066}}     \mbox{\hyperlink{class_car_app_a509fc35438038dd84f62b9234a274bf1}{CarApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_car_app}{CarApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00067}\mbox{\hyperlink{class_car_app_a740a98186e25c0d00cca73c5807bc328}{00067}}     \mbox{\hyperlink{class_car_app}{CarApp}}\& \mbox{\hyperlink{class_car_app_a740a98186e25c0d00cca73c5807bc328}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_car_app}{CarApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00068}\mbox{\hyperlink{class_car_app_afae03dc0edd7c47a420a236573300d29}{00068}}     \mbox{\hyperlink{class_car_app_afae03dc0edd7c47a420a236573300d29}{\string~CarApp}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00070}\mbox{\hyperlink{class_car_app_af16790138998a9bc790d0bed75c0ceb3}{00070}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_car_app_af16790138998a9bc790d0bed75c0ceb3}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00072}00072 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00073}\mbox{\hyperlink{class_car_app_a920f67b949e721b01fed7a4ac930c0ab}{00073}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a920f67b949e721b01fed7a4ac930c0ab}{OnResize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00074}\mbox{\hyperlink{class_car_app_ae67aa7bec0114bee299142e6c0b3ea2e}{00074}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae67aa7bec0114bee299142e6c0b3ea2e}{Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00075}\mbox{\hyperlink{class_car_app_ab528691a99b2673c7315cf2a6485b596}{00075}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ab528691a99b2673c7315cf2a6485b596}{Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00077}\mbox{\hyperlink{class_car_app_a7b8e29114ad1f26ce57d14c846d33cb1}{00077}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7b8e29114ad1f26ce57d14c846d33cb1}{OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00078}\mbox{\hyperlink{class_car_app_a7cb5c9738a745cebe52bd8f58517831b}{00078}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7cb5c9738a745cebe52bd8f58517831b}{OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00079}\mbox{\hyperlink{class_car_app_a569d10f1b2d66b046ba9de9abb42597b}{00079}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a569d10f1b2d66b046ba9de9abb42597b}{OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00081}\mbox{\hyperlink{class_car_app_a8ec69aaed5b732fdfba5cc7ad8c0d923}{00081}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a8ec69aaed5b732fdfba5cc7ad8c0d923}{OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00082}\mbox{\hyperlink{class_car_app_a00ea72cd24ac9024c694186f1cc8aefb}{00082}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a00ea72cd24ac9024c694186f1cc8aefb}{UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00083}\mbox{\hyperlink{class_car_app_a6f68b53e17fa6bbb14bda05c12b1e338}{00083}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a6f68b53e17fa6bbb14bda05c12b1e338}{UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00084}\mbox{\hyperlink{class_car_app_a7821ab0925d1404d7fb57d668ea95527}{00084}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7821ab0925d1404d7fb57d668ea95527}{UpdateMaterialCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00085}\mbox{\hyperlink{class_car_app_aa3fdfa701610148d3ba870e418513424}{00085}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_aa3fdfa701610148d3ba870e418513424}{UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00087}\mbox{\hyperlink{class_car_app_af4106b0671bf08a6f61848dc53463c1a}{00087}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_af4106b0671bf08a6f61848dc53463c1a}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00088}\mbox{\hyperlink{class_car_app_a7827765cc6e0d8e483c6f4b8a5589475}{00088}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7827765cc6e0d8e483c6f4b8a5589475}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00089}\mbox{\hyperlink{class_car_app_a21430638aa963a2e1dbfaaebf36d6b36}{00089}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a21430638aa963a2e1dbfaaebf36d6b36}{BuildShapeGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00090}\mbox{\hyperlink{class_car_app_adba5355dfc1e797a7f8a2a74e73215f4}{00090}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_adba5355dfc1e797a7f8a2a74e73215f4}{BuildCarGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00091}\mbox{\hyperlink{class_car_app_a90ee2e5d66f4d846c0befb6f679ee262}{00091}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a90ee2e5d66f4d846c0befb6f679ee262}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00092}\mbox{\hyperlink{class_car_app_ab87451702fb7cba7c0dcff5aea447a5f}{00092}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ab87451702fb7cba7c0dcff5aea447a5f}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00093}\mbox{\hyperlink{class_car_app_a4c82e82af5cb43de9a4fd506cc7fcd05}{00093}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a4c82e82af5cb43de9a4fd506cc7fcd05}{BuildMaterials}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00095}\mbox{\hyperlink{class_car_app_ae2c30b3bc96e13c384c4c752ca1e4200}{00095}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae2c30b3bc96e13c384c4c752ca1e4200}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00096}\mbox{\hyperlink{class_car_app_ae5ccc846e15a73b81c01089cc0258812}{00096}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae5ccc846e15a73b81c01089cc0258812}{DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00097}00097  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00098}00098 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00099}00099 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00100}00100     std::vector<std::unique\_ptr<FrameResource>> \mbox{\hyperlink{class_car_app_add536400d03e14b4f12b59daf315ad78}{mFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00101}00101     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00102}00102     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_car_app_ae9272d8ae40094400df5b4c9f4463513}{mCurrFrameResourceIndex}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00104}00104     ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_car_app_a9dfbb9c330ca8bf9c60960fde1ad1e21}{mRootSignature}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00106}00106     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> \mbox{\hyperlink{class_car_app_a950b4d62e9d8e2fce730bd448fe93573}{mGeometries}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00107}00107     std::unordered\_map<std::string, std::unique\_ptr<Material>> \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00108}00108     std::unordered\_map<std::string, ComPtr<ID3DBlob>> \mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00109}00109 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00110}00110     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> \mbox{\hyperlink{class_car_app_aee3c45130aebdfc88e092bf98f362ef9}{mInputLayout}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00112}00112     \textcolor{comment}{//ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00113}00113     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> \mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00114}00114  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00115}00115     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00116}00116     std::vector<std::unique\_ptr<RenderItem>> \mbox{\hyperlink{class_car_app_a024658f760cb80074fa36c68bedb2721}{mAllRitems}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00118}00118     \textcolor{comment}{// step2 Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00119}00119     \textcolor{comment}{//std::vector<RenderItem*> mOpaqueRitems;}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00120}00120     \textcolor{comment}{//std::vector<RenderItem*> mTransparentRitems;}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00121}\mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{00121}}     std::vector<RenderItem*> \mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{RenderLayer::Count}}];}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00122}00122 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00124}00124     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00125}00125     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_car_app_a68ebe9cbdc3b27be63e7621475922046}{mIsWireframe}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00127}00127     XMFLOAT3 \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}} = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00128}00128     XMFLOAT4X4 \mbox{\hyperlink{class_car_app_a2bc7ee24a23773156dac41be0e0f0955}{mView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00129}00129     XMFLOAT4X4 \mbox{\hyperlink{class_car_app_adaccd42ffc6c0b11cacaf6986921ef0a}{mProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00131}00131     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_car_app_a62a26802f08bd3f81b7df0b28941aa7d}{mTheta}} = 1.5f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00132}00132     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}} = 0.4f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00133}00133     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}} = 15.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00135}00135     POINT \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00136}00136 \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00137}00137 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00138}\mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_aabcda87589d774901aa87061b8fd0176}{00138}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00139}00139     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00140}00140 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00141}00141     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00142}00142 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00143}00143     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00144}00144 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00145}00145 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00146}00146     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00147}00147     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00148}00148         \mbox{\hyperlink{class_car_app}{CarApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00149}00149         \textcolor{keywordflow}{if}(!theApp.\mbox{\hyperlink{class_car_app_a448d0e6be12ebd955c1af1a17fa3baeb}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00150}00150             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00151}00151 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00152}00152         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00153}00153     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00154}00154     \textcolor{keywordflow}{catch}(\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00155}00155     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00156}00156         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00157}00157         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00158}00158     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00159}00159 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00160}00160 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00161}00161 \mbox{\hyperlink{class_car_app_ad9474faf9319d0f5207b2b77ba7c92d8}{CarApp::CarApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00162}00162     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00163}00163 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00164}00164 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00165}00165 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00166}00166 \mbox{\hyperlink{class_car_app_afae03dc0edd7c47a420a236573300d29}{CarApp::\string~CarApp}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00167}00167 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00168}00168     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00169}00169         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00170}00170 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00172}00172 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_car_app_a448d0e6be12ebd955c1af1a17fa3baeb}{CarApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00173}00173 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00174}00174     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00175}00175         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00176}00176 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00177}00177     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00178}00178     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00180}00180 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00181}00181     \mbox{\hyperlink{class_car_app_af4106b0671bf08a6f61848dc53463c1a}{BuildRootSignature}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00182}00182     \mbox{\hyperlink{class_car_app_a7827765cc6e0d8e483c6f4b8a5589475}{BuildShadersAndInputLayout}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00183}00183     \mbox{\hyperlink{class_car_app_a21430638aa963a2e1dbfaaebf36d6b36}{BuildShapeGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00184}00184     \mbox{\hyperlink{class_car_app_adba5355dfc1e797a7f8a2a74e73215f4}{BuildCarGeometry}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00185}00185     \mbox{\hyperlink{class_car_app_a4c82e82af5cb43de9a4fd506cc7fcd05}{BuildMaterials}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00186}00186     \mbox{\hyperlink{class_car_app_ae2c30b3bc96e13c384c4c752ca1e4200}{BuildRenderItems}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00187}00187     \mbox{\hyperlink{class_car_app_ab87451702fb7cba7c0dcff5aea447a5f}{BuildFrameResources}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00188}00188     \mbox{\hyperlink{class_car_app_a90ee2e5d66f4d846c0befb6f679ee262}{BuildPSOs}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00189}00189 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00190}00190     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00191}00191     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00192}00192     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00193}00193     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00194}00194 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00195}00195     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00196}00196     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00197}00197 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00198}00198     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00199}00199 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00200}00200  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00201}00201 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a02061d5f304c45ca976ebedfd72b0d27}{CarApp::OnResize}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00202}00202 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00203}00203     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00204}00204 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00205}00205     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00206}00206     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00207}00207     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_adaccd42ffc6c0b11cacaf6986921ef0a}{mProj}}, P);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00208}00208 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00209}00209 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00210}00210 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a6481da28118c72276213eec3cb5fe126}{CarApp::Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00211}00211 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00212}00212     \mbox{\hyperlink{class_car_app_a8ec69aaed5b732fdfba5cc7ad8c0d923}{OnKeyboardInput}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00213}00213     \mbox{\hyperlink{class_car_app_a00ea72cd24ac9024c694186f1cc8aefb}{UpdateCamera}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00214}00214 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00215}00215     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00216}00216     \mbox{\hyperlink{class_car_app_ae9272d8ae40094400df5b4c9f4463513}{mCurrFrameResourceIndex}} = (\mbox{\hyperlink{class_car_app_ae9272d8ae40094400df5b4c9f4463513}{mCurrFrameResourceIndex}} + 1) \% \mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00217}00217     \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}} = \mbox{\hyperlink{class_car_app_add536400d03e14b4f12b59daf315ad78}{mFrameResources}}[\mbox{\hyperlink{class_car_app_ae9272d8ae40094400df5b4c9f4463513}{mCurrFrameResourceIndex}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00218}00218 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00219}00219     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00220}00220     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00221}00221     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00222}00222     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00223}00223         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00224}00224         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(\mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00225}00225         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00226}00226         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00227}00227     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00229}00229 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00230}00230     \mbox{\hyperlink{class_car_app_a6f68b53e17fa6bbb14bda05c12b1e338}{UpdateObjectCBs}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00231}00231     \mbox{\hyperlink{class_car_app_a7821ab0925d1404d7fb57d668ea95527}{UpdateMaterialCBs}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00232}00232     \mbox{\hyperlink{class_car_app_aa3fdfa701610148d3ba870e418513424}{UpdateMainPassCB}}(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00233}00233 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00235}00235 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a9737835556d38cf71dea362ffa90182c}{CarApp::Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00236}00236 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00237}00237     \textcolor{keyword}{auto} cmdListAlloc = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00238}00238 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00239}00239     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00240}00240     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00241}00241     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00242}00242 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00243}00243     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00244}00244     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00245}00245     \textcolor{comment}{//ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSO.Get()));}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00246}00246 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00247}00247     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_car_app_a68ebe9cbdc3b27be63e7621475922046}{mIsWireframe}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00248}00248     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00249}00249         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), \mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}}[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00250}00250     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00251}00251     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00252}00252     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00253}00253         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), \mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00254}00254     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00255}00255 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00256}00256     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00257}00257     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00258}00258 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00259}00259     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00260}00260     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00261}00261         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00262}00262 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00263}00263     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00264}00264     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::Black, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00265}00265     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00266}00266 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00267}00267     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00268}00268     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00269}00269 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00270}00270     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(\mbox{\hyperlink{class_car_app_a9dfbb9c330ca8bf9c60960fde1ad1e21}{mRootSignature}}.Get());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00272}00272     \textcolor{keyword}{auto} passCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00273}00273     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00274}00274 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00275}00275     \textcolor{comment}{//step3}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00276}00276     \textcolor{comment}{//DrawRenderItems(mCommandList.Get(), mOpaqueRitems);}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00277}00277     \mbox{\hyperlink{class_car_app_ae5ccc846e15a73b81c01089cc0258812}{DrawRenderItems}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), \mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{mRitemLayer}}[(\textcolor{keywordtype}{int})\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}]);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00278}00278 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00279}00279 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00280}00280     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetPipelineState(\mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}}[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00281}00281     \mbox{\hyperlink{class_car_app_ae5ccc846e15a73b81c01089cc0258812}{DrawRenderItems}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), \mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{mRitemLayer}}[(\textcolor{keywordtype}{int})\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}{RenderLayer::Transparent}}]);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00282}00282 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00283}00283     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00284}00284     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00285}00285         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00286}00286 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00287}00287     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00288}00288     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00289}00289 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00290}00290     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00291}00291     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00292}00292     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00293}00293 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00294}00294     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00295}00295     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00296}00296     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00297}00297 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00298}00298     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00299}00299     \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00300}00300 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00301}00301     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00302}00302     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00303}00303     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00304}00304     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00305}00305 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00306}00306 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00307}00307 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae494b6b5e111c3d1d8b26fff0eda3189}{CarApp::OnMouseDown}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00308}00308 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00309}00309     \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00310}00310     \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00311}00311 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00312}00312     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00313}00313 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00314}00314 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00315}00315 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a589576ce0b3aba84cb62a8e4b2c37efc}{CarApp::OnMouseUp}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00316}00316 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00317}00317     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00318}00318 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00319}00319 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00320}00320 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a5cb5fe3a7b22d5eb05ea6b58f542ac42}{CarApp::OnMouseMove}}(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00321}00321 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00322}00322     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00323}00323     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00324}00324         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00325}00325         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.x));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00326}00326         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.y));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00327}00327 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00328}00328         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00329}00329         \mbox{\hyperlink{class_car_app_a62a26802f08bd3f81b7df0b28941aa7d}{mTheta}} += dx;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00330}00330         \mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}} += dy;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00331}00331 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00332}00332         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00333}00333         \mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}}, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00334}00334     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00335}00335     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00336}00336     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00337}00337         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00338}00338         \textcolor{keywordtype}{float} dx = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.x);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00339}00339         \textcolor{keywordtype}{float} dy = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.y);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00340}00340 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00341}00341         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00342}00342         \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}} += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00343}00343 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00344}00344         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00345}00345         \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}} = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(\mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}}, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00346}00346     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00347}00347 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00348}00348     \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00349}00349     \mbox{\hyperlink{class_car_app_a340ab350fe092838957957aa7a392b9e}{mLastMousePos}}.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00350}00350 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00351}00351  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00352}00352 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a8ec69aaed5b732fdfba5cc7ad8c0d923}{CarApp::OnKeyboardInput}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00353}00353 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00354}00354     \textcolor{keywordflow}{if} (GetAsyncKeyState(\textcolor{charliteral}{'1'}) \& 0x8000)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00355}00355         \mbox{\hyperlink{class_car_app_a68ebe9cbdc3b27be63e7621475922046}{mIsWireframe}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00356}00356     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00357}00357         \mbox{\hyperlink{class_car_app_a68ebe9cbdc3b27be63e7621475922046}{mIsWireframe}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00358}00358 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00359}00359  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00360}00360 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a00ea72cd24ac9024c694186f1cc8aefb}{CarApp::UpdateCamera}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00361}00361 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00362}00362     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00363}00363     \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.x = \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}}*sinf(\mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}})*cosf(\mbox{\hyperlink{class_car_app_a62a26802f08bd3f81b7df0b28941aa7d}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00364}00364     \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.z = \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}}*sinf(\mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}})*sinf(\mbox{\hyperlink{class_car_app_a62a26802f08bd3f81b7df0b28941aa7d}{mTheta}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00365}00365     \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.y = \mbox{\hyperlink{class_car_app_a43600aeba785a28c6ccc12ae332329fa}{mRadius}}*cosf(\mbox{\hyperlink{class_car_app_a766e7558b64d68ec7b160b82892d5d9e}{mPhi}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00366}00366 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00367}00367     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00368}00368     XMVECTOR pos = XMVectorSet(\mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.x, \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.y, \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}}.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00369}00369     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00370}00370     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00371}00371 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00372}00372     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00373}00373     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_a2bc7ee24a23773156dac41be0e0f0955}{mView}}, view);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00374}00374 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00375}00375 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00376}00376 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00377}00377 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00378}00378 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a6f68b53e17fa6bbb14bda05c12b1e338}{CarApp::UpdateObjectCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00379}00379 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00380}00380     \textcolor{keyword}{auto} currObjectCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00381}00381     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_car_app_a024658f760cb80074fa36c68bedb2721}{mAllRitems}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00382}00382     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00383}00383         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00384}00384         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00385}00385         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00386}00386         \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00387}00387             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00388}00388 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00389}00389             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00390}00390             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00391}00391 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00392}00392             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00393}00393 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00394}00394             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00395}00395             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00396}00396         \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00397}00397     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00398}00398 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00399}00399 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00400}00400 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7821ab0925d1404d7fb57d668ea95527}{CarApp::UpdateMaterialCBs}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00401}00401 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00402}00402     \textcolor{keyword}{auto} currMaterialCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00403}00403     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00404}00404     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00405}00405         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00406}00406         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00407}00407         \mbox{\hyperlink{struct_material}{Material}}* mat = e.second.get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00408}00408         \textcolor{keywordflow}{if}(mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00409}00409         \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00410}00410             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00411}00411 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00412}00412             \mbox{\hyperlink{struct_material_constants}{MaterialConstants}} matConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00413}00413             matConstants.\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = mat-\/>\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00414}00414             matConstants.\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = mat-\/>\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00415}00415             matConstants.\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = mat-\/>\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00416}00416             XMStoreFloat4x4(\&matConstants.\mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}}, XMMatrixTranspose(matTransform));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00417}00417 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00418}00418             currMaterialCB-\/>CopyData(mat-\/>\mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{MatCBIndex}}, matConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00419}00419 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00420}00420             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00421}00421             mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}}-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00422}00422         \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00423}00423     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00424}00424 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00425}00425 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00426}00426 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_aa3fdfa701610148d3ba870e418513424}{CarApp::UpdateMainPassCB}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00427}00427 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00428}00428     XMMATRIX view = XMLoadFloat4x4(\&\mbox{\hyperlink{class_car_app_a2bc7ee24a23773156dac41be0e0f0955}{mView}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00429}00429     XMMATRIX proj = XMLoadFloat4x4(\&\mbox{\hyperlink{class_car_app_adaccd42ffc6c0b11cacaf6986921ef0a}{mProj}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00430}00430 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00431}00431     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00432}00432     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00433}00433     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00434}00434     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00435}00435 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00436}00436     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00437}00437     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00438}00438     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00439}00439     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00440}00440     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00441}00441     XMStoreFloat4x4(\&\mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00442}00442     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \mbox{\hyperlink{class_car_app_a162b0d65c3233e95058ef26e640752a4}{mEyePos}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00443}00443     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00444}00444     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00445}00445     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00446}00446     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00447}00447     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00448}00448     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00449}00449 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00450}00450     \textcolor{comment}{//step1}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00451}00451     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00452}00452 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00453}00453     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00454}00454     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.6f, 0.6f, 0.6f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00455}00455     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00456}00456     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.3f, 0.3f, 0.3f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00457}00457     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.0f, -\/0.707f, -\/0.707f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00458}00458     \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}}.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.15f, 0.15f, 0.15f \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00459}00459 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00460}00460 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00461}00461     \textcolor{comment}{//spot light}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00462}00462     \textcolor{comment}{//mMainPassCB.Lights[0].Position = \{ 0.0f, 5.0f, -\/3.0f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00463}00463     \textcolor{comment}{//mMainPassCB.Lights[0].Direction = \{ 0.0f, -\/5.0f, 3.0f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00464}00464     \textcolor{comment}{//mMainPassCB.Lights[0].Strength = \{ 0.95f, 0.95f, 0.95f \};   }}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00465}00465     \textcolor{comment}{//mMainPassCB.Lights[0].SpotPower = 1.0;}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00466}00466 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00467}00467     \textcolor{keyword}{auto} currPassCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00468}00468     currPassCB-\/>CopyData(0, \mbox{\hyperlink{class_car_app_aff2491d0bea90f515513b76e99418ce3}{mMainPassCB}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00469}00469 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00470}00470 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00471}00471 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_af4106b0671bf08a6f61848dc53463c1a}{CarApp::BuildRootSignature}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00472}00472 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00473}00473     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00474}00474     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00475}00475 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00476}00476     \textcolor{comment}{// Create root CBV.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00477}00477     slotRootParameter[0].InitAsConstantBufferView(0);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00478}00478     slotRootParameter[1].InitAsConstantBufferView(1);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00479}00479     slotRootParameter[2].InitAsConstantBufferView(2);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00480}00480 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00481}00481     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00482}00482     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00483}00483 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00484}00484     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00485}00485     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00486}00486     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00487}00487     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00488}00488         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00489}00489 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00490}00490     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00491}00491     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00492}00492         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00493}00493     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00494}00494     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00495}00495 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00496}00496     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00497}00497         0,}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00498}00498         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00499}00499         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00500}00500         IID\_PPV\_ARGS(\mbox{\hyperlink{class_car_app_a9dfbb9c330ca8bf9c60960fde1ad1e21}{mRootSignature}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00501}00501 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00502}00502 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00503}00503 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a7827765cc6e0d8e483c6f4b8a5589475}{CarApp::BuildShadersAndInputLayout}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00504}00504 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00505}00505 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00506}00506     \mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00507}00507     \mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00508}00508     }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00509}00509     \mbox{\hyperlink{class_car_app_aee3c45130aebdfc88e092bf98f362ef9}{mInputLayout}} =}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00510}00510     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00511}00511         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00512}00512         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00513}00513     \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00514}00514 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00515}00515 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00516}00516 \textcolor{comment}{//step3}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00517}00517 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a21430638aa963a2e1dbfaaebf36d6b36}{CarApp::BuildShapeGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00518}00518 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00519}00519     \mbox{\hyperlink{class_geometry_generator}{GeometryGenerator}} geoGen;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00520}00520     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{GeometryGenerator::MeshData}} grid = geoGen.\mbox{\hyperlink{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}{CreateGrid}}(20.0f, 30.0f, 60, 40);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00521}00521 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00522}00522     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00523}00523     \textcolor{comment}{// We are concatenating all the geometry into one big vertex/index buffer.  So}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00524}00524     \textcolor{comment}{// define the regions in the buffer each submesh covers.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00525}00525     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00526}00526 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00527}00527     \textcolor{comment}{// Cache the vertex offsets to each object in the concatenated vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00528}00528     UINT gridVertexOffset = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00529}00529 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00530}00530 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00531}00531     \textcolor{comment}{// Cache the starting index for each object in the concatenated index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00532}00532     UINT gridIndexOffset = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00533}00533 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00534}00534 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00535}00535     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} gridSubmesh;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00536}00536     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}}.size();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00537}00537     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = gridIndexOffset;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00538}00538     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = gridVertexOffset;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00539}00539 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00540}00540     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00541}00541     \textcolor{comment}{// Extract the vertex elements we are interested in and pack the}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00542}00542     \textcolor{comment}{// vertices of all the meshes into one vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00543}00543     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00544}00544 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00545}00545     \textcolor{keyword}{auto} totalVertexCount =grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00546}00546 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00547}00547     std::vector<Vertex> vertices(totalVertexCount);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00548}00548 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00549}00549     UINT k = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00550}00550 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00551}00551     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size(); ++i, ++k)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00552}00552     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00553}00553         vertices[k].Pos = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Position;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00554}00554         vertices[k].Normal = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Normal;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00555}00555     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00556}00556 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00557}00557 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00558}00558 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00559}00559     std::vector<std::uint16\_t> indices;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00560}00560     indices.insert(indices.end(), std::begin(grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}()), std::end(grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}()));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00561}00561 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00562}00562     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00563}00563     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00564}00564 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00565}00565     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00566}00566     geo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00567}00567 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00568}00568     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00569}00569     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00570}00570 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00571}00571     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00572}00572     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00573}00573 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00574}00574     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00575}00575         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00576}00576 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00577}00577     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00578}00578         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00579}00579 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00580}00580     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00581}00581     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00582}00582     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00583}00583     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00584}00584 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00585}00585     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = gridSubmesh;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00586}00586 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00587}00587     \mbox{\hyperlink{class_car_app_a950b4d62e9d8e2fce730bd448fe93573}{mGeometries}}[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00588}00588 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00589}00589 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00590}00590 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_adba5355dfc1e797a7f8a2a74e73215f4}{CarApp::BuildCarGeometry}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00591}00591 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00592}00592     std::ifstream fin(\textcolor{stringliteral}{"{}Models/car.txt"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00593}00593 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00594}00594     \textcolor{keywordflow}{if}(!fin)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00595}00595     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00596}00596         MessageBox(0, L\textcolor{stringliteral}{"{}Models/car.txt not found."{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00597}00597         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00598}00598     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00599}00599 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00600}00600     UINT vcount = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00601}00601     UINT tcount = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00602}00602     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00603}00603 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00604}00604     fin >> ignore >> vcount;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00605}00605     fin >> ignore >> tcount;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00606}00606     fin >> ignore >> ignore >> ignore >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00607}00607 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00608}00608     std::vector<Vertex> vertices(vcount);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00609}00609     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00610}00610     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00611}00611         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00612}00612         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00613}00613     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00614}00614 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00615}00615     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00616}00616     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00617}00617     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00618}00618 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00619}00619     std::vector<std::int32\_t> indices(3 * tcount);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00620}00620     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00621}00621     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00622}00622         fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00623}00623     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00624}00624 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00625}00625     fin.close();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00626}00626 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00627}00627     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00628}00628     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00629}00629     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00630}00630 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00631}00631     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00632}00632 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00633}00633     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00634}00634 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00635}00635     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00636}00636     geo-\/>Name = \textcolor{stringliteral}{"{}carGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00637}00637 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00638}00638     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00639}00639     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00640}00640 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00641}00641     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00642}00642     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00643}00643 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00644}00644     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00645}00645         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00646}00646 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00647}00647     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00648}00648         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00649}00649 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00650}00650     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00651}00651     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00652}00652     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00653}00653     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00654}00654 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00655}00655     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00656}00656     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00657}00657     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00658}00658     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00659}00659 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00660}00660     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00661}00661 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00662}00662     \mbox{\hyperlink{class_car_app_a950b4d62e9d8e2fce730bd448fe93573}{mGeometries}}[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00663}00663 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00664}00664 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00665}00665 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a90ee2e5d66f4d846c0befb6f679ee262}{CarApp::BuildPSOs}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00666}00666 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00667}00667     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00668}00668 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00669}00669     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00670}00670     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00671}00671     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00672}00672     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00673}00673     opaquePsoDesc.InputLayout = \{ \mbox{\hyperlink{class_car_app_aee3c45130aebdfc88e092bf98f362ef9}{mInputLayout}}.data(), (UINT)\mbox{\hyperlink{class_car_app_aee3c45130aebdfc88e092bf98f362ef9}{mInputLayout}}.size() \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00674}00674     opaquePsoDesc.pRootSignature = \mbox{\hyperlink{class_car_app_a9dfbb9c330ca8bf9c60960fde1ad1e21}{mRootSignature}}.Get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00675}00675     opaquePsoDesc.VS = }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00676}00676     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00677}00677         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00678}00678         \mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00679}00679     \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00680}00680     opaquePsoDesc.PS = }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00681}00681     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00682}00682         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00683}00683         \mbox{\hyperlink{class_car_app_a50378e4cf8140e72a3bf1545154a0e11}{mShaders}}[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00684}00684     \};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00685}00685     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00686}00686     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00687}00687     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00688}00688     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00689}00689     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00690}00690     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00691}00691     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00692}00692     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00693}00693     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00694}00694     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00695}00695     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}}[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00696}00696 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00697}00697     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00698}00698     \textcolor{comment}{// PSO for opaque wireframe objects.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00699}00699     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00700}00700 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00701}00701     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00702}00702     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00703}00703     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_car_app_ac6239301c455e4b5157bdacf44b21357}{mPSOs}}[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00704}00704 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00705}00705 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00706}00706 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00707}00707 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ab87451702fb7cba7c0dcff5aea447a5f}{CarApp::BuildFrameResources}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00708}00708 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00709}00709     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00710}00710     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00711}00711         \mbox{\hyperlink{class_car_app_add536400d03e14b4f12b59daf315ad78}{mFrameResources}}.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00712}00712             1, (UINT)\mbox{\hyperlink{class_car_app_a024658f760cb80074fa36c68bedb2721}{mAllRitems}}.size(), (UINT)\mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}}.size()));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00713}00713     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00714}00714 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00715}00715 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00716}00716 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_a4c82e82af5cb43de9a4fd506cc7fcd05}{CarApp::BuildMaterials}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00717}00717 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00718}00718 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00719}00719     \textcolor{keyword}{auto} carMat = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00720}00720     carMat-\/>Name = \textcolor{stringliteral}{"{}carMat"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00721}00721     carMat-\/>MatCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00722}00722     carMat-\/>DiffuseAlbedo = XMFLOAT4(212.0f / 255.0f, 175.0f / 255.0f, 55.0 / 255.0f, 1.0);   \textcolor{comment}{//rgb(212,175,55) metalic gold}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00723}00723     carMat-\/>FresnelR0 = XMFLOAT3(1.0f, 0.71f, 0.29f);  \textcolor{comment}{//Gold Fresnel}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00724}00724     carMat-\/>Roughness = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00725}00725     }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00726}00726     \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}}[\textcolor{stringliteral}{"{}carMat"{}}] = std::move(carMat);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00727}00727 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00728}00728     \textcolor{comment}{//step4}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00729}00729     \textcolor{keyword}{auto} tile0 = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00730}00730     tile0-\/>Name = \textcolor{stringliteral}{"{}tile0"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00731}00731     tile0-\/>MatCBIndex = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00732}00732     tile0-\/>DiffuseAlbedo = XMFLOAT4(Colors::BlanchedAlmond);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00733}00733     tile0-\/>FresnelR0 = XMFLOAT3(0.02f, 0.02f, 0.02f);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00734}00734     tile0-\/>Roughness = 0.2f;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00735}00735     \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}}[\textcolor{stringliteral}{"{}tile0"{}}] = std::move(tile0);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00736}00736 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00737}00737 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00738}00738 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae2c30b3bc96e13c384c4c752ca1e4200}{CarApp::BuildRenderItems}}()}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00739}00739 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00740}00740 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00741}00741     \textcolor{keyword}{auto} carRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00742}00742     XMStoreFloat4x4(\&carRitem-\/>World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00743}00743 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00744}00744     carRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00745}00745     carRitem-\/>Mat = \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}}[\textcolor{stringliteral}{"{}carMat"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00746}00746     carRitem-\/>Geo = \mbox{\hyperlink{class_car_app_a950b4d62e9d8e2fce730bd448fe93573}{mGeometries}}[\textcolor{stringliteral}{"{}carGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00747}00747     carRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00748}00748     carRitem-\/>IndexCount = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00749}00749     carRitem-\/>StartIndexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00750}00750     carRitem-\/>BaseVertexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00751}00751 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00752}00752 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00753}00753     \textcolor{comment}{//step4}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00754}00754     \textcolor{comment}{//mAllRitems.push\_back(std::move(carRitem));}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00755}00755     \mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}].push\_back(carRitem.get());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00756}00756 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00757}00757     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00758}00758     gridRitem-\/>World = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00759}00759     XMStoreFloat4x4(\&gridRitem-\/>World, XMMatrixScaling(8.0f, 8.0f, 1.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00760}00760     gridRitem-\/>ObjCBIndex = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00761}00761     gridRitem-\/>Mat = \mbox{\hyperlink{class_car_app_aef254ac6cdb5fda0aee8542bab1fb879}{mMaterials}}[\textcolor{stringliteral}{"{}tile0"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00762}00762     gridRitem-\/>Geo = \mbox{\hyperlink{class_car_app_a950b4d62e9d8e2fce730bd448fe93573}{mGeometries}}[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00763}00763     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00764}00764     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00765}00765     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00766}00766     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00767}00767 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00768}00768     \textcolor{comment}{//step5}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00769}00769     \textcolor{comment}{//mAllRitems.push\_back(std::move(gridRitem));}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00770}00770     \mbox{\hyperlink{class_car_app_a805cb1f94ad1fd521623050b029be96c}{mRitemLayer}}[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}{RenderLayer::Transparent}}].push\_back(gridRitem.get());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00771}00771 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00772}00772     \mbox{\hyperlink{class_car_app_a024658f760cb80074fa36c68bedb2721}{mAllRitems}}.push\_back(std::move(carRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00773}00773     \mbox{\hyperlink{class_car_app_a024658f760cb80074fa36c68bedb2721}{mAllRitems}}.push\_back(std::move(gridRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00774}00774 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00775}00775 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00776}00776     \textcolor{comment}{// All the render items are opaque.}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00777}00777     \textcolor{comment}{//for(auto\& e : mAllRitems)}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00778}00778     \textcolor{comment}{//  mOpaqueRitems.push\_back(e.get());}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00779}00779 \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00780}00780 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00781}00781 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_car_app_ae5ccc846e15a73b81c01089cc0258812}{CarApp::DrawRenderItems}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00782}00782 \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00783}00783     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00784}00784     UINT matCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00785}00785  }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00786}00786     \textcolor{keyword}{auto} objectCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00787}00787     \textcolor{keyword}{auto} matCB = \mbox{\hyperlink{class_car_app_acc3cec520abb2f079acfafd7caf63cd5}{mCurrFrameResource}}-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00788}00788 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00789}00789     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00790}00790     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00791}00791     \{}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00792}00792         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00793}00793 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00794}00794         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00795}00795         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00796}00796         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00797}00797 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00798}00798         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00799}00799         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00800}00800 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00801}00801         cmdList-\/>SetGraphicsRootConstantBufferView(0, objCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00802}00802         cmdList-\/>SetGraphicsRootConstantBufferView(1, matCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00803}00803 }
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00804}00804         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00805}00805     \}}
+\DoxyCodeLine{\Hypertarget{_week5-6-_lit_car_app_with_grid__2_p_s_os_8cpp_source_l00806}00806 \}}
+
+\end{DoxyCode}
