@@ -1,146 +1,146 @@
-\hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source}{}\doxysection{DXApp.\+cpp}
+\doxysection{DXApp.\+cpp}
 \label{_week_012-1-_win32_app_2_d_x_app_8cpp_source}\index{Week2/Week 2-\/1-\/Win32App/DXApp.cpp@{Week2/Week 2-\/1-\/Win32App/DXApp.cpp}}
-\mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-5-_direct_x11sample_2_d_x_app_8h}{DXApp.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00002}00002 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00003}00003 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00004}00004 \textcolor{keyword}{namespace }\{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00005}00005     \textcolor{comment}{//used to forward messages to user defined proc function}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00006}00006     \mbox{\hyperlink{class_d_x_app}{DXApp}}* g\_App = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00007}00007 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00008}00008 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00009}\mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{00009}} LRESULT CALLBACK \mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00010}00010 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00011}00011     \textcolor{comment}{//step4:Window procedures are functions we implement which contain code that is to be executed in response to specific messages.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00012}00012     \textcolor{keywordflow}{if} (g\_App) g\_App-\/>MsgProc(hwnd, msg, wParam, lParam);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00013}00013     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00014}00014         \textcolor{comment}{//The messages a window does not handle should be forwarded to the default window}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00015}00015         \textcolor{comment}{//procedure, which then handles the message.The Win32 API supplies the default window}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00016}00016         \textcolor{comment}{//procedure, which is called DefWindowProc.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00017}00017         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00018}00018 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00019}00019 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00020}\mbox{\hyperlink{class_d_x_app_ac7dcbcd30f5c5b2da87c840b9dcbc6e6}{00020}} \mbox{\hyperlink{class_d_x_app_ac7dcbcd30f5c5b2da87c840b9dcbc6e6}{DXApp::DXApp}}(HINSTANCE hInstance)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00021}00021 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00022}00022     \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}} = hInstance;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00023}00023     \mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}} = NULL; \textcolor{comment}{//we don't have a window yet}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00024}00024     \mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}} = 800;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00025}00025     \mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}} = 800;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00026}00026     \mbox{\hyperlink{class_d_x_app_a7b17a8c07b5f5700fe7e3fa24a448612}{m\_AppTitle}} = \textcolor{stringliteral}{"{}DirectX12 Application"{}};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00027}00027     \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}} = WS\_OVERLAPPEDWINDOW; \textcolor{comment}{//basic maximize, minimize, etc.. }}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00028}00028     g\_App = \textcolor{keyword}{this};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00029}00029 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00030}00030 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00031}\mbox{\hyperlink{class_d_x_app_a6414f22a20a4b5a0e26920fc55a279db}{00031}} \mbox{\hyperlink{class_d_x_app_a6414f22a20a4b5a0e26920fc55a279db}{DXApp::\string~DXApp}}()}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00032}00032 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00033}00033 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00035}\mbox{\hyperlink{class_d_x_app_a9826ef8d4adc442a7a5252d6c9790bc1}{00035}} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_d_x_app_a9826ef8d4adc442a7a5252d6c9790bc1}{DXApp::Run}}()}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00036}00036 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00037}00037     \textcolor{comment}{//step3: A Windows application follows an event-\/driven programming model.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00038}00038     \textcolor{comment}{//An event can be generated in a number of ways:key presses, mouse clicks,}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00039}00039     \textcolor{comment}{//and when a window is created, resized, moved, closed, minimized, maximized, or becomes visible.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00040}00040     \textcolor{comment}{//When an event occurs, Windows sends a message to the application the event}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00041}00041     \textcolor{comment}{//occurred for, and adds the message to the application’s message queue}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00042}00042     \textcolor{comment}{//The application constantly checks the message queue for messages in a message loop}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00043}00043 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00044}00044     \textcolor{comment}{//Main Message Loop}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00045}00045     MSG msg = \{ 0 \};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00046}00046     \textcolor{keywordflow}{while} (WM\_QUIT != msg.message)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00047}00047     \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00048}00048         \textcolor{comment}{//when the application receives a message, it dispatches the message to the window procedure of the particular window the message is for}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00049}00049         \textcolor{keywordflow}{if} (PeekMessage(\&msg, NULL, NULL, NULL, PM\_REMOVE)) \textcolor{comment}{//peek and remove from the stack}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00050}00050         \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00051}00051             TranslateMessage(\&msg);  \textcolor{comment}{//Translates virtual-\/key messages (alt + ctrl + escape..) into character messages. WM\_KEYDOWN and WM\_KEYUP combinations produce a WM\_CHAR}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00052}00052             DispatchMessage(\&msg);   \textcolor{comment}{//Dispatches a message to a window procedure (MainWndProc).}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00053}00053         \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00054}00054         \textcolor{keywordflow}{else}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00055}00055         \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00056}00056             \textcolor{comment}{//In off-\/time we update and render}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00057}00057             \mbox{\hyperlink{class_d_x_app_a00be75553e31cedea9c444b9bab788a3}{Update}}(0.0);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00058}00058             \mbox{\hyperlink{class_d_x_app_a8bab68e83895597156bdf097e18abefd}{Render}}(0.0);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00059}00059         \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00060}00060     \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00061}00061 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00062}00062     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(msg.wParam);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00063}00063 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00064}00064 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00065}\mbox{\hyperlink{class_d_x_app_a80f7022aebbe880d8a8b35835c5a851f}{00065}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d_x_app_a80f7022aebbe880d8a8b35835c5a851f}{DXApp::Init}}()}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00066}00066 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00067}00067     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d_x_app_a41ce52cbd69650798c342aed6b1d21fd}{InitWindow}}())}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00068}00068         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00069}00069     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00070}00070 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00071}00071 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00072}\mbox{\hyperlink{class_d_x_app_a41ce52cbd69650798c342aed6b1d21fd}{00072}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d_x_app_a41ce52cbd69650798c342aed6b1d21fd}{DXApp::InitWindow}}()}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00073}00073 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00074}00074     \textcolor{comment}{//WNDCLASSEX -\/ Bear in mind that the only difference between CreateWindow and CreateWindowEx is the addition of extended styles to the latter. You can use either type of window class structure with them.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00075}00075     WNDCLASSEX wcex;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00076}00076     ZeroMemory(\&wcex, \textcolor{keyword}{sizeof}(WNDCLASSEX)); \textcolor{comment}{//Fills a block of memory with zeros.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00077}00077     wcex.style = CS\_HREDRAW | CS\_VREDRAW;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00078}00078     wcex.lpfnWndProc = \mbox{\hyperlink{_week_012-1-_win32_app_2_d_x_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00079}00079     wcex.cbClsExtra = 0;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00080}00080     wcex.cbWndExtra = 0;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00081}00081     wcex.cbSize = \textcolor{keyword}{sizeof}(WNDCLASSEX);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00082}00082     wcex.hInstance = \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00083}00083     wcex.hIcon = LoadIcon(0, IDI\_APPLICATION);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00084}00084     wcex.hCursor = LoadCursor(0, IDC\_ARROW);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00085}00085     wcex.hbrBackground = (HBRUSH)GetStockObject(NULL\_BRUSH);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00086}00086     wcex.lpszMenuName = 0;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00087}00087     wcex.lpszClassName = L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00088}00088 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00089}00089     \textcolor{comment}{//register with Windows OS}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00090}00090     \textcolor{keywordflow}{if} (!RegisterClassEx(\&wcex))}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00091}00091     \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00092}00092         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window Class\(\backslash\)n"{}});}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00093}00093         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00094}00094     \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00095}00095 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00096}00096     RECT r = \{ 0,0, \mbox{\hyperlink{class_d_x_app_ab947d4f4ef100fb247d500c0e5ebbc18}{m\_ClientWidth}}, \mbox{\hyperlink{class_d_x_app_a70702557e9bc9894131a1bedd1ee682f}{m\_ClientHeight}} \};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00097}00097     AdjustWindowRect(\&r, \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}}, FALSE);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00098}00098     UINT width = r.right -\/ r.left;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00099}00099     UINT height = r.bottom -\/ r.top;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00100}00100     UINT x = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ width / 2;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00101}00101     UINT y = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ height / 2;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00102}00102     \textcolor{comment}{//step1 we use WIN32 API to create window -\/ when using 16-\/bit wide-\/characters (unicode), we must prefix a string literal with a capital L!}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00103}00103     \mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}} = CreateWindow(L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}}, L\textcolor{stringliteral}{"{}test"{}}, \mbox{\hyperlink{class_d_x_app_ad81b0eb2e908ca38298be9152adceafc}{m\_WndStyle}}, x, y, width, height, NULL, NULL, \mbox{\hyperlink{class_d_x_app_a8ca61ab8cd8cc4a07c06247d95d86a5a}{m\_hAppInstance}}, NULL);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00104}00104 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00105}00105     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}}) \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00106}00106         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window \(\backslash\)n"{}});}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00107}00107         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00108}00108     \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00109}00109 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00110}00110     \textcolor{comment}{//step2 to notify Windows to show a particular window. Note that Windows applications do not have direct access to hardware.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00111}00111     \textcolor{comment}{//For example, to display a window you must call the Win32 API function ShowWindow; you cannot write to video memory directly.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00112}00112     ShowWindow(\mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}}, SW\_SHOW);}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00113}00113 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00114}00114     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00115}00115 \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00116}00116 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00117}00117 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00118}00118 \textcolor{comment}{//step5: Once upon a time, Windows was 16 -\/ bit.Each message could carry with it two pieces of data, called WPARAMand LPARAM.The first one was a 16 -\/ bit value(“word”), so it was called W.The second one was a 32 -\/ bit value(“long”), so it was called L.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00119}00119 \textcolor{comment}{//You used the W parameter to pass things like handles and integers.You used the L parameter to pass pointers.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00120}00120 \textcolor{comment}{//When Windows was converted to 32 -\/ bit, the WPARAM parameter grew to a 32 -\/ bit value as well.So even though the “W” stands for “word”, it isn’t a word any more. (And in 64 -\/ bit Windows, both parameters are 64 -\/ bit values!)}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00121}00121 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00122}00122 \textcolor{comment}{//typedef LONG\_PTR LRESULT}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00123}\mbox{\hyperlink{class_d_x_app_a6c039fb823620467b3f8e78fdb1ebc7e}{00123}} LRESULT \mbox{\hyperlink{class_d_x_app_a6c039fb823620467b3f8e78fdb1ebc7e}{DXApp::MsgProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00124}00124 \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00125}00125     \textcolor{comment}{//step6: For instance, we may want to destroy a window when the Escape key is pressed.}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00126}00126     \textcolor{keywordflow}{switch} (msg)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00127}00127     \{}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00128}00128     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00129}00129         \textcolor{keywordflow}{if} (wParam == VK\_ESCAPE)}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00130}00130             DestroyWindow(\mbox{\hyperlink{class_d_x_app_a2bf6175a3e341e16937b766dce672bcd}{m\_hAppWnd}});}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00131}00131         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00132}00132     \textcolor{keywordflow}{case} WM\_DESTROY:}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00133}00133         PostQuitMessage(0);  \textcolor{comment}{//Indicates to the system that a thread has made a request to terminate}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00134}00134         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00135}00135 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00136}00136     \textcolor{keywordflow}{default}:}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00137}00137         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam); \textcolor{comment}{//wParam, lParam..mouse position..ket down...}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00138}00138     \}}
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00139}00139 }
-\DoxyCodeLine{\Hypertarget{_week_012-1-_win32_app_2_d_x_app_8cpp_source_l00140}00140 \}}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}DXApp.h"{}}}
+\DoxyCodeLine{00002 }
+\DoxyCodeLine{00003 }
+\DoxyCodeLine{00004 \textcolor{keyword}{namespace }\{}
+\DoxyCodeLine{00005     \textcolor{comment}{//used to forward messages to user defined proc function}}
+\DoxyCodeLine{00006     DXApp* g\_App = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00007 \}}
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{00010 \{}
+\DoxyCodeLine{00011     \textcolor{comment}{//step4:Window procedures are functions we implement which contain code that is to be executed in response to specific messages.}}
+\DoxyCodeLine{00012     \textcolor{keywordflow}{if} (g\_App) g\_App-\/>MsgProc(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{00013     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00014         \textcolor{comment}{//The messages a window does not handle should be forwarded to the default window}}
+\DoxyCodeLine{00015         \textcolor{comment}{//procedure, which then handles the message.The Win32 API supplies the default window}}
+\DoxyCodeLine{00016         \textcolor{comment}{//procedure, which is called DefWindowProc.}}
+\DoxyCodeLine{00017         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{00018 \}}
+\DoxyCodeLine{00019 }
+\DoxyCodeLine{00020 DXApp::DXApp(HINSTANCE hInstance)}
+\DoxyCodeLine{00021 \{}
+\DoxyCodeLine{00022     m\_hAppInstance = hInstance;}
+\DoxyCodeLine{00023     m\_hAppWnd = NULL; \textcolor{comment}{//we don't have a window yet}}
+\DoxyCodeLine{00024     m\_ClientWidth = 800;}
+\DoxyCodeLine{00025     m\_ClientHeight = 800;}
+\DoxyCodeLine{00026     m\_AppTitle = \textcolor{stringliteral}{"{}DirectX12 Application"{}};}
+\DoxyCodeLine{00027     m\_WndStyle = WS\_OVERLAPPEDWINDOW; \textcolor{comment}{//basic maximize, minimize, etc.. }}
+\DoxyCodeLine{00028     g\_App = \textcolor{keyword}{this};}
+\DoxyCodeLine{00029 \}}
+\DoxyCodeLine{00030 }
+\DoxyCodeLine{00031 DXApp::\string~DXApp()}
+\DoxyCodeLine{00032 \{}
+\DoxyCodeLine{00033 \}}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035 \textcolor{keywordtype}{int} DXApp::Run()}
+\DoxyCodeLine{00036 \{}
+\DoxyCodeLine{00037     \textcolor{comment}{//step3: A Windows application follows an event-\/driven programming model.}}
+\DoxyCodeLine{00038     \textcolor{comment}{//An event can be generated in a number of ways:key presses, mouse clicks,}}
+\DoxyCodeLine{00039     \textcolor{comment}{//and when a window is created, resized, moved, closed, minimized, maximized, or becomes visible.}}
+\DoxyCodeLine{00040     \textcolor{comment}{//When an event occurs, Windows sends a message to the application the event}}
+\DoxyCodeLine{00041     \textcolor{comment}{//occurred for, and adds the message to the application’s message queue}}
+\DoxyCodeLine{00042     \textcolor{comment}{//The application constantly checks the message queue for messages in a message loop}}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044     \textcolor{comment}{//Main Message Loop}}
+\DoxyCodeLine{00045     MSG msg = \{ 0 \};}
+\DoxyCodeLine{00046     \textcolor{keywordflow}{while} (WM\_QUIT != msg.message)}
+\DoxyCodeLine{00047     \{}
+\DoxyCodeLine{00048         \textcolor{comment}{//when the application receives a message, it dispatches the message to the window procedure of the particular window the message is for}}
+\DoxyCodeLine{00049         \textcolor{keywordflow}{if} (PeekMessage(\&msg, NULL, NULL, NULL, PM\_REMOVE)) \textcolor{comment}{//peek and remove from the stack}}
+\DoxyCodeLine{00050         \{}
+\DoxyCodeLine{00051             TranslateMessage(\&msg);  \textcolor{comment}{//Translates virtual-\/key messages (alt + ctrl + escape..) into character messages. WM\_KEYDOWN and WM\_KEYUP combinations produce a WM\_CHAR}}
+\DoxyCodeLine{00052             DispatchMessage(\&msg);   \textcolor{comment}{//Dispatches a message to a window procedure (MainWndProc).}}
+\DoxyCodeLine{00053         \}}
+\DoxyCodeLine{00054         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00055         \{}
+\DoxyCodeLine{00056             \textcolor{comment}{//In off-\/time we update and render}}
+\DoxyCodeLine{00057             Update(0.0);}
+\DoxyCodeLine{00058             Render(0.0);}
+\DoxyCodeLine{00059         \}}
+\DoxyCodeLine{00060     \}}
+\DoxyCodeLine{00061 }
+\DoxyCodeLine{00062     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(msg.wParam);}
+\DoxyCodeLine{00063 \}}
+\DoxyCodeLine{00064 }
+\DoxyCodeLine{00065 \textcolor{keywordtype}{bool} DXApp::Init()}
+\DoxyCodeLine{00066 \{}
+\DoxyCodeLine{00067     \textcolor{keywordflow}{if} (!InitWindow())}
+\DoxyCodeLine{00068         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00069     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00070 \}}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00072 \textcolor{keywordtype}{bool} DXApp::InitWindow()}
+\DoxyCodeLine{00073 \{}
+\DoxyCodeLine{00074     \textcolor{comment}{//WNDCLASSEX -\/ Bear in mind that the only difference between CreateWindow and CreateWindowEx is the addition of extended styles to the latter. You can use either type of window class structure with them.}}
+\DoxyCodeLine{00075     WNDCLASSEX wcex;}
+\DoxyCodeLine{00076     ZeroMemory(\&wcex, \textcolor{keyword}{sizeof}(WNDCLASSEX)); \textcolor{comment}{//Fills a block of memory with zeros.}}
+\DoxyCodeLine{00077     wcex.style = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{00078     wcex.lpfnWndProc = MainWndProc;}
+\DoxyCodeLine{00079     wcex.cbClsExtra = 0;}
+\DoxyCodeLine{00080     wcex.cbWndExtra = 0;}
+\DoxyCodeLine{00081     wcex.cbSize = \textcolor{keyword}{sizeof}(WNDCLASSEX);}
+\DoxyCodeLine{00082     wcex.hInstance = m\_hAppInstance;}
+\DoxyCodeLine{00083     wcex.hIcon = LoadIcon(0, IDI\_APPLICATION);}
+\DoxyCodeLine{00084     wcex.hCursor = LoadCursor(0, IDC\_ARROW);}
+\DoxyCodeLine{00085     wcex.hbrBackground = (HBRUSH)GetStockObject(NULL\_BRUSH);}
+\DoxyCodeLine{00086     wcex.lpszMenuName = 0;}
+\DoxyCodeLine{00087     wcex.lpszClassName = L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}};}
+\DoxyCodeLine{00088 }
+\DoxyCodeLine{00089     \textcolor{comment}{//register with Windows OS}}
+\DoxyCodeLine{00090     \textcolor{keywordflow}{if} (!RegisterClassEx(\&wcex))}
+\DoxyCodeLine{00091     \{}
+\DoxyCodeLine{00092         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window Class\(\backslash\)n"{}});}
+\DoxyCodeLine{00093         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00094     \}}
+\DoxyCodeLine{00095 }
+\DoxyCodeLine{00096     RECT r = \{ 0,0, m\_ClientWidth, m\_ClientHeight \};}
+\DoxyCodeLine{00097     AdjustWindowRect(\&r, m\_WndStyle, FALSE);}
+\DoxyCodeLine{00098     UINT width = r.right -\/ r.left;}
+\DoxyCodeLine{00099     UINT height = r.bottom -\/ r.top;}
+\DoxyCodeLine{00100     UINT x = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ width / 2;}
+\DoxyCodeLine{00101     UINT y = GetSystemMetrics(SM\_CXSCREEN) / 2 -\/ height / 2;}
+\DoxyCodeLine{00102     \textcolor{comment}{//step1 we use WIN32 API to create window -\/ when using 16-\/bit wide-\/characters (unicode), we must prefix a string literal with a capital L!}}
+\DoxyCodeLine{00103     m\_hAppWnd = CreateWindow(L\textcolor{stringliteral}{"{}DXAPPWNDCLASS"{}}, L\textcolor{stringliteral}{"{}test"{}}, m\_WndStyle, x, y, width, height, NULL, NULL, m\_hAppInstance, NULL);}
+\DoxyCodeLine{00104 }
+\DoxyCodeLine{00105     \textcolor{keywordflow}{if} (!m\_hAppWnd) \{}
+\DoxyCodeLine{00106         OutputDebugString(L\textcolor{stringliteral}{"{}Failed to create Window \(\backslash\)n"{}});}
+\DoxyCodeLine{00107         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00108     \}}
+\DoxyCodeLine{00109 }
+\DoxyCodeLine{00110     \textcolor{comment}{//step2 to notify Windows to show a particular window. Note that Windows applications do not have direct access to hardware.}}
+\DoxyCodeLine{00111     \textcolor{comment}{//For example, to display a window you must call the Win32 API function ShowWindow; you cannot write to video memory directly.}}
+\DoxyCodeLine{00112     ShowWindow(m\_hAppWnd, SW\_SHOW);}
+\DoxyCodeLine{00113 }
+\DoxyCodeLine{00114     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00115 \}}
+\DoxyCodeLine{00116 }
+\DoxyCodeLine{00117 }
+\DoxyCodeLine{00118 \textcolor{comment}{//step5: Once upon a time, Windows was 16 -\/ bit.Each message could carry with it two pieces of data, called WPARAMand LPARAM.The first one was a 16 -\/ bit value(“word”), so it was called W.The second one was a 32 -\/ bit value(“long”), so it was called L.}}
+\DoxyCodeLine{00119 \textcolor{comment}{//You used the W parameter to pass things like handles and integers.You used the L parameter to pass pointers.}}
+\DoxyCodeLine{00120 \textcolor{comment}{//When Windows was converted to 32 -\/ bit, the WPARAM parameter grew to a 32 -\/ bit value as well.So even though the “W” stands for “word”, it isn’t a word any more. (And in 64 -\/ bit Windows, both parameters are 64 -\/ bit values!)}}
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122 \textcolor{comment}{//typedef LONG\_PTR LRESULT}}
+\DoxyCodeLine{00123 LRESULT DXApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{00124 \{}
+\DoxyCodeLine{00125     \textcolor{comment}{//step6: For instance, we may want to destroy a window when the Escape key is pressed.}}
+\DoxyCodeLine{00126     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{00127     \{}
+\DoxyCodeLine{00128     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{00129         \textcolor{keywordflow}{if} (wParam == VK\_ESCAPE)}
+\DoxyCodeLine{00130             DestroyWindow(m\_hAppWnd);}
+\DoxyCodeLine{00131         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00132     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{00133         PostQuitMessage(0);  \textcolor{comment}{//Indicates to the system that a thread has made a request to terminate}}
+\DoxyCodeLine{00134         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00135 }
+\DoxyCodeLine{00136     \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00137         \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam); \textcolor{comment}{//wParam, lParam..mouse position..ket down...}}
+\DoxyCodeLine{00138     \}}
+\DoxyCodeLine{00139 }
+\DoxyCodeLine{00140 \}}
 
 \end{DoxyCode}

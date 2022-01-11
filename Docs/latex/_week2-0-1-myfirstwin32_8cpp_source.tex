@@ -1,0 +1,108 @@
+\doxysection{Week2-\/0-\/1-\/myfirstwin32.cpp}
+\label{_week2-0-1-myfirstwin32_8cpp_source}\index{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/1-\/myfirstwin32.cpp@{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/1-\/myfirstwin32.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00020 HWND ghMainWnd = 0;}
+\DoxyCodeLine{00021 }
+\DoxyCodeLine{00025 \textcolor{keywordtype}{bool} InitWindowsApp(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show);}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00028 \textcolor{keywordtype}{int} Run();}
+\DoxyCodeLine{00029 }
+\DoxyCodeLine{00031 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);}
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00035 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
+\DoxyCodeLine{00036     PSTR pCmdLine, \textcolor{keywordtype}{int} nShowCmd)}
+\DoxyCodeLine{00037 \{}
+\DoxyCodeLine{00039     \textcolor{keywordflow}{if} (!InitWindowsApp(hInstance, nShowCmd))}
+\DoxyCodeLine{00040         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00041 }
+\DoxyCodeLine{00046     \textcolor{keywordflow}{return} Run();}
+\DoxyCodeLine{00047 \}}
+\DoxyCodeLine{00048 }
+\DoxyCodeLine{00052 \textcolor{keywordtype}{bool} InitWindowsApp(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show)}
+\DoxyCodeLine{00053 \{}
+\DoxyCodeLine{00056     WNDCLASS wc;}
+\DoxyCodeLine{00057     wc.style = CS\_HREDRAW | CS\_VREDRAW;   }
+\DoxyCodeLine{00058     wc.lpfnWndProc = WndProc; }
+\DoxyCodeLine{00059     wc.cbClsExtra = 0;   }
+\DoxyCodeLine{00060     wc.cbWndExtra = 0;    }
+\DoxyCodeLine{00061     wc.hInstance = instanceHandle;}
+\DoxyCodeLine{00062     wc.hIcon = LoadIcon(0, IDI\_APPLICATION);  }
+\DoxyCodeLine{00063     wc.hCursor = LoadCursor(0, IDC\_ARROW);  }
+\DoxyCodeLine{00064     wc.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH); }
+\DoxyCodeLine{00065     wc.lpszMenuName = 0; }
+\DoxyCodeLine{00066     wc.lpszClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
+\DoxyCodeLine{00067     }
+\DoxyCodeLine{00070     \textcolor{keywordflow}{if} (!RegisterClass(\&wc))}
+\DoxyCodeLine{00071     \{}
+\DoxyCodeLine{00072         MessageBox(0, L\textcolor{stringliteral}{"{}RegisterClass FAILED"{}}, 0, 0);}
+\DoxyCodeLine{00073         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00074     \}}
+\DoxyCodeLine{00083     ghMainWnd = CreateWindow(}
+\DoxyCodeLine{00084         L\textcolor{stringliteral}{"{}BasicWndClass"{}}, }
+\DoxyCodeLine{00085         L\textcolor{stringliteral}{"{}Win32Basic"{}}, }
+\DoxyCodeLine{00086         WS\_OVERLAPPEDWINDOW, }
+\DoxyCodeLine{00087         CW\_USEDEFAULT, }
+\DoxyCodeLine{00088         CW\_USEDEFAULT, }
+\DoxyCodeLine{00089         CW\_USEDEFAULT, }
+\DoxyCodeLine{00090         CW\_USEDEFAULT, }
+\DoxyCodeLine{00091         0, }
+\DoxyCodeLine{00092         0, }
+\DoxyCodeLine{00093         instanceHandle, }
+\DoxyCodeLine{00094         0); }
+\DoxyCodeLine{00095     \textcolor{keywordflow}{if} (ghMainWnd == 0)}
+\DoxyCodeLine{00096     \{}
+\DoxyCodeLine{00097         MessageBox(0, L\textcolor{stringliteral}{"{}CreateWindow FAILED"{}}, 0, 0);}
+\DoxyCodeLine{00098         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00099     \}}
+\DoxyCodeLine{00100 }
+\DoxyCodeLine{00107     ShowWindow(ghMainWnd, show);}
+\DoxyCodeLine{00108 }
+\DoxyCodeLine{00109     UpdateWindow(ghMainWnd);}
+\DoxyCodeLine{00110 }
+\DoxyCodeLine{00111     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00112 \}}
+\DoxyCodeLine{00113 }
+\DoxyCodeLine{00139 }
+\DoxyCodeLine{00140 }
+\DoxyCodeLine{00141 \textcolor{keywordtype}{int} Run()}
+\DoxyCodeLine{00142 \{}
+\DoxyCodeLine{00143     MSG msg = \{ 0 \};}
+\DoxyCodeLine{00144     \textcolor{keywordflow}{while} (msg.message != WM\_QUIT)}
+\DoxyCodeLine{00145     \{}
+\DoxyCodeLine{00147         \textcolor{keywordflow}{if} (PeekMessage(\&msg, 0, 0, 0, PM\_REMOVE))}
+\DoxyCodeLine{00148         \{}
+\DoxyCodeLine{00149             TranslateMessage(\&msg);}
+\DoxyCodeLine{00150             DispatchMessage(\&msg);}
+\DoxyCodeLine{00151         \}}
+\DoxyCodeLine{00153         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00154         \{}
+\DoxyCodeLine{00155         \}}
+\DoxyCodeLine{00156     \}}
+\DoxyCodeLine{00157     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{int})msg.wParam;}
+\DoxyCodeLine{00158 \}}
+\DoxyCodeLine{00159 }
+\DoxyCodeLine{00161 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{00162 \{}
+\DoxyCodeLine{00165     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{00166     \{}
+\DoxyCodeLine{00168     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
+\DoxyCodeLine{00169         MessageBox(0, L\textcolor{stringliteral}{"{}Hello, World"{}}, L\textcolor{stringliteral}{"{}Hello"{}}, MB\_OK);}
+\DoxyCodeLine{00170         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00171 }
+\DoxyCodeLine{00173     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{00174         \textcolor{keywordflow}{if} (wParam == VK\_ESCAPE)}
+\DoxyCodeLine{00175             DestroyWindow(ghMainWnd);}
+\DoxyCodeLine{00176         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00177         }
+\DoxyCodeLine{00179     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{00180         PostQuitMessage(0);}
+\DoxyCodeLine{00181         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00182     \}}
+\DoxyCodeLine{00186     \textcolor{keywordflow}{return} DefWindowProc(hWnd, msg, wParam, lParam);}
+\DoxyCodeLine{00187 \}}
+
+\end{DoxyCode}

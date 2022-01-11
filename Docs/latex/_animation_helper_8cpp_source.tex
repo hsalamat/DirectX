@@ -1,89 +1,89 @@
-\hypertarget{_animation_helper_8cpp_source}{}\doxysection{Animation\+Helper.\+cpp}
+\doxysection{Animation\+Helper.\+cpp}
 \label{_animation_helper_8cpp_source}\index{Week14/QuatDemo/AnimationHelper.cpp@{Week14/QuatDemo/AnimationHelper.cpp}}
-\mbox{\hyperlink{_animation_helper_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00002}00002 \textcolor{comment}{// AnimationHelper.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00004}00004 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_animation_helper_8h}{AnimationHelper.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00006}00006 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00007}00007 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00008}00008 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00009}\mbox{\hyperlink{struct_keyframe_ac9546775756767dc481259b8bea2fc9b}{00009}} \mbox{\hyperlink{struct_keyframe_ac9546775756767dc481259b8bea2fc9b}{Keyframe::Keyframe}}()}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00010}00010     : TimePos(0.0f),}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00011}00011     Translation(0.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00012}00012     Scale(1.0f, 1.0f, 1.0f),}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00013}00013     RotationQuat(0.0f, 0.0f, 0.0f, 1.0f)}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00014}00014 \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00015}00015 \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00016}00016 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00017}\mbox{\hyperlink{struct_keyframe_a24445f11306b884c02cdaa26ff8b7fbc}{00017}} \mbox{\hyperlink{struct_keyframe_a24445f11306b884c02cdaa26ff8b7fbc}{Keyframe::\string~Keyframe}}()}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00018}00018 \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00019}00019 \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00020}00020  }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00021}\mbox{\hyperlink{struct_bone_animation_a8f43e68c209680d9535bc7b271422ef2}{00021}} \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a8f43e68c209680d9535bc7b271422ef2}{BoneAnimation::GetStartTime}}()\textcolor{keyword}{const}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00022}00022 \textcolor{keyword}{}\{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00023}00023     \textcolor{comment}{// Keyframes are sorted by time, so first keyframe gives start time.}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00024}00024     \textcolor{keywordflow}{return} \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().TimePos;}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00025}00025 \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00026}00026 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00027}\mbox{\hyperlink{struct_bone_animation_a5fa4fa3799bc996c82b8766b8a25e2bd}{00027}} \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a5fa4fa3799bc996c82b8766b8a25e2bd}{BoneAnimation::GetEndTime}}()\textcolor{keyword}{const}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00028}00028 \textcolor{keyword}{}\{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00029}00029     \textcolor{comment}{// Keyframes are sorted by time, so last keyframe gives end time.}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00030}00030     \textcolor{keywordtype}{float} f = \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().TimePos;}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00031}00031 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00032}00032     \textcolor{keywordflow}{return} f;}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00033}00033 \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00035}00035 \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_bone_animation_a7693e2077a4a30877ed1c22e81272199}{BoneAnimation::Interpolate}}(\textcolor{keywordtype}{float} t, XMFLOAT4X4\& M)\textcolor{keyword}{const}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00036}00036 \textcolor{keyword}{}\{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00037}00037     \textcolor{keywordflow}{if}( t <= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().TimePos )}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00038}00038     \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00039}00039         XMVECTOR S = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().Scale);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00040}00040         XMVECTOR P = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().Translation);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00041}00041         XMVECTOR Q = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().RotationQuat);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00042}00042 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00043}00043         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00044}00044         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00045}00045     \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00046}00046     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( t >= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().TimePos )}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00047}00047     \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00048}00048         XMVECTOR S = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().Scale);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00049}00049         XMVECTOR P = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().Translation);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00050}00050         XMVECTOR Q = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().RotationQuat);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00051}00051 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00052}00052         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00053}00053         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00054}00054     \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00055}00055     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00056}00056     \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00057}00057         \textcolor{keywordflow}{for}(UINT i = 0; i < \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.size()-\/1; ++i)}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00058}00058         \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00059}00059             \textcolor{keywordflow}{if}( t >= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos \&\& t <= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].TimePos )}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00060}00060             \{}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00061}00061                 \textcolor{keywordtype}{float} lerpPercent = (t -\/ \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos) / (\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].TimePos -\/ \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00062}00062 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00063}00063                 XMVECTOR s0 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Scale);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00064}00064                 XMVECTOR s1 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].Scale);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00065}00065 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00066}00066                 XMVECTOR p0 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Translation);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00067}00067                 XMVECTOR p1 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].Translation);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00068}00068 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00069}00069                 XMVECTOR q0 = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].RotationQuat);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00070}00070                 XMVECTOR q1 = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].RotationQuat);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00071}00071 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00072}00072                 XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00073}00073                 XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00074}00074                 XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00075}00075 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00076}00076                 XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00077}00077                 XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00078}00078 }
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00079}00079                 \textcolor{keywordflow}{break};}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00080}00080             \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00081}00081         \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00082}00082     \}}
-\DoxyCodeLine{\Hypertarget{_animation_helper_8cpp_source_l00083}00083 \}}
+\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{// AnimationHelper.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00004 }
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}AnimationHelper.h"{}}}
+\DoxyCodeLine{00006 }
+\DoxyCodeLine{00007 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009 Keyframe::Keyframe()}
+\DoxyCodeLine{00010     : TimePos(0.0f),}
+\DoxyCodeLine{00011     Translation(0.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00012     Scale(1.0f, 1.0f, 1.0f),}
+\DoxyCodeLine{00013     RotationQuat(0.0f, 0.0f, 0.0f, 1.0f)}
+\DoxyCodeLine{00014 \{}
+\DoxyCodeLine{00015 \}}
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00017 Keyframe::\string~Keyframe()}
+\DoxyCodeLine{00018 \{}
+\DoxyCodeLine{00019 \}}
+\DoxyCodeLine{00020  }
+\DoxyCodeLine{00021 \textcolor{keywordtype}{float} BoneAnimation::GetStartTime()\textcolor{keyword}{const}}
+\DoxyCodeLine{00022 \textcolor{keyword}{}\{}
+\DoxyCodeLine{00023     \textcolor{comment}{// Keyframes are sorted by time, so first keyframe gives start time.}}
+\DoxyCodeLine{00024     \textcolor{keywordflow}{return} Keyframes.front().TimePos;}
+\DoxyCodeLine{00025 \}}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027 \textcolor{keywordtype}{float} BoneAnimation::GetEndTime()\textcolor{keyword}{const}}
+\DoxyCodeLine{00028 \textcolor{keyword}{}\{}
+\DoxyCodeLine{00029     \textcolor{comment}{// Keyframes are sorted by time, so last keyframe gives end time.}}
+\DoxyCodeLine{00030     \textcolor{keywordtype}{float} f = Keyframes.back().TimePos;}
+\DoxyCodeLine{00031 }
+\DoxyCodeLine{00032     \textcolor{keywordflow}{return} f;}
+\DoxyCodeLine{00033 \}}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035 \textcolor{keywordtype}{void} BoneAnimation::Interpolate(\textcolor{keywordtype}{float} t, XMFLOAT4X4\& M)\textcolor{keyword}{const}}
+\DoxyCodeLine{00036 \textcolor{keyword}{}\{}
+\DoxyCodeLine{00037     \textcolor{keywordflow}{if}( t <= Keyframes.front().TimePos )}
+\DoxyCodeLine{00038     \{}
+\DoxyCodeLine{00039         XMVECTOR S = XMLoadFloat3(\&Keyframes.front().Scale);}
+\DoxyCodeLine{00040         XMVECTOR P = XMLoadFloat3(\&Keyframes.front().Translation);}
+\DoxyCodeLine{00041         XMVECTOR Q = XMLoadFloat4(\&Keyframes.front().RotationQuat);}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00044         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{00045     \}}
+\DoxyCodeLine{00046     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( t >= Keyframes.back().TimePos )}
+\DoxyCodeLine{00047     \{}
+\DoxyCodeLine{00048         XMVECTOR S = XMLoadFloat3(\&Keyframes.back().Scale);}
+\DoxyCodeLine{00049         XMVECTOR P = XMLoadFloat3(\&Keyframes.back().Translation);}
+\DoxyCodeLine{00050         XMVECTOR Q = XMLoadFloat4(\&Keyframes.back().RotationQuat);}
+\DoxyCodeLine{00051 }
+\DoxyCodeLine{00052         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00053         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{00054     \}}
+\DoxyCodeLine{00055     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00056     \{}
+\DoxyCodeLine{00057         \textcolor{keywordflow}{for}(UINT i = 0; i < Keyframes.size()-\/1; ++i)}
+\DoxyCodeLine{00058         \{}
+\DoxyCodeLine{00059             \textcolor{keywordflow}{if}( t >= Keyframes[i].TimePos \&\& t <= Keyframes[i+1].TimePos )}
+\DoxyCodeLine{00060             \{}
+\DoxyCodeLine{00061                 \textcolor{keywordtype}{float} lerpPercent = (t -\/ Keyframes[i].TimePos) / (Keyframes[i+1].TimePos -\/ Keyframes[i].TimePos);}
+\DoxyCodeLine{00062 }
+\DoxyCodeLine{00063                 XMVECTOR s0 = XMLoadFloat3(\&Keyframes[i].Scale);}
+\DoxyCodeLine{00064                 XMVECTOR s1 = XMLoadFloat3(\&Keyframes[i+1].Scale);}
+\DoxyCodeLine{00065 }
+\DoxyCodeLine{00066                 XMVECTOR p0 = XMLoadFloat3(\&Keyframes[i].Translation);}
+\DoxyCodeLine{00067                 XMVECTOR p1 = XMLoadFloat3(\&Keyframes[i+1].Translation);}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069                 XMVECTOR q0 = XMLoadFloat4(\&Keyframes[i].RotationQuat);}
+\DoxyCodeLine{00070                 XMVECTOR q1 = XMLoadFloat4(\&Keyframes[i+1].RotationQuat);}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00072                 XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);}
+\DoxyCodeLine{00073                 XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);}
+\DoxyCodeLine{00074                 XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);}
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076                 XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00077                 XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{00078 }
+\DoxyCodeLine{00079                 \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00080             \}}
+\DoxyCodeLine{00081         \}}
+\DoxyCodeLine{00082     \}}
+\DoxyCodeLine{00083 \}}
 
 \end{DoxyCode}

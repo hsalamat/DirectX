@@ -1,95 +1,95 @@
-\hypertarget{_build_material_demo_8cpp_source}{}\doxysection{Build\+Material\+Demo.\+cpp}
+\doxysection{Build\+Material\+Demo.\+cpp}
 \label{_build_material_demo_8cpp_source}\index{Week5/console-\/buildmaterial-\/demo/BuildMaterialDemo.cpp@{Week5/console-\/buildmaterial-\/demo/BuildMaterialDemo.cpp}}
-\mbox{\hyperlink{_build_material_demo_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00002}00002 \textcolor{preprocessor}{\#include <unordered\_map>}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00003}00003 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00004}00004 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week5_2console-buildmaterial-demo_2_math_helper_8h}{MathHelper.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00007}00007 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00008}00008 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00009}00009 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00010}00010 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00011}00011 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00012}00012 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00013}00013 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00014}00014 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_material}{Material}}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00015}00015 \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00016}00016     \textcolor{comment}{// Unique material name for lookup.}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00017}00017     std::string \mbox{\hyperlink{struct_material_a793dc9034c137caf3d8b3b4b0f9d451b}{Name}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00018}00018 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00019}00019     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} = 3;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00020}00020     \textcolor{comment}{// Material constant buffer data used for shading.}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00021}00021     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}} = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00022}00022     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}} = \{ 0.01f, 0.01f, 0.01f \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00023}00023     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}} = .25f;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00024}00024     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00025}00025 \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00026}00026 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00027}00027 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00028}00028 \textcolor{comment}{//The above table stores the material data in system memory.In order for the GPU to}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00029}00029 \textcolor{comment}{//access the material data in a shader, we need to mirror the relevant data in a constant}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00030}00030 \textcolor{comment}{//buffer.Just like we did with per -\/ object constant buffers, we add a constant buffer to each}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00031}00031 \textcolor{comment}{//FrameResource that will store the constants for each material:}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00032}00032 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00033}00033 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00034}00034 \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00035}00035     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00036}00036     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = \{ 0.01f, 0.01f, 0.01f \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00037}00037     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = 0.25f;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00038}00038 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00039}00039     \textcolor{comment}{// Used in texture mapping.}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00040}00040     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00041}00041 \};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00042}00042 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00043}\mbox{\hyperlink{_build_material_demo_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00043}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_build_material_demo_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00044}00044 \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00045}00045     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00046}00046 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00047}00047     \textcolor{keyword}{auto} grass = std::make\_unique<Material>();}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00048}00048     grass-\/>Name = \textcolor{stringliteral}{"{}grass"{}};;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00049}00049     grass-\/>DiffuseAlbedo = XMFLOAT4(0.2f, 0.6f, 0.6f, 1.0f);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00050}00050     grass-\/>FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00051}00051     grass-\/>Roughness = 0.125f;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00052}00052 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00053}00053     \textcolor{keyword}{auto} water = std::make\_unique<Material>();}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00054}00054     water-\/>Name = \textcolor{stringliteral}{"{}water"{}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00055}00055     water-\/>DiffuseAlbedo = XMFLOAT4(0.0f, 0.2f, 0.6f, 1.0f);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00056}00056     water-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00057}00057     water-\/>Roughness = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00058}00058     mMaterials[\textcolor{stringliteral}{"{}grass"{}}] = std::move(grass);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00059}00059     mMaterials[\textcolor{stringliteral}{"{}water"{}}] = std::move(water);}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00060}00060 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00061}00061     \textcolor{keywordtype}{int} NumFramesDirty = 3;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00062}00062     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frame = 0; frame < 3; frame++)}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00063}00063     \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00064}00064         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00065}00065         \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00066}00066             \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00067}00067             \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00068}00068             \mbox{\hyperlink{struct_material}{Material}}* mat = e.second.get();}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00069}00069             \textcolor{keywordflow}{if} (mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} > 0)}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00070}00070             \{}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00071}00071                 XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}});}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00072}00072 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00073}00073                 \mbox{\hyperlink{struct_material_constants}{MaterialConstants}} matConstants;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00074}00074                 matConstants.\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = mat-\/>\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00075}00075                 matConstants.\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = mat-\/>\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00076}00076                 matConstants.\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = mat-\/>\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}};}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00077}00077 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00078}00078                 cout << \textcolor{stringliteral}{"{}Copy "{}} << mat-\/>\mbox{\hyperlink{struct_material_a793dc9034c137caf3d8b3b4b0f9d451b}{Name}} << \textcolor{stringliteral}{"{} Material for frame number to GPU: "{}} << mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} << endl;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00079}00079                 \textcolor{comment}{//currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00080}00080 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00081}00081                 \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00082}00082                 mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}}-\/-\/;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00083}00083             \}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00084}00084         \}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00085}00085     \}}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00086}00086 }
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00087}00087     system(\textcolor{stringliteral}{"{}pause"{}});}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00088}00088     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_build_material_demo_8cpp_source_l00089}00089 \}}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{00002 \textcolor{preprocessor}{\#include <unordered\_map>}}
+\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}MathHelper.h"{}}}
+\DoxyCodeLine{00007 }
+\DoxyCodeLine{00008 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{00009 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00010 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00011 }
+\DoxyCodeLine{00012 }
+\DoxyCodeLine{00013 }
+\DoxyCodeLine{00014 \textcolor{keyword}{struct }Material}
+\DoxyCodeLine{00015 \{}
+\DoxyCodeLine{00016     \textcolor{comment}{// Unique material name for lookup.}}
+\DoxyCodeLine{00017     std::string Name;}
+\DoxyCodeLine{00018 }
+\DoxyCodeLine{00019     \textcolor{keywordtype}{int} NumFramesDirty = 3;}
+\DoxyCodeLine{00020     \textcolor{comment}{// Material constant buffer data used for shading.}}
+\DoxyCodeLine{00021     DirectX::XMFLOAT4 DiffuseAlbedo = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{00022     DirectX::XMFLOAT3 FresnelR0 = \{ 0.01f, 0.01f, 0.01f \};}
+\DoxyCodeLine{00023     \textcolor{keywordtype}{float} Roughness = .25f;}
+\DoxyCodeLine{00024     DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00025 \};}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028 \textcolor{comment}{//The above table stores the material data in system memory.In order for the GPU to}}
+\DoxyCodeLine{00029 \textcolor{comment}{//access the material data in a shader, we need to mirror the relevant data in a constant}}
+\DoxyCodeLine{00030 \textcolor{comment}{//buffer.Just like we did with per -\/ object constant buffers, we add a constant buffer to each}}
+\DoxyCodeLine{00031 \textcolor{comment}{//FrameResource that will store the constants for each material:}}
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00033 \textcolor{keyword}{struct }MaterialConstants}
+\DoxyCodeLine{00034 \{}
+\DoxyCodeLine{00035     DirectX::XMFLOAT4 DiffuseAlbedo = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{00036     DirectX::XMFLOAT3 FresnelR0 = \{ 0.01f, 0.01f, 0.01f \};}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{float} Roughness = 0.25f;}
+\DoxyCodeLine{00038 }
+\DoxyCodeLine{00039     \textcolor{comment}{// Used in texture mapping.}}
+\DoxyCodeLine{00040     DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00041 \};}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043 \textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{00044 \{}
+\DoxyCodeLine{00045     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{00046 }
+\DoxyCodeLine{00047     \textcolor{keyword}{auto} grass = std::make\_unique<Material>();}
+\DoxyCodeLine{00048     grass-\/>Name = \textcolor{stringliteral}{"{}grass"{}};;}
+\DoxyCodeLine{00049     grass-\/>DiffuseAlbedo = XMFLOAT4(0.2f, 0.6f, 0.6f, 1.0f);}
+\DoxyCodeLine{00050     grass-\/>FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);}
+\DoxyCodeLine{00051     grass-\/>Roughness = 0.125f;}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     \textcolor{keyword}{auto} water = std::make\_unique<Material>();}
+\DoxyCodeLine{00054     water-\/>Name = \textcolor{stringliteral}{"{}water"{}};}
+\DoxyCodeLine{00055     water-\/>DiffuseAlbedo = XMFLOAT4(0.0f, 0.2f, 0.6f, 1.0f);}
+\DoxyCodeLine{00056     water-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{00057     water-\/>Roughness = 0.0f;}
+\DoxyCodeLine{00058     mMaterials[\textcolor{stringliteral}{"{}grass"{}}] = std::move(grass);}
+\DoxyCodeLine{00059     mMaterials[\textcolor{stringliteral}{"{}water"{}}] = std::move(water);}
+\DoxyCodeLine{00060 }
+\DoxyCodeLine{00061     \textcolor{keywordtype}{int} NumFramesDirty = 3;}
+\DoxyCodeLine{00062     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frame = 0; frame < 3; frame++)}
+\DoxyCodeLine{00063     \{}
+\DoxyCodeLine{00064         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{00065         \{}
+\DoxyCodeLine{00066             \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{00067             \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{00068             Material* mat = e.second.get();}
+\DoxyCodeLine{00069             \textcolor{keywordflow}{if} (mat-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00070             \{}
+\DoxyCodeLine{00071                 XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
+\DoxyCodeLine{00072 }
+\DoxyCodeLine{00073                 MaterialConstants matConstants;}
+\DoxyCodeLine{00074                 matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
+\DoxyCodeLine{00075                 matConstants.FresnelR0 = mat-\/>FresnelR0;}
+\DoxyCodeLine{00076                 matConstants.Roughness = mat-\/>Roughness;}
+\DoxyCodeLine{00077 }
+\DoxyCodeLine{00078                 cout << \textcolor{stringliteral}{"{}Copy "{}} << mat-\/>Name << \textcolor{stringliteral}{"{} Material for frame number to GPU: "{}} << mat-\/>NumFramesDirty << endl;}
+\DoxyCodeLine{00079                 \textcolor{comment}{//currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}}
+\DoxyCodeLine{00080 }
+\DoxyCodeLine{00081                 \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00082                 mat-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00083             \}}
+\DoxyCodeLine{00084         \}}
+\DoxyCodeLine{00085     \}}
+\DoxyCodeLine{00086 }
+\DoxyCodeLine{00087     system(\textcolor{stringliteral}{"{}pause"{}});}
+\DoxyCodeLine{00088     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00089 \}}
 
 \end{DoxyCode}

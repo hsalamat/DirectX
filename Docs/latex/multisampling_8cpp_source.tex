@@ -1,368 +1,368 @@
-\hypertarget{multisampling_8cpp_source}{}\doxysection{multisampling.\+cpp}
+\doxysection{multisampling.\+cpp}
 \label{multisampling_8cpp_source}\index{Week3/Week3-\/4 -\/ MultiSampling/multisampling.cpp@{Week3/Week3-\/4 -\/ MultiSampling/multisampling.cpp}}
-\mbox{\hyperlink{multisampling_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00002}00002 \textcolor{comment}{// Shows how to draw a triangle in Direct3D 12.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00003}00003 \textcolor{comment}{//}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00004}00004 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00005}00005 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00007}00007 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00008}00008 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00009}00009 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00010}00010 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00011}00011 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00012}00012 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00013}00013 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_vertex}{Vertex}}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00014}00014 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00015}00015     XMFLOAT3 \mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00016}00016 \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00017}00017 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00018}00018 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00019}00019 \textcolor{keyword}{class }\mbox{\hyperlink{class_triangle_a_p_p}{TriangleAPP}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00020}00020 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00021}00021 \textcolor{keyword}{public}:}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00022}\mbox{\hyperlink{class_triangle_a_p_p_afef97e57945bb6968b9688a6c99adcc4}{00022}}     \mbox{\hyperlink{class_triangle_a_p_p_afef97e57945bb6968b9688a6c99adcc4}{TriangleAPP}}(HINSTANCE hInstance);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00023}\mbox{\hyperlink{class_triangle_a_p_p_a102fb6ff542cb9440496753c1d3926c5}{00023}}     \mbox{\hyperlink{class_triangle_a_p_p_a102fb6ff542cb9440496753c1d3926c5}{TriangleAPP}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_triangle_a_p_p}{TriangleAPP}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00024}\mbox{\hyperlink{class_triangle_a_p_p_ac87ba5e40c91b9b4b7142955fcd2972c}{00024}}     \mbox{\hyperlink{class_triangle_a_p_p}{TriangleAPP}}\& \mbox{\hyperlink{class_triangle_a_p_p_ac87ba5e40c91b9b4b7142955fcd2972c}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_triangle_a_p_p}{TriangleAPP}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00025}\mbox{\hyperlink{class_triangle_a_p_p_aee1b7e75d877f4643f91cded02bfb108}{00025}}     \mbox{\hyperlink{class_triangle_a_p_p_aee1b7e75d877f4643f91cded02bfb108}{\string~TriangleAPP}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00026}00026 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00027}\mbox{\hyperlink{class_triangle_a_p_p_a8a19d524d41a5d3d1a86a136f7794a24}{00027}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_triangle_a_p_p_a8a19d524d41a5d3d1a86a136f7794a24}{Initialize}}()\textcolor{keyword}{override};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00028}00028 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00029}00029 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00030}\mbox{\hyperlink{class_triangle_a_p_p_a16ca94bd3f6a370977cceb23f987ee02}{00030}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a16ca94bd3f6a370977cceb23f987ee02}{OnResize}}()\textcolor{keyword}{override};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00031}\mbox{\hyperlink{class_triangle_a_p_p_a281e67605c03c9bb4ad8258f8bbaf6f8}{00031}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a281e67605c03c9bb4ad8258f8bbaf6f8}{Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00032}\mbox{\hyperlink{class_triangle_a_p_p_a619562cc39bc4630eefb1b658ea37f61}{00032}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a619562cc39bc4630eefb1b658ea37f61}{Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00033}00033 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00035}\mbox{\hyperlink{class_triangle_a_p_p_a28d5aed5ffc87b0c44313f9c04e5b6a9}{00035}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a28d5aed5ffc87b0c44313f9c04e5b6a9}{BuildRootSignature}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00036}\mbox{\hyperlink{class_triangle_a_p_p_a4f65c7069f501aae800b228200b30c5f}{00036}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a4f65c7069f501aae800b228200b30c5f}{BuildShadersAndInputLayout}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00037}\mbox{\hyperlink{class_triangle_a_p_p_a20cb93cfee183b09c754b602ad0282ee}{00037}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a20cb93cfee183b09c754b602ad0282ee}{BuildTriangleGeometry}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00038}\mbox{\hyperlink{class_triangle_a_p_p_a07d94a5cf02586f8b60f6d80eca19801}{00038}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a07d94a5cf02586f8b60f6d80eca19801}{BuildPSO}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00039}00039 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00040}00040 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00041}00041     \textcolor{comment}{//step1}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00042}00042     ComPtr<ID3D12Resource> \mbox{\hyperlink{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}{mVertexBuffer}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00043}00043     D3D12\_VERTEX\_BUFFER\_VIEW \mbox{\hyperlink{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}{mVertexBufferView}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00044}00044     \textcolor{comment}{//}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00045}00045 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00046}00046     ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_triangle_a_p_p_ad5cbeabb111a1611e38052722e71d2c0}{mRootSignature}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00047}00047 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00048}00048     \textcolor{comment}{//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00049}00049     ComPtr<ID3DBlob> \mbox{\hyperlink{class_triangle_a_p_p_a10c65db3dea3d517876fac5c11d47376}{mvsByteCode}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00050}00050     ComPtr<ID3DBlob> \mbox{\hyperlink{class_triangle_a_p_p_aa46643ec6db2dfa33abd8767739309a7}{mpsByteCode}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00051}00051 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00052}00052     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> \mbox{\hyperlink{class_triangle_a_p_p_a3e55137310cfe5fbddf2da3e8a43b35f}{mInputLayout}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00053}00053 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00054}00054     ComPtr<ID3D12PipelineState> \mbox{\hyperlink{class_triangle_a_p_p_a4e399c0b9ed0313c1af2df4a88d99ed2}{mPSO}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00055}00055 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00056}00056 \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00057}00057 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00058}\mbox{\hyperlink{multisampling_8cpp_aabcda87589d774901aa87061b8fd0176}{00058}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{multisampling_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00059}00059     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00060}00060 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00061}00061     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00062}00062 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00063}00063     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00064}00064 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00065}00065 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00066}00066     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00067}00067     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00068}00068         \mbox{\hyperlink{class_triangle_a_p_p}{TriangleAPP}} theApp(hInstance);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00069}00069         \textcolor{keywordflow}{if} (!theApp.\mbox{\hyperlink{class_triangle_a_p_p_af09191ec7e0b1053c2ea90c0a6e39517}{Initialize}}())}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00070}00070             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00071}00071 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00072}00072         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00073}00073     \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00074}00074     \textcolor{keywordflow}{catch} (\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00075}00075     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00076}00076         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00077}00077         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00078}00078     \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00079}00079 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00080}00080 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00081}00081 \mbox{\hyperlink{class_triangle_a_p_p_afef97e57945bb6968b9688a6c99adcc4}{TriangleAPP::TriangleAPP}}(HINSTANCE hInstance)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00082}00082     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00083}00083 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00084}00084 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00085}00085 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00086}00086 \mbox{\hyperlink{class_triangle_a_p_p_aee1b7e75d877f4643f91cded02bfb108}{TriangleAPP::\string~TriangleAPP}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00087}00087 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00088}00088 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00089}00089 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00090}00090 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_triangle_a_p_p_af09191ec7e0b1053c2ea90c0a6e39517}{TriangleAPP::Initialize}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00091}00091 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00092}00092     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00093}00093         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00094}00094 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00095}00095     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00096}00096     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00097}00097 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00098}00098 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00099}00099     \mbox{\hyperlink{class_triangle_a_p_p_a28d5aed5ffc87b0c44313f9c04e5b6a9}{BuildRootSignature}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00100}00100     \mbox{\hyperlink{class_triangle_a_p_p_a4f65c7069f501aae800b228200b30c5f}{BuildShadersAndInputLayout}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00101}00101     \mbox{\hyperlink{class_triangle_a_p_p_a20cb93cfee183b09c754b602ad0282ee}{BuildTriangleGeometry}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00102}00102     \mbox{\hyperlink{class_triangle_a_p_p_a07d94a5cf02586f8b60f6d80eca19801}{BuildPSO}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00103}00103 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00104}00104     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00105}00105     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00106}00106     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00107}00107     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00108}00108 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00109}00109     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00110}00110     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00111}00111 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00112}00112     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00113}00113 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00114}00114 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00115}00115 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_aedae8af324d982f353ec80d8bcba0338}{TriangleAPP::OnResize}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00116}00116 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00117}00117     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00118}00118 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00119}00119 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00120}00120 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00121}00121 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00122}00122 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a095c8439e126b61e3cfcf98c8ad20dd0}{TriangleAPP::Update}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00123}00123 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00124}00124 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00125}00125 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00126}00126 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00127}00127 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a32ec9cd0dcf0183f7a5d2f24a872f07b}{TriangleAPP::Draw}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00128}00128 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00129}00129     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00130}00130     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00131}00131     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}-\/>Reset());}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00132}00132 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00133}00133     \textcolor{comment}{//A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00134}00134     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00135}00135     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \mbox{\hyperlink{class_triangle_a_p_p_a4e399c0b9ed0313c1af2df4a88d99ed2}{mPSO}}.Get()));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00136}00136 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00137}00137     \textcolor{comment}{//You cannot render without a view port. }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00138}00138     \textcolor{comment}{//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00139}00139     \textcolor{comment}{//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00140}00140     \textcolor{comment}{//also notice viewport(s), because you can have an array of view ports! \& is poiting to the address of the first viewport}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00141}00141     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00142}00142 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00143}00143     \textcolor{comment}{//Each scissor rectangle in the array corresponds to a viewport in an array of viewports}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00144}00144     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00145}00145 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00146}00146     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00147}00147     \textcolor{comment}{//Specifies the state of a resource regarding how the resource is being used.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00148}00148     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_PRESENT same as D3D12\_RESOURCE\_STATE\_COMMON}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00149}00149     \textcolor{comment}{//Applications should only transition to this state for accessing a resource across different graphics engine types.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00150}00150     \textcolor{comment}{//Specifically, a resource must be in the COMMON state before being used on a COPY queue}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00151}00151     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00152}00152         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00153}00153 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00154}00154 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00155}00155     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00156}00156     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00157}00157 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00158}00158     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00159}00159     \textcolor{comment}{//notice that "{}targets"{} not "{}target"{} in case we have few passes, filtering, etc.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00160}00160     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00161}00161 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00162}00162     \textcolor{comment}{//ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00163}00163     \textcolor{comment}{//mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00164}00164 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00165}00165     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(\mbox{\hyperlink{class_triangle_a_p_p_ad5cbeabb111a1611e38052722e71d2c0}{mRootSignature}}.Get());}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00166}00166 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00167}00167     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>IASetVertexBuffers(0, 1, \&\mbox{\hyperlink{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}{mVertexBufferView}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00168}00168 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00169}00169     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00170}00170 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00171}00171     \textcolor{comment}{//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00172}00172     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>DrawInstanced(3, 1, 0, 0);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00173}00173 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00174}00174     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00175}00175     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00176}00176         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00177}00177 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00178}00178     \textcolor{comment}{//step4: Done recording commands.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00179}00179     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00180}00180 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00181}00181     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00182}00182     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00183}00183     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00184}00184 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00185}00185     \textcolor{comment}{// swap the back and front buffers}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00186}00186         \textcolor{comment}{//HRESULT Present(UINT SyncInterval,UINT Flags);}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00187}00187     \textcolor{comment}{//SyncInterval: 0 -\/ The presentation occurs immediately, there is no synchronization.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00188}00188     \textcolor{comment}{//Flags defined by the DXGI\_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00189}00189     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00190}00190     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00191}00191 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00192}00192     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00193}00193     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00194}00194     \textcolor{comment}{// so we do not have to wait per frame.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00195}00195     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00196}00196 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00197}00197 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00198}00198 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00199}00199 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00200}00200 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a28d5aed5ffc87b0c44313f9c04e5b6a9}{TriangleAPP::BuildRootSignature}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00201}00201 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00202}00202     \textcolor{comment}{// Shader programs typically require resources as input (constant buffers,}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00203}00203     \textcolor{comment}{// textures, samplers).  The root signature defines the resources the shader}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00204}00204     \textcolor{comment}{// programs expect.  If we think of the shader programs as a function, and}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00205}00205     \textcolor{comment}{// the input resources as function parameters, then the root signature can be}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00206}00206     \textcolor{comment}{// thought of as defining the function signature.  }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00207}00207 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00208}00208 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00210}00210     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(0, \textcolor{keyword}{nullptr}, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00211}00211 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00212}00212 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00213}00213     \textcolor{comment}{// create a root signature with no slot for now!}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00214}00214     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00215}00215     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00216}00216     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&serializedRootSig, \&errorBlob);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00217}00217 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00218}00218     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00219}00219     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00220}00220         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00221}00221     \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00222}00222     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00223}00223 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00224}00224     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00225}00225         0,}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00226}00226         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00227}00227         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00228}00228         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_a_p_p_ad5cbeabb111a1611e38052722e71d2c0}{mRootSignature}})));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00229}00229 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00230}00230 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00231}00231 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00232}00232 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00233}00233 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00234}00234 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a4f65c7069f501aae800b228200b30c5f}{TriangleAPP::BuildShadersAndInputLayout}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00235}00235 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00236}00236     HRESULT hr = S\_OK;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00237}00237     \textcolor{comment}{//Take a look at HLSL compiler, change the output directory, set it "{}Vertex shader"{}, pay attention to "{}main"{} as an entry point, the version of hlsl...}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00238}00238     \mbox{\hyperlink{class_triangle_a_p_p_a10c65db3dea3d517876fac5c11d47376}{mvsByteCode}} = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}main"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00239}00239     \mbox{\hyperlink{class_triangle_a_p_p_aa46643ec6db2dfa33abd8767739309a7}{mpsByteCode}} = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}main"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00240}00240 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00241}00241     \textcolor{comment}{//every element of our vertices has a corresponding descriptor}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00242}00242     \textcolor{comment}{//we have a position that has three float elements hence R32G32B32, RGB doesn't really mean colors here!}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00243}00243     \textcolor{comment}{//we are binding to slot zero!}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00244}00244 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00245}00245     \textcolor{comment}{//typedef struct D3D12\_INPUT\_ELEMENT\_DESC \{}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00246}00246     \textcolor{comment}{//  LPCSTR                     SemanticName;  ==> semantic associated with this in the shader}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00247}00247     \textcolor{comment}{//  UINT                       SemanticIndex;  ==>A semantic index is only needed in a case where there is more than one element with the same semantic.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00248}00248     \textcolor{comment}{// example: Position0, Position1, Position2, etc..}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00249}00249     \textcolor{comment}{//  DXGI\_FORMAT                Format;  ==> specifies the format of the element data}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00250}00250     \textcolor{comment}{//  UINT                       InputSlot;  ==> An integer value that identifies the input-\/assembler.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00251}00251     \textcolor{comment}{//  UINT                       AlignedByteOffset; ==> Offset, in bytes, between each element.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00252}00252     \textcolor{comment}{//  D3D12\_INPUT\_CLASSIFICATION InputSlotClass;  ==> D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA or INTANCE\_DATA for instacning using geometry shader}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00253}00253     \textcolor{comment}{//  UINT                       InstanceDataStepRate; ==> for instancing using geometry shader}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00254}00254     \textcolor{comment}{//\} D3D12\_INPUT\_ELEMENT\_DESC;}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00255}00255 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00256}00256     \mbox{\hyperlink{class_triangle_a_p_p_a3e55137310cfe5fbddf2da3e8a43b35f}{mInputLayout}} =}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00257}00257     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00258}00258         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00259}00259     \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00260}00260 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00261}00261 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00262}00262 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a20cb93cfee183b09c754b602ad0282ee}{TriangleAPP::BuildTriangleGeometry}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00263}00263 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00264}00264 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00265}00265     \textcolor{comment}{//step2}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00266}00266 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00267}00267      \textcolor{comment}{// Define the geometry for a triangle.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00268}00268     \mbox{\hyperlink{struct_vertex}{Vertex}} triangleVertices[] =}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00269}00269     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00270}00270         \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(-\/0.5f, -\/0.5f, 0.0f)\}),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00271}00271         \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(+0.0f, +0.5f, 0.0f) \}),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00272}00272         \mbox{\hyperlink{struct_vertex}{Vertex}}(\{ XMFLOAT3(+0.5f, -\/0.5f, 0.0f) \}),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00273}00273     \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00274}00274 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00275}00275     \textcolor{keyword}{const} UINT vertexBufferSize = \textcolor{keyword}{sizeof}(triangleVertices);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00276}00276 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00277}00277     \textcolor{comment}{// Note: using upload heaps to transfer static data like vert buffers is not }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00278}00278     \textcolor{comment}{// recommended. Every time the GPU needs it, the upload heap will be marshalled }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00279}00279     \textcolor{comment}{// over. Please read up on Default Heap usage. An upload heap is used here for }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00280}00280     \textcolor{comment}{// code simplicity and because there are very few verts to actually transfer.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00281}00281     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00282}00282         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00283}00283         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00284}00284         \&CD3DX12\_RESOURCE\_DESC::Buffer(vertexBufferSize),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00285}00285         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00286}00286         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00287}00287         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}{mVertexBuffer}}));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00288}00288 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00289}00289     \textcolor{comment}{// Copy the triangle data to the vertex buffer.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00290}00290     UINT8* pVertexDataBegin;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00291}00291     CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00292}00292     \mbox{\hyperlink{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}{mVertexBuffer}}-\/>Map(0, \&readRange, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pVertexDataBegin));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00293}00293     memcpy(pVertexDataBegin, triangleVertices, \textcolor{keyword}{sizeof}(triangleVertices));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00294}00294     \mbox{\hyperlink{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}{mVertexBuffer}}-\/>Unmap(0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00295}00295 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00296}00296     \textcolor{comment}{//Initialize the vertex buffer view.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00297}00297     \mbox{\hyperlink{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}{mVertexBufferView}}.BufferLocation = \mbox{\hyperlink{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}{mVertexBuffer}}-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00298}00298     \mbox{\hyperlink{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}{mVertexBufferView}}.StrideInBytes = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00299}00299     \mbox{\hyperlink{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}{mVertexBufferView}}.SizeInBytes = vertexBufferSize;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00300}00300 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00301}00301 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00302}00302 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00303}00303 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00304}00304 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00305}00305 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_triangle_a_p_p_a07d94a5cf02586f8b60f6d80eca19801}{TriangleAPP::BuildPSO}}()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00306}00306 \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00307}00307     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00308}00308     ZeroMemory(\&psoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00309}00309 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00310}00310     \textcolor{comment}{//bind the input layout to pipeline}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00311}00311     psoDesc.InputLayout = \{ \mbox{\hyperlink{class_triangle_a_p_p_a3e55137310cfe5fbddf2da3e8a43b35f}{mInputLayout}}.data(), (UINT)\mbox{\hyperlink{class_triangle_a_p_p_a3e55137310cfe5fbddf2da3e8a43b35f}{mInputLayout}}.size() \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00312}00312     psoDesc.pRootSignature = \mbox{\hyperlink{class_triangle_a_p_p_ad5cbeabb111a1611e38052722e71d2c0}{mRootSignature}}.Get();}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00313}00313 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00314}00314     \textcolor{comment}{//in old days, we use to call create vertex shader, now we hook it up to the PSO!}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00315}00315     psoDesc.VS =}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00316}00316     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00317}00317         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_a_p_p_a10c65db3dea3d517876fac5c11d47376}{mvsByteCode}}-\/>GetBufferPointer()),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00318}00318         \mbox{\hyperlink{class_triangle_a_p_p_a10c65db3dea3d517876fac5c11d47376}{mvsByteCode}}-\/>GetBufferSize()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00319}00319     \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00320}00320     psoDesc.PS =}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00321}00321     \{}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00322}00322         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(\mbox{\hyperlink{class_triangle_a_p_p_aa46643ec6db2dfa33abd8767739309a7}{mpsByteCode}}-\/>GetBufferPointer()),}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00323}00323         \mbox{\hyperlink{class_triangle_a_p_p_aa46643ec6db2dfa33abd8767739309a7}{mpsByteCode}}-\/>GetBufferSize()}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00324}00324     \};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00325}00325     psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00326}00326     psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00327}00327     psoDesc.DepthStencilState.DepthEnable = FALSE;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00328}00328     psoDesc.DepthStencilState.StencilEnable = FALSE;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00329}00329     psoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00330}00330     psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00331}00331     psoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00332}00332     psoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};  \textcolor{comment}{//DXGI\_FORMAT\_R8G8B8A8\_UNORM;}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00333}00333     \textcolor{comment}{//step1}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00334}00334 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00335}00335     \textcolor{comment}{//We can query the number of quality levels for a given texture format and sample count using the ID3D12Device::CheckFeatureSupport method like so :}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00336}00336     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00337}00337     msQualityLevels.Format = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00338}00338     msQualityLevels.SampleCount = 32;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00339}00339     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00340}00340     msQualityLevels.NumQualityLevels = 0;}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00341}00341 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00342}00342     \textcolor{comment}{//Note that the second parameter is both an input and output parameter. For the input,}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00343}00343     \textcolor{comment}{//we must specify the texture format, sample count, and flag we want to query}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00344}00344     \textcolor{comment}{//multisampling support for.The function will then fill out the quality level as the output.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00345}00345     \textcolor{comment}{//Valid quality levels for a texture format and sample count combination range from zero to NumQualityLevels–1.}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00346}00346     \textcolor{comment}{//The maximum number of samples that can be taken per pixel is defined by : \#define D3D12\_MAX\_MULTISAMPLE\_SAMPLE\_COUNT ( 32 )}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00347}00347 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00348}00348     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CheckFeatureSupport(D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS, \&msQualityLevels, \textcolor{keyword}{sizeof}(msQualityLevels)));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00349}00349 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00350}00350 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00351}00351     \textcolor{comment}{//psoDesc.SampleDesc.Count = 1; }}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00352}00352     \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} = \textcolor{keyword}{true};}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00353}00353     psoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;   \textcolor{comment}{//The Count member specifies the number of samples to take per pixel}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00354}00354     psoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0; \textcolor{comment}{//Quality member is used to specify the desired quality level (what “quality level” means can vary across hardware manufacturers).}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00355}00355 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00356}00356 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00357}00357     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_triangle_a_p_p_a4e399c0b9ed0313c1af2df4a88d99ed2}{mPSO}})));}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00358}00358 \}}
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00359}00359 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00360}00360 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00361}00361 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00362}00362 }
-\DoxyCodeLine{\Hypertarget{multisampling_8cpp_source_l00363}00363 }
+\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{// Shows how to draw a triangle in Direct3D 12.}}
+\DoxyCodeLine{00003 \textcolor{comment}{//}}
+\DoxyCodeLine{00004 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00005 }
+\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{00007 }
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{00010 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00011 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00012 }
+\DoxyCodeLine{00013 \textcolor{keyword}{struct }Vertex}
+\DoxyCodeLine{00014 \{}
+\DoxyCodeLine{00015     XMFLOAT3 Pos;}
+\DoxyCodeLine{00016 \};}
+\DoxyCodeLine{00017 }
+\DoxyCodeLine{00018 }
+\DoxyCodeLine{00019 \textcolor{keyword}{class }TriangleAPP : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00020 \{}
+\DoxyCodeLine{00021 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022     TriangleAPP(HINSTANCE hInstance);}
+\DoxyCodeLine{00023     TriangleAPP(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00024     TriangleAPP\& operator=(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00025     \string~TriangleAPP();}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00028 }
+\DoxyCodeLine{00029 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00031     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00032     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00033 }
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{00036     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{void} BuildTriangleGeometry();}
+\DoxyCodeLine{00038     \textcolor{keywordtype}{void} BuildPSO();}
+\DoxyCodeLine{00039 }
+\DoxyCodeLine{00040 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00041     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00042     ComPtr<ID3D12Resource> mVertexBuffer;}
+\DoxyCodeLine{00043     D3D12\_VERTEX\_BUFFER\_VIEW mVertexBufferView;}
+\DoxyCodeLine{00044     \textcolor{comment}{//}}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00047 }
+\DoxyCodeLine{00048     \textcolor{comment}{//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib }}
+\DoxyCodeLine{00049     ComPtr<ID3DBlob> mvsByteCode = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00050     ComPtr<ID3DBlob> mpsByteCode = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00051 }
+\DoxyCodeLine{00052     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054     ComPtr<ID3D12PipelineState> mPSO = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00055 }
+\DoxyCodeLine{00056 \};}
+\DoxyCodeLine{00057 }
+\DoxyCodeLine{00058 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{00059     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{00060 \{}
+\DoxyCodeLine{00061     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{00062 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{00063     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{00064 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00065 }
+\DoxyCodeLine{00066     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00067     \{}
+\DoxyCodeLine{00068         TriangleAPP theApp(hInstance);}
+\DoxyCodeLine{00069         \textcolor{keywordflow}{if} (!theApp.Initialize())}
+\DoxyCodeLine{00070             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00072         \textcolor{keywordflow}{return} theApp.Run();}
+\DoxyCodeLine{00073     \}}
+\DoxyCodeLine{00074     \textcolor{keywordflow}{catch} (DxException\& e)}
+\DoxyCodeLine{00075     \{}
+\DoxyCodeLine{00076         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{00077         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00078     \}}
+\DoxyCodeLine{00079 \}}
+\DoxyCodeLine{00080 }
+\DoxyCodeLine{00081 TriangleAPP::TriangleAPP(HINSTANCE hInstance)}
+\DoxyCodeLine{00082     : D3DApp(hInstance)}
+\DoxyCodeLine{00083 \{}
+\DoxyCodeLine{00084 \}}
+\DoxyCodeLine{00085 }
+\DoxyCodeLine{00086 TriangleAPP::\string~TriangleAPP()}
+\DoxyCodeLine{00087 \{}
+\DoxyCodeLine{00088 \}}
+\DoxyCodeLine{00089 }
+\DoxyCodeLine{00090 \textcolor{keywordtype}{bool} TriangleAPP::Initialize()}
+\DoxyCodeLine{00091 \{}
+\DoxyCodeLine{00092     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
+\DoxyCodeLine{00093         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00094 }
+\DoxyCodeLine{00095     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{00096     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00097 }
+\DoxyCodeLine{00098 }
+\DoxyCodeLine{00099     BuildRootSignature();}
+\DoxyCodeLine{00100     BuildShadersAndInputLayout();}
+\DoxyCodeLine{00101     BuildTriangleGeometry();}
+\DoxyCodeLine{00102     BuildPSO();}
+\DoxyCodeLine{00103 }
+\DoxyCodeLine{00104     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{00105     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00106     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00107     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00108 }
+\DoxyCodeLine{00109     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{00110     FlushCommandQueue();}
+\DoxyCodeLine{00111 }
+\DoxyCodeLine{00112     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00113 \}}
+\DoxyCodeLine{00114 }
+\DoxyCodeLine{00115 \textcolor{keywordtype}{void} TriangleAPP::OnResize()}
+\DoxyCodeLine{00116 \{}
+\DoxyCodeLine{00117     D3DApp::OnResize();}
+\DoxyCodeLine{00118 \}}
+\DoxyCodeLine{00119 }
+\DoxyCodeLine{00120 }
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122 \textcolor{keywordtype}{void} TriangleAPP::Update(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00123 \{}
+\DoxyCodeLine{00124 }
+\DoxyCodeLine{00125 \}}
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127 \textcolor{keywordtype}{void} TriangleAPP::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00128 \{}
+\DoxyCodeLine{00129     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{00130     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{00131     ThrowIfFailed(mDirectCmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00132 }
+\DoxyCodeLine{00133     \textcolor{comment}{//A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{00134     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{00135     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));}
+\DoxyCodeLine{00136 }
+\DoxyCodeLine{00137     \textcolor{comment}{//You cannot render without a view port. }}
+\DoxyCodeLine{00138     \textcolor{comment}{//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.}}
+\DoxyCodeLine{00139     \textcolor{comment}{//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)}}
+\DoxyCodeLine{00140     \textcolor{comment}{//also notice viewport(s), because you can have an array of view ports! \& is poiting to the address of the first viewport}}
+\DoxyCodeLine{00141     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
+\DoxyCodeLine{00142 }
+\DoxyCodeLine{00143     \textcolor{comment}{//Each scissor rectangle in the array corresponds to a viewport in an array of viewports}}
+\DoxyCodeLine{00144     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{00145 }
+\DoxyCodeLine{00146     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00147     \textcolor{comment}{//Specifies the state of a resource regarding how the resource is being used.}}
+\DoxyCodeLine{00148     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_PRESENT same as D3D12\_RESOURCE\_STATE\_COMMON}}
+\DoxyCodeLine{00149     \textcolor{comment}{//Applications should only transition to this state for accessing a resource across different graphics engine types.}}
+\DoxyCodeLine{00150     \textcolor{comment}{//Specifically, a resource must be in the COMMON state before being used on a COPY queue}}
+\DoxyCodeLine{00151     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00152         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00153 }
+\DoxyCodeLine{00154 }
+\DoxyCodeLine{00155     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{00156     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00157 }
+\DoxyCodeLine{00158     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{00159     \textcolor{comment}{//notice that "{}targets"{} not "{}target"{} in case we have few passes, filtering, etc.}}
+\DoxyCodeLine{00160     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00161 }
+\DoxyCodeLine{00162     \textcolor{comment}{//ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}}
+\DoxyCodeLine{00163     \textcolor{comment}{//mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}}
+\DoxyCodeLine{00164 }
+\DoxyCodeLine{00165     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00166 }
+\DoxyCodeLine{00167     mCommandList-\/>IASetVertexBuffers(0, 1, \&mVertexBufferView);}
+\DoxyCodeLine{00168 }
+\DoxyCodeLine{00169     mCommandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
+\DoxyCodeLine{00170 }
+\DoxyCodeLine{00171     \textcolor{comment}{//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.}}
+\DoxyCodeLine{00172     mCommandList-\/>DrawInstanced(3, 1, 0, 0);}
+\DoxyCodeLine{00173 }
+\DoxyCodeLine{00174     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00175     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00176         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00177 }
+\DoxyCodeLine{00178     \textcolor{comment}{//step4: Done recording commands.}}
+\DoxyCodeLine{00179     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00180 }
+\DoxyCodeLine{00181     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{00182     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00183     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00184 }
+\DoxyCodeLine{00185     \textcolor{comment}{// swap the back and front buffers}}
+\DoxyCodeLine{00186         \textcolor{comment}{//HRESULT Present(UINT SyncInterval,UINT Flags);}}
+\DoxyCodeLine{00187     \textcolor{comment}{//SyncInterval: 0 -\/ The presentation occurs immediately, there is no synchronization.}}
+\DoxyCodeLine{00188     \textcolor{comment}{//Flags defined by the DXGI\_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.}}
+\DoxyCodeLine{00189     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
+\DoxyCodeLine{00190     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
+\DoxyCodeLine{00191 }
+\DoxyCodeLine{00192     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
+\DoxyCodeLine{00193     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
+\DoxyCodeLine{00194     \textcolor{comment}{// so we do not have to wait per frame.}}
+\DoxyCodeLine{00195     FlushCommandQueue();}
+\DoxyCodeLine{00196 \}}
+\DoxyCodeLine{00197 }
+\DoxyCodeLine{00198 }
+\DoxyCodeLine{00199 }
+\DoxyCodeLine{00200 \textcolor{keywordtype}{void} TriangleAPP::BuildRootSignature()}
+\DoxyCodeLine{00201 \{}
+\DoxyCodeLine{00202     \textcolor{comment}{// Shader programs typically require resources as input (constant buffers,}}
+\DoxyCodeLine{00203     \textcolor{comment}{// textures, samplers).  The root signature defines the resources the shader}}
+\DoxyCodeLine{00204     \textcolor{comment}{// programs expect.  If we think of the shader programs as a function, and}}
+\DoxyCodeLine{00205     \textcolor{comment}{// the input resources as function parameters, then the root signature can be}}
+\DoxyCodeLine{00206     \textcolor{comment}{// thought of as defining the function signature.  }}
+\DoxyCodeLine{00207 }
+\DoxyCodeLine{00208 }
+\DoxyCodeLine{00210     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(0, \textcolor{keyword}{nullptr}, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00211 }
+\DoxyCodeLine{00212 }
+\DoxyCodeLine{00213     \textcolor{comment}{// create a root signature with no slot for now!}}
+\DoxyCodeLine{00214     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00215     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00216     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&serializedRootSig, \&errorBlob);}
+\DoxyCodeLine{00217 }
+\DoxyCodeLine{00218     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00219     \{}
+\DoxyCodeLine{00220         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{00221     \}}
+\DoxyCodeLine{00222     ThrowIfFailed(hr);}
+\DoxyCodeLine{00223 }
+\DoxyCodeLine{00224     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
+\DoxyCodeLine{00225         0,}
+\DoxyCodeLine{00226         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{00227         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{00228         IID\_PPV\_ARGS(\&mRootSignature)));}
+\DoxyCodeLine{00229 \}}
+\DoxyCodeLine{00230 }
+\DoxyCodeLine{00231 }
+\DoxyCodeLine{00232 }
+\DoxyCodeLine{00233 }
+\DoxyCodeLine{00234 \textcolor{keywordtype}{void} TriangleAPP::BuildShadersAndInputLayout()}
+\DoxyCodeLine{00235 \{}
+\DoxyCodeLine{00236     HRESULT hr = S\_OK;}
+\DoxyCodeLine{00237     \textcolor{comment}{//Take a look at HLSL compiler, change the output directory, set it "{}Vertex shader"{}, pay attention to "{}main"{} as an entry point, the version of hlsl...}}
+\DoxyCodeLine{00238     mvsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}main"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
+\DoxyCodeLine{00239     mpsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}main"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{00240 }
+\DoxyCodeLine{00241     \textcolor{comment}{//every element of our vertices has a corresponding descriptor}}
+\DoxyCodeLine{00242     \textcolor{comment}{//we have a position that has three float elements hence R32G32B32, RGB doesn't really mean colors here!}}
+\DoxyCodeLine{00243     \textcolor{comment}{//we are binding to slot zero!}}
+\DoxyCodeLine{00244 }
+\DoxyCodeLine{00245     \textcolor{comment}{//typedef struct D3D12\_INPUT\_ELEMENT\_DESC \{}}
+\DoxyCodeLine{00246     \textcolor{comment}{//  LPCSTR                     SemanticName;  ==> semantic associated with this in the shader}}
+\DoxyCodeLine{00247     \textcolor{comment}{//  UINT                       SemanticIndex;  ==>A semantic index is only needed in a case where there is more than one element with the same semantic.}}
+\DoxyCodeLine{00248     \textcolor{comment}{// example: Position0, Position1, Position2, etc..}}
+\DoxyCodeLine{00249     \textcolor{comment}{//  DXGI\_FORMAT                Format;  ==> specifies the format of the element data}}
+\DoxyCodeLine{00250     \textcolor{comment}{//  UINT                       InputSlot;  ==> An integer value that identifies the input-\/assembler.}}
+\DoxyCodeLine{00251     \textcolor{comment}{//  UINT                       AlignedByteOffset; ==> Offset, in bytes, between each element.}}
+\DoxyCodeLine{00252     \textcolor{comment}{//  D3D12\_INPUT\_CLASSIFICATION InputSlotClass;  ==> D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA or INTANCE\_DATA for instacning using geometry shader}}
+\DoxyCodeLine{00253     \textcolor{comment}{//  UINT                       InstanceDataStepRate; ==> for instancing using geometry shader}}
+\DoxyCodeLine{00254     \textcolor{comment}{//\} D3D12\_INPUT\_ELEMENT\_DESC;}}
+\DoxyCodeLine{00255 }
+\DoxyCodeLine{00256     mInputLayout =}
+\DoxyCodeLine{00257     \{}
+\DoxyCodeLine{00258         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00259     \};}
+\DoxyCodeLine{00260 \}}
+\DoxyCodeLine{00261 }
+\DoxyCodeLine{00262 \textcolor{keywordtype}{void} TriangleAPP::BuildTriangleGeometry()}
+\DoxyCodeLine{00263 \{}
+\DoxyCodeLine{00264 }
+\DoxyCodeLine{00265     \textcolor{comment}{//step2}}
+\DoxyCodeLine{00266 }
+\DoxyCodeLine{00267      \textcolor{comment}{// Define the geometry for a triangle.}}
+\DoxyCodeLine{00268     Vertex triangleVertices[] =}
+\DoxyCodeLine{00269     \{}
+\DoxyCodeLine{00270         Vertex(\{ XMFLOAT3(-\/0.5f, -\/0.5f, 0.0f)\}),}
+\DoxyCodeLine{00271         Vertex(\{ XMFLOAT3(+0.0f, +0.5f, 0.0f) \}),}
+\DoxyCodeLine{00272         Vertex(\{ XMFLOAT3(+0.5f, -\/0.5f, 0.0f) \}),}
+\DoxyCodeLine{00273     \};}
+\DoxyCodeLine{00274 }
+\DoxyCodeLine{00275     \textcolor{keyword}{const} UINT vertexBufferSize = \textcolor{keyword}{sizeof}(triangleVertices);}
+\DoxyCodeLine{00276 }
+\DoxyCodeLine{00277     \textcolor{comment}{// Note: using upload heaps to transfer static data like vert buffers is not }}
+\DoxyCodeLine{00278     \textcolor{comment}{// recommended. Every time the GPU needs it, the upload heap will be marshalled }}
+\DoxyCodeLine{00279     \textcolor{comment}{// over. Please read up on Default Heap usage. An upload heap is used here for }}
+\DoxyCodeLine{00280     \textcolor{comment}{// code simplicity and because there are very few verts to actually transfer.}}
+\DoxyCodeLine{00281     md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{00282         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
+\DoxyCodeLine{00283         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{00284         \&CD3DX12\_RESOURCE\_DESC::Buffer(vertexBufferSize),}
+\DoxyCodeLine{00285         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{00286         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00287         IID\_PPV\_ARGS(\&mVertexBuffer));}
+\DoxyCodeLine{00288 }
+\DoxyCodeLine{00289     \textcolor{comment}{// Copy the triangle data to the vertex buffer.}}
+\DoxyCodeLine{00290     UINT8* pVertexDataBegin;}
+\DoxyCodeLine{00291     CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
+\DoxyCodeLine{00292     mVertexBuffer-\/>Map(0, \&readRange, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pVertexDataBegin));}
+\DoxyCodeLine{00293     memcpy(pVertexDataBegin, triangleVertices, \textcolor{keyword}{sizeof}(triangleVertices));}
+\DoxyCodeLine{00294     mVertexBuffer-\/>Unmap(0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00295 }
+\DoxyCodeLine{00296     \textcolor{comment}{//Initialize the vertex buffer view.}}
+\DoxyCodeLine{00297     mVertexBufferView.BufferLocation = mVertexBuffer-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{00298     mVertexBufferView.StrideInBytes = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00299     mVertexBufferView.SizeInBytes = vertexBufferSize;}
+\DoxyCodeLine{00300 }
+\DoxyCodeLine{00301 }
+\DoxyCodeLine{00302 }
+\DoxyCodeLine{00303 \}}
+\DoxyCodeLine{00304 }
+\DoxyCodeLine{00305 \textcolor{keywordtype}{void} TriangleAPP::BuildPSO()}
+\DoxyCodeLine{00306 \{}
+\DoxyCodeLine{00307     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc;}
+\DoxyCodeLine{00308     ZeroMemory(\&psoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{00309 }
+\DoxyCodeLine{00310     \textcolor{comment}{//bind the input layout to pipeline}}
+\DoxyCodeLine{00311     psoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{00312     psoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{00313 }
+\DoxyCodeLine{00314     \textcolor{comment}{//in old days, we use to call create vertex shader, now we hook it up to the PSO!}}
+\DoxyCodeLine{00315     psoDesc.VS =}
+\DoxyCodeLine{00316     \{}
+\DoxyCodeLine{00317         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mvsByteCode-\/>GetBufferPointer()),}
+\DoxyCodeLine{00318         mvsByteCode-\/>GetBufferSize()}
+\DoxyCodeLine{00319     \};}
+\DoxyCodeLine{00320     psoDesc.PS =}
+\DoxyCodeLine{00321     \{}
+\DoxyCodeLine{00322         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mpsByteCode-\/>GetBufferPointer()),}
+\DoxyCodeLine{00323         mpsByteCode-\/>GetBufferSize()}
+\DoxyCodeLine{00324     \};}
+\DoxyCodeLine{00325     psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00326     psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00327     psoDesc.DepthStencilState.DepthEnable = FALSE;}
+\DoxyCodeLine{00328     psoDesc.DepthStencilState.StencilEnable = FALSE;}
+\DoxyCodeLine{00329     psoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00330     psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00331     psoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00332     psoDesc.RTVFormats[0] = mBackBufferFormat;  \textcolor{comment}{//DXGI\_FORMAT\_R8G8B8A8\_UNORM;}}
+\DoxyCodeLine{00333     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00334 }
+\DoxyCodeLine{00335     \textcolor{comment}{//We can query the number of quality levels for a given texture format and sample count using the ID3D12Device::CheckFeatureSupport method like so :}}
+\DoxyCodeLine{00336     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
+\DoxyCodeLine{00337     msQualityLevels.Format = mBackBufferFormat;}
+\DoxyCodeLine{00338     msQualityLevels.SampleCount = 32;}
+\DoxyCodeLine{00339     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
+\DoxyCodeLine{00340     msQualityLevels.NumQualityLevels = 0;}
+\DoxyCodeLine{00341 }
+\DoxyCodeLine{00342     \textcolor{comment}{//Note that the second parameter is both an input and output parameter. For the input,}}
+\DoxyCodeLine{00343     \textcolor{comment}{//we must specify the texture format, sample count, and flag we want to query}}
+\DoxyCodeLine{00344     \textcolor{comment}{//multisampling support for.The function will then fill out the quality level as the output.}}
+\DoxyCodeLine{00345     \textcolor{comment}{//Valid quality levels for a texture format and sample count combination range from zero to NumQualityLevels–1.}}
+\DoxyCodeLine{00346     \textcolor{comment}{//The maximum number of samples that can be taken per pixel is defined by : \#define D3D12\_MAX\_MULTISAMPLE\_SAMPLE\_COUNT ( 32 )}}
+\DoxyCodeLine{00347 }
+\DoxyCodeLine{00348     ThrowIfFailed(md3dDevice-\/>CheckFeatureSupport(D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS, \&msQualityLevels, \textcolor{keyword}{sizeof}(msQualityLevels)));}
+\DoxyCodeLine{00349 }
+\DoxyCodeLine{00350 }
+\DoxyCodeLine{00351     \textcolor{comment}{//psoDesc.SampleDesc.Count = 1; }}
+\DoxyCodeLine{00352     m4xMsaaState = \textcolor{keyword}{true};}
+\DoxyCodeLine{00353     psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;   \textcolor{comment}{//The Count member specifies the number of samples to take per pixel}}
+\DoxyCodeLine{00354     psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0; \textcolor{comment}{//Quality member is used to specify the desired quality level (what “quality level” means can vary across hardware manufacturers).}}
+\DoxyCodeLine{00355 }
+\DoxyCodeLine{00356 }
+\DoxyCodeLine{00357     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&mPSO)));}
+\DoxyCodeLine{00358 \}}
+\DoxyCodeLine{00359 }
+\DoxyCodeLine{00360 }
+\DoxyCodeLine{00361 }
+\DoxyCodeLine{00362 }
+\DoxyCodeLine{00363 }
 
 \end{DoxyCode}

@@ -1,381 +1,381 @@
-\hypertarget{_d3_d12_hello_triangle_8cpp_source}{}\doxysection{D3\+D12\+Hello\+Triangle.\+cpp}
+\doxysection{D3\+D12\+Hello\+Triangle.\+cpp}
 \label{_d3_d12_hello_triangle_8cpp_source}\index{Week2/Week2-\/6-\/Hello Triangle/D3D12HelloTriangle.cpp@{Week2/Week2-\/6-\/Hello Triangle/D3D12HelloTriangle.cpp}}
-\mbox{\hyperlink{_d3_d12_hello_triangle_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00001}00001 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00002}00002 \textcolor{comment}{//}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00003}00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00004}00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00005}00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00006}00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00007}00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00008}00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00009}00009 \textcolor{comment}{//}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00010}00010 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00011}00011 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2stdafx_8h}{stdafx.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_d3_d12_hello_triangle_8h}{D3D12HelloTriangle.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00014}00014 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00015}\mbox{\hyperlink{class_d3_d12_hello_triangle_a7bf7a1e046b07f0f20e09d4a21b8aed2}{00015}} \mbox{\hyperlink{class_d3_d12_hello_triangle_a7bf7a1e046b07f0f20e09d4a21b8aed2}{D3D12HelloTriangle::D3D12HelloTriangle}}(UINT width, UINT height, std::wstring name) :}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00016}00016     \mbox{\hyperlink{class_d_x_sample}{DXSample}}(width, height, name),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00017}00017     m\_frameIndex(0),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00018}00018     m\_viewport(0.0f, 0.0f, static\_cast<float>(width), static\_cast<float>(height)),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00019}00019     m\_scissorRect(0, 0, static\_cast<LONG>(width), static\_cast<LONG>(height)),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00020}00020     m\_rtvDescriptorSize(0)}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00021}00021 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00022}00022 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00023}00023 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00024}\mbox{\hyperlink{class_d3_d12_hello_triangle_a40a55ac057936e87303dd695b2cc1b83}{00024}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_a40a55ac057936e87303dd695b2cc1b83}{D3D12HelloTriangle::OnInit}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00025}00025 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00026}00026     \mbox{\hyperlink{class_d3_d12_hello_triangle_a91875b2e5ed9a94ab9cc9ac53e2f4a11}{LoadPipeline}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00027}00027     \mbox{\hyperlink{class_d3_d12_hello_triangle_aaca579ec6045c49aa30019a6408ae1c2}{LoadAssets}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00028}00028 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00029}00029 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00030}00030 \textcolor{comment}{// Load the rendering pipeline dependencies.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00031}\mbox{\hyperlink{class_d3_d12_hello_triangle_a91875b2e5ed9a94ab9cc9ac53e2f4a11}{00031}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_a91875b2e5ed9a94ab9cc9ac53e2f4a11}{D3D12HelloTriangle::LoadPipeline}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00032}00032 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00033}00033     UINT dxgiFactoryFlags = 0;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00035}00035 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00036}00036     \textcolor{comment}{// Enable the debug layer (requires the Graphics Tools "{}optional feature"{}).}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00037}00037     \textcolor{comment}{// NOTE: Enabling the debug layer after device creation will invalidate the active device.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00038}00038     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00039}00039         ComPtr<ID3D12Debug> debugController;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00040}00040         \textcolor{keywordflow}{if} (SUCCEEDED(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController))))}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00041}00041         \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00042}00042             debugController-\/>EnableDebugLayer();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00043}00043 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00044}00044             \textcolor{comment}{// Enable additional debug layers.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00045}00045             dxgiFactoryFlags |= DXGI\_CREATE\_FACTORY\_DEBUG;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00046}00046         \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00047}00047     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00048}00048 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00049}00049 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00050}00050     ComPtr<IDXGIFactory4> factory;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00051}00051     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(CreateDXGIFactory2(dxgiFactoryFlags, IID\_PPV\_ARGS(\&factory)));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00052}00052 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00053}00053     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d_x_sample_a00b60a6d941dcaa6d750ee1c31f2a5f1}{m\_useWarpDevice}})}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00054}00054     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00055}00055         ComPtr<IDXGIAdapter> warpAdapter;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00056}00056         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&warpAdapter)));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00057}00057 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00058}00058         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12CreateDevice(}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00059}00059             warpAdapter.Get(),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00060}00060             D3D\_FEATURE\_LEVEL\_11\_0,}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00061}00061             IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}})}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00062}00062             ));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00063}00063     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00064}00064     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00065}00065     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00066}00066         ComPtr<IDXGIAdapter1> hardwareAdapter;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00067}00067         \mbox{\hyperlink{class_d_x_sample_aa375adcf3d2f476c9d2a5e8dad6e5f84}{GetHardwareAdapter}}(factory.Get(), \&hardwareAdapter);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00068}00068 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00069}00069         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12CreateDevice(}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00070}00070             hardwareAdapter.Get(),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00071}00071             D3D\_FEATURE\_LEVEL\_11\_0,}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00072}00072             IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}})}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00073}00073             ));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00074}00074     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00075}00075 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00076}00076     \textcolor{comment}{// Describe and create the command queue.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00077}00077     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00078}00078     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00079}00079     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00080}00080 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00081}00081     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a6bea98d175cbb914e652f6e410429e07}{m\_commandQueue}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00082}00082 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00083}00083     \textcolor{comment}{// Describe and create the swap chain. The front and back buffer form a swap chain.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00084}00084     DXGI\_SWAP\_CHAIN\_DESC1 swapChainDesc = \{\};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00085}00085     swapChainDesc.BufferCount = \mbox{\hyperlink{class_d3_d12_hello_triangle_ae8ef07f30ca37dd7ee89027d7c7cc7bf}{FrameCount}};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00086}00086     swapChainDesc.Width = \mbox{\hyperlink{class_d_x_sample_ad54a7eccea7fc9a8e9c80cbefca364a8}{m\_width}};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00087}00087     swapChainDesc.Height = \mbox{\hyperlink{class_d_x_sample_a56ff92a24d9f30901fa370b0112cdefd}{m\_height}};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00088}00088     \textcolor{comment}{//note 5: a texture cannot store arbitrary kinds of data elements; it can only store certain kinds of data element formats, which are described by the DXGI\_FORMAT enumerated type}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00089}00089     swapChainDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;  \textcolor{comment}{//note 6: Each element has four 8-\/bit unsigned components mapped to the[0, 1] range.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00090}00090     swapChainDesc.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00091}00091     swapChainDesc.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00092}00092     swapChainDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00093}00093 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00094}00094     ComPtr<IDXGISwapChain1> swapChain;  \textcolor{comment}{//note 6: To avoid flickering in animation, it is best to draw an entire frame of animation into an off -\/ screen texture called the back buffer}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00095}00095     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>CreateSwapChainForHwnd(}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00096}00096         \mbox{\hyperlink{class_d3_d12_hello_triangle_a6bea98d175cbb914e652f6e410429e07}{m\_commandQueue}}.Get(),        \textcolor{comment}{// Swap chain needs the queue so that it can force a flush on it.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00097}00097         \mbox{\hyperlink{class_win32_application_a998822a640e56d38e51a4ffb580f5044}{Win32Application::GetHwnd}}(),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00098}00098         \&swapChainDesc,}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00099}00099         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00100}00100         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00101}00101         \&swapChain}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00102}00102         ));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00103}00103 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00104}00104     \textcolor{comment}{// This sample does not support fullscreen transitions.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00105}00105     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>MakeWindowAssociation(\mbox{\hyperlink{class_win32_application_a998822a640e56d38e51a4ffb580f5044}{Win32Application::GetHwnd}}(), DXGI\_MWA\_NO\_ALT\_ENTER));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00106}00106 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00107}00107     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(swapChain.As(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a6ad23ac32f4d0409dae13391503ed849}{m\_swapChain}}));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00108}00108     \mbox{\hyperlink{class_d3_d12_hello_triangle_a333417e6ca5903330d18c03f1bfd2735}{m\_frameIndex}} = \mbox{\hyperlink{class_d3_d12_hello_triangle_a6ad23ac32f4d0409dae13391503ed849}{m\_swapChain}}-\/>GetCurrentBackBufferIndex();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00109}00109 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00110}00110     \textcolor{comment}{// Create descriptor heaps.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00111}00111     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00112}00112         \textcolor{comment}{// Describe and create a render target view (RTV) descriptor heap.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00113}00113         D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc = \{\};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00114}00114         rtvHeapDesc.NumDescriptors = \mbox{\hyperlink{class_d3_d12_hello_triangle_ae8ef07f30ca37dd7ee89027d7c7cc7bf}{FrameCount}};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00115}00115         rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00116}00116         rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00117}00117         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateDescriptorHeap(\&rtvHeapDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a447f6b5b9388773cc10d5a2f8571988e}{m\_rtvHeap}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00118}00118 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00119}00119         \mbox{\hyperlink{class_d3_d12_hello_triangle_a14888b9dbd29d74caeb895046b4e8103}{m\_rtvDescriptorSize}} = \mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00120}00120     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00121}00121 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00122}00122     \textcolor{comment}{// Create frame resources.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00123}00123     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00124}00124         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(\mbox{\hyperlink{class_d3_d12_hello_triangle_a447f6b5b9388773cc10d5a2f8571988e}{m\_rtvHeap}}-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00125}00125 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00126}00126         \textcolor{comment}{// Create a RTV for each frame.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00127}00127         \textcolor{keywordflow}{for} (UINT n = 0; n < \mbox{\hyperlink{class_d3_d12_hello_triangle_ae8ef07f30ca37dd7ee89027d7c7cc7bf}{FrameCount}}; n++)}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00128}00128         \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00129}00129             \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a6ad23ac32f4d0409dae13391503ed849}{m\_swapChain}}-\/>GetBuffer(n, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_abd9ca10c6eabf143bf5647b5236b9a07}{m\_renderTargets}}[n])));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00130}00130             \mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateRenderTargetView(\mbox{\hyperlink{class_d3_d12_hello_triangle_abd9ca10c6eabf143bf5647b5236b9a07}{m\_renderTargets}}[n].Get(), \textcolor{keyword}{nullptr}, rtvHandle);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00131}00131             rtvHandle.Offset(1, \mbox{\hyperlink{class_d3_d12_hello_triangle_a14888b9dbd29d74caeb895046b4e8103}{m\_rtvDescriptorSize}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00132}00132         \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00133}00133     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00134}00134 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00135}00135     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateCommandAllocator(D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a32df147243489bea52f1a8d1fc70b9f2}{m\_commandAllocator}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00136}00136 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00137}00137 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00138}00138 \textcolor{comment}{// Load the sample assets.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00139}\mbox{\hyperlink{class_d3_d12_hello_triangle_aaca579ec6045c49aa30019a6408ae1c2}{00139}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_aaca579ec6045c49aa30019a6408ae1c2}{D3D12HelloTriangle::LoadAssets}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00140}00140 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00141}00141     \textcolor{comment}{//step11: Create an empty root signature.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00142}00142     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00143}00143         CD3DX12\_ROOT\_SIGNATURE\_DESC rootSignatureDesc;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00144}00144         rootSignatureDesc.Init(0, \textcolor{keyword}{nullptr}, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00145}00145 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00146}00146         \textcolor{comment}{//ID3DBlob: This interface is used to return data of arbitrary length.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00147}00147         ComPtr<ID3DBlob> signature;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00148}00148         ComPtr<ID3DBlob> error;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00149}00149         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12SerializeRootSignature(\&rootSignatureDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&signature, \&error));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00150}00150         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateRootSignature(0, signature-\/>GetBufferPointer(), signature-\/>GetBufferSize(), IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_aea13d8f62f209d25a0802d8ae27535aa}{m\_rootSignature}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00151}00151     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00152}00152 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00153}00153     \textcolor{comment}{// Create the pipeline state, which includes compiling and loading shaders.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00154}00154     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00155}00155         ComPtr<ID3DBlob> vertexShader;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00156}00156         ComPtr<ID3DBlob> pixelShader;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00157}00157 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00158}00158 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00159}00159         \textcolor{comment}{// Enable better shader debugging with the graphics debugging tools.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00160}00160         UINT compileFlags = D3DCOMPILE\_DEBUG | D3DCOMPILE\_SKIP\_OPTIMIZATION;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00161}00161 \textcolor{preprocessor}{\#else}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00162}00162         UINT compileFlags = 0;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00163}00163 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00164}00164 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00165}00165         \textcolor{comment}{//the following assumes that shader hlsl file is already under debug folder!}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00166}00166         \textcolor{comment}{//ThrowIfFailed(D3DCompileFromFile(GetAssetFullPath(L"{}shaders.hlsl"{}).c\_str(), nullptr, nullptr, "{}VSMain"{}, "{}vs\_5\_0"{}, compileFlags, 0, \&vertexShader, nullptr));}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00167}00167         \textcolor{comment}{//ThrowIfFailed(D3DCompileFromFile(GetAssetFullPath(L"{}shaders.hlsl"{}).c\_str(), nullptr, nullptr, "{}PSMain"{}, "{}ps\_5\_0"{}, compileFlags, 0, \&pixelShader, nullptr));}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00168}00168 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00169}00169         std::wstring path = \mbox{\hyperlink{class_d_x_sample_a8327b28527a9eaf45ae1abad5710ba4c}{GetAssetFullPath}}(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}).c\_str();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00170}00170 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00171}00171         \textcolor{comment}{//step12: Load and compile the shaders}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00172}00172         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCompileFromFile(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VSMain"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}}, compileFlags, 0, \&vertexShader, \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00173}00173         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCompileFromFile(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PSMain"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}}, compileFlags, 0, \&pixelShader, \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00174}00174 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00175}00175         \textcolor{comment}{// step13: Define the vertex input layout.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00176}00176         D3D12\_INPUT\_ELEMENT\_DESC inputElementDescs[] =}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00177}00177         \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00178}00178             \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00179}00179             \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32A32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00180}00180         \};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00181}00181 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00182}00182         \textcolor{comment}{// step13: Describe and create the graphics pipeline state object (PSO).}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00183}00183         \textcolor{comment}{//Fill out a pipeline state description, using the helper structures available, then create the graphics pipeline state}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00184}00184         D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc = \{\};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00185}00185         psoDesc.InputLayout = \{ inputElementDescs, \_countof(inputElementDescs) \};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00186}00186         psoDesc.pRootSignature = \mbox{\hyperlink{class_d3_d12_hello_triangle_aea13d8f62f209d25a0802d8ae27535aa}{m\_rootSignature}}.Get();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00187}00187         psoDesc.VS = CD3DX12\_SHADER\_BYTECODE(vertexShader.Get());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00188}00188         psoDesc.PS = CD3DX12\_SHADER\_BYTECODE(pixelShader.Get());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00189}00189         psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00190}00190         psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00191}00191         psoDesc.DepthStencilState.DepthEnable = FALSE;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00192}00192         psoDesc.DepthStencilState.StencilEnable = FALSE;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00193}00193         psoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00194}00194         psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00195}00195         psoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00196}00196         psoDesc.RTVFormats[0] = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00197}00197         psoDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00198}00198         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a4e7df0b7a3b247eccbb9f2f4cbd61b1b}{m\_pipelineState}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00199}00199     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00200}00200 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00201}00201     \textcolor{comment}{// step14: Create the command list.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00202}00202     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateCommandList(0, D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, \mbox{\hyperlink{class_d3_d12_hello_triangle_a32df147243489bea52f1a8d1fc70b9f2}{m\_commandAllocator}}.Get(), \mbox{\hyperlink{class_d3_d12_hello_triangle_a4e7df0b7a3b247eccbb9f2f4cbd61b1b}{m\_pipelineState}}.Get(), IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00203}00203 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00204}00204     \textcolor{comment}{// step15: Command lists are created in the recording state, but there is nothing}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00205}00205     \textcolor{comment}{// to record yet. The main loop expects it to be closed, so close it now.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00206}00206     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>Close());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00207}00207 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00208}00208     \textcolor{comment}{// step16: Create the vertex buffer.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00209}00209     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00210}00210         \textcolor{comment}{// Define the geometry for a triangle.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00211}00211         \mbox{\hyperlink{struct_d3_d12_hello_triangle_1_1_vertex}{Vertex}} triangleVertices[] =}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00212}00212         \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00213}00213               \{ \{ -\/0.25f, -\/0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00214}00214              \{ \{ -\/0.25f, 0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00215}00215             \{ \{ 0.0f, 0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00216}00216            \{ \{ -\/0.25f, -\/0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00217}00217             \{ \{ 0.0f, 0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00218}00218             \{ \{ 0.25f, -\/0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00219}00219             \{ \{ 0.0f, 0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00220}00220             \{ \{ 0.25f, 0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00221}00221              \{ \{ 0.25f, -\/0.25f * \mbox{\hyperlink{class_d_x_sample_a526d30be9be2182747aa97d7d130f664}{m\_aspectRatio}}, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00222}00222           }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00223}00223         \};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00224}00224 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00225}00225 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00226}00226 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00227}00227         \textcolor{keyword}{const} UINT vertexBufferSize = \textcolor{keyword}{sizeof}(triangleVertices);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00228}00228 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00229}00229         \textcolor{comment}{// Note: using upload heaps to transfer static data like vert buffers is not }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00230}00230         \textcolor{comment}{// recommended. Every time the GPU needs it, the upload heap will be marshalled }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00231}00231         \textcolor{comment}{// over. Please read up on Default Heap usage. An upload heap is used here for }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00232}00232         \textcolor{comment}{// code simplicity and because there are very few verts to actually transfer.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00233}00233         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateCommittedResource(}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00234}00234             \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00235}00235             D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00236}00236             \&CD3DX12\_RESOURCE\_DESC::Buffer(vertexBufferSize),}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00237}00237             D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00238}00238             \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00239}00239             IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_a7c77a6cb1f54c6708e7ba961fd7723e1}{m\_vertexBuffer}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00240}00240 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00241}00241         \textcolor{comment}{// step17: Copy the triangle data to the vertex buffer.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00242}00242         UINT8* pVertexDataBegin;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00243}00243         CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00244}00244         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a7c77a6cb1f54c6708e7ba961fd7723e1}{m\_vertexBuffer}}-\/>Map(0, \&readRange, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pVertexDataBegin)));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00245}00245         memcpy(pVertexDataBegin, triangleVertices, \textcolor{keyword}{sizeof}(triangleVertices));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00246}00246         \mbox{\hyperlink{class_d3_d12_hello_triangle_a7c77a6cb1f54c6708e7ba961fd7723e1}{m\_vertexBuffer}}-\/>Unmap(0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00247}00247 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00248}00248         \textcolor{comment}{//step18: Initialize the vertex buffer view.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00249}00249         \mbox{\hyperlink{class_d3_d12_hello_triangle_af7c902483a8cde8a0f7c6ee62a149654}{m\_vertexBufferView}}.BufferLocation = \mbox{\hyperlink{class_d3_d12_hello_triangle_a7c77a6cb1f54c6708e7ba961fd7723e1}{m\_vertexBuffer}}-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00250}00250         \mbox{\hyperlink{class_d3_d12_hello_triangle_af7c902483a8cde8a0f7c6ee62a149654}{m\_vertexBufferView}}.StrideInBytes = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_d3_d12_hello_triangle_1_1_vertex}{Vertex}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00251}00251         \mbox{\hyperlink{class_d3_d12_hello_triangle_af7c902483a8cde8a0f7c6ee62a149654}{m\_vertexBufferView}}.SizeInBytes = vertexBufferSize;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00252}00252     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00253}00253 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00254}00254     \textcolor{comment}{// Create synchronization objects and wait until assets have been uploaded to the GPU.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00255}00255     \textcolor{comment}{//step18: Create and initialize the fence}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00256}00256     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00257}00257         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ab5fbfa6ae47b9352f997986bcfc4c3c2}{m\_device}}-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d12_hello_triangle_ac6fd5407a886b769f117983f2d73a941}{m\_fence}})));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00258}00258         \mbox{\hyperlink{class_d3_d12_hello_triangle_a11fa4f794392ea120293a0a7fed06a29}{m\_fenceValue}} = 1;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00259}00259 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00260}00260         \textcolor{comment}{// step19: Create an event handle to use for frame synchronization.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00261}00261         \mbox{\hyperlink{class_d3_d12_hello_triangle_ad0efe26aa9a79d1eba712fe5729af70e}{m\_fenceEvent}} = CreateEvent(\textcolor{keyword}{nullptr}, FALSE, FALSE, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00262}00262         \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d3_d12_hello_triangle_ad0efe26aa9a79d1eba712fe5729af70e}{m\_fenceEvent}} == \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00263}00263         \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00264}00264             \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(HRESULT\_FROM\_WIN32(GetLastError()));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00265}00265         \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00266}00266 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00267}00267         \textcolor{comment}{// step20: Wait for the GPU to finish. Wait for the command list to execute; we are reusing the same command }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00268}00268         \textcolor{comment}{// list in our main loop but for now, we just want to wait for setup to }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00269}00269         \textcolor{comment}{// complete before continuing.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00270}00270         \mbox{\hyperlink{class_d3_d12_hello_triangle_abff6cd2ee06718369e8ccaa9e7b98d28}{WaitForPreviousFrame}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00271}00271     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00272}00272 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00273}00273 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00274}00274 \textcolor{comment}{// Update frame-\/based values.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00275}\mbox{\hyperlink{class_d3_d12_hello_triangle_a0721e655f00f1e76b30fcc1d2bf73b2f}{00275}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_a0721e655f00f1e76b30fcc1d2bf73b2f}{D3D12HelloTriangle::OnUpdate}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00276}00276 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00277}00277 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00278}00278 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00279}00279 \textcolor{comment}{// Render the scene.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00280}00280 \textcolor{comment}{//Rendering involves a call to populate the command list, then the command list can be executed and the next buffer in the swap chain presented:}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00281}\mbox{\hyperlink{class_d3_d12_hello_triangle_a6b2b27d814ddaba2d6c6e931ab924266}{00281}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_a6b2b27d814ddaba2d6c6e931ab924266}{D3D12HelloTriangle::OnRender}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00282}00282 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00283}00283     \textcolor{comment}{//During set up, the member variable m\_commandList was used to record and execute all of the set up commands. You can now reuse that member in the main render loop.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00284}00284     \textcolor{comment}{// step 21: Record all the commands we need to render the scene into the command list.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00285}00285     \mbox{\hyperlink{class_d3_d12_hello_triangle_ad6e34e0c088d89d821c9d86dbe6d182a}{PopulateCommandList}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00286}00286 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00287}00287     \textcolor{comment}{// step22: Execute the command list.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00288}00288     ID3D12CommandList* ppCommandLists[] = \{ \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}.Get() \};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00289}00289     \mbox{\hyperlink{class_d3_d12_hello_triangle_a6bea98d175cbb914e652f6e410429e07}{m\_commandQueue}}-\/>ExecuteCommandLists(\_countof(ppCommandLists), ppCommandLists);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00290}00290 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00291}00291     \textcolor{comment}{// step23: Present the frame.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00292}00292     \textcolor{comment}{//Swapping the roles of the back and front buffers is called presenting.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00293}00293     \textcolor{comment}{//Presenting is an efficient operation, as the pointer to the current front bufferand the pointer to the current back buffer just need to be swapped.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00294}00294     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a6ad23ac32f4d0409dae13391503ed849}{m\_swapChain}}-\/>Present(1, 0));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00295}00295 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00296}00296     \textcolor{comment}{//step24: Wait on the GPU to finish.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00297}00297     \mbox{\hyperlink{class_d3_d12_hello_triangle_abff6cd2ee06718369e8ccaa9e7b98d28}{WaitForPreviousFrame}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00298}00298 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00299}00299 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00300}\mbox{\hyperlink{class_d3_d12_hello_triangle_afb45c54cf891fe445dd68cd5a0ff2279}{00300}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_afb45c54cf891fe445dd68cd5a0ff2279}{D3D12HelloTriangle::OnDestroy}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00301}00301 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00302}00302     \textcolor{comment}{// Ensure that the GPU is no longer referencing resources that are about to be}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00303}00303     \textcolor{comment}{// cleaned up by the destructor.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00304}00304 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00305}00305     \textcolor{comment}{//step37: Wait for the GPU to finish.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00306}00306     \mbox{\hyperlink{class_d3_d12_hello_triangle_abff6cd2ee06718369e8ccaa9e7b98d28}{WaitForPreviousFrame}}();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00307}00307 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00308}00308     \textcolor{comment}{//step38: Close the event.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00309}00309     CloseHandle(\mbox{\hyperlink{class_d3_d12_hello_triangle_ad0efe26aa9a79d1eba712fe5729af70e}{m\_fenceEvent}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00310}00310 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00311}00311 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00312}\mbox{\hyperlink{class_d3_d12_hello_triangle_ad6e34e0c088d89d821c9d86dbe6d182a}{00312}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_ad6e34e0c088d89d821c9d86dbe6d182a}{D3D12HelloTriangle::PopulateCommandList}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00313}00313 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00314}00314     \textcolor{comment}{// step25: Command list allocators can only be reset when the associated }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00315}00315     \textcolor{comment}{// command lists have finished execution on the GPU; apps should use }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00316}00316     \textcolor{comment}{// fences to determine GPU execution progress.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00317}00317     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a32df147243489bea52f1a8d1fc70b9f2}{m\_commandAllocator}}-\/>Reset());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00318}00318 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00319}00319     \textcolor{comment}{// step26: However, when ExecuteCommandList() is called on a particular command }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00320}00320     \textcolor{comment}{// list, that command list can then be reset at any time and must be before }}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00321}00321     \textcolor{comment}{// re-\/recording.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00322}00322     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d12_hello_triangle_a32df147243489bea52f1a8d1fc70b9f2}{m\_commandAllocator}}.Get(), \mbox{\hyperlink{class_d3_d12_hello_triangle_a4e7df0b7a3b247eccbb9f2f4cbd61b1b}{m\_pipelineState}}.Get()));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00323}00323 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00324}00324     \textcolor{comment}{// step27: Set the root signature, viewport and scissors rectangles:}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00325}00325     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>SetGraphicsRootSignature(\mbox{\hyperlink{class_d3_d12_hello_triangle_aea13d8f62f209d25a0802d8ae27535aa}{m\_rootSignature}}.Get());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00326}00326     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d12_hello_triangle_a76d0eeed4464cdd438cd3d639fc82218}{m\_viewport}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00327}00327     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d12_hello_triangle_a018211385ab7d11e0ce5dd150327e9de}{m\_scissorRect}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00328}00328 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00329}00329     \textcolor{comment}{// step28: Indicate that the back buffer will be used as a render target.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00330}00330     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d12_hello_triangle_abd9ca10c6eabf143bf5647b5236b9a07}{m\_renderTargets}}[\mbox{\hyperlink{class_d3_d12_hello_triangle_a333417e6ca5903330d18c03f1bfd2735}{m\_frameIndex}}].Get(), D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00331}00331 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00332}00332     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(\mbox{\hyperlink{class_d3_d12_hello_triangle_a447f6b5b9388773cc10d5a2f8571988e}{m\_rtvHeap}}-\/>GetCPUDescriptorHandleForHeapStart(), \mbox{\hyperlink{class_d3_d12_hello_triangle_a333417e6ca5903330d18c03f1bfd2735}{m\_frameIndex}}, \mbox{\hyperlink{class_d3_d12_hello_triangle_a14888b9dbd29d74caeb895046b4e8103}{m\_rtvDescriptorSize}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00333}00333     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>OMSetRenderTargets(1, \&rtvHandle, FALSE, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00334}00334 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00335}00335     \textcolor{comment}{// step29: Record commands.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00336}00336     \textcolor{keyword}{const} \textcolor{keywordtype}{float} clearColor[] = \{ 0.0f, 0.2f, 0.4f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00337}00337 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00338}00338     \textcolor{comment}{//step30: : to submit a command to the GPU to clear a render target(e.g., the screen)}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00339}00339     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>ClearRenderTargetView(rtvHandle, clearColor, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00340}00340 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00341}00341     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00342}00342     \textcolor{comment}{//m\_commandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLESTRIP);}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00343}00343     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>IASetVertexBuffers(0, 1, \&\mbox{\hyperlink{class_d3_d12_hello_triangle_af7c902483a8cde8a0f7c6ee62a149654}{m\_vertexBufferView}});}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00344}00344     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>DrawInstanced(9, 1, 0, 0);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00345}00345     \textcolor{comment}{//m\_commandList-\/>DrawInstanced(3, 1, 3, 3);}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00346}00346 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00347}00347     \textcolor{comment}{// step31: Indicate that the back buffer will now be used to present.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00348}00348     \mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d12_hello_triangle_abd9ca10c6eabf143bf5647b5236b9a07}{m\_renderTargets}}[\mbox{\hyperlink{class_d3_d12_hello_triangle_a333417e6ca5903330d18c03f1bfd2735}{m\_frameIndex}}].Get(), D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00349}00349 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00350}00350     \textcolor{comment}{//step32: Close the command list:}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00351}00351     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a9e709fb46f1d15be9de82302a31b8308}{m\_commandList}}-\/>Close());}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00352}00352 \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00353}00353 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00354}\mbox{\hyperlink{class_d3_d12_hello_triangle_abff6cd2ee06718369e8ccaa9e7b98d28}{00354}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_triangle_abff6cd2ee06718369e8ccaa9e7b98d28}{D3D12HelloTriangle::WaitForPreviousFrame}}()}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00355}00355 \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00356}00356     \textcolor{comment}{// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00357}00357     \textcolor{comment}{// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00358}00358     \textcolor{comment}{// sample illustrates how to use fences for efficient resource usage and to}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00359}00359     \textcolor{comment}{// maximize GPU utilization.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00360}00360 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00361}00361     \textcolor{comment}{// step33: Signal and increment the fence value.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00362}00362     \textcolor{keyword}{const} UINT64 fence = \mbox{\hyperlink{class_d3_d12_hello_triangle_a11fa4f794392ea120293a0a7fed06a29}{m\_fenceValue}};}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00363}00363     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_a6bea98d175cbb914e652f6e410429e07}{m\_commandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d12_hello_triangle_ac6fd5407a886b769f117983f2d73a941}{m\_fence}}.Get(), fence));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00364}00364     \mbox{\hyperlink{class_d3_d12_hello_triangle_a11fa4f794392ea120293a0a7fed06a29}{m\_fenceValue}}++;}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00365}00365 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00366}00366     \textcolor{comment}{// step34: Wait until the previous frame is finished.}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00367}00367     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d3_d12_hello_triangle_ac6fd5407a886b769f117983f2d73a941}{m\_fence}}-\/>GetCompletedValue() < fence)}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00368}00368     \{}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00369}00369         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d12_hello_triangle_ac6fd5407a886b769f117983f2d73a941}{m\_fence}}-\/>SetEventOnCompletion(fence, \mbox{\hyperlink{class_d3_d12_hello_triangle_ad0efe26aa9a79d1eba712fe5729af70e}{m\_fenceEvent}}));}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00370}00370         WaitForSingleObject(\mbox{\hyperlink{class_d3_d12_hello_triangle_ad0efe26aa9a79d1eba712fe5729af70e}{m\_fenceEvent}}, INFINITE);}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00371}00371     \}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00372}00372 }
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00373}00373     \textcolor{comment}{//step35: Update the frame index:}}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00374}00374     \mbox{\hyperlink{class_d3_d12_hello_triangle_a333417e6ca5903330d18c03f1bfd2735}{m\_frameIndex}} = \mbox{\hyperlink{class_d3_d12_hello_triangle_a6ad23ac32f4d0409dae13391503ed849}{m\_swapChain}}-\/>GetCurrentBackBufferIndex();}
-\DoxyCodeLine{\Hypertarget{_d3_d12_hello_triangle_8cpp_source_l00375}00375 \}}
+\DoxyCodeLine{00001 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{//}}
+\DoxyCodeLine{00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
+\DoxyCodeLine{00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
+\DoxyCodeLine{00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
+\DoxyCodeLine{00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
+\DoxyCodeLine{00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
+\DoxyCodeLine{00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
+\DoxyCodeLine{00009 \textcolor{comment}{//}}
+\DoxyCodeLine{00010 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{00011 }
+\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include "{}stdafx.h"{}}}
+\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include "{}D3D12HelloTriangle.h"{}}}
+\DoxyCodeLine{00014 }
+\DoxyCodeLine{00015 D3D12HelloTriangle::D3D12HelloTriangle(UINT width, UINT height, std::wstring name) :}
+\DoxyCodeLine{00016     DXSample(width, height, name),}
+\DoxyCodeLine{00017     m\_frameIndex(0),}
+\DoxyCodeLine{00018     m\_viewport(0.0f, 0.0f, static\_cast<float>(width), static\_cast<float>(height)),}
+\DoxyCodeLine{00019     m\_scissorRect(0, 0, static\_cast<LONG>(width), static\_cast<LONG>(height)),}
+\DoxyCodeLine{00020     m\_rtvDescriptorSize(0)}
+\DoxyCodeLine{00021 \{}
+\DoxyCodeLine{00022 \}}
+\DoxyCodeLine{00023 }
+\DoxyCodeLine{00024 \textcolor{keywordtype}{void} D3D12HelloTriangle::OnInit()}
+\DoxyCodeLine{00025 \{}
+\DoxyCodeLine{00026     LoadPipeline();}
+\DoxyCodeLine{00027     LoadAssets();}
+\DoxyCodeLine{00028 \}}
+\DoxyCodeLine{00029 }
+\DoxyCodeLine{00030 \textcolor{comment}{// Load the rendering pipeline dependencies.}}
+\DoxyCodeLine{00031 \textcolor{keywordtype}{void} D3D12HelloTriangle::LoadPipeline()}
+\DoxyCodeLine{00032 \{}
+\DoxyCodeLine{00033     UINT dxgiFactoryFlags = 0;}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
+\DoxyCodeLine{00036     \textcolor{comment}{// Enable the debug layer (requires the Graphics Tools "{}optional feature"{}).}}
+\DoxyCodeLine{00037     \textcolor{comment}{// NOTE: Enabling the debug layer after device creation will invalidate the active device.}}
+\DoxyCodeLine{00038     \{}
+\DoxyCodeLine{00039         ComPtr<ID3D12Debug> debugController;}
+\DoxyCodeLine{00040         \textcolor{keywordflow}{if} (SUCCEEDED(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController))))}
+\DoxyCodeLine{00041         \{}
+\DoxyCodeLine{00042             debugController-\/>EnableDebugLayer();}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044             \textcolor{comment}{// Enable additional debug layers.}}
+\DoxyCodeLine{00045             dxgiFactoryFlags |= DXGI\_CREATE\_FACTORY\_DEBUG;}
+\DoxyCodeLine{00046         \}}
+\DoxyCodeLine{00047     \}}
+\DoxyCodeLine{00048 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00049 }
+\DoxyCodeLine{00050     ComPtr<IDXGIFactory4> factory;}
+\DoxyCodeLine{00051     ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID\_PPV\_ARGS(\&factory)));}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     \textcolor{keywordflow}{if} (m\_useWarpDevice)}
+\DoxyCodeLine{00054     \{}
+\DoxyCodeLine{00055         ComPtr<IDXGIAdapter> warpAdapter;}
+\DoxyCodeLine{00056         ThrowIfFailed(factory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&warpAdapter)));}
+\DoxyCodeLine{00057 }
+\DoxyCodeLine{00058         ThrowIfFailed(D3D12CreateDevice(}
+\DoxyCodeLine{00059             warpAdapter.Get(),}
+\DoxyCodeLine{00060             D3D\_FEATURE\_LEVEL\_11\_0,}
+\DoxyCodeLine{00061             IID\_PPV\_ARGS(\&m\_device)}
+\DoxyCodeLine{00062             ));}
+\DoxyCodeLine{00063     \}}
+\DoxyCodeLine{00064     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00065     \{}
+\DoxyCodeLine{00066         ComPtr<IDXGIAdapter1> hardwareAdapter;}
+\DoxyCodeLine{00067         GetHardwareAdapter(factory.Get(), \&hardwareAdapter);}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069         ThrowIfFailed(D3D12CreateDevice(}
+\DoxyCodeLine{00070             hardwareAdapter.Get(),}
+\DoxyCodeLine{00071             D3D\_FEATURE\_LEVEL\_11\_0,}
+\DoxyCodeLine{00072             IID\_PPV\_ARGS(\&m\_device)}
+\DoxyCodeLine{00073             ));}
+\DoxyCodeLine{00074     \}}
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076     \textcolor{comment}{// Describe and create the command queue.}}
+\DoxyCodeLine{00077     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
+\DoxyCodeLine{00078     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
+\DoxyCodeLine{00079     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
+\DoxyCodeLine{00080 }
+\DoxyCodeLine{00081     ThrowIfFailed(m\_device-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&m\_commandQueue)));}
+\DoxyCodeLine{00082 }
+\DoxyCodeLine{00083     \textcolor{comment}{// Describe and create the swap chain. The front and back buffer form a swap chain.}}
+\DoxyCodeLine{00084     DXGI\_SWAP\_CHAIN\_DESC1 swapChainDesc = \{\};}
+\DoxyCodeLine{00085     swapChainDesc.BufferCount = FrameCount;}
+\DoxyCodeLine{00086     swapChainDesc.Width = m\_width;}
+\DoxyCodeLine{00087     swapChainDesc.Height = m\_height;}
+\DoxyCodeLine{00088     \textcolor{comment}{//note 5: a texture cannot store arbitrary kinds of data elements; it can only store certain kinds of data element formats, which are described by the DXGI\_FORMAT enumerated type}}
+\DoxyCodeLine{00089     swapChainDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;  \textcolor{comment}{//note 6: Each element has four 8-\/bit unsigned components mapped to the[0, 1] range.}}
+\DoxyCodeLine{00090     swapChainDesc.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
+\DoxyCodeLine{00091     swapChainDesc.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
+\DoxyCodeLine{00092     swapChainDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{00093 }
+\DoxyCodeLine{00094     ComPtr<IDXGISwapChain1> swapChain;  \textcolor{comment}{//note 6: To avoid flickering in animation, it is best to draw an entire frame of animation into an off -\/ screen texture called the back buffer}}
+\DoxyCodeLine{00095     ThrowIfFailed(factory-\/>CreateSwapChainForHwnd(}
+\DoxyCodeLine{00096         m\_commandQueue.Get(),        \textcolor{comment}{// Swap chain needs the queue so that it can force a flush on it.}}
+\DoxyCodeLine{00097         Win32Application::GetHwnd(),}
+\DoxyCodeLine{00098         \&swapChainDesc,}
+\DoxyCodeLine{00099         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00100         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00101         \&swapChain}
+\DoxyCodeLine{00102         ));}
+\DoxyCodeLine{00103 }
+\DoxyCodeLine{00104     \textcolor{comment}{// This sample does not support fullscreen transitions.}}
+\DoxyCodeLine{00105     ThrowIfFailed(factory-\/>MakeWindowAssociation(Win32Application::GetHwnd(), DXGI\_MWA\_NO\_ALT\_ENTER));}
+\DoxyCodeLine{00106 }
+\DoxyCodeLine{00107     ThrowIfFailed(swapChain.As(\&m\_swapChain));}
+\DoxyCodeLine{00108     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
+\DoxyCodeLine{00109 }
+\DoxyCodeLine{00110     \textcolor{comment}{// Create descriptor heaps.}}
+\DoxyCodeLine{00111     \{}
+\DoxyCodeLine{00112         \textcolor{comment}{// Describe and create a render target view (RTV) descriptor heap.}}
+\DoxyCodeLine{00113         D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc = \{\};}
+\DoxyCodeLine{00114         rtvHeapDesc.NumDescriptors = FrameCount;}
+\DoxyCodeLine{00115         rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
+\DoxyCodeLine{00116         rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
+\DoxyCodeLine{00117         ThrowIfFailed(m\_device-\/>CreateDescriptorHeap(\&rtvHeapDesc, IID\_PPV\_ARGS(\&m\_rtvHeap)));}
+\DoxyCodeLine{00118 }
+\DoxyCodeLine{00119         m\_rtvDescriptorSize = m\_device-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
+\DoxyCodeLine{00120     \}}
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122     \textcolor{comment}{// Create frame resources.}}
+\DoxyCodeLine{00123     \{}
+\DoxyCodeLine{00124         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{00125 }
+\DoxyCodeLine{00126         \textcolor{comment}{// Create a RTV for each frame.}}
+\DoxyCodeLine{00127         \textcolor{keywordflow}{for} (UINT n = 0; n < FrameCount; n++)}
+\DoxyCodeLine{00128         \{}
+\DoxyCodeLine{00129             ThrowIfFailed(m\_swapChain-\/>GetBuffer(n, IID\_PPV\_ARGS(\&m\_renderTargets[n])));}
+\DoxyCodeLine{00130             m\_device-\/>CreateRenderTargetView(m\_renderTargets[n].Get(), \textcolor{keyword}{nullptr}, rtvHandle);}
+\DoxyCodeLine{00131             rtvHandle.Offset(1, m\_rtvDescriptorSize);}
+\DoxyCodeLine{00132         \}}
+\DoxyCodeLine{00133     \}}
+\DoxyCodeLine{00134 }
+\DoxyCodeLine{00135     ThrowIfFailed(m\_device-\/>CreateCommandAllocator(D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, IID\_PPV\_ARGS(\&m\_commandAllocator)));}
+\DoxyCodeLine{00136 \}}
+\DoxyCodeLine{00137 }
+\DoxyCodeLine{00138 \textcolor{comment}{// Load the sample assets.}}
+\DoxyCodeLine{00139 \textcolor{keywordtype}{void} D3D12HelloTriangle::LoadAssets()}
+\DoxyCodeLine{00140 \{}
+\DoxyCodeLine{00141     \textcolor{comment}{//step11: Create an empty root signature.}}
+\DoxyCodeLine{00142     \{}
+\DoxyCodeLine{00143         CD3DX12\_ROOT\_SIGNATURE\_DESC rootSignatureDesc;}
+\DoxyCodeLine{00144         rootSignatureDesc.Init(0, \textcolor{keyword}{nullptr}, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00145 }
+\DoxyCodeLine{00146         \textcolor{comment}{//ID3DBlob: This interface is used to return data of arbitrary length.}}
+\DoxyCodeLine{00147         ComPtr<ID3DBlob> signature;}
+\DoxyCodeLine{00148         ComPtr<ID3DBlob> error;}
+\DoxyCodeLine{00149         ThrowIfFailed(D3D12SerializeRootSignature(\&rootSignatureDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&signature, \&error));}
+\DoxyCodeLine{00150         ThrowIfFailed(m\_device-\/>CreateRootSignature(0, signature-\/>GetBufferPointer(), signature-\/>GetBufferSize(), IID\_PPV\_ARGS(\&m\_rootSignature)));}
+\DoxyCodeLine{00151     \}}
+\DoxyCodeLine{00152 }
+\DoxyCodeLine{00153     \textcolor{comment}{// Create the pipeline state, which includes compiling and loading shaders.}}
+\DoxyCodeLine{00154     \{}
+\DoxyCodeLine{00155         ComPtr<ID3DBlob> vertexShader;}
+\DoxyCodeLine{00156         ComPtr<ID3DBlob> pixelShader;}
+\DoxyCodeLine{00157 }
+\DoxyCodeLine{00158 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
+\DoxyCodeLine{00159         \textcolor{comment}{// Enable better shader debugging with the graphics debugging tools.}}
+\DoxyCodeLine{00160         UINT compileFlags = D3DCOMPILE\_DEBUG | D3DCOMPILE\_SKIP\_OPTIMIZATION;}
+\DoxyCodeLine{00161 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00162         UINT compileFlags = 0;}
+\DoxyCodeLine{00163 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00164 }
+\DoxyCodeLine{00165         \textcolor{comment}{//the following assumes that shader hlsl file is already under debug folder!}}
+\DoxyCodeLine{00166         \textcolor{comment}{//ThrowIfFailed(D3DCompileFromFile(GetAssetFullPath(L"{}shaders.hlsl"{}).c\_str(), nullptr, nullptr, "{}VSMain"{}, "{}vs\_5\_0"{}, compileFlags, 0, \&vertexShader, nullptr));}}
+\DoxyCodeLine{00167         \textcolor{comment}{//ThrowIfFailed(D3DCompileFromFile(GetAssetFullPath(L"{}shaders.hlsl"{}).c\_str(), nullptr, nullptr, "{}PSMain"{}, "{}ps\_5\_0"{}, compileFlags, 0, \&pixelShader, nullptr));}}
+\DoxyCodeLine{00168 }
+\DoxyCodeLine{00169         std::wstring path = GetAssetFullPath(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}).c\_str();}
+\DoxyCodeLine{00170 }
+\DoxyCodeLine{00171         \textcolor{comment}{//step12: Load and compile the shaders}}
+\DoxyCodeLine{00172         ThrowIfFailed(D3DCompileFromFile(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VSMain"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}}, compileFlags, 0, \&vertexShader, \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00173         ThrowIfFailed(D3DCompileFromFile(L\textcolor{stringliteral}{"{}shaders.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PSMain"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}}, compileFlags, 0, \&pixelShader, \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00174 }
+\DoxyCodeLine{00175         \textcolor{comment}{// step13: Define the vertex input layout.}}
+\DoxyCodeLine{00176         D3D12\_INPUT\_ELEMENT\_DESC inputElementDescs[] =}
+\DoxyCodeLine{00177         \{}
+\DoxyCodeLine{00178             \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00179             \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32A32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \}}
+\DoxyCodeLine{00180         \};}
+\DoxyCodeLine{00181 }
+\DoxyCodeLine{00182         \textcolor{comment}{// step13: Describe and create the graphics pipeline state object (PSO).}}
+\DoxyCodeLine{00183         \textcolor{comment}{//Fill out a pipeline state description, using the helper structures available, then create the graphics pipeline state}}
+\DoxyCodeLine{00184         D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc = \{\};}
+\DoxyCodeLine{00185         psoDesc.InputLayout = \{ inputElementDescs, \_countof(inputElementDescs) \};}
+\DoxyCodeLine{00186         psoDesc.pRootSignature = m\_rootSignature.Get();}
+\DoxyCodeLine{00187         psoDesc.VS = CD3DX12\_SHADER\_BYTECODE(vertexShader.Get());}
+\DoxyCodeLine{00188         psoDesc.PS = CD3DX12\_SHADER\_BYTECODE(pixelShader.Get());}
+\DoxyCodeLine{00189         psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00190         psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00191         psoDesc.DepthStencilState.DepthEnable = FALSE;}
+\DoxyCodeLine{00192         psoDesc.DepthStencilState.StencilEnable = FALSE;}
+\DoxyCodeLine{00193         psoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00194         psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00195         psoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00196         psoDesc.RTVFormats[0] = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{00197         psoDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{00198         ThrowIfFailed(m\_device-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&m\_pipelineState)));}
+\DoxyCodeLine{00199     \}}
+\DoxyCodeLine{00200 }
+\DoxyCodeLine{00201     \textcolor{comment}{// step14: Create the command list.}}
+\DoxyCodeLine{00202     ThrowIfFailed(m\_device-\/>CreateCommandList(0, D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, m\_commandAllocator.Get(), m\_pipelineState.Get(), IID\_PPV\_ARGS(\&m\_commandList)));}
+\DoxyCodeLine{00203 }
+\DoxyCodeLine{00204     \textcolor{comment}{// step15: Command lists are created in the recording state, but there is nothing}}
+\DoxyCodeLine{00205     \textcolor{comment}{// to record yet. The main loop expects it to be closed, so close it now.}}
+\DoxyCodeLine{00206     ThrowIfFailed(m\_commandList-\/>Close());}
+\DoxyCodeLine{00207 }
+\DoxyCodeLine{00208     \textcolor{comment}{// step16: Create the vertex buffer.}}
+\DoxyCodeLine{00209     \{}
+\DoxyCodeLine{00210         \textcolor{comment}{// Define the geometry for a triangle.}}
+\DoxyCodeLine{00211         Vertex triangleVertices[] =}
+\DoxyCodeLine{00212         \{}
+\DoxyCodeLine{00213               \{ \{ -\/0.25f, -\/0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
+\DoxyCodeLine{00214              \{ \{ -\/0.25f, 0.25f * m\_aspectRatio, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00215             \{ \{ 0.0f, 0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00216            \{ \{ -\/0.25f, -\/0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
+\DoxyCodeLine{00217             \{ \{ 0.0f, 0.25f * m\_aspectRatio, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00218             \{ \{ 0.25f, -\/0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00219             \{ \{ 0.0f, 0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 0.0f, 1.0f, 1.0f \} \},}
+\DoxyCodeLine{00220             \{ \{ 0.25f, 0.25f * m\_aspectRatio, 0.0f \}, \{ 1.0f, 0.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00221              \{ \{ 0.25f, -\/0.25f * m\_aspectRatio, 0.0f \}, \{ 0.0f, 1.0f, 0.0f, 1.0f \} \},}
+\DoxyCodeLine{00222           }
+\DoxyCodeLine{00223         \};}
+\DoxyCodeLine{00224 }
+\DoxyCodeLine{00225 }
+\DoxyCodeLine{00226 }
+\DoxyCodeLine{00227         \textcolor{keyword}{const} UINT vertexBufferSize = \textcolor{keyword}{sizeof}(triangleVertices);}
+\DoxyCodeLine{00228 }
+\DoxyCodeLine{00229         \textcolor{comment}{// Note: using upload heaps to transfer static data like vert buffers is not }}
+\DoxyCodeLine{00230         \textcolor{comment}{// recommended. Every time the GPU needs it, the upload heap will be marshalled }}
+\DoxyCodeLine{00231         \textcolor{comment}{// over. Please read up on Default Heap usage. An upload heap is used here for }}
+\DoxyCodeLine{00232         \textcolor{comment}{// code simplicity and because there are very few verts to actually transfer.}}
+\DoxyCodeLine{00233         ThrowIfFailed(m\_device-\/>CreateCommittedResource(}
+\DoxyCodeLine{00234             \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
+\DoxyCodeLine{00235             D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{00236             \&CD3DX12\_RESOURCE\_DESC::Buffer(vertexBufferSize),}
+\DoxyCodeLine{00237             D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{00238             \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00239             IID\_PPV\_ARGS(\&m\_vertexBuffer)));}
+\DoxyCodeLine{00240 }
+\DoxyCodeLine{00241         \textcolor{comment}{// step17: Copy the triangle data to the vertex buffer.}}
+\DoxyCodeLine{00242         UINT8* pVertexDataBegin;}
+\DoxyCodeLine{00243         CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
+\DoxyCodeLine{00244         ThrowIfFailed(m\_vertexBuffer-\/>Map(0, \&readRange, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pVertexDataBegin)));}
+\DoxyCodeLine{00245         memcpy(pVertexDataBegin, triangleVertices, \textcolor{keyword}{sizeof}(triangleVertices));}
+\DoxyCodeLine{00246         m\_vertexBuffer-\/>Unmap(0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00247 }
+\DoxyCodeLine{00248         \textcolor{comment}{//step18: Initialize the vertex buffer view.}}
+\DoxyCodeLine{00249         m\_vertexBufferView.BufferLocation = m\_vertexBuffer-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{00250         m\_vertexBufferView.StrideInBytes = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00251         m\_vertexBufferView.SizeInBytes = vertexBufferSize;}
+\DoxyCodeLine{00252     \}}
+\DoxyCodeLine{00253 }
+\DoxyCodeLine{00254     \textcolor{comment}{// Create synchronization objects and wait until assets have been uploaded to the GPU.}}
+\DoxyCodeLine{00255     \textcolor{comment}{//step18: Create and initialize the fence}}
+\DoxyCodeLine{00256     \{}
+\DoxyCodeLine{00257         ThrowIfFailed(m\_device-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE, IID\_PPV\_ARGS(\&m\_fence)));}
+\DoxyCodeLine{00258         m\_fenceValue = 1;}
+\DoxyCodeLine{00259 }
+\DoxyCodeLine{00260         \textcolor{comment}{// step19: Create an event handle to use for frame synchronization.}}
+\DoxyCodeLine{00261         m\_fenceEvent = CreateEvent(\textcolor{keyword}{nullptr}, FALSE, FALSE, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00262         \textcolor{keywordflow}{if} (m\_fenceEvent == \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00263         \{}
+\DoxyCodeLine{00264             ThrowIfFailed(HRESULT\_FROM\_WIN32(GetLastError()));}
+\DoxyCodeLine{00265         \}}
+\DoxyCodeLine{00266 }
+\DoxyCodeLine{00267         \textcolor{comment}{// step20: Wait for the GPU to finish. Wait for the command list to execute; we are reusing the same command }}
+\DoxyCodeLine{00268         \textcolor{comment}{// list in our main loop but for now, we just want to wait for setup to }}
+\DoxyCodeLine{00269         \textcolor{comment}{// complete before continuing.}}
+\DoxyCodeLine{00270         WaitForPreviousFrame();}
+\DoxyCodeLine{00271     \}}
+\DoxyCodeLine{00272 \}}
+\DoxyCodeLine{00273 }
+\DoxyCodeLine{00274 \textcolor{comment}{// Update frame-\/based values.}}
+\DoxyCodeLine{00275 \textcolor{keywordtype}{void} D3D12HelloTriangle::OnUpdate()}
+\DoxyCodeLine{00276 \{}
+\DoxyCodeLine{00277 \}}
+\DoxyCodeLine{00278 }
+\DoxyCodeLine{00279 \textcolor{comment}{// Render the scene.}}
+\DoxyCodeLine{00280 \textcolor{comment}{//Rendering involves a call to populate the command list, then the command list can be executed and the next buffer in the swap chain presented:}}
+\DoxyCodeLine{00281 \textcolor{keywordtype}{void} D3D12HelloTriangle::OnRender()}
+\DoxyCodeLine{00282 \{}
+\DoxyCodeLine{00283     \textcolor{comment}{//During set up, the member variable m\_commandList was used to record and execute all of the set up commands. You can now reuse that member in the main render loop.}}
+\DoxyCodeLine{00284     \textcolor{comment}{// step 21: Record all the commands we need to render the scene into the command list.}}
+\DoxyCodeLine{00285     PopulateCommandList();}
+\DoxyCodeLine{00286 }
+\DoxyCodeLine{00287     \textcolor{comment}{// step22: Execute the command list.}}
+\DoxyCodeLine{00288     ID3D12CommandList* ppCommandLists[] = \{ m\_commandList.Get() \};}
+\DoxyCodeLine{00289     m\_commandQueue-\/>ExecuteCommandLists(\_countof(ppCommandLists), ppCommandLists);}
+\DoxyCodeLine{00290 }
+\DoxyCodeLine{00291     \textcolor{comment}{// step23: Present the frame.}}
+\DoxyCodeLine{00292     \textcolor{comment}{//Swapping the roles of the back and front buffers is called presenting.}}
+\DoxyCodeLine{00293     \textcolor{comment}{//Presenting is an efficient operation, as the pointer to the current front bufferand the pointer to the current back buffer just need to be swapped.}}
+\DoxyCodeLine{00294     ThrowIfFailed(m\_swapChain-\/>Present(1, 0));}
+\DoxyCodeLine{00295 }
+\DoxyCodeLine{00296     \textcolor{comment}{//step24: Wait on the GPU to finish.}}
+\DoxyCodeLine{00297     WaitForPreviousFrame();}
+\DoxyCodeLine{00298 \}}
+\DoxyCodeLine{00299 }
+\DoxyCodeLine{00300 \textcolor{keywordtype}{void} D3D12HelloTriangle::OnDestroy()}
+\DoxyCodeLine{00301 \{}
+\DoxyCodeLine{00302     \textcolor{comment}{// Ensure that the GPU is no longer referencing resources that are about to be}}
+\DoxyCodeLine{00303     \textcolor{comment}{// cleaned up by the destructor.}}
+\DoxyCodeLine{00304 }
+\DoxyCodeLine{00305     \textcolor{comment}{//step37: Wait for the GPU to finish.}}
+\DoxyCodeLine{00306     WaitForPreviousFrame();}
+\DoxyCodeLine{00307 }
+\DoxyCodeLine{00308     \textcolor{comment}{//step38: Close the event.}}
+\DoxyCodeLine{00309     CloseHandle(m\_fenceEvent);}
+\DoxyCodeLine{00310 \}}
+\DoxyCodeLine{00311 }
+\DoxyCodeLine{00312 \textcolor{keywordtype}{void} D3D12HelloTriangle::PopulateCommandList()}
+\DoxyCodeLine{00313 \{}
+\DoxyCodeLine{00314     \textcolor{comment}{// step25: Command list allocators can only be reset when the associated }}
+\DoxyCodeLine{00315     \textcolor{comment}{// command lists have finished execution on the GPU; apps should use }}
+\DoxyCodeLine{00316     \textcolor{comment}{// fences to determine GPU execution progress.}}
+\DoxyCodeLine{00317     ThrowIfFailed(m\_commandAllocator-\/>Reset());}
+\DoxyCodeLine{00318 }
+\DoxyCodeLine{00319     \textcolor{comment}{// step26: However, when ExecuteCommandList() is called on a particular command }}
+\DoxyCodeLine{00320     \textcolor{comment}{// list, that command list can then be reset at any time and must be before }}
+\DoxyCodeLine{00321     \textcolor{comment}{// re-\/recording.}}
+\DoxyCodeLine{00322     ThrowIfFailed(m\_commandList-\/>Reset(m\_commandAllocator.Get(), m\_pipelineState.Get()));}
+\DoxyCodeLine{00323 }
+\DoxyCodeLine{00324     \textcolor{comment}{// step27: Set the root signature, viewport and scissors rectangles:}}
+\DoxyCodeLine{00325     m\_commandList-\/>SetGraphicsRootSignature(m\_rootSignature.Get());}
+\DoxyCodeLine{00326     m\_commandList-\/>RSSetViewports(1, \&m\_viewport);}
+\DoxyCodeLine{00327     m\_commandList-\/>RSSetScissorRects(1, \&m\_scissorRect);}
+\DoxyCodeLine{00328 }
+\DoxyCodeLine{00329     \textcolor{comment}{// step28: Indicate that the back buffer will be used as a render target.}}
+\DoxyCodeLine{00330     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00331 }
+\DoxyCodeLine{00332     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart(), m\_frameIndex, m\_rtvDescriptorSize);}
+\DoxyCodeLine{00333     m\_commandList-\/>OMSetRenderTargets(1, \&rtvHandle, FALSE, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00334 }
+\DoxyCodeLine{00335     \textcolor{comment}{// step29: Record commands.}}
+\DoxyCodeLine{00336     \textcolor{keyword}{const} \textcolor{keywordtype}{float} clearColor[] = \{ 0.0f, 0.2f, 0.4f, 1.0f \};}
+\DoxyCodeLine{00337 }
+\DoxyCodeLine{00338     \textcolor{comment}{//step30: : to submit a command to the GPU to clear a render target(e.g., the screen)}}
+\DoxyCodeLine{00339     m\_commandList-\/>ClearRenderTargetView(rtvHandle, clearColor, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00340 }
+\DoxyCodeLine{00341     m\_commandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
+\DoxyCodeLine{00342     \textcolor{comment}{//m\_commandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLESTRIP);}}
+\DoxyCodeLine{00343     m\_commandList-\/>IASetVertexBuffers(0, 1, \&m\_vertexBufferView);}
+\DoxyCodeLine{00344     m\_commandList-\/>DrawInstanced(9, 1, 0, 0);}
+\DoxyCodeLine{00345     \textcolor{comment}{//m\_commandList-\/>DrawInstanced(3, 1, 3, 3);}}
+\DoxyCodeLine{00346 }
+\DoxyCodeLine{00347     \textcolor{comment}{// step31: Indicate that the back buffer will now be used to present.}}
+\DoxyCodeLine{00348     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00349 }
+\DoxyCodeLine{00350     \textcolor{comment}{//step32: Close the command list:}}
+\DoxyCodeLine{00351     ThrowIfFailed(m\_commandList-\/>Close());}
+\DoxyCodeLine{00352 \}}
+\DoxyCodeLine{00353 }
+\DoxyCodeLine{00354 \textcolor{keywordtype}{void} D3D12HelloTriangle::WaitForPreviousFrame()}
+\DoxyCodeLine{00355 \{}
+\DoxyCodeLine{00356     \textcolor{comment}{// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.}}
+\DoxyCodeLine{00357     \textcolor{comment}{// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering}}
+\DoxyCodeLine{00358     \textcolor{comment}{// sample illustrates how to use fences for efficient resource usage and to}}
+\DoxyCodeLine{00359     \textcolor{comment}{// maximize GPU utilization.}}
+\DoxyCodeLine{00360 }
+\DoxyCodeLine{00361     \textcolor{comment}{// step33: Signal and increment the fence value.}}
+\DoxyCodeLine{00362     \textcolor{keyword}{const} UINT64 fence = m\_fenceValue;}
+\DoxyCodeLine{00363     ThrowIfFailed(m\_commandQueue-\/>Signal(m\_fence.Get(), fence));}
+\DoxyCodeLine{00364     m\_fenceValue++;}
+\DoxyCodeLine{00365 }
+\DoxyCodeLine{00366     \textcolor{comment}{// step34: Wait until the previous frame is finished.}}
+\DoxyCodeLine{00367     \textcolor{keywordflow}{if} (m\_fence-\/>GetCompletedValue() < fence)}
+\DoxyCodeLine{00368     \{}
+\DoxyCodeLine{00369         ThrowIfFailed(m\_fence-\/>SetEventOnCompletion(fence, m\_fenceEvent));}
+\DoxyCodeLine{00370         WaitForSingleObject(m\_fenceEvent, INFINITE);}
+\DoxyCodeLine{00371     \}}
+\DoxyCodeLine{00372 }
+\DoxyCodeLine{00373     \textcolor{comment}{//step35: Update the frame index:}}
+\DoxyCodeLine{00374     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
+\DoxyCodeLine{00375 \}}
 
 \end{DoxyCode}

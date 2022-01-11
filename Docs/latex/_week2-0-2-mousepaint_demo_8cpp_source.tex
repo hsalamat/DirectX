@@ -1,0 +1,133 @@
+\doxysection{Week2-\/0-\/2-\/mousepaint\+Demo.cpp}
+\label{_week2-0-2-mousepaint_demo_8cpp_source}\index{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/2-\/mousepaintDemo.cpp@{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/2-\/mousepaintDemo.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00011 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{00012 }
+\DoxyCodeLine{00013 \textcolor{preprocessor}{\#define MAXPOINTS 1000}}
+\DoxyCodeLine{00014 }
+\DoxyCodeLine{00015 }
+\DoxyCodeLine{00016 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);}
+\DoxyCodeLine{00017 }
+\DoxyCodeLine{00018 }
+\DoxyCodeLine{00019 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
+\DoxyCodeLine{00020 }
+\DoxyCodeLine{00021     PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
+\DoxyCodeLine{00022 }
+\DoxyCodeLine{00023 \{}
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025     \textcolor{keyword}{static} TCHAR szAppName[] = TEXT(\textcolor{stringliteral}{"{}Connect"{}});}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027     HWND         hwnd;}
+\DoxyCodeLine{00028     MSG          msg;}
+\DoxyCodeLine{00029     WNDCLASS     wndclass;}
+\DoxyCodeLine{00030 }
+\DoxyCodeLine{00031 }
+\DoxyCodeLine{00032     wndclass.style = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{00033     wndclass.lpfnWndProc = WndProc;}
+\DoxyCodeLine{00034     wndclass.cbClsExtra = 0;}
+\DoxyCodeLine{00035     wndclass.cbWndExtra = 0;}
+\DoxyCodeLine{00036     wndclass.hInstance = hInstance;}
+\DoxyCodeLine{00037     wndclass.hIcon = LoadIcon(NULL, IDI\_APPLICATION);}
+\DoxyCodeLine{00038     wndclass.hCursor = LoadCursor(NULL, IDC\_ARROW);}
+\DoxyCodeLine{00039     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH);}
+\DoxyCodeLine{00040     wndclass.lpszMenuName = NULL;}
+\DoxyCodeLine{00041     wndclass.lpszClassName = szAppName;}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044 }
+\DoxyCodeLine{00045     \textcolor{keywordflow}{if} (!RegisterClass(\&wndclass))}
+\DoxyCodeLine{00046 }
+\DoxyCodeLine{00047     \{}
+\DoxyCodeLine{00048         MessageBox(NULL, TEXT(\textcolor{stringliteral}{"{}Program requires Windows Desktop Empty App!"{}}),}
+\DoxyCodeLine{00049             szAppName, MB\_ICONERROR);}
+\DoxyCodeLine{00050         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00051     \}}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054 }
+\DoxyCodeLine{00055     hwnd = CreateWindow(szAppName, TEXT(\textcolor{stringliteral}{"{}Connect-\/the-\/Points Mouse Demo"{}}),}
+\DoxyCodeLine{00056         WS\_OVERLAPPEDWINDOW,}
+\DoxyCodeLine{00057         CW\_USEDEFAULT, CW\_USEDEFAULT,}
+\DoxyCodeLine{00058         CW\_USEDEFAULT, CW\_USEDEFAULT,}
+\DoxyCodeLine{00059         NULL, NULL, hInstance, NULL);}
+\DoxyCodeLine{00060 }
+\DoxyCodeLine{00061     ShowWindow(hwnd, iCmdShow);}
+\DoxyCodeLine{00062     UpdateWindow(hwnd);}
+\DoxyCodeLine{00063 }
+\DoxyCodeLine{00064 }
+\DoxyCodeLine{00065     \textcolor{keywordflow}{while} (GetMessage(\&msg, NULL, 0, 0))}
+\DoxyCodeLine{00066 }
+\DoxyCodeLine{00067     \{}
+\DoxyCodeLine{00068         TranslateMessage(\&msg);}
+\DoxyCodeLine{00069         DispatchMessage(\&msg);}
+\DoxyCodeLine{00070     \}}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00072     \textcolor{keywordflow}{return} msg.wParam;}
+\DoxyCodeLine{00073 \}}
+\DoxyCodeLine{00074 }
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076 }
+\DoxyCodeLine{00077 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{00078 }
+\DoxyCodeLine{00079 \{}
+\DoxyCodeLine{00080 }
+\DoxyCodeLine{00081     \textcolor{keyword}{static} POINT pt[MAXPOINTS];}
+\DoxyCodeLine{00082     \textcolor{keyword}{static} \textcolor{keywordtype}{int}   iCount;}
+\DoxyCodeLine{00083     HDC          hdc;}
+\DoxyCodeLine{00084     \textcolor{keywordtype}{int}          i, j;}
+\DoxyCodeLine{00085     PAINTSTRUCT  ps;}
+\DoxyCodeLine{00086 }
+\DoxyCodeLine{00087     \textcolor{keywordflow}{switch} (message)}
+\DoxyCodeLine{00088     \{}
+\DoxyCodeLine{00089 }
+\DoxyCodeLine{00090     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
+\DoxyCodeLine{00091         iCount = 0;}
+\DoxyCodeLine{00092         InvalidateRect(hwnd, NULL, TRUE);}
+\DoxyCodeLine{00093         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00094 }
+\DoxyCodeLine{00095     \textcolor{keywordflow}{case} WM\_MOUSEMOVE:}
+\DoxyCodeLine{00096 }
+\DoxyCodeLine{00097         \textcolor{keywordflow}{if} (wParam \& MK\_LBUTTON \&\& iCount < 1000)}
+\DoxyCodeLine{00098         \{}
+\DoxyCodeLine{00099             pt[iCount].x = LOWORD(lParam);}
+\DoxyCodeLine{00100             pt[iCount++].y = HIWORD(lParam);}
+\DoxyCodeLine{00101 }
+\DoxyCodeLine{00102             hdc = GetDC(hwnd);}
+\DoxyCodeLine{00103             SetPixel(hdc, LOWORD(lParam), HIWORD(lParam), 0);}
+\DoxyCodeLine{00104             ReleaseDC(hwnd, hdc);}
+\DoxyCodeLine{00105         \}}
+\DoxyCodeLine{00106         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00107 }
+\DoxyCodeLine{00108     \textcolor{keywordflow}{case} WM\_LBUTTONUP:}
+\DoxyCodeLine{00109         InvalidateRect(hwnd, NULL, FALSE);}
+\DoxyCodeLine{00110         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00111 }
+\DoxyCodeLine{00112     \textcolor{keywordflow}{case} WM\_PAINT:}
+\DoxyCodeLine{00113         hdc = BeginPaint(hwnd, \&ps);}
+\DoxyCodeLine{00114         SetCursor(LoadCursor(NULL, IDC\_WAIT));}
+\DoxyCodeLine{00115         ShowCursor(TRUE);}
+\DoxyCodeLine{00116 }
+\DoxyCodeLine{00117         \textcolor{keywordflow}{for} (i = 0; i < iCount -\/ 1; i++)}
+\DoxyCodeLine{00118             \textcolor{keywordflow}{for} (j = i + 1; j < iCount; j++)}
+\DoxyCodeLine{00119             \{}
+\DoxyCodeLine{00120 }
+\DoxyCodeLine{00121                 MoveToEx(hdc, pt[i].x, pt[i].y, NULL);}
+\DoxyCodeLine{00122                 LineTo(hdc, pt[j].x, pt[j].y);}
+\DoxyCodeLine{00123 }
+\DoxyCodeLine{00124             \}}
+\DoxyCodeLine{00125 }
+\DoxyCodeLine{00126         ShowCursor(FALSE);}
+\DoxyCodeLine{00127         SetCursor(LoadCursor(NULL, IDC\_ARROW));}
+\DoxyCodeLine{00128         EndPaint(hwnd, \&ps);}
+\DoxyCodeLine{00129         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00130 }
+\DoxyCodeLine{00131     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{00132         PostQuitMessage(0);}
+\DoxyCodeLine{00133         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00134     \}}
+\DoxyCodeLine{00135     \textcolor{keywordflow}{return} DefWindowProc(hwnd, message, wParam, lParam);}
+\DoxyCodeLine{00136 \}}
+
+\end{DoxyCode}

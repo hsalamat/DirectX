@@ -1,66 +1,66 @@
-\hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source}{}\doxysection{Shadow\+Map.\+h}
+\doxysection{Shadow\+Map.\+h}
 \label{_week13_2_shadow_mapping_2_shadow_map_8h_source}\index{Week13/ShadowMapping/ShadowMap.h@{Week13/ShadowMapping/ShadowMap.h}}
-\mbox{\hyperlink{_week13_2_shadow_mapping_2_shadow_map_8h}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00002}00002 \textcolor{comment}{// ShadowMap.h }}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00003}00003 \textcolor{comment}{//step1: ShadowMap Utility helps us store the scene depth from the perspective of the light source. }}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00004}00004 \textcolor{comment}{//It simply encapsulates a depth / stencil buffer, necessary views, and viewport.}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00005}00005 \textcolor{comment}{//A depth / stencil buffer used for shadow mapping is called a shadow map.}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00006}00006 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00007}00007 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00008}00008 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00009}00009 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00010}00010 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00011}00011 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00012}\mbox{\hyperlink{class_shadow_map}{00012}} \textcolor{keyword}{class }\mbox{\hyperlink{class_shadow_map}{ShadowMap}}}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00013}00013 \{}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00014}00014 \textcolor{keyword}{public}:}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00015}00015     \mbox{\hyperlink{class_shadow_map_a6a64d5589e34d3ac25c68301e7c073d9}{ShadowMap}}(ID3D12Device* device,}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00016}00016         UINT width, UINT height);}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00017}00017         }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00018}\mbox{\hyperlink{class_shadow_map_a54db9d28f001a90d0613f6312bf7492b}{00018}}     \mbox{\hyperlink{class_shadow_map_a54db9d28f001a90d0613f6312bf7492b}{ShadowMap}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_shadow_map}{ShadowMap}}\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00019}\mbox{\hyperlink{class_shadow_map_a786528707fd1a49ea3af29b10a620561}{00019}}     \mbox{\hyperlink{class_shadow_map}{ShadowMap}}\& \mbox{\hyperlink{class_shadow_map_a786528707fd1a49ea3af29b10a620561}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_shadow_map}{ShadowMap}}\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00020}\mbox{\hyperlink{class_shadow_map_a08e41ec949c1c9d270d82e02558aa5e5}{00020}}     \mbox{\hyperlink{class_shadow_map_a08e41ec949c1c9d270d82e02558aa5e5}{\string~ShadowMap}}()=\textcolor{keywordflow}{default};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00021}00021 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00022}00022     UINT \mbox{\hyperlink{class_shadow_map_a0bd46efd3af84d28aa9544f18be17732}{Width}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00023}00023     UINT \mbox{\hyperlink{class_shadow_map_a6640ab4306f9570a52e37d3020a29160}{Height}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00024}00024     ID3D12Resource* \mbox{\hyperlink{class_shadow_map_afb811bb099305ab7a1d04c2167c505d3}{Resource}}();}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00025}00025     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a8c3bfd410349cddd4646a75f3de86b1c}{Srv}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00026}00026     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a8c63c2ee0e5d031c7531d9cb20d7f527}{Dsv}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00027}00027 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00028}00028     D3D12\_VIEWPORT \mbox{\hyperlink{class_shadow_map_a055e71a16ef2e8d676ee813a35709255}{Viewport}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00029}00029     D3D12\_RECT \mbox{\hyperlink{class_shadow_map_ad11d6c3325f9c3730c57ab2ef58cc32d}{ScissorRect}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00030}00030 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00031}00031     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_a957679dd3d21fbb36244f75d6b14693c}{BuildDescriptors}}(}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00032}00032         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00033}00033         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00034}00034         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDsv);}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00035}00035 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00036}00036     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_ad1d64ceac0f4b3dbf045eb2e27c4d61a}{OnResize}}(UINT newWidth, UINT newHeight);}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00037}00037 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00038}00038 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00039}00039     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_a957679dd3d21fbb36244f75d6b14693c}{BuildDescriptors}}();}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00040}00040     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_a73a7b8a974de4f5e549ad74990a0d628}{BuildResource}}();}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00041}00041 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00042}00042 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00043}00043 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00044}\mbox{\hyperlink{class_shadow_map_a56152a87318b2aaca17d302aee557fab}{00044}}     ID3D12Device* \mbox{\hyperlink{class_shadow_map_a56152a87318b2aaca17d302aee557fab}{md3dDevice}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00045}00045 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00046}\mbox{\hyperlink{class_shadow_map_af091ac23515a8d3111ca0990e525571d}{00046}}     D3D12\_VIEWPORT \mbox{\hyperlink{class_shadow_map_af091ac23515a8d3111ca0990e525571d}{mViewport}};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00047}\mbox{\hyperlink{class_shadow_map_a3d96af8abf8c4c3968a7f21420f8750c}{00047}}     D3D12\_RECT \mbox{\hyperlink{class_shadow_map_a3d96af8abf8c4c3968a7f21420f8750c}{mScissorRect}};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00048}00048 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00049}\mbox{\hyperlink{class_shadow_map_a6e420f50a63df89d8bcbefe82a1b6619}{00049}}     UINT \mbox{\hyperlink{class_shadow_map_a6e420f50a63df89d8bcbefe82a1b6619}{mWidth}} = 0;}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00050}\mbox{\hyperlink{class_shadow_map_a875a292e6b198e358174a8ce441063d6}{00050}}     UINT \mbox{\hyperlink{class_shadow_map_a875a292e6b198e358174a8ce441063d6}{mHeight}} = 0;}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00051}\mbox{\hyperlink{class_shadow_map_ac367e80240f51d021833b6870f8ff424}{00051}}     DXGI\_FORMAT \mbox{\hyperlink{class_shadow_map_ac367e80240f51d021833b6870f8ff424}{mFormat}} = DXGI\_FORMAT\_R24G8\_TYPELESS;}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00052}00052 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00053}\mbox{\hyperlink{class_shadow_map_a6687db034e446eb396252792c6201f70}{00053}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a6687db034e446eb396252792c6201f70}{mhCpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00054}\mbox{\hyperlink{class_shadow_map_a90fbe8a39da672ad8e9761e7b502b659}{00054}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a90fbe8a39da672ad8e9761e7b502b659}{mhGpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00055}\mbox{\hyperlink{class_shadow_map_a4bb5fba2c410937f70f8bb96fd38c78f}{00055}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a4bb5fba2c410937f70f8bb96fd38c78f}{mhCpuDsv}};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00056}00056 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00057}\mbox{\hyperlink{class_shadow_map_ad242343d8537c26aa404582f442b4a71}{00057}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_shadow_map_ad242343d8537c26aa404582f442b4a71}{mShadowMap}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00058}00058 \};}
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00059}00059 }
-\DoxyCodeLine{\Hypertarget{_week13_2_shadow_mapping_2_shadow_map_8h_source_l00060}00060  }
+\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{// ShadowMap.h }}
+\DoxyCodeLine{00003 \textcolor{comment}{//step1: ShadowMap Utility helps us store the scene depth from the perspective of the light source. }}
+\DoxyCodeLine{00004 \textcolor{comment}{//It simply encapsulates a depth / stencil buffer, necessary views, and viewport.}}
+\DoxyCodeLine{00005 \textcolor{comment}{//A depth / stencil buffer used for shadow mapping is called a shadow map.}}
+\DoxyCodeLine{00006 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00007 }
+\DoxyCodeLine{00008 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{00009 }
+\DoxyCodeLine{00010 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{00011 }
+\DoxyCodeLine{00012 \textcolor{keyword}{class }ShadowMap}
+\DoxyCodeLine{00013 \{}
+\DoxyCodeLine{00014 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015     ShadowMap(ID3D12Device* device,}
+\DoxyCodeLine{00016         UINT width, UINT height);}
+\DoxyCodeLine{00017         }
+\DoxyCodeLine{00018     ShadowMap(\textcolor{keyword}{const} ShadowMap\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{00019     ShadowMap\& operator=(\textcolor{keyword}{const} ShadowMap\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{00020     \string~ShadowMap()=\textcolor{keywordflow}{default};}
+\DoxyCodeLine{00021 }
+\DoxyCodeLine{00022     UINT Width()\textcolor{keyword}{const};}
+\DoxyCodeLine{00023     UINT Height()\textcolor{keyword}{const};}
+\DoxyCodeLine{00024     ID3D12Resource* Resource();}
+\DoxyCodeLine{00025     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE Srv()\textcolor{keyword}{const};}
+\DoxyCodeLine{00026     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE Dsv()\textcolor{keyword}{const};}
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028     D3D12\_VIEWPORT Viewport()\textcolor{keyword}{const};}
+\DoxyCodeLine{00029     D3D12\_RECT ScissorRect()\textcolor{keyword}{const};}
+\DoxyCodeLine{00030 }
+\DoxyCodeLine{00031     \textcolor{keywordtype}{void} BuildDescriptors(}
+\DoxyCodeLine{00032         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{00033         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{00034         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDsv);}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036     \textcolor{keywordtype}{void} OnResize(UINT newWidth, UINT newHeight);}
+\DoxyCodeLine{00037 }
+\DoxyCodeLine{00038 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039     \textcolor{keywordtype}{void} BuildDescriptors();}
+\DoxyCodeLine{00040     \textcolor{keywordtype}{void} BuildResource();}
+\DoxyCodeLine{00041 }
+\DoxyCodeLine{00042 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     D3D12\_VIEWPORT mViewport;}
+\DoxyCodeLine{00047     D3D12\_RECT mScissorRect;}
+\DoxyCodeLine{00048 }
+\DoxyCodeLine{00049     UINT mWidth = 0;}
+\DoxyCodeLine{00050     UINT mHeight = 0;}
+\DoxyCodeLine{00051     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R24G8\_TYPELESS;}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuSrv;}
+\DoxyCodeLine{00054     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuSrv;}
+\DoxyCodeLine{00055     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuDsv;}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     Microsoft::WRL::ComPtr<ID3D12Resource> mShadowMap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058 \};}
+\DoxyCodeLine{00059 }
+\DoxyCodeLine{00060  }
 
 \end{DoxyCode}

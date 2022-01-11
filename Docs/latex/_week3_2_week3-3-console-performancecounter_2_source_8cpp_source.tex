@@ -1,84 +1,84 @@
-\hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source}{}\doxysection{Source.\+cpp}
+\doxysection{Source.\+cpp}
 \label{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source}\index{Week3/Week3-\/3-\/console-\/performancecounter/Source.cpp@{Week3/Week3-\/3-\/console-\/performancecounter/Source.cpp}}
-\mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_source_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include<Windows.h>}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00002}00002 \textcolor{preprocessor}{\#include<iostream>}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00003}00003 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_game_timer_8h}{GameTimer.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00004}00004 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00005}\mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_source_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00005}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_source_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00006}00006 \{}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00007}00007 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00008}00008     \textcolor{comment}{//long int          4bytes  -\/2,147,483,648 to 2,147,483,647}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00009}00009     \textcolor{comment}{//unsigned long int 4bytes  0              to 4, 294, 967, 295}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00010}00010     \textcolor{comment}{//long long int     8bytes  -\/(2\string^63)        to (2\string^63) -\/ 1}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00011}00011     \textcolor{comment}{//LARGE\_INTEGER is a union of a 64-\/bit integer and a pair of 32-\/bit integers. If you want to perform 64-\/bit arithmetic on one you need to select the 64-\/bit int from inside the union.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00012}00012 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00013}00013     LARGE\_INTEGER StartingTime, EndingTime, DifferenceOfTime,deltaTime;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00014}00014     LARGE\_INTEGER frequency; \textcolor{comment}{//default frequency that is supported by the hardware}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00015}00015 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00016}00016 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00017}00017     \textcolor{comment}{//The performance timer measures time in units called counts.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00018}00018     QueryPerformanceCounter(\&StartingTime);}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00019}00019     cout << \textcolor{stringliteral}{"{}How long does it take to execute this line?"{}} << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00020}00020     QueryPerformanceCounter(\&EndingTime);}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00021}00021 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00022}00022     cout << \textcolor{stringliteral}{"{}Starting Time: "{}} << StartingTime.QuadPart << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00023}00023     cout << \textcolor{stringliteral}{"{}Ending Time: "{}} << EndingTime.QuadPart << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00024}00024 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00025}00025     \textcolor{comment}{//To get the frequency(counts per second) of the performance timer}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00026}00026     \textcolor{comment}{//the number of seconds (or fractions of a second) per count is just the reciprocal of the counts per second : mSecondsPerCount = 1.0 / (double)countsPerSec;}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00027}00027     QueryPerformanceFrequency(\&frequency);}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00028}00028 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00029}00029     \textcolor{comment}{//QuadPart represents a 64-\/bit signed integer (for example: 670644208300)}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00030}00030     \textcolor{comment}{//Every LargeInteger is a union of High Part (long:156 ) and Low Part (unsigned long: 629310124)}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00031}00031 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00032}00032 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00033}00033     DifferenceOfTime.QuadPart = EndingTime.QuadPart -\/ StartingTime.QuadPart;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00035}00035     cout << \textcolor{stringliteral}{"{}Difference Of Time: "{}} << DifferenceOfTime.QuadPart << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00036}00036     cout << \textcolor{stringliteral}{"{}Frequency: "{}} << frequency.QuadPart << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00037}00037 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00038}00038     \textcolor{comment}{//how about calculating this directly without quadpart}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00039}00039     \textcolor{comment}{//deltaTime = EndingTime -\/ StartingTime; //no operator matches this operands . Because a large integer is a union!}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00040}00040 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00041}00041     DifferenceOfTime.QuadPart *= 1000000; \textcolor{comment}{//it's in microseconds}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00042}00042 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00043}00043     \textcolor{comment}{//To convert a time reading valueInCounts to microseconds, we just divide it by frequency}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00044}00044     DifferenceOfTime.QuadPart /= frequency.QuadPart; \textcolor{comment}{//For Tick per seconds}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00045}00045 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00046}00046     DifferenceOfTime.QuadPart /= 1000; \textcolor{comment}{//the value is in milliseconds now}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00047}00047 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00048}00048     cout << \textcolor{stringliteral}{"{}Execution Time in milliseconds is : "{}} << DifferenceOfTime.QuadPart << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00049}00049 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00050}00050     \textcolor{comment}{//How can we use GameTimer class}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00051}00051     cout << \textcolor{stringliteral}{"{}Using GameTimer : "{}} << endl;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00052}00052 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00053}00053     \mbox{\hyperlink{class_game_timer}{GameTimer}} mTimer;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00054}00054 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00055}00055     mTimer.\mbox{\hyperlink{class_game_timer_af67b252c869cc649971b8cceefcb1eb8}{Reset}}(); \textcolor{comment}{//the first frame of animation, there is no previous frame. This initializes mPrevTime to the current time}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00056}00056 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00057}00057     \textcolor{keywordtype}{int} message = 10;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00058}00058 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00059}00059     \textcolor{keywordflow}{while} (message != 0)}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00060}00060     \{}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00061}00061             mTimer.\mbox{\hyperlink{class_game_timer_a4af503863ddee320c9e034dc2938c2e1}{Start}}();  \textcolor{comment}{//Call when unpaused.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00062}00062             mTimer.\mbox{\hyperlink{class_game_timer_ac02f02b90ae1c2d6a2834abb5069f367}{Tick}}();   \textcolor{comment}{//Call every frame.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00063}00063 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00064}00064             cout << \textcolor{stringliteral}{"{}the delta time now is : "{}} << mTimer.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}() * 1000 << endl; \textcolor{comment}{//in milliseconds}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00065}00065             }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00066}00066             \textcolor{comment}{// Returns the total time elapsed since Reset() was called, NOT counting any  time when the clock is stopped.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00067}00067             cout << \textcolor{stringliteral}{"{}the total time now is : "{}} << mTimer.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}() * 1000 << endl; \textcolor{comment}{//in milliseconds}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00068}00068             mTimer.\mbox{\hyperlink{class_game_timer_a61b1ecea219fbe2dfff86f9f9cab98b1}{Stop}}(); \textcolor{comment}{//Call when paused.}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00069}00069 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00070}00070             Sleep(1000);    }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00071}00071             message-\/-\/;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00072}00072         }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00073}00073     \}}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00074}00074 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00075}00075 }
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00076}00076     system(\textcolor{stringliteral}{"{}pause"{}});}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00077}00077     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_source_8cpp_source_l00078}00078 \}}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include<Windows.h>}}
+\DoxyCodeLine{00002 \textcolor{preprocessor}{\#include<iostream>}}
+\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include "{}GameTimer.h"{}}}
+\DoxyCodeLine{00004 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{00005 \textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{00006 \{}
+\DoxyCodeLine{00007 }
+\DoxyCodeLine{00008     \textcolor{comment}{//long int          4bytes  -\/2,147,483,648 to 2,147,483,647}}
+\DoxyCodeLine{00009     \textcolor{comment}{//unsigned long int 4bytes  0              to 4, 294, 967, 295}}
+\DoxyCodeLine{00010     \textcolor{comment}{//long long int     8bytes  -\/(2\string^63)        to (2\string^63) -\/ 1}}
+\DoxyCodeLine{00011     \textcolor{comment}{//LARGE\_INTEGER is a union of a 64-\/bit integer and a pair of 32-\/bit integers. If you want to perform 64-\/bit arithmetic on one you need to select the 64-\/bit int from inside the union.}}
+\DoxyCodeLine{00012 }
+\DoxyCodeLine{00013     LARGE\_INTEGER StartingTime, EndingTime, DifferenceOfTime,deltaTime;}
+\DoxyCodeLine{00014     LARGE\_INTEGER frequency; \textcolor{comment}{//default frequency that is supported by the hardware}}
+\DoxyCodeLine{00015 }
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00017     \textcolor{comment}{//The performance timer measures time in units called counts.}}
+\DoxyCodeLine{00018     QueryPerformanceCounter(\&StartingTime);}
+\DoxyCodeLine{00019     cout << \textcolor{stringliteral}{"{}How long does it take to execute this line?"{}} << endl;}
+\DoxyCodeLine{00020     QueryPerformanceCounter(\&EndingTime);}
+\DoxyCodeLine{00021 }
+\DoxyCodeLine{00022     cout << \textcolor{stringliteral}{"{}Starting Time: "{}} << StartingTime.QuadPart << endl;}
+\DoxyCodeLine{00023     cout << \textcolor{stringliteral}{"{}Ending Time: "{}} << EndingTime.QuadPart << endl;}
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025     \textcolor{comment}{//To get the frequency(counts per second) of the performance timer}}
+\DoxyCodeLine{00026     \textcolor{comment}{//the number of seconds (or fractions of a second) per count is just the reciprocal of the counts per second : mSecondsPerCount = 1.0 / (double)countsPerSec;}}
+\DoxyCodeLine{00027     QueryPerformanceFrequency(\&frequency);}
+\DoxyCodeLine{00028 }
+\DoxyCodeLine{00029     \textcolor{comment}{//QuadPart represents a 64-\/bit signed integer (for example: 670644208300)}}
+\DoxyCodeLine{00030     \textcolor{comment}{//Every LargeInteger is a union of High Part (long:156 ) and Low Part (unsigned long: 629310124)}}
+\DoxyCodeLine{00031 }
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00033     DifferenceOfTime.QuadPart = EndingTime.QuadPart -\/ StartingTime.QuadPart;}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035     cout << \textcolor{stringliteral}{"{}Difference Of Time: "{}} << DifferenceOfTime.QuadPart << endl;}
+\DoxyCodeLine{00036     cout << \textcolor{stringliteral}{"{}Frequency: "{}} << frequency.QuadPart << endl;}
+\DoxyCodeLine{00037 }
+\DoxyCodeLine{00038     \textcolor{comment}{//how about calculating this directly without quadpart}}
+\DoxyCodeLine{00039     \textcolor{comment}{//deltaTime = EndingTime -\/ StartingTime; //no operator matches this operands . Because a large integer is a union!}}
+\DoxyCodeLine{00040 }
+\DoxyCodeLine{00041     DifferenceOfTime.QuadPart *= 1000000; \textcolor{comment}{//it's in microseconds}}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043     \textcolor{comment}{//To convert a time reading valueInCounts to microseconds, we just divide it by frequency}}
+\DoxyCodeLine{00044     DifferenceOfTime.QuadPart /= frequency.QuadPart; \textcolor{comment}{//For Tick per seconds}}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     DifferenceOfTime.QuadPart /= 1000; \textcolor{comment}{//the value is in milliseconds now}}
+\DoxyCodeLine{00047 }
+\DoxyCodeLine{00048     cout << \textcolor{stringliteral}{"{}Execution Time in milliseconds is : "{}} << DifferenceOfTime.QuadPart << endl;}
+\DoxyCodeLine{00049 }
+\DoxyCodeLine{00050     \textcolor{comment}{//How can we use GameTimer class}}
+\DoxyCodeLine{00051     cout << \textcolor{stringliteral}{"{}Using GameTimer : "{}} << endl;}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     GameTimer mTimer;}
+\DoxyCodeLine{00054 }
+\DoxyCodeLine{00055     mTimer.Reset(); \textcolor{comment}{//the first frame of animation, there is no previous frame. This initializes mPrevTime to the current time}}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     \textcolor{keywordtype}{int} message = 10;}
+\DoxyCodeLine{00058 }
+\DoxyCodeLine{00059     \textcolor{keywordflow}{while} (message != 0)}
+\DoxyCodeLine{00060     \{}
+\DoxyCodeLine{00061             mTimer.Start();  \textcolor{comment}{//Call when unpaused.}}
+\DoxyCodeLine{00062             mTimer.Tick();   \textcolor{comment}{//Call every frame.}}
+\DoxyCodeLine{00063 }
+\DoxyCodeLine{00064             cout << \textcolor{stringliteral}{"{}the delta time now is : "{}} << mTimer.DeltaTime() * 1000 << endl; \textcolor{comment}{//in milliseconds}}
+\DoxyCodeLine{00065             }
+\DoxyCodeLine{00066             \textcolor{comment}{// Returns the total time elapsed since Reset() was called, NOT counting any  time when the clock is stopped.}}
+\DoxyCodeLine{00067             cout << \textcolor{stringliteral}{"{}the total time now is : "{}} << mTimer.TotalTime() * 1000 << endl; \textcolor{comment}{//in milliseconds}}
+\DoxyCodeLine{00068             mTimer.Stop(); \textcolor{comment}{//Call when paused.}}
+\DoxyCodeLine{00069 }
+\DoxyCodeLine{00070             Sleep(1000);    }
+\DoxyCodeLine{00071             message-\/-\/;}
+\DoxyCodeLine{00072         }
+\DoxyCodeLine{00073     \}}
+\DoxyCodeLine{00074 }
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076     system(\textcolor{stringliteral}{"{}pause"{}});}
+\DoxyCodeLine{00077     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00078 \}}
 
 \end{DoxyCode}

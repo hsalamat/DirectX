@@ -1,139 +1,139 @@
-\hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source}{}\doxysection{Week1-\/2-\/\+Constant\+XMVECTOR.cpp}
+\doxysection{Week1-\/2-\/\+Constant\+XMVECTOR.cpp}
 \label{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source}\index{Week1/DirectXMath Examples/Week1-\/2-\/ConstantXMVECTOR.cpp@{Week1/DirectXMath Examples/Week1-\/2-\/ConstantXMVECTOR.cpp}}
-\mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00001}00001 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00019}00019 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00020}00020 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00021}00021 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00022}00022 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00023}00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00024}00024 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00025}00025 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00026}00026 \textcolor{comment}{// output XMVECTOR objects.}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00027}\mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{00027}} ostream\& XM\_CALLCONV \mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMVECTOR v)}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00028}00028 \{}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00029}00029     XMFLOAT3 dest;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00030}00030     XMStoreFloat3(\&dest, v);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00031}00031 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00032}00032     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{})"{}};}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00033}00033     \textcolor{keywordflow}{return} os;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00034}00034 \}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00035}00035 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00036}\mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00036}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00037}00037 \{}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00038}00038 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00039}00039     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00040}00040     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00041}00041     \{}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00042}00042         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00043}00043         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00044}00044     \}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00045}00045 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00046}00046     \textcolor{comment}{//Constant XMVECTOR instances should use the XMVECTORF32 type.}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00047}00047     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vHalfVector = \{ 0.5f, 0.5f, 0.5f, 0.5f \};}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00048}00048     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vZero = \{ 0.0f, 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00049}00049 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00050}00050     \textcolor{comment}{//The XMVECTORF32, XMVECTORU32, XMVECTORI32, and XMVECTORU8 structures are provided as a mechanism }}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00051}00051     \textcolor{comment}{//for creating XMVECTOR from different constant data types (floating point, unsigned integer, integer, and byte) using initializers.}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00052}00052     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORU32 vGrabY = \{ 0x00000000,0xEFFFFFFF,0x00000000,0x00000000 \};}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00053}00053     XMVECTOR data;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00054}00054     data = vGrabY;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00055}00055     cout << \textcolor{stringliteral}{"{}data = "{}} << data << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00056}00056 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00057}00057     \textcolor{comment}{// Returns the zero vector 0}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00058}00058     XMVECTOR p = XMVectorZero();}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00059}00059 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00060}00060     \textcolor{comment}{// Returns the vector (1, 1, 1, 1)}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00061}00061     XMVECTOR q = XMVectorSplatOne();}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00062}00062 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00063}00063     \textcolor{comment}{// Returns the vector (x, y, z, w)}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00064}00064     XMVECTOR u = XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00065}00065 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00066}00066     \textcolor{comment}{// Returns the vector (s, s, s, s)}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00067}00067     XMVECTOR v = XMVectorReplicate(-\/2.0f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00068}00068 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00069}00069     \textcolor{comment}{// Returns the vector (wz, wz, wz, wz)}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00070}00070     XMVECTOR w = XMVectorSplatZ(u);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00071}00071 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00072}00072     cout << \textcolor{stringliteral}{"{}p = "{}} << p << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00073}00073     cout << \textcolor{stringliteral}{"{}q = "{}} << q << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00074}00074     cout << \textcolor{stringliteral}{"{}u = "{}} << u << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00075}00075     cout << \textcolor{stringliteral}{"{}v = "{}} << v << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00076}00076     cout << \textcolor{stringliteral}{"{}w = "{}} << w << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00077}00077 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00078}00078     \textcolor{keyword}{const} \textcolor{keywordtype}{double} d = 1.2345678901234;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00079}00079     std::cout << \textcolor{stringliteral}{"{}The  default precision is "{}} << std::cout.precision() << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00080}00080     std::cout << \textcolor{stringliteral}{"{}With default precision d is "{}} << d << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00081}00081     std::cout.precision(12);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00082}00082     std::cout << \textcolor{stringliteral}{"{}With high    precision d is "{}} << d << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00083}00083 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00084}00084 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00085}00085     \textcolor{comment}{//Manages the precision (i.e. how many digits are generated) of floating point output}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00086}00086     cout.precision(8);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00087}00087 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00088}00088     XMVECTOR n = XMVector3Normalize(u);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00089}00089 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00090}00090     \textcolor{keywordtype}{float} LU = XMVectorGetX(XMVector3Length(n));}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00091}00091 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00092}00092     \textcolor{comment}{// Mathematically, the length should be 1. Is it numerically ?}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00093}00093     cout << \textcolor{stringliteral}{"{}LU = "{}} << LU << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00094}00094     \textcolor{keywordflow}{if} (LU == 1.0f)}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00095}00095         cout << \textcolor{stringliteral}{"{}Length 1"{}} << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00096}00096     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00097}00097         cout << \textcolor{stringliteral}{"{}Length not 1"{}} << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00098}00098 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00099}00099     \textcolor{comment}{// Raising 1 to any power should still be 1. Is it?}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00100}00100     \textcolor{keywordtype}{float} powLU = powf(LU, 1.0e6f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00101}00101     cout << \textcolor{stringliteral}{"{}LU \string^ (10 \string^ 6) = "{}} << powLU << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00102}00102 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00103}00103     \textcolor{comment}{//To compensate for floating-\/point imprecision, we test if two floating-\/point numbers}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00104}00104     \textcolor{comment}{//are approximately equal.We do this by defining an Epsilon constant, which is a very small}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00105}00105     \textcolor{comment}{//value we use as a “buffer.”}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00106}00106 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00107}00107     \textcolor{keyword}{const} \textcolor{keywordtype}{float} Epsilon = 0.001f;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00108}00108     \textcolor{comment}{//bool Equals(float lhs, float rhs)}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00109}00109     \textcolor{comment}{//\{}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00110}00110     \textcolor{comment}{//  // Is the distance between lhs and rhs less than EPSILON ?}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00111}00111     \textcolor{comment}{//      return fabs(lhs -\/ rhs) < Epsilon ? true : false;}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00112}00112     \textcolor{comment}{//\}}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00113}00113 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00114}00114     \textcolor{comment}{//The DirectX Math library provides the XMVector3NearEqual function when}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00115}00115     \textcolor{comment}{//  testing the equality of vectors with an allowed tolerance Epsilon parameter :}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00116}00116     \textcolor{comment}{// Returns}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00117}00117     \textcolor{comment}{// abs(U.x – V.x) <= Epsilon.x \&\&}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00118}00118     \textcolor{comment}{// abs(U.y – V.y) <= Epsilon.y \&\&}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00119}00119     \textcolor{comment}{// abs(U.z – V.z) <= Epsilon.z}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00120}00120     \textcolor{comment}{//XMFINLINE bool XM\_CALLCONV XMVector3NearEqual(    FXMVECTOR U,FXMVECTOR V, FXMVECTOR Epsilon);}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00121}00121 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00122}00122     \textcolor{comment}{//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values}}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00123}00123     cout.setf(ios\_base::boolalpha);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00124}00124     cout << \textcolor{stringliteral}{"{}LU and q vectors are almost equal? "{}} << XMVector3NearEqual(XMVectorReplicate(LU), q, XMVectorReplicate(Epsilon)) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00125}00125 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00126}00126 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00127}00127     p = XMVectorSet(2.0f, 2.0f, 1.0f, 0.0f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00128}00128     q = XMVectorSet(2.0f, -\/0.5f, 0.5f, 0.1f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00129}00129     u = XMVectorSet(1.0f, 2.0f, 4.0f, 8.0f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00130}00130     v = XMVectorSet(-\/2.0f, 1.0f, -\/3.0f, 2.5f);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00131}00131     w = XMVectorSet(0.0f, XM\_PIDIV4, XM\_PIDIV2, XM\_PI);}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00132}00132 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00133}00133     cout << \textcolor{stringliteral}{"{}XMVectorAbs(v) = "{}} << XMVectorAbs(v) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00134}00134     cout << \textcolor{stringliteral}{"{}XMVectorCos(w) = "{}} << XMVectorCos(w) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00135}00135     cout << \textcolor{stringliteral}{"{}XMVectorLog(u) = "{}} << XMVectorLog(u) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00136}00136     cout << \textcolor{stringliteral}{"{}XMVectorExp(p) = "{}} << XMVectorExp(p) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00137}00137     cout << \textcolor{stringliteral}{"{}XMVectorPow(u, p) = "{}} << XMVectorPow(u, p) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00138}00138     cout << \textcolor{stringliteral}{"{}XMVectorSqrt(u) = "{}} << XMVectorSqrt(u) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00139}00139     cout << \textcolor{stringliteral}{"{}XMVectorSwizzle(u, 2, 2, 1, 3) = "{}} << XMVectorSwizzle(u, 2, 2, 1, 3) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00140}00140     cout << \textcolor{stringliteral}{"{}XMVectorSwizzle(u, 2, 1, 0, 3) = "{}} << XMVectorSwizzle(u, 2, 1, 0, 3) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00141}00141     cout << \textcolor{stringliteral}{"{}XMVectorMultiply(u, v) = "{}} << XMVectorMultiply(u, v) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00142}00142     cout << \textcolor{stringliteral}{"{}XMVectorSaturate(q) = "{}} << XMVectorSaturate(q) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00143}00143     cout << \textcolor{stringliteral}{"{}XMVectorMin(p, v) = "{}} << XMVectorMin(p, v) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00144}00144     cout << \textcolor{stringliteral}{"{}XMVectorMax(p, v) = "{}} << XMVectorMax(p, v) << endl;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00145}00145 }
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00146}00146     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{\Hypertarget{_week1-2-_constant_x_m_v_e_c_t_o_r_8cpp_source_l00147}00147 \}}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{00018 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{00020 }
+\DoxyCodeLine{00021 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{00022 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
+\DoxyCodeLine{00026 \textcolor{comment}{// output XMVECTOR objects.}}
+\DoxyCodeLine{00027 ostream\& XM\_CALLCONV operator << (ostream\& os, FXMVECTOR v)}
+\DoxyCodeLine{00028 \{}
+\DoxyCodeLine{00029     XMFLOAT3 dest;}
+\DoxyCodeLine{00030     XMStoreFloat3(\&dest, v);}
+\DoxyCodeLine{00031 }
+\DoxyCodeLine{00032     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00033     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{00034 \}}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036 \textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{00037 \{}
+\DoxyCodeLine{00038 }
+\DoxyCodeLine{00039     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
+\DoxyCodeLine{00040     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
+\DoxyCodeLine{00041     \{}
+\DoxyCodeLine{00042         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
+\DoxyCodeLine{00043         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00044     \}}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     \textcolor{comment}{//Constant XMVECTOR instances should use the XMVECTORF32 type.}}
+\DoxyCodeLine{00047     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vHalfVector = \{ 0.5f, 0.5f, 0.5f, 0.5f \};}
+\DoxyCodeLine{00048     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORF32 g\_vZero = \{ 0.0f, 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00049 }
+\DoxyCodeLine{00050     \textcolor{comment}{//The XMVECTORF32, XMVECTORU32, XMVECTORI32, and XMVECTORU8 structures are provided as a mechanism }}
+\DoxyCodeLine{00051     \textcolor{comment}{//for creating XMVECTOR from different constant data types (floating point, unsigned integer, integer, and byte) using initializers.}}
+\DoxyCodeLine{00052     \textcolor{keyword}{static} \textcolor{keyword}{const} XMVECTORU32 vGrabY = \{ 0x00000000,0xEFFFFFFF,0x00000000,0x00000000 \};}
+\DoxyCodeLine{00053     XMVECTOR data;}
+\DoxyCodeLine{00054     data = vGrabY;}
+\DoxyCodeLine{00055     cout << \textcolor{stringliteral}{"{}data = "{}} << data << endl;}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     \textcolor{comment}{// Returns the zero vector 0}}
+\DoxyCodeLine{00058     XMVECTOR p = XMVectorZero();}
+\DoxyCodeLine{00059 }
+\DoxyCodeLine{00060     \textcolor{comment}{// Returns the vector (1, 1, 1, 1)}}
+\DoxyCodeLine{00061     XMVECTOR q = XMVectorSplatOne();}
+\DoxyCodeLine{00062 }
+\DoxyCodeLine{00063     \textcolor{comment}{// Returns the vector (x, y, z, w)}}
+\DoxyCodeLine{00064     XMVECTOR u = XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);}
+\DoxyCodeLine{00065 }
+\DoxyCodeLine{00066     \textcolor{comment}{// Returns the vector (s, s, s, s)}}
+\DoxyCodeLine{00067     XMVECTOR v = XMVectorReplicate(-\/2.0f);}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069     \textcolor{comment}{// Returns the vector (wz, wz, wz, wz)}}
+\DoxyCodeLine{00070     XMVECTOR w = XMVectorSplatZ(u);}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00072     cout << \textcolor{stringliteral}{"{}p = "{}} << p << endl;}
+\DoxyCodeLine{00073     cout << \textcolor{stringliteral}{"{}q = "{}} << q << endl;}
+\DoxyCodeLine{00074     cout << \textcolor{stringliteral}{"{}u = "{}} << u << endl;}
+\DoxyCodeLine{00075     cout << \textcolor{stringliteral}{"{}v = "{}} << v << endl;}
+\DoxyCodeLine{00076     cout << \textcolor{stringliteral}{"{}w = "{}} << w << endl;}
+\DoxyCodeLine{00077 }
+\DoxyCodeLine{00078     \textcolor{keyword}{const} \textcolor{keywordtype}{double} d = 1.2345678901234;}
+\DoxyCodeLine{00079     std::cout << \textcolor{stringliteral}{"{}The  default precision is "{}} << std::cout.precision() << endl;}
+\DoxyCodeLine{00080     std::cout << \textcolor{stringliteral}{"{}With default precision d is "{}} << d << endl;}
+\DoxyCodeLine{00081     std::cout.precision(12);}
+\DoxyCodeLine{00082     std::cout << \textcolor{stringliteral}{"{}With high    precision d is "{}} << d << endl;}
+\DoxyCodeLine{00083 }
+\DoxyCodeLine{00084 }
+\DoxyCodeLine{00085     \textcolor{comment}{//Manages the precision (i.e. how many digits are generated) of floating point output}}
+\DoxyCodeLine{00086     cout.precision(8);}
+\DoxyCodeLine{00087 }
+\DoxyCodeLine{00088     XMVECTOR n = XMVector3Normalize(u);}
+\DoxyCodeLine{00089 }
+\DoxyCodeLine{00090     \textcolor{keywordtype}{float} LU = XMVectorGetX(XMVector3Length(n));}
+\DoxyCodeLine{00091 }
+\DoxyCodeLine{00092     \textcolor{comment}{// Mathematically, the length should be 1. Is it numerically ?}}
+\DoxyCodeLine{00093     cout << \textcolor{stringliteral}{"{}LU = "{}} << LU << endl;}
+\DoxyCodeLine{00094     \textcolor{keywordflow}{if} (LU == 1.0f)}
+\DoxyCodeLine{00095         cout << \textcolor{stringliteral}{"{}Length 1"{}} << endl;}
+\DoxyCodeLine{00096     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00097         cout << \textcolor{stringliteral}{"{}Length not 1"{}} << endl;}
+\DoxyCodeLine{00098 }
+\DoxyCodeLine{00099     \textcolor{comment}{// Raising 1 to any power should still be 1. Is it?}}
+\DoxyCodeLine{00100     \textcolor{keywordtype}{float} powLU = powf(LU, 1.0e6f);}
+\DoxyCodeLine{00101     cout << \textcolor{stringliteral}{"{}LU \string^ (10 \string^ 6) = "{}} << powLU << endl;}
+\DoxyCodeLine{00102 }
+\DoxyCodeLine{00103     \textcolor{comment}{//To compensate for floating-\/point imprecision, we test if two floating-\/point numbers}}
+\DoxyCodeLine{00104     \textcolor{comment}{//are approximately equal.We do this by defining an Epsilon constant, which is a very small}}
+\DoxyCodeLine{00105     \textcolor{comment}{//value we use as a “buffer.”}}
+\DoxyCodeLine{00106 }
+\DoxyCodeLine{00107     \textcolor{keyword}{const} \textcolor{keywordtype}{float} Epsilon = 0.001f;}
+\DoxyCodeLine{00108     \textcolor{comment}{//bool Equals(float lhs, float rhs)}}
+\DoxyCodeLine{00109     \textcolor{comment}{//\{}}
+\DoxyCodeLine{00110     \textcolor{comment}{//  // Is the distance between lhs and rhs less than EPSILON ?}}
+\DoxyCodeLine{00111     \textcolor{comment}{//      return fabs(lhs -\/ rhs) < Epsilon ? true : false;}}
+\DoxyCodeLine{00112     \textcolor{comment}{//\}}}
+\DoxyCodeLine{00113 }
+\DoxyCodeLine{00114     \textcolor{comment}{//The DirectX Math library provides the XMVector3NearEqual function when}}
+\DoxyCodeLine{00115     \textcolor{comment}{//  testing the equality of vectors with an allowed tolerance Epsilon parameter :}}
+\DoxyCodeLine{00116     \textcolor{comment}{// Returns}}
+\DoxyCodeLine{00117     \textcolor{comment}{// abs(U.x – V.x) <= Epsilon.x \&\&}}
+\DoxyCodeLine{00118     \textcolor{comment}{// abs(U.y – V.y) <= Epsilon.y \&\&}}
+\DoxyCodeLine{00119     \textcolor{comment}{// abs(U.z – V.z) <= Epsilon.z}}
+\DoxyCodeLine{00120     \textcolor{comment}{//XMFINLINE bool XM\_CALLCONV XMVector3NearEqual(    FXMVECTOR U,FXMVECTOR V, FXMVECTOR Epsilon);}}
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122     \textcolor{comment}{//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values}}
+\DoxyCodeLine{00123     cout.setf(ios\_base::boolalpha);}
+\DoxyCodeLine{00124     cout << \textcolor{stringliteral}{"{}LU and q vectors are almost equal? "{}} << XMVector3NearEqual(XMVectorReplicate(LU), q, XMVectorReplicate(Epsilon)) << endl;}
+\DoxyCodeLine{00125 }
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127     p = XMVectorSet(2.0f, 2.0f, 1.0f, 0.0f);}
+\DoxyCodeLine{00128     q = XMVectorSet(2.0f, -\/0.5f, 0.5f, 0.1f);}
+\DoxyCodeLine{00129     u = XMVectorSet(1.0f, 2.0f, 4.0f, 8.0f);}
+\DoxyCodeLine{00130     v = XMVectorSet(-\/2.0f, 1.0f, -\/3.0f, 2.5f);}
+\DoxyCodeLine{00131     w = XMVectorSet(0.0f, XM\_PIDIV4, XM\_PIDIV2, XM\_PI);}
+\DoxyCodeLine{00132 }
+\DoxyCodeLine{00133     cout << \textcolor{stringliteral}{"{}XMVectorAbs(v) = "{}} << XMVectorAbs(v) << endl;}
+\DoxyCodeLine{00134     cout << \textcolor{stringliteral}{"{}XMVectorCos(w) = "{}} << XMVectorCos(w) << endl;}
+\DoxyCodeLine{00135     cout << \textcolor{stringliteral}{"{}XMVectorLog(u) = "{}} << XMVectorLog(u) << endl;}
+\DoxyCodeLine{00136     cout << \textcolor{stringliteral}{"{}XMVectorExp(p) = "{}} << XMVectorExp(p) << endl;}
+\DoxyCodeLine{00137     cout << \textcolor{stringliteral}{"{}XMVectorPow(u, p) = "{}} << XMVectorPow(u, p) << endl;}
+\DoxyCodeLine{00138     cout << \textcolor{stringliteral}{"{}XMVectorSqrt(u) = "{}} << XMVectorSqrt(u) << endl;}
+\DoxyCodeLine{00139     cout << \textcolor{stringliteral}{"{}XMVectorSwizzle(u, 2, 2, 1, 3) = "{}} << XMVectorSwizzle(u, 2, 2, 1, 3) << endl;}
+\DoxyCodeLine{00140     cout << \textcolor{stringliteral}{"{}XMVectorSwizzle(u, 2, 1, 0, 3) = "{}} << XMVectorSwizzle(u, 2, 1, 0, 3) << endl;}
+\DoxyCodeLine{00141     cout << \textcolor{stringliteral}{"{}XMVectorMultiply(u, v) = "{}} << XMVectorMultiply(u, v) << endl;}
+\DoxyCodeLine{00142     cout << \textcolor{stringliteral}{"{}XMVectorSaturate(q) = "{}} << XMVectorSaturate(q) << endl;}
+\DoxyCodeLine{00143     cout << \textcolor{stringliteral}{"{}XMVectorMin(p, v) = "{}} << XMVectorMin(p, v) << endl;}
+\DoxyCodeLine{00144     cout << \textcolor{stringliteral}{"{}XMVectorMax(p, v) = "{}} << XMVectorMax(p, v) << endl;}
+\DoxyCodeLine{00145 }
+\DoxyCodeLine{00146     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00147 \}}
 
 \end{DoxyCode}

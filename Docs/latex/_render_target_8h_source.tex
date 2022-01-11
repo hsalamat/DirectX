@@ -1,57 +1,57 @@
-\hypertarget{_render_target_8h_source}{}\doxysection{Render\+Target.\+h}
+\doxysection{Render\+Target.\+h}
 \label{_render_target_8h_source}\index{Week8/SobelFilter/RenderTarget.h@{Week8/SobelFilter/RenderTarget.h}}
-\mbox{\hyperlink{_render_target_8h}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00002}00002 \textcolor{comment}{// RenderTarget.h by Frank Luna (C) 2015 All Rights Reserved.}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00004}00004 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00005}00005 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00006}00006 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00008}00008 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00009}\mbox{\hyperlink{class_render_target}{00009}} \textcolor{keyword}{class }\mbox{\hyperlink{class_render_target}{RenderTarget}}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00010}00010 \{}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00011}00011 \textcolor{keyword}{public}:}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00016}00016     \mbox{\hyperlink{class_render_target_acc2664e7797eb2aed4b0c7e1cd497780}{RenderTarget}}(ID3D12Device* device,}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00017}00017         UINT width, UINT height,}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00018}00018         DXGI\_FORMAT format);}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00019}00019         }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00020}\mbox{\hyperlink{class_render_target_a0e5174c8f534aa9f1029030406b4da39}{00020}}     \mbox{\hyperlink{class_render_target_a0e5174c8f534aa9f1029030406b4da39}{RenderTarget}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_render_target}{RenderTarget}}\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00021}\mbox{\hyperlink{class_render_target_a259bde6f988a6bf81e7b37b44c3a12f9}{00021}}     \mbox{\hyperlink{class_render_target}{RenderTarget}}\& \mbox{\hyperlink{class_render_target_a259bde6f988a6bf81e7b37b44c3a12f9}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_render_target}{RenderTarget}}\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00022}\mbox{\hyperlink{class_render_target_ad3c6e359c34ce99fbdedd8c275dc00df}{00022}}     \mbox{\hyperlink{class_render_target_ad3c6e359c34ce99fbdedd8c275dc00df}{\string~RenderTarget}}()=\textcolor{keywordflow}{default};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00023}00023 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00024}00024     ID3D12Resource* \mbox{\hyperlink{class_render_target_a2a9aee46c25939f0ee97ee7ff2884630}{Resource}}();}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00025}00025     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_a6b6ac7a698a34d4a135334650a41b496}{Srv}}();}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00026}00026     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_aedd29290ceed32de5916748bf54ff189}{Rtv}}();}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00027}00027 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00028}00028     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_af474ae511b9db0b604c70d3e643af567}{BuildDescriptors}}(}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00029}00029         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00030}00030         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00031}00031         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv);}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00032}00032 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00033}00033     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_a46093d4b82e22cab5d0c8fc1b352b492}{OnResize}}(UINT newWidth, UINT newHeight);}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00035}00035 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00036}00036     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_af474ae511b9db0b604c70d3e643af567}{BuildDescriptors}}();}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00037}00037     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_a308d77ab37ace313408dee18c7b38d3c}{BuildResource}}();}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00038}00038 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00039}00039 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00040}00040 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00041}\mbox{\hyperlink{class_render_target_aaca0116f0fa791121352a877db611712}{00041}}     ID3D12Device* \mbox{\hyperlink{class_render_target_aaca0116f0fa791121352a877db611712}{md3dDevice}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00042}00042 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00043}\mbox{\hyperlink{class_render_target_a6d4b24f96657769234ddaf9e8a3c0d28}{00043}}     UINT \mbox{\hyperlink{class_render_target_a6d4b24f96657769234ddaf9e8a3c0d28}{mWidth}} = 0;}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00044}\mbox{\hyperlink{class_render_target_a9eba396616fb85844fcc4932fe025a49}{00044}}     UINT \mbox{\hyperlink{class_render_target_a9eba396616fb85844fcc4932fe025a49}{mHeight}} = 0;}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00045}\mbox{\hyperlink{class_render_target_a362c56c6a2b97463b0519926bc1d1836}{00045}}     DXGI\_FORMAT \mbox{\hyperlink{class_render_target_a362c56c6a2b97463b0519926bc1d1836}{mFormat}} = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00046}00046 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00047}\mbox{\hyperlink{class_render_target_aabe637d6c8b51334fff4d1f11c309d11}{00047}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_aabe637d6c8b51334fff4d1f11c309d11}{mhCpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00048}\mbox{\hyperlink{class_render_target_ad74844a3e6aec7562dffbed9038f5cb1}{00048}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_ad74844a3e6aec7562dffbed9038f5cb1}{mhGpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00049}\mbox{\hyperlink{class_render_target_a042335e28e1330af4f737fe60b80139a}{00049}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_a042335e28e1330af4f737fe60b80139a}{mhCpuRtv}};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00050}00050 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00051}00051     \textcolor{comment}{// Two for ping-\/ponging the textures.}}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00052}\mbox{\hyperlink{class_render_target_a7a24a94ad407211d6c232e128540dd20}{00052}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_render_target_a7a24a94ad407211d6c232e128540dd20}{mOffscreenTex}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00053}00053 \};}
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00054}00054 }
-\DoxyCodeLine{\Hypertarget{_render_target_8h_source_l00055}00055  }
+\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{// RenderTarget.h by Frank Luna (C) 2015 All Rights Reserved.}}
+\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00004 }
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{00006 }
+\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009 \textcolor{keyword}{class }RenderTarget}
+\DoxyCodeLine{00010 \{}
+\DoxyCodeLine{00011 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016     RenderTarget(ID3D12Device* device,}
+\DoxyCodeLine{00017         UINT width, UINT height,}
+\DoxyCodeLine{00018         DXGI\_FORMAT format);}
+\DoxyCodeLine{00019         }
+\DoxyCodeLine{00020     RenderTarget(\textcolor{keyword}{const} RenderTarget\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{00021     RenderTarget\& operator=(\textcolor{keyword}{const} RenderTarget\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{00022     \string~RenderTarget()=\textcolor{keywordflow}{default};}
+\DoxyCodeLine{00023 }
+\DoxyCodeLine{00024     ID3D12Resource* Resource();}
+\DoxyCodeLine{00025     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE Srv();}
+\DoxyCodeLine{00026     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE Rtv();}
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028     \textcolor{keywordtype}{void} BuildDescriptors(}
+\DoxyCodeLine{00029         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{00030         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{00031         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv);}
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00033     \textcolor{keywordtype}{void} OnResize(UINT newWidth, UINT newHeight);}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00036     \textcolor{keywordtype}{void} BuildDescriptors();}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{void} BuildResource();}
+\DoxyCodeLine{00038 }
+\DoxyCodeLine{00039 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00040 }
+\DoxyCodeLine{00041     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043     UINT mWidth = 0;}
+\DoxyCodeLine{00044     UINT mHeight = 0;}
+\DoxyCodeLine{00045     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{00046 }
+\DoxyCodeLine{00047     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuSrv;}
+\DoxyCodeLine{00048     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuSrv;}
+\DoxyCodeLine{00049     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuRtv;}
+\DoxyCodeLine{00050 }
+\DoxyCodeLine{00051     \textcolor{comment}{// Two for ping-\/ponging the textures.}}
+\DoxyCodeLine{00052     Microsoft::WRL::ComPtr<ID3D12Resource> mOffscreenTex = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00053 \};}
+\DoxyCodeLine{00054 }
+\DoxyCodeLine{00055  }
 
 \end{DoxyCode}

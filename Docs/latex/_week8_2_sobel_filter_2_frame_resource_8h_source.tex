@@ -1,85 +1,85 @@
-\hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source}{}\doxysection{Frame\+Resource.\+h}
+\doxysection{Frame\+Resource.\+h}
 \label{_week8_2_sobel_filter_2_frame_resource_8h_source}\index{Week8/SobelFilter/FrameResource.h@{Week8/SobelFilter/FrameResource.h}}
-\mbox{\hyperlink{_week8_2_sobel_filter_2_frame_resource_8h}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00001}00001 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00002}00002 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00003}00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00004}00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00006}00006 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00007}00007 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00008}00008 \{}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00009}00009     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00010}00010     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_object_constants_a0a7f8e4817a18595707569b307060a42}{TexTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00011}\mbox{\hyperlink{struct_object_constants_a1b5531af7dffad08a99cd4e5e89293ec}{00011}}     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_object_constants_a1b5531af7dffad08a99cd4e5e89293ec}{DisplacementMapTexelSize}} = \{ 1.0f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00012}\mbox{\hyperlink{struct_object_constants_ab8d429afc045ef76807d0a6035b55216}{00012}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_object_constants_ab8d429afc045ef76807d0a6035b55216}{GridSpatialStep}} = 1.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00013}\mbox{\hyperlink{struct_object_constants_a28ec8b17f8f526f513b6490e58d56c48}{00013}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_object_constants_a28ec8b17f8f526f513b6490e58d56c48}{Pad}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00014}00014 \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00015}00015 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00016}00016 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_pass_constants}{PassConstants}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00017}00017 \{}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00018}00018     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00019}00019     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00020}00020     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00021}00021     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00022}00022     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00023}00023     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00024}00024     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00025}00025     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_aaae2d67cebf30e767a800a1e508e249a}{cbPerObjectPad1}} = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00026}00026     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00027}00027     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00028}00028     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00029}00029     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00030}00030     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00031}00031     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = 0.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00032}00032 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00033}00033     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.0f, 0.0f, 0.0f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00034}00034 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00035}00035     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_pass_constants_ae11238594ce3968e848ce2ad8cf9fd03}{FogColor}} = \{ 0.7f, 0.7f, 0.7f, 1.0f \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00036}00036     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_a9ffae9d149bcaaf5ec87517a629835b3}{gFogStart}} = 5.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00037}00037     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_a6ee41a165635f8f826a29f84f546e0bb}{gFogRange}} = 150.0f;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00038}00038     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_a617fb5be6baaf150a132c9ea0396abfa}{cbPerObjectPad2}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00039}00039 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00040}00040     \textcolor{comment}{// Indices [0, NUM\_DIR\_LIGHTS) are directional lights;}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00041}00041     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS) are point lights;}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00042}00042     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHT+NUM\_SPOT\_LIGHTS)}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00043}00043     \textcolor{comment}{// are spot lights for a maximum of MaxLights per object.}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00044}00044     \mbox{\hyperlink{struct_light}{Light}} \mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[\mbox{\hyperlink{d3d_util_8h_a3654e541e465ac5978e40d2fc5e7fdfa}{MaxLights}}];}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00045}00045 \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00046}00046 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00047}00047 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_vertex}{Vertex}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00048}00048 \{}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00049}00049     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00050}00050     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_a553ed48ae98dda36da8e57cfa53877d4}{Normal}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00051}00051     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_vertex_a43e8c374e56c6ed3acc708ba2de1c70c}{TexC}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00052}00052 \};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00053}00053 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00054}00054 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00055}00055 \textcolor{comment}{// for a frame.  }}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00056}00056 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_frame_resource}{FrameResource}}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00057}00057 \{}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00058}00058 \textcolor{keyword}{public}:}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00059}00059     }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00060}\mbox{\hyperlink{struct_frame_resource_a496fdce5ab50522a3dcbf9260be6e86c}{00060}}     \mbox{\hyperlink{struct_frame_resource_a496fdce5ab50522a3dcbf9260be6e86c}{FrameResource}}(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00061}\mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{00061}}     \mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{FrameResource}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00062}\mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{00062}}     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& \mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00063}\mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{00063}}     \mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{\string~FrameResource}}();}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00064}00064 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00065}00065     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00066}00066     \textcolor{comment}{// So each frame needs their own allocator.}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00067}00067     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> \mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00068}00068 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00069}00069     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00070}00070     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00071}00071    \textcolor{comment}{// std::unique\_ptr<UploadBuffer<FrameConstants>> FrameCB = nullptr;}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00072}00072     std::unique\_ptr<UploadBuffer<PassConstants>> \mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00073}00073     std::unique\_ptr<UploadBuffer<MaterialConstants>> \mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00074}00074     std::unique\_ptr<UploadBuffer<ObjectConstants>> \mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00075}00075 }
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00076}00076     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00077}00077     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00078}00078     UINT64 \mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = 0;}
-\DoxyCodeLine{\Hypertarget{_week8_2_sobel_filter_2_frame_resource_8h_source_l00079}00079 \};}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{00002 }
+\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00006 }
+\DoxyCodeLine{00007 \textcolor{keyword}{struct }ObjectConstants}
+\DoxyCodeLine{00008 \{}
+\DoxyCodeLine{00009     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00010     DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00011     DirectX::XMFLOAT2 DisplacementMapTexelSize = \{ 1.0f, 1.0f \};}
+\DoxyCodeLine{00012     \textcolor{keywordtype}{float} GridSpatialStep = 1.0f;}
+\DoxyCodeLine{00013     \textcolor{keywordtype}{float} Pad;}
+\DoxyCodeLine{00014 \};}
+\DoxyCodeLine{00015 }
+\DoxyCodeLine{00016 \textcolor{keyword}{struct }PassConstants}
+\DoxyCodeLine{00017 \{}
+\DoxyCodeLine{00018     DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();}
+\DoxyCodeLine{00019     DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00020     DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00021     DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00022     DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00023     DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00024     DirectX::XMFLOAT3 EyePosW = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00025     \textcolor{keywordtype}{float} cbPerObjectPad1 = 0.0f;}
+\DoxyCodeLine{00026     DirectX::XMFLOAT2 RenderTargetSize = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{00027     DirectX::XMFLOAT2 InvRenderTargetSize = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{00028     \textcolor{keywordtype}{float} NearZ = 0.0f;}
+\DoxyCodeLine{00029     \textcolor{keywordtype}{float} FarZ = 0.0f;}
+\DoxyCodeLine{00030     \textcolor{keywordtype}{float} TotalTime = 0.0f;}
+\DoxyCodeLine{00031     \textcolor{keywordtype}{float} DeltaTime = 0.0f;}
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00033     DirectX::XMFLOAT4 AmbientLight = \{ 0.0f, 0.0f, 0.0f, 1.0f \};}
+\DoxyCodeLine{00034 }
+\DoxyCodeLine{00035     DirectX::XMFLOAT4 FogColor = \{ 0.7f, 0.7f, 0.7f, 1.0f \};}
+\DoxyCodeLine{00036     \textcolor{keywordtype}{float} gFogStart = 5.0f;}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{float} gFogRange = 150.0f;}
+\DoxyCodeLine{00038     DirectX::XMFLOAT2 cbPerObjectPad2;}
+\DoxyCodeLine{00039 }
+\DoxyCodeLine{00040     \textcolor{comment}{// Indices [0, NUM\_DIR\_LIGHTS) are directional lights;}}
+\DoxyCodeLine{00041     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS) are point lights;}}
+\DoxyCodeLine{00042     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHT+NUM\_SPOT\_LIGHTS)}}
+\DoxyCodeLine{00043     \textcolor{comment}{// are spot lights for a maximum of MaxLights per object.}}
+\DoxyCodeLine{00044     Light Lights[MaxLights];}
+\DoxyCodeLine{00045 \};}
+\DoxyCodeLine{00046 }
+\DoxyCodeLine{00047 \textcolor{keyword}{struct }Vertex}
+\DoxyCodeLine{00048 \{}
+\DoxyCodeLine{00049     DirectX::XMFLOAT3 Pos;}
+\DoxyCodeLine{00050     DirectX::XMFLOAT3 Normal;}
+\DoxyCodeLine{00051     DirectX::XMFLOAT2 TexC;}
+\DoxyCodeLine{00052 \};}
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
+\DoxyCodeLine{00055 \textcolor{comment}{// for a frame.  }}
+\DoxyCodeLine{00056 \textcolor{keyword}{struct }FrameResource}
+\DoxyCodeLine{00057 \{}
+\DoxyCodeLine{00058 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00059     }
+\DoxyCodeLine{00060     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);}
+\DoxyCodeLine{00061     FrameResource(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00062     FrameResource\& operator=(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00063     \string~FrameResource();}
+\DoxyCodeLine{00064 }
+\DoxyCodeLine{00065     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
+\DoxyCodeLine{00066     \textcolor{comment}{// So each frame needs their own allocator.}}
+\DoxyCodeLine{00067     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
+\DoxyCodeLine{00070     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
+\DoxyCodeLine{00071    \textcolor{comment}{// std::unique\_ptr<UploadBuffer<FrameConstants>> FrameCB = nullptr;}}
+\DoxyCodeLine{00072     std::unique\_ptr<UploadBuffer<PassConstants>> PassCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00073     std::unique\_ptr<UploadBuffer<MaterialConstants>> MaterialCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00074     std::unique\_ptr<UploadBuffer<ObjectConstants>> ObjectCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
+\DoxyCodeLine{00077     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
+\DoxyCodeLine{00078     UINT64 Fence = 0;}
+\DoxyCodeLine{00079 \};}
 
 \end{DoxyCode}

@@ -1,123 +1,123 @@
-\hypertarget{_week14_2_ssao_2_ssao_8h_source}{}\doxysection{Ssao.\+h}
+\doxysection{Ssao.\+h}
 \label{_week14_2_ssao_2_ssao_8h_source}\index{Week14/Ssao/Ssao.h@{Week14/Ssao/Ssao.h}}
-\mbox{\hyperlink{_week14_2_ssao_2_ssao_8h}{Go to the documentation of this file.}}
+\textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00002}00002 \textcolor{comment}{// Ssao.h by Frank Luna (C) 2015 All Rights Reserved.}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00004}00004 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00005}00005 \textcolor{preprocessor}{\#ifndef SSAO\_H}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00006}00006 \textcolor{preprocessor}{\#define SSAO\_H}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00007}00007 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00008}00008 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00009}00009 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00010}00010 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00011}00011 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00012}00012  }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00013}00013  }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00014}\mbox{\hyperlink{class_ssao}{00014}} \textcolor{keyword}{class }\mbox{\hyperlink{class_ssao}{Ssao}}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00015}00015 \{}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00016}00016 \textcolor{keyword}{public}:}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00017}00017 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00018}00018     \mbox{\hyperlink{class_ssao_a14a8ef7ccdbd9291196bcb4af93bc0f1}{Ssao}}(ID3D12Device* device, }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00019}00019         ID3D12GraphicsCommandList* cmdList, }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00020}00020         UINT width, UINT height);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00021}\mbox{\hyperlink{class_ssao_a3258347c8e6821c038a1226009df22c7}{00021}}     \mbox{\hyperlink{class_ssao_a3258347c8e6821c038a1226009df22c7}{Ssao}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_ssao}{Ssao}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00022}\mbox{\hyperlink{class_ssao_a506a21c265bbf1cfc3e3890879375713}{00022}}     \mbox{\hyperlink{class_ssao}{Ssao}}\& \mbox{\hyperlink{class_ssao_a506a21c265bbf1cfc3e3890879375713}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_ssao}{Ssao}}\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00023}\mbox{\hyperlink{class_ssao_a67e548379e4bba15b3f32599da427928}{00023}}     \mbox{\hyperlink{class_ssao_a67e548379e4bba15b3f32599da427928}{\string~Ssao}}() = \textcolor{keywordflow}{default}; }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00024}00024 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00025}\mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{00025}}     \textcolor{keyword}{static} \textcolor{keyword}{const} DXGI\_FORMAT \mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{AmbientMapFormat}} = DXGI\_FORMAT\_R16\_UNORM;}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00026}\mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{00026}}     \textcolor{keyword}{static} \textcolor{keyword}{const} DXGI\_FORMAT \mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{NormalMapFormat}} = DXGI\_FORMAT\_R16G16B16A16\_FLOAT;}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00027}00027 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00028}\mbox{\hyperlink{class_ssao_ae1e8c25695919496eda5f871f86eafc2}{00028}}     \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_ssao_ae1e8c25695919496eda5f871f86eafc2}{MaxBlurRadius}} = 5;}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00029}00029 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00030}00030     UINT \mbox{\hyperlink{class_ssao_a697f758e284645083ca1a510c4cb19f2}{SsaoMapWidth}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00031}00031     UINT \mbox{\hyperlink{class_ssao_aab471ef4cb2718b0eaea02a3474a75b5}{SsaoMapHeight}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00032}00032 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00033}00033     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_adc51142a4883e3fc56e983535b8de661}{GetOffsetVectors}}(DirectX::XMFLOAT4 offsets[14]);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00034}00034     std::vector<float> \mbox{\hyperlink{class_ssao_a42dbb8761b84183eb9ca24f598b13c1a}{CalcGaussWeights}}(\textcolor{keywordtype}{float} sigma);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00035}00035 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00036}00036 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00037}00037     ID3D12Resource* \mbox{\hyperlink{class_ssao_af7b5ed7a77f738f3cbe8c8f6c9c7bef8}{NormalMap}}();}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00038}00038     ID3D12Resource* \mbox{\hyperlink{class_ssao_a197603dffeda5c75eb28579589de5f1c}{AmbientMap}}();}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00039}00039     }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00040}00040     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a284be8575c8a58748b80b68850dfdbe5}{NormalMapRtv}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00041}00041     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_acc88ef583a965ed32cf89d85ee2ef4ee}{NormalMapSrv}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00042}00042     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a7e4559e1298c7146672a60ed5653764d}{AmbientMapSrv}}()\textcolor{keyword}{const};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00043}00043 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00044}00044     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_aac4ba845ad15b35c0b0577501091b4fd}{BuildDescriptors}}(}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00045}00045         ID3D12Resource* depthStencilBuffer,}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00046}00046         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00047}00047         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00048}00048         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv,}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00049}00049         UINT cbvSrvUavDescriptorSize,}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00050}00050         UINT rtvDescriptorSize);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00051}00051 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00052}00052     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a995052098cb12252f7185a529be8159f}{RebuildDescriptors}}(ID3D12Resource* depthStencilBuffer);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00053}00053 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00054}00054     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a977e0f0d8f6aaa1a9195b9f7609d83f5}{SetPSOs}}(ID3D12PipelineState* ssaoPso, ID3D12PipelineState* ssaoBlurPso);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00055}00055 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00059}00059     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_aa9f4e87df9c426c090b958a1a0c909ee}{OnResize}}(UINT newWidth, UINT newHeight);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00060}00060   }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00067}00067     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a168b159b8c2df8ef76203e26b14da78b}{ComputeSsao}}(}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00068}00068         ID3D12GraphicsCommandList* cmdList, }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00069}00069         \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* currFrame, }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00070}00070         \textcolor{keywordtype}{int} blurCount);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00071}00071  }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00072}00072 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00073}00073 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00074}00074  }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00080}00080     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a07e3edc79c6b45576535ffa4f75c7fb2}{BlurAmbientMap}}(ID3D12GraphicsCommandList* cmdList, \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* currFrame, \textcolor{keywordtype}{int} blurCount);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00081}00081     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a07e3edc79c6b45576535ffa4f75c7fb2}{BlurAmbientMap}}(ID3D12GraphicsCommandList* cmdList, \textcolor{keywordtype}{bool} horzBlur);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00082}00082 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00083}00083     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_aa994fe1368599f4fde21415cae060c48}{BuildResources}}();}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00084}00084     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a2a24ca03071069431a7bda953e11205d}{BuildRandomVectorTexture}}(ID3D12GraphicsCommandList* cmdList);}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00085}00085  }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00086}00086     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a8775ca9f0976b2e727d5e64bdcd8e968}{BuildOffsetVectors}}();}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00087}00087 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00088}00088 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00089}00089 \textcolor{keyword}{private}:}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00090}\mbox{\hyperlink{class_ssao_a4484f7789e3f729b817487486a8c5e2e}{00090}}     ID3D12Device* \mbox{\hyperlink{class_ssao_a4484f7789e3f729b817487486a8c5e2e}{md3dDevice}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00091}00091 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00092}\mbox{\hyperlink{class_ssao_adde8c631115ee0bae493ca6fba7e1675}{00092}}     Microsoft::WRL::ComPtr<ID3D12RootSignature> \mbox{\hyperlink{class_ssao_adde8c631115ee0bae493ca6fba7e1675}{mSsaoRootSig}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00093}00093     }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00094}\mbox{\hyperlink{class_ssao_a0156da0507670a1e5a1825b1a7600446}{00094}}     ID3D12PipelineState* \mbox{\hyperlink{class_ssao_a0156da0507670a1e5a1825b1a7600446}{mSsaoPso}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00095}\mbox{\hyperlink{class_ssao_ace4e2358483b145c7371ed3d87de99a2}{00095}}     ID3D12PipelineState* \mbox{\hyperlink{class_ssao_ace4e2358483b145c7371ed3d87de99a2}{mBlurPso}} = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00096}00096      }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00097}\mbox{\hyperlink{class_ssao_a9f960a6ec39a3151d673dc1215d72929}{00097}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_ssao_a9f960a6ec39a3151d673dc1215d72929}{mRandomVectorMap}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00098}\mbox{\hyperlink{class_ssao_a60368b373ffe9a0bc74c71d3208d820c}{00098}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_ssao_a60368b373ffe9a0bc74c71d3208d820c}{mRandomVectorMapUploadBuffer}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00099}\mbox{\hyperlink{class_ssao_adb34c26e8710443cea58a9520f618b18}{00099}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_ssao_adb34c26e8710443cea58a9520f618b18}{mNormalMap}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00100}\mbox{\hyperlink{class_ssao_a1694eba68a524a79457400c36b89a8f8}{00100}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_ssao_a1694eba68a524a79457400c36b89a8f8}{mAmbientMap0}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00101}\mbox{\hyperlink{class_ssao_a700f97c26e8d3bbf25125718093c83c4}{00101}}     Microsoft::WRL::ComPtr<ID3D12Resource> \mbox{\hyperlink{class_ssao_a700f97c26e8d3bbf25125718093c83c4}{mAmbientMap1}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00102}00102 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00103}\mbox{\hyperlink{class_ssao_ab5fd90569244d0f6e86918dac8594fab}{00103}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_ab5fd90569244d0f6e86918dac8594fab}{mhNormalMapCpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00104}\mbox{\hyperlink{class_ssao_acae61ef7c9466563e78bc50d538f16a2}{00104}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_acae61ef7c9466563e78bc50d538f16a2}{mhNormalMapGpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00105}\mbox{\hyperlink{class_ssao_ae99de1bc92c0aa15817600a8b82cdb61}{00105}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_ae99de1bc92c0aa15817600a8b82cdb61}{mhNormalMapCpuRtv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00106}00106 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00107}\mbox{\hyperlink{class_ssao_a1da97f99a8411b64e27a2d72a9f6504b}{00107}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a1da97f99a8411b64e27a2d72a9f6504b}{mhDepthMapCpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00108}\mbox{\hyperlink{class_ssao_ab3bf095bd6ed104435192fd321a940a1}{00108}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_ab3bf095bd6ed104435192fd321a940a1}{mhDepthMapGpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00109}00109 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00110}\mbox{\hyperlink{class_ssao_aa3955224f8c902496c33ac5ffff35c5d}{00110}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_aa3955224f8c902496c33ac5ffff35c5d}{mhRandomVectorMapCpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00111}\mbox{\hyperlink{class_ssao_a3e18bd45496dad5db90f4fa6c9643e4d}{00111}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a3e18bd45496dad5db90f4fa6c9643e4d}{mhRandomVectorMapGpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00112}00112 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00113}00113     \textcolor{comment}{// Need two for ping-\/ponging during blur.}}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00114}\mbox{\hyperlink{class_ssao_ab5fe9952135b421718fb0a0dd858dd1b}{00114}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_ab5fe9952135b421718fb0a0dd858dd1b}{mhAmbientMap0CpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00115}\mbox{\hyperlink{class_ssao_a13a94cbe98fbadfa5e5a1763e742c531}{00115}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a13a94cbe98fbadfa5e5a1763e742c531}{mhAmbientMap0GpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00116}\mbox{\hyperlink{class_ssao_afba04174e211d08a211afd6f51a753c0}{00116}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_afba04174e211d08a211afd6f51a753c0}{mhAmbientMap0CpuRtv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00117}00117 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00118}\mbox{\hyperlink{class_ssao_af0a03d36cc3502e07494a1d1b84e7656}{00118}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_af0a03d36cc3502e07494a1d1b84e7656}{mhAmbientMap1CpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00119}\mbox{\hyperlink{class_ssao_a7d868214c6188b4751a13bcea026a822}{00119}}     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a7d868214c6188b4751a13bcea026a822}{mhAmbientMap1GpuSrv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00120}\mbox{\hyperlink{class_ssao_ab4fae607f0993e5ca65519cbcc84966c}{00120}}     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_ab4fae607f0993e5ca65519cbcc84966c}{mhAmbientMap1CpuRtv}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00121}00121 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00122}\mbox{\hyperlink{class_ssao_aab555610e7379b71028edc71ccc0030c}{00122}}     UINT \mbox{\hyperlink{class_ssao_aab555610e7379b71028edc71ccc0030c}{mRenderTargetWidth}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00123}\mbox{\hyperlink{class_ssao_aab98c08b350b79b19ce82b4bc89ae17d}{00123}}     UINT \mbox{\hyperlink{class_ssao_aab98c08b350b79b19ce82b4bc89ae17d}{mRenderTargetHeight}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00124}00124 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00125}\mbox{\hyperlink{class_ssao_a5da6e2eed33650a48e37709c1f69460c}{00125}}     DirectX::XMFLOAT4 \mbox{\hyperlink{class_ssao_a5da6e2eed33650a48e37709c1f69460c}{mOffsets}}[14];}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00126}00126 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00127}\mbox{\hyperlink{class_ssao_a3ff32dc249865c5548a4bd368783a691}{00127}}     D3D12\_VIEWPORT \mbox{\hyperlink{class_ssao_a3ff32dc249865c5548a4bd368783a691}{mViewport}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00128}\mbox{\hyperlink{class_ssao_a1363bc4c6279ccd6fb7f157793bba14c}{00128}}     D3D12\_RECT \mbox{\hyperlink{class_ssao_a1363bc4c6279ccd6fb7f157793bba14c}{mScissorRect}};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00129}00129 \};}
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00130}00130 }
-\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8h_source_l00131}00131 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// SSAO\_H}}
+\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00002 \textcolor{comment}{// Ssao.h by Frank Luna (C) 2015 All Rights Reserved.}}
+\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{00004 }
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#ifndef SSAO\_H}}
+\DoxyCodeLine{00006 \textcolor{preprocessor}{\#define SSAO\_H}}
+\DoxyCodeLine{00007 }
+\DoxyCodeLine{00008 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{00009 }
+\DoxyCodeLine{00010 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{00011 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00012  }
+\DoxyCodeLine{00013  }
+\DoxyCodeLine{00014 \textcolor{keyword}{class }Ssao}
+\DoxyCodeLine{00015 \{}
+\DoxyCodeLine{00016 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017 }
+\DoxyCodeLine{00018     Ssao(ID3D12Device* device, }
+\DoxyCodeLine{00019         ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{00020         UINT width, UINT height);}
+\DoxyCodeLine{00021     Ssao(\textcolor{keyword}{const} Ssao\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00022     Ssao\& operator=(\textcolor{keyword}{const} Ssao\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00023     \string~Ssao() = \textcolor{keywordflow}{default}; }
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025     \textcolor{keyword}{static} \textcolor{keyword}{const} DXGI\_FORMAT AmbientMapFormat = DXGI\_FORMAT\_R16\_UNORM;}
+\DoxyCodeLine{00026     \textcolor{keyword}{static} \textcolor{keyword}{const} DXGI\_FORMAT NormalMapFormat = DXGI\_FORMAT\_R16G16B16A16\_FLOAT;}
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028     \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{int} MaxBlurRadius = 5;}
+\DoxyCodeLine{00029 }
+\DoxyCodeLine{00030     UINT SsaoMapWidth()\textcolor{keyword}{const};}
+\DoxyCodeLine{00031     UINT SsaoMapHeight()\textcolor{keyword}{const};}
+\DoxyCodeLine{00032 }
+\DoxyCodeLine{00033     \textcolor{keywordtype}{void} GetOffsetVectors(DirectX::XMFLOAT4 offsets[14]);}
+\DoxyCodeLine{00034     std::vector<float> CalcGaussWeights(\textcolor{keywordtype}{float} sigma);}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036 }
+\DoxyCodeLine{00037     ID3D12Resource* NormalMap();}
+\DoxyCodeLine{00038     ID3D12Resource* AmbientMap();}
+\DoxyCodeLine{00039     }
+\DoxyCodeLine{00040     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE NormalMapRtv()\textcolor{keyword}{const};}
+\DoxyCodeLine{00041     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE NormalMapSrv()\textcolor{keyword}{const};}
+\DoxyCodeLine{00042     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE AmbientMapSrv()\textcolor{keyword}{const};}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044     \textcolor{keywordtype}{void} BuildDescriptors(}
+\DoxyCodeLine{00045         ID3D12Resource* depthStencilBuffer,}
+\DoxyCodeLine{00046         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{00047         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{00048         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv,}
+\DoxyCodeLine{00049         UINT cbvSrvUavDescriptorSize,}
+\DoxyCodeLine{00050         UINT rtvDescriptorSize);}
+\DoxyCodeLine{00051 }
+\DoxyCodeLine{00052     \textcolor{keywordtype}{void} RebuildDescriptors(ID3D12Resource* depthStencilBuffer);}
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054     \textcolor{keywordtype}{void} SetPSOs(ID3D12PipelineState* ssaoPso, ID3D12PipelineState* ssaoBlurPso);}
+\DoxyCodeLine{00055 }
+\DoxyCodeLine{00059     \textcolor{keywordtype}{void} OnResize(UINT newWidth, UINT newHeight);}
+\DoxyCodeLine{00060   }
+\DoxyCodeLine{00067     \textcolor{keywordtype}{void} ComputeSsao(}
+\DoxyCodeLine{00068         ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{00069         FrameResource* currFrame, }
+\DoxyCodeLine{00070         \textcolor{keywordtype}{int} blurCount);}
+\DoxyCodeLine{00071  }
+\DoxyCodeLine{00072 }
+\DoxyCodeLine{00073 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00074  }
+\DoxyCodeLine{00080     \textcolor{keywordtype}{void} BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, FrameResource* currFrame, \textcolor{keywordtype}{int} blurCount);}
+\DoxyCodeLine{00081     \textcolor{keywordtype}{void} BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, \textcolor{keywordtype}{bool} horzBlur);}
+\DoxyCodeLine{00082 }
+\DoxyCodeLine{00083     \textcolor{keywordtype}{void} BuildResources();}
+\DoxyCodeLine{00084     \textcolor{keywordtype}{void} BuildRandomVectorTexture(ID3D12GraphicsCommandList* cmdList);}
+\DoxyCodeLine{00085  }
+\DoxyCodeLine{00086     \textcolor{keywordtype}{void} BuildOffsetVectors();}
+\DoxyCodeLine{00087 }
+\DoxyCodeLine{00088 }
+\DoxyCodeLine{00089 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00090     ID3D12Device* md3dDevice;}
+\DoxyCodeLine{00091 }
+\DoxyCodeLine{00092     Microsoft::WRL::ComPtr<ID3D12RootSignature> mSsaoRootSig;}
+\DoxyCodeLine{00093     }
+\DoxyCodeLine{00094     ID3D12PipelineState* mSsaoPso = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00095     ID3D12PipelineState* mBlurPso = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00096      }
+\DoxyCodeLine{00097     Microsoft::WRL::ComPtr<ID3D12Resource> mRandomVectorMap;}
+\DoxyCodeLine{00098     Microsoft::WRL::ComPtr<ID3D12Resource> mRandomVectorMapUploadBuffer;}
+\DoxyCodeLine{00099     Microsoft::WRL::ComPtr<ID3D12Resource> mNormalMap;}
+\DoxyCodeLine{00100     Microsoft::WRL::ComPtr<ID3D12Resource> mAmbientMap0;}
+\DoxyCodeLine{00101     Microsoft::WRL::ComPtr<ID3D12Resource> mAmbientMap1;}
+\DoxyCodeLine{00102 }
+\DoxyCodeLine{00103     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhNormalMapCpuSrv;}
+\DoxyCodeLine{00104     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhNormalMapGpuSrv;}
+\DoxyCodeLine{00105     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhNormalMapCpuRtv;}
+\DoxyCodeLine{00106 }
+\DoxyCodeLine{00107     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhDepthMapCpuSrv;}
+\DoxyCodeLine{00108     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhDepthMapGpuSrv;}
+\DoxyCodeLine{00109 }
+\DoxyCodeLine{00110     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhRandomVectorMapCpuSrv;}
+\DoxyCodeLine{00111     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhRandomVectorMapGpuSrv;}
+\DoxyCodeLine{00112 }
+\DoxyCodeLine{00113     \textcolor{comment}{// Need two for ping-\/ponging during blur.}}
+\DoxyCodeLine{00114     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhAmbientMap0CpuSrv;}
+\DoxyCodeLine{00115     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhAmbientMap0GpuSrv;}
+\DoxyCodeLine{00116     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhAmbientMap0CpuRtv;}
+\DoxyCodeLine{00117 }
+\DoxyCodeLine{00118     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhAmbientMap1CpuSrv;}
+\DoxyCodeLine{00119     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhAmbientMap1GpuSrv;}
+\DoxyCodeLine{00120     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhAmbientMap1CpuRtv;}
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122     UINT mRenderTargetWidth;}
+\DoxyCodeLine{00123     UINT mRenderTargetHeight;}
+\DoxyCodeLine{00124 }
+\DoxyCodeLine{00125     DirectX::XMFLOAT4 mOffsets[14];}
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127     D3D12\_VIEWPORT mViewport;}
+\DoxyCodeLine{00128     D3D12\_RECT mScissorRect;}
+\DoxyCodeLine{00129 \};}
+\DoxyCodeLine{00130 }
+\DoxyCodeLine{00131 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// SSAO\_H}}
 
 \end{DoxyCode}
