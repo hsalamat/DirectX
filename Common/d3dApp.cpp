@@ -63,7 +63,7 @@ void D3DApp::Set4xMsaaState(bool value)
     {
         m4xMsaaState = value;
 
-        // Recreate the swapchain and buffers with new multisample settings.
+        //! Recreate the swapchain and buffers with new multisample settings.
         CreateSwapChain();
         OnResize();
     }
@@ -144,17 +144,17 @@ void D3DApp::OnResize()
 	assert(mSwapChain);
     assert(mDirectCmdListAlloc);
 
-	// Flush before changing any resources.
+	//! Flush before changing any resources.
 	FlushCommandQueue();
 
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
 
-	// Release the previous resources we will be recreating.
+	//! Release the previous resources we will be recreating.
 	for (int i = 0; i < SwapChainBufferCount; ++i)
 		mSwapChainBuffer[i].Reset();
     mDepthStencilBuffer.Reset();
 	
-	// Resize the swap chain.
+	//! Resize the swap chain.
     ThrowIfFailed(mSwapChain->ResizeBuffers(
 		SwapChainBufferCount, 
 		mClientWidth, mClientHeight, 
@@ -171,7 +171,7 @@ void D3DApp::OnResize()
 		rtvHeapHandle.Offset(1, mRtvDescriptorSize);
 	}
 
-    // Create the depth/stencil buffer and view.
+    //! Create the depth/stencil buffer and view.
     D3D12_RESOURCE_DESC depthStencilDesc;
     depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     depthStencilDesc.Alignment = 0;
@@ -180,10 +180,10 @@ void D3DApp::OnResize()
     depthStencilDesc.DepthOrArraySize = 1;
     depthStencilDesc.MipLevels = 1;
 
-	// the depth buffer.  Therefore, because we need to create two views to the same resource:
-	//   1. SRV format: DXGI_FORMAT_R24_UNORM_X8_TYPELESS
-	//   2. DSV Format: DXGI_FORMAT_D24_UNORM_S8_UINT
-	// we need to create the depth buffer resource with a typeless format.  
+	//! the depth buffer.  Therefore, because we need to create two views to the same resource:
+	//!   1. SRV format: DXGI_FORMAT_R24_UNORM_X8_TYPELESS
+	//!   2. DSV Format: DXGI_FORMAT_D24_UNORM_S8_UINT
+	//! we need to create the depth buffer resource with a typeless format.  
 	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 
     depthStencilDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
@@ -203,7 +203,7 @@ void D3DApp::OnResize()
         &optClear,
         IID_PPV_ARGS(mDepthStencilBuffer.GetAddressOf())));
 
-    // Create descriptor to mip level 0 of entire resource using the format of the resource.
+    //! Create descriptor to mip level 0 of entire resource using the format of the resource.
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
@@ -211,19 +211,19 @@ void D3DApp::OnResize()
 	dsvDesc.Texture2D.MipSlice = 0;
     md3dDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), &dsvDesc, DepthStencilView());
 
-    // Transition the resource from its initial state to be used as a depth buffer.
+    //! Transition the resource from its initial state to be used as a depth buffer.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mDepthStencilBuffer.Get(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 	
-    // Execute the resize commands.
+    //! Execute the resize commands.
     ThrowIfFailed(mCommandList->Close());
     ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
     mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	// Wait until resize is complete.
+	//! Wait until resize is complete.
 	FlushCommandQueue();
 
-	// Update the viewport transform to cover the client area.
+	//! Update the viewport transform to cover the client area.
 	mScreenViewport.TopLeftX = 0;
 	mScreenViewport.TopLeftY = 0;
 	mScreenViewport.Width    = static_cast<float>(mClientWidth);
@@ -238,9 +238,9 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch( msg )
 	{
-	// WM_ACTIVATE is sent when the window is activated or deactivated.  
-	// We pause the game when the window is deactivated and unpause it 
-	// when it becomes active.  
+	//! WM_ACTIVATE is sent when the window is activated or deactivated.  
+	//! We pause the game when the window is deactivated and unpause it 
+	//! when it becomes active.  
 	case WM_ACTIVATE:
 		if( LOWORD(wParam) == WA_INACTIVE )
 		{
@@ -254,9 +254,9 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-	// WM_SIZE is sent when the user resizes the window.  
+	//! WM_SIZE is sent when the user resizes the window.  
 	case WM_SIZE:
-		// Save the new client area dimensions.
+		//! Save the new client area dimensions.
 		mClientWidth  = LOWORD(lParam);
 		mClientHeight = HIWORD(lParam);
 		if( md3dDevice )
@@ -294,14 +294,14 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else if( mResizing )
 				{
-					// If user is dragging the resize bars, we do not resize 
-					// the buffers here because as the user continuously 
-					// drags the resize bars, a stream of WM_SIZE messages are
-					// sent to the window, and it would be pointless (and slow)
-					// to resize for each WM_SIZE message received from dragging
-					// the resize bars.  So instead, we reset after the user is 
-					// done resizing the window and releases the resize bars, which 
-					// sends a WM_EXITSIZEMOVE message.
+					//! If user is dragging the resize bars, we do not resize 
+					//! the buffers here because as the user continuously 
+					//! drags the resize bars, a stream of WM_SIZE messages are
+					//! sent to the window, and it would be pointless (and slow)
+					//! to resize for each WM_SIZE message received from dragging
+					//! the resize bars.  So instead, we reset after the user is 
+					//! done resizing the window and releases the resize bars, which 
+					//! sends a WM_EXITSIZEMOVE message.
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
@@ -311,15 +311,15 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-	// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
+	//! WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 	case WM_ENTERSIZEMOVE:
 		mAppPaused = true;
 		mResizing  = true;
 		mTimer.Stop();
 		return 0;
 
-	// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
-	// Here we reset everything based on the new window dimensions.
+	//! WM_EXITSIZEMOVE is sent when the user releases the resize bars.
+	//! Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
 		mAppPaused = false;
 		mResizing  = false;
@@ -327,18 +327,18 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnResize();
 		return 0;
  
-	// WM_DESTROY is sent when the window is being destroyed.
+	//! WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
 
-	// The WM_MENUCHAR message is sent when a menu is active and the user presses 
-	// a key that does not correspond to any mnemonic or accelerator key. 
+	//! The WM_MENUCHAR message is sent when a menu is active and the user presses 
+	//! a key that does not correspond to any mnemonic or accelerator key. 
 	case WM_MENUCHAR:
         // Don't beep when we alt-enter.
         return MAKELRESULT(0, MNC_CLOSE);
 
-	// Catch this message so to prevent the window from becoming too small.
+	//! Catch this message so to prevent the window from becoming too small.
 	case WM_GETMINMAXINFO:
 		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200; 
@@ -391,7 +391,7 @@ bool D3DApp::InitMainWindow()
 		return false;
 	}
 
-	// Compute window rectangle dimensions based on requested client area dimensions.
+	//! Compute window rectangle dimensions based on requested client area dimensions.
 	RECT R = { 0, 0, mClientWidth, mClientHeight };
     AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 	int width  = R.right - R.left;
@@ -414,7 +414,8 @@ bool D3DApp::InitMainWindow()
 bool D3DApp::InitDirect3D()
 {
 #if defined(DEBUG) || defined(_DEBUG) 
-	// Enable the D3D12 debug layer.
+	//! Enable the D3D12 debug layer.
+	//! To enable the debug layers using this API, it must be called before the D3D12 device is created.
 {
 	ComPtr<ID3D12Debug> debugController;
 	ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
@@ -422,27 +423,34 @@ bool D3DApp::InitDirect3D()
 }
 #endif
 
+	//! DirectX Graphics Infrastructure (DXGI) is an API used along with Direct3D. The
+    //! basic idea of DXGI is that some graphics related tasks are common to multiple graphics
+    //! APIs.For example, a 2D rendering API would need swap chains and page flipping for
+    //! smooth animation just as much as a 3D rendering API; therefore the swap chain interface
+    //! IDXGISwapChain is actually part of the DXGI API.DXGI handles other
+	//! common graphical functionality like full - screen mode transitions, enumerating graphical
+    //! system information like display adapters, monitors, and supported display modes
+     //! (resolution, refresh rate, and such); it also defines the various supported surface formats(DXGI_FORMAT).
 	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory)));
 
-	//Hooman: I added this code to take advantage of your "stronger" GPU. 
-	//In the lab, seond graphics card NVDIA is much stronger, that would stop blinking!
 	UINT i = 0;
 	IDXGIAdapter* adapter = nullptr;
+	//! I added this code to take advantage of your "stronger" GPU. 
+    //! sometimes your seond graphics card (like mine: NVDIA) is much stronger, that would stop blinking!
 	std::vector<IDXGIAdapter*> adapterList;
 	while (mdxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
 	{
 		adapterList.push_back(adapter);
 		++i;
 	}
-	// Try to create hardware device.
+	//! Try to create hardware device.
 	HRESULT hardwareResult = D3D12CreateDevice(
-		//nullptr,             // default adapter
-		adapterList[1],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter
+		nullptr,             // default adapter
+		//adapterList[0],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter
 		D3D_FEATURE_LEVEL_12_0,
 		IID_PPV_ARGS(&md3dDevice));
 
-
-	// Fallback to WARP device.
+	//! Fallback to WARP device.
 	if(FAILED(hardwareResult))
 	{
 		ComPtr<IDXGIAdapter> pWarpAdapter;
@@ -461,9 +469,9 @@ bool D3DApp::InitDirect3D()
 	mDsvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	mCbvSrvUavDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-    // Check 4X MSAA quality support for our back buffer format.
-    // All Direct3D 11 capable devices support 4X MSAA for all render 
-    // target formats, so we only need to check quality support.
+    //! Check 4X MSAA quality support for our back buffer format.
+    //! All Direct3D 12 capable devices support 4X MSAA for all render 
+    //! target formats, so we only need to check quality support.
 
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
 	msQualityLevels.Format = mBackBufferFormat;
@@ -509,15 +517,15 @@ void D3DApp::CreateCommandObjects()
 		nullptr,                   // Initial PipelineStateObject
 		IID_PPV_ARGS(mCommandList.GetAddressOf())));
 
-	// Start off in a closed state.  This is because the first time we refer 
-	// to the command list we will Reset it, and it needs to be closed before
-	// calling Reset.
+	//! Start off in a closed state.  This is because the first time we refer 
+	//! to the command list we will Reset it, and it needs to be closed before
+	//! calling Reset.
 	mCommandList->Close();
 }
 
 void D3DApp::CreateSwapChain()
 {
-    // Release the previous swapchain we will be recreating.
+    //! Release the previous swapchain we will be recreating.
     mSwapChain.Reset();
 
     DXGI_SWAP_CHAIN_DESC sd;
@@ -546,23 +554,23 @@ void D3DApp::CreateSwapChain()
 
 void D3DApp::FlushCommandQueue()
 {
-	// Advance the fence value to mark commands up to this fence point.
+	//! Advance the fence value to mark commands up to this fence point.
     mCurrentFence++;
 
-    // Add an instruction to the command queue to set a new fence point.  Because we 
-	// are on the GPU timeline, the new fence point won't be set until the GPU finishes
-	// processing all the commands prior to this Signal().
+    //! Add an instruction to the command queue to set a new fence point.  Because we 
+	//! are on the GPU timeline, the new fence point won't be set until the GPU finishes
+	//! processing all the commands prior to this Signal().
     ThrowIfFailed(mCommandQueue->Signal(mFence.Get(), mCurrentFence));
 
-	// Wait until the GPU has completed commands up to this fence point.
+	//! Wait until the GPU has completed commands up to this fence point.
     if(mFence->GetCompletedValue() < mCurrentFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
 
-        // Fire event when GPU hits current fence.  
+        //! Fire event when GPU hits current fence.  
         ThrowIfFailed(mFence->SetEventOnCompletion(mCurrentFence, eventHandle));
 
-        // Wait until the GPU hits current fence event is fired.
+        //! Wait until the GPU hits current fence event is fired.
 		WaitForSingleObject(eventHandle, INFINITE);
         CloseHandle(eventHandle);
 	}
@@ -620,6 +628,11 @@ void D3DApp::CalculateFrameStats()
 	}
 }
 
+//! Display adapters implement graphical functionality. Usually, the display adapter
+//! is a physical piece of hardware(e.g., graphics card); however, a system can also have a
+//! software display adapter that emulates hardware graphics functionality.A system can have
+//! several adapters(e.g., if it has several graphics cards).An adapter is represented by the
+//!IDXGIAdapter interface.We can enumerate all the adapters on a system with the following code :
 void D3DApp::LogAdapters()
 {
     UINT i = 0;
@@ -648,12 +661,18 @@ void D3DApp::LogAdapters()
     }
 }
 
+//! A system can have several monitors. A monitor is an example of a display output. An
+//! output is represented by the IDXGIOutput interface.Each adapter is associated with a
+//! list of outputs.For instance, consider a system with two graphics cardsand three monitors,
+//! where two monitors are hooked up to one graphics card, and the third monitor is hooked
+//! up to the other graphics card.
 void D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)
 {
     UINT i = 0;
     IDXGIOutput* output = nullptr;
     while(adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
     {
+		//! Each monitor has a set of display modes it supports. A display mode refers to the following data in DXGI_MODE_DESC :
         DXGI_OUTPUT_DESC desc;
         output->GetDesc(&desc);
         
@@ -670,12 +689,13 @@ void D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)
     }
 }
 
+//we can get a list of all supported display modes an output supports in that format with the following code
 void D3DApp::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
 {
     UINT count = 0;
     UINT flags = 0;
 
-    // Call with nullptr to get list count.
+    //! Call with nullptr to get list count.
     output->GetDisplayModeList(format, flags, &count, nullptr);
 
     std::vector<DXGI_MODE_DESC> modeList(count);
