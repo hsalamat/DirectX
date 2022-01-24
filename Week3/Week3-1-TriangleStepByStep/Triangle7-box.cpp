@@ -1,6 +1,8 @@
-//***************************************************************************************
-// This is a 3D course - no more triangles - let's draw a box now
-//***************************************************************************************
+/** @file Triangle7-box.cpp
+ *  @brief This is a 3D course - no more triangles - let's draw a box now
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -39,7 +41,7 @@ private:
 	virtual void Update(const GameTimer& gt)override;
 	virtual void Draw(const GameTimer& gt)override;
 
-	//step4
+	//!step1
 	virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
@@ -78,6 +80,7 @@ private:
 	float mPhi = XM_PIDIV4;
 	float mRadius = 5.0f;
 
+	//! step2
 	POINT mLastMousePos;
 
 };
@@ -173,15 +176,14 @@ void BoxApp::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
-	//mTheta2 += 0.1f;
+	//step3 a rotation around z axis - we use mouse to interact with the box
 	//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 	//
 
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
 	XMMATRIX worldViewProj = world * view * proj;
 
-	// Update the constant buffer with the latest worldViewProj matrix.
+	//! Update the constant buffer with the latest worldViewProj matrix.
 	ObjectConstants objConstants;
 	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
 	mObjectCB->CopyData(0, objConstants);
@@ -315,7 +317,7 @@ void BoxApp::BuildShadersAndInputLayout()
 
 void BoxApp::BuildTriangleGeometry()
 {
-	//step1
+	//step4
 	std::array<Vertex, 8> vertices =
 	{
 		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
@@ -457,14 +459,14 @@ void BoxApp::BuildConstantBuffers()
 }
 
 
-//step5
-
-
+//!step5
 void BoxApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 
+	//! The mouse capture is a windows feature that can direct all mouse messages to a single window or control (HWND) 
+	//! even if the cursor is outside of the specified window. 
 	SetCapture(mhMainWnd);
 }
 

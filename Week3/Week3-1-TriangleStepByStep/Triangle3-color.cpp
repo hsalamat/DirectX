@@ -1,15 +1,16 @@
-//***************************************************************************************
-// Shows how to draw a triangle in Direct3D 12.
-// Adding Color
-//***************************************************************************************
+/** @file Triangle3-color.cpp
+ *  @brief Shows how to draw a triangle in Direct3D 12 with color.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
+//!step1
 struct Vertex
 {
 	XMFLOAT3 Pos;
@@ -248,14 +249,14 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		//step2
+		//!step2
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 }
 
 void TriangleAPP::BuildTriangleGeometry()
 {
-
+	//!step3
 	vertices =
 	{
 

@@ -1,12 +1,12 @@
-//***************************************************************************************
-// Cube with different face colors
-//In this demo, we are adding another constant buffers to send the colors to the shader
-//***************************************************************************************
+/** @file Triangle9-cubewith6 colors.cpp
+ *  @brief Cube with different face colors
+ *  In this demo, we are adding another constant buffers to send the colors to the shader
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -15,6 +15,7 @@ using namespace DirectX::PackedVector;
 struct Vertex
 {
 	XMFLOAT3 Pos;
+	//!step1
 	//XMFLOAT4 Color;
 };
 
@@ -24,7 +25,7 @@ struct ObjectConstants
 	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
 };
 
-
+//!step2
 struct ObjectConstant2
 {
 	struct {
@@ -62,11 +63,9 @@ private:
 	virtual void Update(const GameTimer& gt)override;
 	virtual void Draw(const GameTimer& gt)override;
 
-	//step4
 	virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
-
 
 	void BuildDescriptorHeaps();
 	void BuildConstantBuffers();
@@ -79,13 +78,12 @@ private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 
-
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 	ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstant2>> mObjectCB2 = nullptr;
 
-	//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
+	//!The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
 	ComPtr<ID3DBlob> mvsByteCode = nullptr;
 	ComPtr<ID3DBlob> mpsByteCode = nullptr;
 
@@ -197,10 +195,8 @@ void BoxApp::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
-	//mTheta2 += 0.1f;
+	//!step3: a rotation around z axis
 	//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
-	//
 
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
 	XMMATRIX worldViewProj = world * view * proj;
@@ -210,12 +206,8 @@ void BoxApp::Update(const GameTimer& gt)
 	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
 	mObjectCB->CopyData(0, objConstants);
 
-
-
-	//hooman: don't forget to upload your color data
-
+	//! @note step4: don't forget to upload your color data
 	mObjectCB2->CopyData(0, cb2);
-
 }
 
 void BoxApp::Draw(const GameTimer& gt)
@@ -249,12 +241,12 @@ void BoxApp::Draw(const GameTimer& gt)
 
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
 
-	//hooman: 
+	//! step5: Set Graphics Descriptor Table for "Face Color" 
 	int FaceColorCbvIndex = 0;
 	auto FaceColorCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	FaceColorCbvHandle.Offset(FaceColorCbvIndex, mCbvSrvUavDescriptorSize);
 	mCommandList->SetGraphicsRootDescriptorTable(1, FaceColorCbvHandle);
-	//
+
 
 	mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
 	mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());   //bind it to the pipeline
@@ -266,31 +258,29 @@ void BoxApp::Draw(const GameTimer& gt)
 	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["box"].IndexCount, 1, 0, 0, 0);
 
 
-	// Indicate a state transition on the resource usage.
+	//! Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	// Done recording commands.
+	//! Done recording commands.
 	ThrowIfFailed(mCommandList->Close());
 
-	// Add the command list to the queue for execution.
+	//! Add the command list to the queue for execution.
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
 	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	// swap the back and front buffers
-		//HRESULT Present(UINT SyncInterval,UINT Flags);
-	//SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.
-	//Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.
+	//! swap the back and front buffers
+	//! HRESULT Present(UINT SyncInterval,UINT Flags);
+	//! SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.
+	//! Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
+	//! Wait until frame commands are complete.  This waiting is inefficient and is
+	//! done for simplicity.  Later we will show how to organize our rendering code
+	//! so we do not have to wait per frame.
 	FlushCommandQueue();
 }
-
-
 
 void BoxApp::BuildRootSignature()
 {
@@ -301,8 +291,8 @@ void BoxApp::BuildRootSignature()
 	// the input resources as function parameters, then the root signature can be
 	// thought of as defining the function signature.  
 
-	// Root parameter can be a table, root descriptor or root constants.
-	//Hooman: we can add two ranges with two parameters
+	//! Root parameter can be a table, root descriptor or root constants.
+	//! Step7: we can add two ranges with two tables parameters
 	CD3DX12_DESCRIPTOR_RANGE cbvTable[2] = {};
 	cbvTable[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
 	cbvTable[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
@@ -359,7 +349,7 @@ void BoxApp::BuildShadersAndInputLayout()
 
 void BoxApp::BuildTriangleGeometry()
 {
-	//step1
+	//step8
 	std::array<Vertex, 8> vertices =
 	{
 		//Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
@@ -481,7 +471,7 @@ void BoxApp::BuildPSO()
 void BoxApp::BuildDescriptorHeaps()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 2; 
+	cbvHeapDesc.NumDescriptors = 2;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;
@@ -491,53 +481,44 @@ void BoxApp::BuildDescriptorHeaps()
 
 void BoxApp::BuildConstantBuffers()
 {
-
-
-
-
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc[2] = {};
 
-		mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, true);
+	mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, true);
 
-		UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
-		// Offset to the ith object constant buffer in the buffer.
-		int boxCBufIndex = 0;
-		cbAddress += boxCBufIndex * objCBByteSize;
+	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
+	// Offset to the ith object constant buffer in the buffer.
+	int boxCBufIndex = 0;
+	cbAddress += boxCBufIndex * objCBByteSize;
 
+	cbvDesc[0].BufferLocation = cbAddress;
+	cbvDesc[0].SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-		cbvDesc[0].BufferLocation = cbAddress;
-		cbvDesc[0].SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	//step 9 
+	mObjectCB2 = std::make_unique<UploadBuffer<ObjectConstant2>>(md3dDevice.Get(), 1, true);
 
+	UINT objCB2ByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant2));
 
+	D3D12_GPU_VIRTUAL_ADDRESS cb2Address = mObjectCB2->Resource()->GetGPUVirtualAddress();
+	// Offset to the ith object constant buffer in the buffer.
+	int mFaceColorCbvOffset = 0;
+	cb2Address += mFaceColorCbvOffset * objCB2ByteSize;
 
-		mObjectCB2 = std::make_unique<UploadBuffer<ObjectConstant2>>(md3dDevice.Get(), 1, true);
-
-		UINT objCB2ByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant2));
-
-		D3D12_GPU_VIRTUAL_ADDRESS cb2Address = mObjectCB2->Resource()->GetGPUVirtualAddress();
-		// Offset to the ith object constant buffer in the buffer.
-		int mFaceColorCbvOffset = 0;
-		cb2Address += mFaceColorCbvOffset * objCB2ByteSize;
-
-		// Offset to the facecolor cbv in the descriptor heap.
+	// Offset to the facecolor cbv in the descriptor heap.
 
 
-		cbvDesc[1].BufferLocation = cb2Address;
-		cbvDesc[1].SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant2));
+	cbvDesc[1].BufferLocation = cb2Address;
+	cbvDesc[1].SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant2));
 
 
-		CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(mCbvHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
-		md3dDevice->CreateConstantBufferView(&cbvDesc[0], cbvHandle0);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(mCbvHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
+	md3dDevice->CreateConstantBufferView(&cbvDesc[0], cbvHandle0);
 
-		CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(mCbvHeap->GetCPUDescriptorHandleForHeapStart(), md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV), 1);
-		md3dDevice->CreateConstantBufferView(&cbvDesc[1], cbvHandle1);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(mCbvHeap->GetCPUDescriptorHandleForHeapStart(), md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV), 1);
+	md3dDevice->CreateConstantBufferView(&cbvDesc[1], cbvHandle1);
 
 }
-
-
-//step5
 
 
 void BoxApp::OnMouseDown(WPARAM btnState, int x, int y)

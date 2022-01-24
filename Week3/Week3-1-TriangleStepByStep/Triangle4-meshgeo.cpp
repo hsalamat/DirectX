@@ -1,10 +1,10 @@
-//***************************************************************************************
-// Shows how to draw a triangle in Direct3D 12.
-// Using MeshGeometry
-//***************************************************************************************
+/** @file Triangle4-meshgeo.cpp
+ *  @brief Shows how to draw a triangle in Direct3D 12 with color Using MeshGeometry.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -56,9 +56,6 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
-
-
 
 };
 
@@ -125,8 +122,6 @@ void TriangleAPP::OnResize()
 	D3DApp::OnResize();
 }
 
-
-
 void TriangleAPP::Update(const GameTimer& gt)
 {
 
@@ -175,17 +170,12 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
 	mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());   //bind it to the pipeline
-	//
-
-
+	
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 
 	//step4
 	//mCommandList->DrawInstanced((UINT)std::size(vertices), 1, 0, 0);
 	mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["triangle"].IndexCount, 1, 0, 0, 0);
-	//
-
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -210,7 +200,6 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	// so we do not have to wait per frame.
 	FlushCommandQueue();
 }
-
 
 
 void TriangleAPP::BuildRootSignature()
@@ -243,8 +232,6 @@ void TriangleAPP::BuildRootSignature()
 		serializedRootSig->GetBufferSize(),
 		IID_PPV_ARGS(&mRootSignature)));
 }
-
-
 
 
 void TriangleAPP::BuildShadersAndInputLayout()
@@ -308,10 +295,7 @@ void TriangleAPP::BuildTriangleGeometry()
 	submesh.IndexCount = (UINT)indices.size();
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
-
 	mBoxGeo->DrawArgs["triangle"] = submesh;
-
-
 }
 
 void TriangleAPP::BuildPSO()

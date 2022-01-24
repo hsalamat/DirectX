@@ -1,11 +1,12 @@
-//***************************************************************************************
-// Use constant buffer to do a rotation
-//***************************************************************************************
+/** @file Triangle6-rotationtransformation.cpp
+ *  @brief Use constant buffer to do a rotation
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -73,9 +74,9 @@ private:
 	float mPhi = XM_PIDIV4;
 	float mRadius = 5.0f;
 
-	//step1
+	//!step1
 	float mTheta2 = 0.0f;
-	//
+
 
 	POINT mLastMousePos;
 
@@ -170,14 +171,12 @@ void TriangleAPP::Update(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 
 
-
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
 	//step2 a rotation around z axis
-	//mTheta2 += 0.01f;
 	mTheta2 += gt.DeltaTime();
 	world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
-	//
+
 
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
 	XMMATRIX worldViewProj = world * view * proj;
@@ -319,8 +318,8 @@ void TriangleAPP::BuildShadersAndInputLayout()
 	//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler 
 	//step3: refactoring the vertex shader to use structs for both ins and outs parameters
 	//note that I changed "main" to PS and VS
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS3.hlsl", nullptr, "VS", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS3.hlsl", nullptr, "PS", "ps_5_0");
+	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\VS3.hlsl", nullptr, "VS", "vs_5_1");
+	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\PS3.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{

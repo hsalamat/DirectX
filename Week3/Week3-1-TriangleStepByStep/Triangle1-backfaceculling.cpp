@@ -1,11 +1,19 @@
-//***************************************************************************************
-// Backface culling!
-// By default, Direct3D treats triangles with a clockwise winding order (with respect to the viewer) as front-facing, 
-//and triangles with a counterclockwise winding order (with respect to the viewer) as back-facing. 
-//***************************************************************************************
+/** @file Triangle1-backfaceculling.cpp
+ *  @brief Backface culling!
+ *
+ *  By default, Direct3D treats triangles with a clockwise winding order (with respect to the viewer) as front-facing, 
+ *  and triangles with a counterclockwise winding order (with respect to the viewer) as back-facing. 
+ *
+ *  why don't we see this triangle? because you are setting up the vertices counterclockwise!
+ *	by default, system does backface culling
+ *		Vertex({ XMFLOAT3(+0.5f, +1.0f, 0.0f)}),
+ *		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
+ *		Vertex({ XMFLOAT3(+1.0f, +0.5f, 0.0f) }), 
+ * 
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -54,7 +62,7 @@ private:
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
-	//step3
+	//step1
 	std::array<Vertex, 9> vertices;
 
 };
@@ -123,7 +131,6 @@ void TriangleAPP::OnResize()
 }
 
 
-
 void TriangleAPP::Update(const GameTimer& gt)
 {
 
@@ -174,7 +181,6 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.
-	//step3
 	//mCommandList->DrawInstanced(3, 1, 0, 0);
 	mCommandList->DrawInstanced((UINT)std::size(vertices), 1, 0, 0);
 
@@ -255,7 +261,7 @@ void TriangleAPP::BuildShadersAndInputLayout()
 void TriangleAPP::BuildTriangleGeometry()
 {
 
-	 // step 1
+	 // step 3
  vertices =
 	{
 

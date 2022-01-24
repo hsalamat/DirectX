@@ -1,10 +1,10 @@
-//***************************************************************************************
-// Shows how to draw a Octagon using D3D_PRIMITIVE_TOPOLOGY_LINESTRIP.
-//
-//***************************************************************************************
+/** @file Triangle2-line.cpp
+ *  @brief Shows how to draw a Octagon using D3D_PRIMITIVE_TOPOLOGY_LINESTRIP.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -14,7 +14,6 @@ struct Vertex
 {
 	XMFLOAT3 Pos;
 };
-
 
 class TriangleAPP : public D3DApp
 {
@@ -42,7 +41,6 @@ private:
 	ComPtr<ID3D12Resource> mVertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW mVertexBufferView;
 
-
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
 	//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
@@ -52,7 +50,6 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
 
 	std::array<Vertex, 10> vertices;
 
@@ -171,12 +168,14 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	mCommandList->IASetVertexBuffers(0, 1, &mVertexBufferView);
 
 	//step1
-	//mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.
 	mCommandList->DrawInstanced((UINT)std::size(vertices), 1, 0, 0);
+
+	//mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//mCommandList->DrawInstanced((UINT)std::size(vertices), 1, 0, 0);
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),

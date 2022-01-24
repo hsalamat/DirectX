@@ -1,11 +1,12 @@
-//***************************************************************************************
-// Add rotation to the box
-//***************************************************************************************
+/** @file Triangle8-box-rotation.cpp
+ *  @brief Add rotation to the box
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
@@ -17,12 +18,10 @@ struct Vertex
 	XMFLOAT4 Color;
 };
 
-
 struct ObjectConstants
 {
 	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
 };
-
 
 class BoxApp : public D3DApp
 {
@@ -39,7 +38,6 @@ private:
 	virtual void Update(const GameTimer& gt)override;
 	virtual void Draw(const GameTimer& gt)override;
 
-	//step4
 	virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
 	virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
@@ -56,7 +54,6 @@ private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 
-
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 	ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
@@ -68,7 +65,6 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
 
 	XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
 	XMFLOAT4X4 mView = MathHelper::Identity4x4();
@@ -150,8 +146,8 @@ void BoxApp::OnResize()
 {
 	D3DApp::OnResize();
 
-		// The window resized, so update the aspect ratio and recompute the projection matrix.
-	//step3: change FOV angle to 45 degree
+    //! The window resized, so update the aspect ratio and recompute the projection matrix.
+	//! step2: change FOV angle to 45 degree
 	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	//XMMATRIX P = XMMatrixPerspectiveLH(1.0f, AspectRatio(), 1.0f, 10.0f);
 
@@ -178,8 +174,7 @@ void BoxApp::Update(const GameTimer& gt)
 
 	XMMATRIX world = XMLoadFloat4x4(&mWorld);
 
-	//step2 a rotation around z axis
-	//mTheta2 += 0.01f;
+	//step3 a rotation around z axis
 	mTheta2 += gt.DeltaTime();
 	world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);
 
@@ -202,9 +197,6 @@ void BoxApp::Update(const GameTimer& gt)
 
 	// Update the constant buffer with the latest worldViewProj matrix.
 	ObjectConstants objConstants;
-	// step4: note that CPU matrix is row major , but GPU is column major. That's why we need to transpose our matrix before sending it to GPU.
-	//the other way is to add "row_major" attribute next to "matrix" data type in the shader itself.
-	//XMStoreFloat4x4(&objConstants.WorldViewProj, worldViewProj);
 	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
 	mObjectCB->CopyData(0, objConstants);
 

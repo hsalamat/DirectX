@@ -1,7 +1,14 @@
-//***************************************************************************************
-// Shows how to draw a triangle in Direct3D 12.
-//
-//***************************************************************************************
+/** @file triangle0.cpp
+ *  @brief Shows how to draw a triangle in Direct3D 12.
+ *
+ *   1. Direct3D interfaces methods for defining, storing, and drawing geometric data.
+ *   2. Write basic vertex and pixel shaders.
+ *   3. Configure the rendering pipeline with pipeline state objects.
+ *   4. Become familiar with the root signature.
+ * 
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 
@@ -10,6 +17,7 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
+//! step1. To create a custom vertex format, we first create a structure that holds the vertex data we choose
 struct Vertex
 {
 	XMFLOAT3 Pos;
@@ -31,29 +39,35 @@ private:
 	virtual void Update(const GameTimer& gt)override;
 	virtual void Draw(const GameTimer& gt)override;
 
-
-	void BuildRootSignature();
+	//step2.
 	void BuildShadersAndInputLayout();
+	void BuildRootSignature();
 	void BuildTriangleGeometry();
 	void BuildPSO();
 
 private:
-	//step1-1
+	//! step3: In order for the GPU to access an array of vertices, they need to be placed in a GPU
+	//! resource(ID3D12Resource) called a buffer. We call a buffer that stores vertices a vertex buffer.
+	//! Buffers are simpler resources than textures; they are not multidimensional,
+	//! and do not have mipmaps, filters, or multisampling support.We will use buffers whenever
+	//! we need to provide the GPU with an array of data elements such as vertices.
 	ComPtr<ID3D12Resource> mVertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW mVertexBufferView;
-	//
 
 	ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
-	//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
+	//!The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib 
 	ComPtr<ID3DBlob> mvsByteCode = nullptr;
 	ComPtr<ID3DBlob> mpsByteCode = nullptr;
 
+	//!Once we have defined a vertex structure, we need to provide Direct3D with a
+	//!description of our vertex structure so that it knows what to do with each component.
+	//!This description is provided to Direct3D in the form of an input layout description which is
+	//!represented by the D3D12_INPUT_LAYOUT_DESC structure :
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
-	//step1-2
 	std::array<Vertex, 3> vertices;
 
 };
@@ -96,9 +110,8 @@ bool TriangleAPP::Initialize()
 	if (!D3DApp::Initialize())
 		return false;
 
-	// Reset the command list to prep for initialization commands.
+	//! step4 Reset the command list to prep for initialization commands.
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
-
 
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
@@ -138,14 +151,24 @@ void TriangleAPP::Draw(const GameTimer& gt)
 	// Reusing the command list reuses memory.
 	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 
-	//You cannot render without a view port. 
-	//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.
-	//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)
-	//also notice viewport(s), because you can have an array of view ports! & is poiting to the address of the first viewport
+	//!You cannot render without a view port. 
+	//!viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.
+	//!also you use viewport to map to subportion of the render target (like top left rectangle of your screen)
+	//!also notice viewport(s), because you can have an array of view ports! & is pointing to the address of the first viewport
+	//! Uncomment the following line to see how viewport works
+	//mScreenViewport.TopLeftX = 100;
+	//mScreenViewport.TopLeftY = 100;
+	//mScreenViewport.Width = static_cast<float>(mClientWidth/2);
+	//mScreenViewport.Height = static_cast<float>(mClientHeight/2);
+
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 
-	//Each scissor rectangle in the array corresponds to a viewport in an array of viewports
+	//!Each scissor rectangle in the array corresponds to a viewport in an array of viewports
+	//! Uncomment the following line to see how scissor works
+	//mScissorRect = { 0, 0, mClientWidth / 2, mClientHeight / 2 };
+
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
+
 
 	// Indicate a state transition on the resource usage.
 	//Specifies the state of a resource regarding how the resource is being used.
@@ -165,37 +188,38 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 	//ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	//mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
+	 
+	//!step5
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
-
 	mCommandList->IASetVertexBuffers(0, 1, &mVertexBufferView);
-
 	mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.
+	//!there used to a Draw() function where we used to have vertices address as a parameter. PSO took care of this for us. 
+	//!Now we have different PSO for different sets of objects.
 	mCommandList->DrawInstanced(3, 1, 0, 0);
+
+
 
 	// Indicate a state transition on the resource usage.
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	//step4: Done recording commands.
+	//!Done recording commands.
 	ThrowIfFailed(mCommandList->Close());
 
-	// Add the command list to the queue for execution.
+	//! Add the command list to the queue for execution.
 	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
 	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	// swap the back and front buffers
-		//HRESULT Present(UINT SyncInterval,UINT Flags);
-	//SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.
-	//Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.
+	//! swap the back and front buffers
+	//! HRESULT Present(UINT SyncInterval,UINT Flags);
+	//!SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.
+	//! Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
+	//! Wait until frame commands are complete.  This waiting is inefficient and is
+	//! done for simplicity.  Later we will show how to organize our rendering code
+	//! so we do not have to wait per frame.
 	FlushCommandQueue();
 }
 
@@ -203,18 +227,16 @@ void TriangleAPP::Draw(const GameTimer& gt)
 
 void TriangleAPP::BuildRootSignature()
 {
-	// Shader programs typically require resources as input (constant buffers,
-	// textures, samplers).  The root signature defines the resources the shader
-	// programs expect.  If we think of the shader programs as a function, and
-	// the input resources as function parameters, then the root signature can be
-	// thought of as defining the function signature.  
+	//! Shader programs typically require resources as input (constant buffers,
+	//! textures, samplers).  The root signature defines the resources the shader
+	//! programs expect.  If we think of the shader programs as a function, and
+	//! the input resources as function parameters, then the root signature can be
+	//! thought of as defining the function signature.  
 
-
-	//// A root signature is an array of root parameters. We have no parameters yet, hence 0!
+	//! A root signature is an array of root parameters. We have no parameters yet, hence 0!
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-
-	// create a root signature with no slot for now!
+	//! create a root signature with no slot for now!
 	ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSig, &errorBlob);
@@ -231,8 +253,6 @@ void TriangleAPP::BuildRootSignature()
 		serializedRootSig->GetBufferSize(),
 		IID_PPV_ARGS(&mRootSignature)));
 }
-
-
 
 
 void TriangleAPP::BuildShadersAndInputLayout()
@@ -266,9 +286,7 @@ void TriangleAPP::BuildShadersAndInputLayout()
 void TriangleAPP::BuildTriangleGeometry()
 {
 
-	//step2
-
-	 // Define the geometry for a triangle.
+	 //!Define the geometry for a triangle.
 	vertices =
 		{
 			Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f)}),
@@ -278,10 +296,12 @@ void TriangleAPP::BuildTriangleGeometry()
 
 	const UINT vbBufferSize = (UINT)vertices.size() * sizeof(Vertex);
 
-	// Note: using upload heaps to transfer static data like vert buffers is not 
-	// recommended. Every time the GPU needs it, the upload heap will be marshalled 
-	// over. Please read up on Default Heap usage. An upload heap is used here for 
-	// code simplicity and because there are very few verts to actually transfer.
+	//! Note: using upload heaps to transfer static data like vert buffers is not 
+	//! recommended. Every time the GPU needs it, the upload heap will be marshalled 
+	//! over. An upload heap is used here for code simplicity 
+	//! and because there are very few verts to actually transfer.
+	//! For static geometry (i.e., geometry that does not change on a per-frame basis), we put
+	//! vertex buffers in the default heap(D3D12_HEAP_TYPE_DEFAULT) for optimal performance.
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
@@ -290,25 +310,26 @@ void TriangleAPP::BuildTriangleGeometry()
 		nullptr,
 		IID_PPV_ARGS(&mVertexBuffer));
 
-	// Copy the triangle data to the vertex buffer.
+	//! Copy the triangle data to the vertex buffer.
 	UINT8* pVertexDataBegin;
-	CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-	mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)); //allocates a CPU virtual address range for the resource. 
-	memcpy(pVertexDataBegin, &vertices, sizeof(vertices)); //Copies the values of num bytes from the location pointed to by vertices directly to the memory block pointed to by pVertexDataBegin.
+	//! We do not intend to read from this resource on the CPU.
+	CD3DX12_RANGE readRange(0, 0);       
+	//! allocates a CPU virtual address range for the resource. 
+	mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)); 
+	//!Copies the values of num bytes from the location pointed to by vertices directly to the memory block pointed to by pVertexDataBegin.
+	memcpy(pVertexDataBegin, &vertices, sizeof(vertices)); 
 	mVertexBuffer->Unmap(0, nullptr);
 
-	//Initialize the vertex buffer view.
+	//!Initialize the vertex buffer view.
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
 	mVertexBufferView.StrideInBytes = sizeof(Vertex);
 	mVertexBufferView.SizeInBytes = vbBufferSize;
-
-	
-
 }
 
 void TriangleAPP::BuildPSO()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+	//! Fills a block of memory with zeros.
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 
 	//bind the input layout to pipeline
