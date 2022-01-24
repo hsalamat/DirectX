@@ -1,12 +1,29 @@
-//***************************************************************************************
-// BoxApp.cpp 
-//
-// Shows how to draw a box in Direct3D 12.
-//
-// Controls:
-//   Hold the left mouse button down and move the mouse to rotate.
-//   Hold the right mouse button down and move the mouse to zoom in and out.
-//***************************************************************************************
+/** @file week3-3-BoxAppUsingOfflineCompiledShaders
+ *  @brief Shows how to draw a box in Direct3D 12 using compiled shader.
+ *  Instead of compiling shaders at runtime, we can compile them offline in a separate
+ *  step (e.g., a build step, or as part of an asset content pipeline process). There are a few
+ *   reasons to do this:
+ *   1. For complicated shaders, compilation can take a long time. Therefore, compiling
+ *   offline will make your loading times faster.
+ *   2. It is convenient to see shader compilation errors earlier in the build process rather
+ *   than at runtime.
+ *   3. Windows Store apps must use offline compilation.
+ *   To compile shaders offline we use the FXC tool that comes with DirectX. This is a
+ *   command line tool. 
+ *
+ *  To compile a vertex and pixel shader stored in color.hlsl with entry points VS and PS, respectively, for release, open visual studio command prompt,  we would write:
+ *	fxc "color.hlsl" / T vs_5_0 / E "VS" / Fo "color_vs.cso" / Fc "color_vs.asm"
+ * 	fxc "color.hlsl" / T ps_5_0 / E "PS" / Fo "color_ps.cso" / Fc "color_ps.asm"
+ *
+ *
+ *		//mvsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
+ *		//mpsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+ *      mvsByteCode = d3dUtil::LoadBinary(L"Shaders\\color_vs.cso");
+ *      mpsByteCode = d3dUtil::LoadBinary(L"Shaders\\color_ps.cso");
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -188,17 +205,7 @@ void BoxApp::Draw(const GameTimer& gt)
     // Reusing the command list reuses memory.
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));
 
-    //Hooman: The subrectangle of the back buffer we draw into is called the viewport 
-    //mScreenViewport.Width = 200;
-    //mScreenViewport.Height  = 200;
-
     mCommandList->RSSetViewports(1, &mScreenViewport);
-
-    //Hooman: The following example creates and sets a scissor rectangle 
-    //that covers the upper - left quadrant of the back buffer :
-
-    //mScissorRect = { 0, 0, mClientWidth / 2, mClientHeight / 2 };
-
     mCommandList->RSSetScissorRects(1, &mScissorRect);
 
     // Indicate a state transition on the resource usage.
@@ -379,8 +386,17 @@ void BoxApp::BuildShadersAndInputLayout()
 {
     HRESULT hr = S_OK;
     
-	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
-	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+	//Hooman: LoadBinary
+	/*To compile a vertex and pixel shader stored in color.hlsl with entry points VS and PS, respectively, for release, open visual studio command prompt,  we would write:
+	fxc "color.hlsl" / T vs_5_0 / E "VS" / Fo "color_vs.cso" / Fc "color_vs.asm"
+	fxc "color.hlsl" / T ps_5_0 / E "PS" / Fo "color_ps.cso" / Fc "color_ps.asm"
+		*/
+
+	//mvsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
+	//mpsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+	mvsByteCode = d3dUtil::LoadBinary(L"Shaders\\color_vs.cso");
+	mpsByteCode = d3dUtil::LoadBinary(L"Shaders\\color_ps.cso");
+
 
     mInputLayout =
     {
@@ -477,15 +493,7 @@ void BoxApp::BuildPSO()
 		reinterpret_cast<BYTE*>(mpsByteCode->GetBufferPointer()), 
 		mpsByteCode->GetBufferSize() 
 	};
-
-	//Hooman: convert it to wireframe
     psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-
-	//CD3DX12_RASTERIZER_DESC rsDesc(D3D12_DEFAULT);
-	//rsDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
-	//rsDesc.CullMode = D3D12_CULL_MODE_NONE;
-	//psoDesc.RasterizerState = rsDesc;
-
     psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
     psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
     psoDesc.SampleMask = UINT_MAX;

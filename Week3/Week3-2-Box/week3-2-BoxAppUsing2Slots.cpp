@@ -1,9 +1,35 @@
-//***************************************************************************************
-// BoxApp.cpp using 2 vertex buffer & input slots
-// Controls:
-//   Hold the left mouse button down and move the mouse to rotate.
-//   Hold the right mouse button down and move the mouse to zoom in and out.
-//***************************************************************************************
+/** @file week3-2-BoxAppUsing2Slots.cpp
+ *  @brief Shows how to draw a box in Direct3D 12 using 2 vertex buffer & input slots.
+ *
+ *  This time, we use two vertex buffers(and two input slots) to feed the pipeline with vertices, one that stores the position elementand the
+*   other that stores the color element. For this you will use two vertex structures to store
+*   the split data :
+*   struct VPosData
+*   {
+*   	XMFLOAT3 Pos;
+*   };
+*   struct VColorData
+*   {
+*   	XMFLOAT4 Color;
+*   };
+*   Your D3D12_INPUT_ELEMENT_DESC array will look like this:
+*   D3D12_INPUT_ELEMENT_DESC vertexDesc[] =
+*   {
+*   {“POSITION”, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_PER_VERTEX_DATA, 0},
+*   {“COLOR”, 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D12_INPUT_PER_VERTEX_DATA, 0}
+*   };
+* 
+*   The position element is hooked up to input slot 0, and the color element is hooked up  to input slot 1. 
+*   Moreover note that the D3D12_INPUT_ELEMENT_DESC::AlignedByteOffset is 0 for both
+*   elements; this is because the positionand color elements are no longer interleaved in
+*   a single input slot.Then use ID3D12CommandList::IASetVertexBuffers
+*   to bind the two vertex buffers to slots 0 and 1. Direct3D will then use the elements
+*   from the different input slots to assemble the vertices.
+ *
+ *  @author Hooman Salamat
+ */
+
+
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
@@ -11,6 +37,8 @@
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+
+//step1
 struct VPosData { XMFLOAT3 Pos; };
 struct VColorData { XMFLOAT4 Color; };
 
@@ -160,7 +188,10 @@ void BoxApp::Draw(const GameTimer& gt)
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
 	mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
+
+	//step2
 	mCommandList->IASetVertexBuffers(1, 1, &mBoxGeo->ColorBufferView());
+
 	mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());
 	mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
@@ -288,6 +319,14 @@ void BoxApp::BuildShadersAndInputLayout()
 	HRESULT hr = S_OK;
 	mvsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
 	mpsByteCode = d3dUtil::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+
+	//step3
+	//mInputLayout =
+	//{
+	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	//};
+
 	mInputLayout =
 	{
 	 { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
@@ -299,6 +338,7 @@ void BoxApp::BuildShadersAndInputLayout()
 
 void BoxApp::BuildBoxGeometry()
 {
+	//step4
 	std::array<VPosData, 8> vertices =
 	{
 	 VPosData({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
@@ -357,14 +397,21 @@ void BoxApp::BuildBoxGeometry()
 		mCommandList.Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
 	mBoxGeo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),
 		mCommandList.Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
+
+	//step5
 	mBoxGeo->ColorBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),
 		mCommandList.Get(), color.data(), cbByteSize, mBoxGeo->ColorBufferUploader);
+
+
 	mBoxGeo->VertexByteStride = sizeof(VPosData);
 	mBoxGeo->VertexBufferByteSize = vbByteSize;
 	mBoxGeo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	mBoxGeo->IndexBufferByteSize = ibByteSize;
+
+	//step6
 	mBoxGeo->ColorByteStride = sizeof(VColorData);
 	mBoxGeo->ColorBufferByteSize = cbByteSize;
+
 	SubmeshGeometry submesh;
 	submesh.IndexCount = (UINT)indices.size();
 	submesh.StartIndexLocation = 0;
