@@ -1,8 +1,29 @@
-//***************************************************************************************
-// Land 
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @file Week4-2-SphereUsingFrameResources.cpp
+ *  @brief Draw a sphere using FrameResources.
+ *   We put our procedural geometry generation code in the GeometryGenerator
+ *	 class (GeometryGenerator.h/.cpp). GeometryGenerator is a utility class for
+ *	 generating simple geometric shapes like grids, sphere, cylinders, and boxes.
+ *   This class generates the data in system memory, 
+ *   and we must then copy the data we want to our vertex and index buffers.
+ *   We define a sphere by specifying its radius, and the slice and stack count. 
+ *   The algorithm for generating the sphere is very similar to that of the cylinder,
+ *   except that the radius per ring changes is a nonlinear way based on trigonometric functions.
+ *
+ *   @note: Note that the triangles of the sphere do not have equal areas. This
+ *	 can be undesirable for some situations. A geosphere approximates a sphere using triangles
+ *	 with almost equal areas as well as equal side lengths.
+ * 
+ *   To generate a geosphere, we start with an icosahedron, subdivide the triangles, and
+ *	 then project the new vertices onto the sphere with the given radius. We can repeat this
+ *   process to improve the tessellation.
+ * 
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -17,10 +38,10 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
+//Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
+//Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
 struct RenderItem
 {
 	RenderItem() = default;
@@ -52,13 +73,13 @@ struct RenderItem
 	int BaseVertexLocation = 0; //A value added to each index before reading a vertex from the vertex buffer.
 };
 
-class LandApp : public D3DApp
+class ShapesApp : public D3DApp
 {
 public:
-	LandApp(HINSTANCE hInstance);
-	LandApp(const LandApp& rhs) = delete;
-	LandApp& operator=(const LandApp& rhs) = delete;
-	~LandApp();
+	ShapesApp(HINSTANCE hInstance);
+	ShapesApp(const ShapesApp& rhs) = delete;
+	ShapesApp& operator=(const ShapesApp& rhs) = delete;
+	~ShapesApp();
 
 	virtual bool Initialize()override;
 
@@ -80,20 +101,15 @@ private:
 	void BuildConstantBufferViews();
 	void BuildRootSignature();
 	void BuildShadersAndInputLayout();
-	void BuildLandGeometry();
+	void BuildShapeGeometry();
 	void BuildPSOs();
-
-
 	void BuildFrameResources();
-
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
-	//step5
-	float GetHillsHeight(float x, float z)const;
 
 private:
 
-	//step4: keep member variables to track the current frame resource :
+	//keep member variables to track the current frame resource :
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
@@ -112,7 +128,7 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	//step11: Our application will maintain lists of render items based on how they need to be
+	//Our application will maintain lists of render items based on how they need to be
 	//drawn; that is, render items that need different PSOs will be kept in different lists.
 
 	// Render items divided by PSO.
@@ -122,7 +138,7 @@ private:
 
 
 
-	//step12: this mMainPassCB stores constant data that is fixed over a given
+	//this mMainPassCB stores constant data that is fixed over a given
 	//rendering pass such as the eye position, the view and projection matrices, and information
 	//about the screen(render target) dimensions; it also includes game timing information,
 	//which is useful data to have access to in shader programs.
@@ -137,14 +153,9 @@ private:
 	XMFLOAT4X4 mView = MathHelper::Identity4x4();
 	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
 
-	//step 2
-	//float mTheta = 1.5f * XM_PI;
-	//float mPhi = 0.2f * XM_PI;
-	//float mRadius = 15.0f;
-
 	float mTheta = 1.5f * XM_PI;
-	float mPhi = XM_PIDIV2 - 0.1f;
-	float mRadius = 50.0f;
+	float mPhi = 0.2f * XM_PI;
+	float mRadius = 15.0f;
 
 	POINT mLastMousePos;
 };
@@ -159,7 +170,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 	try
 	{
-		LandApp theApp(hInstance);
+		ShapesApp theApp(hInstance);
 		if (!theApp.Initialize())
 			return 0;
 
@@ -172,18 +183,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	}
 }
 
-LandApp::LandApp(HINSTANCE hInstance)
+ShapesApp::ShapesApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
 }
 
-LandApp::~LandApp()
+ShapesApp::~ShapesApp()
 {
 	if (md3dDevice != nullptr)
 		FlushCommandQueue();
 }
 
-bool LandApp::Initialize()
+bool ShapesApp::Initialize()
 {
 	if (!D3DApp::Initialize())
 		return false;
@@ -193,7 +204,7 @@ bool LandApp::Initialize()
 
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
-	BuildLandGeometry();
+	BuildShapeGeometry();
 	BuildRenderItems();
 	BuildFrameResources();
 	BuildDescriptorHeaps();
@@ -211,7 +222,7 @@ bool LandApp::Initialize()
 	return true;
 }
 
-void LandApp::OnResize()
+void ShapesApp::OnResize()
 {
 	D3DApp::OnResize();
 
@@ -220,12 +231,12 @@ void LandApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-//step7: for CPU frame n, the algorithm
+//for CPU frame n, the algorithm
 //1. Cycle through the circular frame resource array.
 //2. Wait until the GPU has completed commands up to this fence point.
 //3. Update resources in mCurrFrameResource (like cbuffers).
 
-void LandApp::Update(const GameTimer& gt)
+void ShapesApp::Update(const GameTimer& gt)
 {
 	OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -233,6 +244,7 @@ void LandApp::Update(const GameTimer& gt)
 	// Cycle through the circular frame resource array.
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
+
 
 	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
 	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
@@ -250,7 +262,7 @@ void LandApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void LandApp::Draw(const GameTimer& gt)
+void ShapesApp::Draw(const GameTimer& gt)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -310,13 +322,9 @@ void LandApp::Draw(const GameTimer& gt)
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-
-	//Step1:  we have been calling D3DApp::FlushCommandQueue at the end of every
-	//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient
-	//For every frame, the CPU and GPU are idling at some point.
 	//	FlushCommandQueue();
 
-	//step9:  Advance the fence value to mark commands up to this fence point.
+	//Advance the fence value to mark commands up to this fence point.
 	mCurrFrameResource->Fence = ++mCurrentFence;
 
 	// Add an instruction to the command queue to set a new fence point. 
@@ -325,12 +333,11 @@ void LandApp::Draw(const GameTimer& gt)
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 	// Note that GPU could still be working on commands from previous
-		// frames, but that is okay, because we are not touching any frame
-		// resources associated with those frames.
-
+	// frames, but that is okay, because we are not touching any frame
+	// resources associated with those frames.
 }
 
-void LandApp::OnMouseDown(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
@@ -338,12 +345,12 @@ void LandApp::OnMouseDown(WPARAM btnState, int x, int y)
 	SetCapture(mhMainWnd);
 }
 
-void LandApp::OnMouseUp(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void LandApp::OnMouseMove(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
@@ -375,7 +382,7 @@ void LandApp::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void LandApp::OnKeyboardInput(const GameTimer& gt)
+void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 {
 	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
 	//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
@@ -389,7 +396,7 @@ void LandApp::OnKeyboardInput(const GameTimer& gt)
 		mIsWireframe = false;
 }
 
-void LandApp::UpdateCamera(const GameTimer& gt)
+void ShapesApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
@@ -406,7 +413,7 @@ void LandApp::UpdateCamera(const GameTimer& gt)
 }
 
 //step8: Update resources (cbuffers) in mCurrFrameResource
-void LandApp::UpdateObjectCBs(const GameTimer& gt)
+void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for (auto& e : mAllRitems)
@@ -430,7 +437,7 @@ void LandApp::UpdateObjectCBs(const GameTimer& gt)
 
 //CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
 //rendering pass while the per object CBV needs to be set per render item
-void LandApp::UpdateMainPassCB(const GameTimer& gt)
+void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -458,7 +465,7 @@ void LandApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void LandApp::BuildDescriptorHeaps()
+void ShapesApp::BuildDescriptorHeaps()
 {
 	UINT objCount = (UINT)mOpaqueRitems.size();
 
@@ -478,7 +485,7 @@ void LandApp::BuildDescriptorHeaps()
 		IID_PPV_ARGS(&mCbvHeap)));
 }
 
-void LandApp::BuildConstantBufferViews()
+void ShapesApp::BuildConstantBufferViews()
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -529,9 +536,8 @@ void LandApp::BuildConstantBufferViews()
 	}
 }
 
-void LandApp::BuildRootSignature()
+void ShapesApp::BuildRootSignature()
 {
-	//step 15
 	//The resources that our shaders expect have changed; therefore, we need to update the
 	//root signature accordingly to take two descriptor tables(we need two tables because the
 	//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
@@ -573,7 +579,7 @@ void LandApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void LandApp::BuildShadersAndInputLayout()
+void ShapesApp::BuildShadersAndInputLayout()
 {
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\VS.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\PS.hlsl", nullptr, "PS", "ps_5_1");
@@ -585,108 +591,62 @@ void LandApp::BuildShadersAndInputLayout()
 	};
 }
 
-//step16
-void LandApp::BuildLandGeometry()
+//step1
+void ShapesApp::BuildShapeGeometry()
 {
-	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, grid, grids, and boxes
+	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, sphere, spheres, and boxes
 	GeometryGenerator geoGen;
 	//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertexand index list
 
-	//GeometryGenerator::CreateGrid(float width, float depth, uint32 m, uint32 n)
-	GeometryGenerator::MeshData grid = geoGen.CreateGrid(160.0f, 160.0f, 50, 50);
+	//GeometryGenerator::CreateSphere(float radius, uint32 sliceCount, uint32 stackCount)
+	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
 
-	//
-// Extract the vertex elements we are interested and apply the height function to
-// each vertex.  In addition, color the vertices based on their height so we have
-// sandy looking beaches, grassy low hills, and snow mountain peaks.
-//
-
-	std::vector<Vertex> vertices(grid.Vertices.size());
-	for (size_t i = 0; i < grid.Vertices.size(); ++i)
-	{
-		auto& p = grid.Vertices[i].Position;
-		vertices[i].Pos = p;
-		vertices[i].Pos.y = GetHillsHeight(p.x, p.z);
-
-		// Color the vertex based on its height.
-		if (vertices[i].Pos.y < -10.0f)
-		{
-			// Sandy beach color.
-			vertices[i].Color = XMFLOAT4(1.0f, 0.96f, 0.62f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 5.0f)
-		{
-			// Light yellow-green.
-			vertices[i].Color = XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 12.0f)
-		{
-			// Dark yellow-green.
-			vertices[i].Color = XMFLOAT4(0.1f, 0.48f, 0.19f, 1.0f);
-		}
-		else if (vertices[i].Pos.y < 20.0f)
-		{
-			// Dark brown.
-			vertices[i].Color = XMFLOAT4(0.45f, 0.39f, 0.34f, 1.0f);
-		}
-		else
-		{
-			// White snow.
-			vertices[i].Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-	}
-
-
-
-	//
 	// We are concatenating all the geometry into one big vertex/index buffer.  So
 	// define the regions in the buffer each submesh covers.
 	//
 
 	// Cache the vertex offsets to each object in the concatenated vertex buffer.
-	UINT gridVertexOffset = 0;
+	UINT sphereVertexOffset = 0;
 
 
 	// Cache the starting index for each object in the concatenated index buffer.
-	UINT gridIndexOffset = 0;
+	UINT sphereIndexOffset = 0;
 
 
 	// Define the SubmeshGeometry that cover different 
 	// regions of the vertex/index buffers.
 
-	SubmeshGeometry gridSubmesh;
-	gridSubmesh.IndexCount = (UINT)grid.Indices32.size();
-	gridSubmesh.StartIndexLocation = gridIndexOffset;
-	gridSubmesh.BaseVertexLocation = gridVertexOffset;
+	SubmeshGeometry sphereSubmesh;
+	sphereSubmesh.IndexCount = (UINT)sphere.Indices32.size();
+	sphereSubmesh.StartIndexLocation = sphereIndexOffset;
+	sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
 
-
-	//
 	// Extract the vertex elements we are interested in and pack the
 	// vertices of all the meshes into one vertex buffer.
 	//
 
-	//auto totalVertexCount = grid.Vertices.size();
+	auto totalVertexCount = sphere.Vertices.size();
 
 
-	//std::vector<Vertex> vertices(totalVertexCount);
+	std::vector<Vertex> vertices(totalVertexCount);
 
-	//UINT k = 0;
-	//for (size_t i = 0; i < grid.Vertices.size(); ++i, ++k)
-	//{
-	//	vertices[k].Pos = grid.Vertices[i].Position;
-	//	vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);
-	//}
+	UINT k = 0;
+	for (size_t i = 0; i < sphere.Vertices.size(); ++i, ++k)
+	{
+		vertices[k].Pos = sphere.Vertices[i].Position;
+		vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);
+	}
 
 
 	std::vector<std::uint16_t> indices;
-	indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+	indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
 
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = "landGeo";
+	geo->Name = "shapeGeo";
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
 	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -705,13 +665,13 @@ void LandApp::BuildLandGeometry()
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;
 
-	geo->DrawArgs["grid"] = gridSubmesh;
+	geo->DrawArgs["sphere"] = sphereSubmesh;
 
 
 	mGeometries[geo->Name] = std::move(geo);
 }
 
-void LandApp::BuildPSOs()
+void ShapesApp::BuildPSOs()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -754,10 +714,10 @@ void LandApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
-//step6: build three frame resources
+//build three frame resources
 //FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);
 
-void LandApp::BuildFrameResources()
+void ShapesApp::BuildFrameResources()
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
 	{
@@ -766,19 +726,17 @@ void LandApp::BuildFrameResources()
 	}
 }
 
-void LandApp::BuildRenderItems()
+void ShapesApp::BuildRenderItems()
 {
-	auto gridRitem = std::make_unique<RenderItem>();
-	//step3
-	//XMStoreFloat4x4(&gridRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-	gridRitem->World = MathHelper::Identity4x4();
-	gridRitem->ObjCBIndex = 0;
-	gridRitem->Geo = mGeometries["landGeo"].get();
-	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;  
-	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation; 
-	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation; 
-	mAllRitems.push_back(std::move(gridRitem));
+	auto sphereRitem = std::make_unique<RenderItem>();
+	XMStoreFloat4x4(&sphereRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+	sphereRitem->ObjCBIndex = 0;
+	sphereRitem->Geo = mGeometries["shapeGeo"].get();
+	sphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	sphereRitem->IndexCount = sphereRitem->Geo->DrawArgs["sphere"].IndexCount;  //2280
+	sphereRitem->StartIndexLocation = sphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation; //0
+	sphereRitem->BaseVertexLocation = sphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation; //0
+	mAllRitems.push_back(std::move(sphereRitem));
 
 
 	// All the render items are opaque.
@@ -788,7 +746,7 @@ void LandApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void LandApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -812,11 +770,6 @@ void LandApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vec
 
 		cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 	}
-}
-
-float LandApp::GetHillsHeight(float x, float z)const
-{
-	return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f * z));
 }
 
 

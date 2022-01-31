@@ -1,8 +1,13 @@
-//***************************************************************************************
-// Sphere Using Frame Resources
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @file Week4-3-GridUsingFrameResources.cpp
+ *  @brief Draw a Grid using FrameResources.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -17,10 +22,10 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
+//Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
+//Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
 struct RenderItem
 {
 	RenderItem() = default;
@@ -82,8 +87,6 @@ private:
 	void BuildShadersAndInputLayout();
 	void BuildShapeGeometry();
 	void BuildPSOs();
-
-	//step5
 	void BuildFrameResources();
 
 	void BuildRenderItems();
@@ -91,7 +94,7 @@ private:
 
 private:
 
-	//step4: keep member variables to track the current frame resource :
+	//keep member variables to track the current frame resource :
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
@@ -110,7 +113,7 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	//step11: Our application will maintain lists of render items based on how they need to be
+	//Our application will maintain lists of render items based on how they need to be
 	//drawn; that is, render items that need different PSOs will be kept in different lists.
 
 	// Render items divided by PSO.
@@ -120,7 +123,7 @@ private:
 
 
 
-	//step12: this mMainPassCB stores constant data that is fixed over a given
+	//this mMainPassCB stores constant data that is fixed over a given
 	//rendering pass such as the eye position, the view and projection matrices, and information
 	//about the screen(render target) dimensions; it also includes game timing information,
 	//which is useful data to have access to in shader programs.
@@ -213,7 +216,7 @@ void ShapesApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-//step7: for CPU frame n, the algorithm
+//for CPU frame n, the algorithm
 //1. Cycle through the circular frame resource array.
 //2. Wait until the GPU has completed commands up to this fence point.
 //3. Update resources in mCurrFrameResource (like cbuffers).
@@ -305,7 +308,7 @@ void ShapesApp::Draw(const GameTimer& gt)
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
 
-	//Step1:  we have been calling D3DApp::FlushCommandQueue at the end of every
+	//we have been calling D3DApp::FlushCommandQueue at the end of every
 	//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient
 	//For every frame, the CPU and GPU are idling at some point.
 	//	FlushCommandQueue();
@@ -319,8 +322,8 @@ void ShapesApp::Draw(const GameTimer& gt)
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 	// Note that GPU could still be working on commands from previous
-		// frames, but that is okay, because we are not touching any frame
-		// resources associated with those frames.
+	// frames, but that is okay, because we are not touching any frame
+	// resources associated with those frames.
 
 }
 
@@ -399,7 +402,7 @@ void ShapesApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-//step8: Update resources (cbuffers) in mCurrFrameResource
+//Update resources (cbuffers) in mCurrFrameResource
 void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
@@ -525,7 +528,6 @@ void ShapesApp::BuildConstantBufferViews()
 
 void ShapesApp::BuildRootSignature()
 {
-	//step 15
 	//The resources that our shaders expect have changed; therefore, we need to update the
 	//root signature accordingly to take two descriptor tables(we need two tables because the
 	//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
@@ -579,60 +581,50 @@ void ShapesApp::BuildShadersAndInputLayout()
 	};
 }
 
-//step16
+//step1
 void ShapesApp::BuildShapeGeometry()
 {
-	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, sphere, spheres, and boxes
+	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, grid, grids, and boxes
 	GeometryGenerator geoGen;
 	//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertexand index list
 
-	//GeometryGenerator::CreateSphere(float radius, uint32 sliceCount, uint32 stackCount)
-	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
-
-
-
-	//
+	//GeometryGenerator::CreateGrid(float width, float depth, uint32 m, uint32 n)
+	GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);
 	// We are concatenating all the geometry into one big vertex/index buffer.  So
 	// define the regions in the buffer each submesh covers.
-	//
 
 	// Cache the vertex offsets to each object in the concatenated vertex buffer.
-	UINT sphereVertexOffset = 0;
+	UINT gridVertexOffset = 0;
 
 
 	// Cache the starting index for each object in the concatenated index buffer.
-	UINT sphereIndexOffset = 0;
+	UINT gridIndexOffset = 0;
 
 
 	// Define the SubmeshGeometry that cover different 
 	// regions of the vertex/index buffers.
+	SubmeshGeometry gridSubmesh;
+	gridSubmesh.IndexCount = (UINT)grid.Indices32.size();
+	gridSubmesh.StartIndexLocation = gridIndexOffset;
+	gridSubmesh.BaseVertexLocation = gridVertexOffset;
 
-	SubmeshGeometry sphereSubmesh;
-	sphereSubmesh.IndexCount = (UINT)sphere.Indices32.size();
-	sphereSubmesh.StartIndexLocation = sphereIndexOffset;
-	sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
-
-
-	//
 	// Extract the vertex elements we are interested in and pack the
 	// vertices of all the meshes into one vertex buffer.
-	//
 
-	auto totalVertexCount = sphere.Vertices.size();
-
+	auto totalVertexCount = grid.Vertices.size();
 
 	std::vector<Vertex> vertices(totalVertexCount);
 
 	UINT k = 0;
-	for (size_t i = 0; i < sphere.Vertices.size(); ++i, ++k)
+	for (size_t i = 0; i < grid.Vertices.size(); ++i, ++k)
 	{
-		vertices[k].Pos = sphere.Vertices[i].Position;
+		vertices[k].Pos = grid.Vertices[i].Position;
 		vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);
 	}
 
 
 	std::vector<std::uint16_t> indices;
-	indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
+	indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
 
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
@@ -658,7 +650,7 @@ void ShapesApp::BuildShapeGeometry()
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;
 
-	geo->DrawArgs["sphere"] = sphereSubmesh;
+	geo->DrawArgs["grid"] = gridSubmesh;
 
 
 	mGeometries[geo->Name] = std::move(geo);
@@ -697,17 +689,14 @@ void ShapesApp::BuildPSOs()
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
-
-	//
 	// PSO for opaque wireframe objects.
-	//
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = opaquePsoDesc;
 	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
-//step6: build three frame resources
+//build three frame resources
 //FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);
 
 void ShapesApp::BuildFrameResources()
@@ -721,15 +710,15 @@ void ShapesApp::BuildFrameResources()
 
 void ShapesApp::BuildRenderItems()
 {
-	auto sphereRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&sphereRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-	sphereRitem->ObjCBIndex = 0;
-	sphereRitem->Geo = mGeometries["shapeGeo"].get();
-	sphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	sphereRitem->IndexCount = sphereRitem->Geo->DrawArgs["sphere"].IndexCount;  //2280
-	sphereRitem->StartIndexLocation = sphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation; //0
-	sphereRitem->BaseVertexLocation = sphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation; //0
-	mAllRitems.push_back(std::move(sphereRitem));
+	auto gridRitem = std::make_unique<RenderItem>();
+	XMStoreFloat4x4(&gridRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+	gridRitem->ObjCBIndex = 0;
+	gridRitem->Geo = mGeometries["shapeGeo"].get();
+	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;  //13806
+	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation; //0
+	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation; //0
+	mAllRitems.push_back(std::move(gridRitem));
 
 
 	// All the render items are opaque.

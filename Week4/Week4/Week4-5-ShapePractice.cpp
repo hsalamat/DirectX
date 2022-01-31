@@ -1,8 +1,17 @@
-//***************************************************************************************
-// Grid Using Frame Resources
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @file Week4-5-ShapePractice.cpp
+ *  @brief Shape Practice.
+ *
+ *  Place all of the scene geometry in one big vertex and index buffer. 
+ * Then use the DrawIndexedInstanced method to draw one object at a time ((as the
+ * world matrix needs to be changed between objects)
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -10,17 +19,14 @@
 #include "../../Common/GeometryGenerator.h"
 #include "FrameResource.h"
 
-#include <iostream>
-#include <string>
-
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
-// Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
+// Lightweight structure stores parameters to draw a shape.  This will
+// vary from app-to-app.
 struct RenderItem
 {
 	RenderItem() = default;
@@ -32,24 +38,22 @@ struct RenderItem
 
 	// Dirty flag indicating the object data has changed and we need to update the constant buffer.
 	// Because we have an object cbuffer for each FrameResource, we have to apply the
-	// update to each FrameResource.  Thus, when we modify object data, we should set 
+	// update to each FrameResource.  Thus, when we modify obect data we should set 
 	// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
 	int NumFramesDirty = gNumFrameResources;
 
 	// Index into GPU constant buffer corresponding to the ObjectCB for this render item.
 	UINT ObjCBIndex = -1;
 
-	// Geometry associated with this render-item. Note that multiple
-	// render-items can share the same geometry.
 	MeshGeometry* Geo = nullptr;
 
 	// Primitive topology.
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	// DrawIndexedInstanced parameters.
-	UINT IndexCount = 0; //Number of indices read from the index buffer for each instance.
-	UINT StartIndexLocation = 0; //The location of the first index read by the GPU from the index buffer.
-	int BaseVertexLocation = 0; //A value added to each index before reading a vertex from the vertex buffer.
+	UINT IndexCount = 0;
+	UINT StartIndexLocation = 0;
+	int BaseVertexLocation = 0;
 };
 
 class ShapesApp : public D3DApp
@@ -82,16 +86,12 @@ private:
 	void BuildShadersAndInputLayout();
 	void BuildShapeGeometry();
 	void BuildPSOs();
-
-	//step5
 	void BuildFrameResources();
-
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
 private:
 
-	//step4: keep member variables to track the current frame resource :
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
@@ -110,20 +110,8 @@ private:
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	//step11: Our application will maintain lists of render items based on how they need to be
-	//drawn; that is, render items that need different PSOs will be kept in different lists.
-
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mOpaqueRitems;
-
-	//std::vector<RenderItem*> mTransparentRitems;  //we could have render items for transparant items
-
-
-
-	//step12: this mMainPassCB stores constant data that is fixed over a given
-	//rendering pass such as the eye position, the view and projection matrices, and information
-	//about the screen(render target) dimensions; it also includes game timing information,
-	//which is useful data to have access to in shader programs.
 
 	PassConstants mMainPassCB;
 
@@ -213,11 +201,6 @@ void ShapesApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-//step7: for CPU frame n, the algorithm
-//1. Cycle through the circular frame resource array.
-//2. Wait until the GPU has completed commands up to this fence point.
-//3. Update resources in mCurrFrameResource (like cbuffers).
-
 void ShapesApp::Update(const GameTimer& gt)
 {
 	OnKeyboardInput(gt);
@@ -227,8 +210,8 @@ void ShapesApp::Update(const GameTimer& gt)
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-
-	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
+	// Has the GPU finished processing the commands of the current frame resource?
+	// If not, wait until the GPU has completed commands up to this fence point.
 	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
@@ -237,9 +220,6 @@ void ShapesApp::Update(const GameTimer& gt)
 		CloseHandle(eventHandle);
 	}
 
-	//The idea of these changes is to group constants based on update frequency. The per
-	//pass constants only need to be updated once per rendering pass, and the object constants
-	//only need to change when an object’s world matrix changes.
 	UpdateObjectCBs(gt);
 	UpdateMainPassCB(gt);
 }
@@ -304,24 +284,13 @@ void ShapesApp::Draw(const GameTimer& gt)
 	ThrowIfFailed(mSwapChain->Present(0, 0));
 	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-
-	//Step1:  we have been calling D3DApp::FlushCommandQueue at the end of every
-	//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient
-	//For every frame, the CPU and GPU are idling at some point.
-	//	FlushCommandQueue();
-
-	//step9:  Advance the fence value to mark commands up to this fence point.
+	// Advance the fence value to mark commands up to this fence point.
 	mCurrFrameResource->Fence = ++mCurrentFence;
 
 	// Add an instruction to the command queue to set a new fence point. 
 	// Because we are on the GPU timeline, the new fence point won't be 
 	// set until the GPU finishes processing all the commands prior to this Signal().
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
-
-	// Note that GPU could still be working on commands from previous
-		// frames, but that is okay, because we are not touching any frame
-		// resources associated with those frames.
-
 }
 
 void ShapesApp::OnMouseDown(WPARAM btnState, int x, int y)
@@ -371,13 +340,7 @@ void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 {
-	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
-	//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
-	//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.
-	//if (GetAsyncKeyState('1') & 0x8000)
-
-	short key = GetAsyncKeyState('1');
-	if (key & 0x8000)  //if one is pressed, 0x8000 = 32767 , key = -32767 = FFFFFFFFFFFF8001
+	if (GetAsyncKeyState('1') & 0x8000)
 		mIsWireframe = true;
 	else
 		mIsWireframe = false;
@@ -399,7 +362,6 @@ void ShapesApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-//step8: Update resources (cbuffers) in mCurrFrameResource
 void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
@@ -422,8 +384,6 @@ void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
-//rendering pass while the per object CBV needs to be set per render item
 void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
@@ -525,12 +485,6 @@ void ShapesApp::BuildConstantBufferViews()
 
 void ShapesApp::BuildRootSignature()
 {
-	//step 15
-	//The resources that our shaders expect have changed; therefore, we need to update the
-	//root signature accordingly to take two descriptor tables(we need two tables because the
-	//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per
-	//rendering pass while the per object CBV needs to be set per render item) :
-
 	CD3DX12_DESCRIPTOR_RANGE cbvTable0;
 	cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
 
@@ -579,17 +533,15 @@ void ShapesApp::BuildShadersAndInputLayout()
 	};
 }
 
-//step16
 void ShapesApp::BuildShapeGeometry()
 {
-	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, grid, grids, and boxes
 	GeometryGenerator geoGen;
-	//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertexand index list
-
-	//GeometryGenerator::CreateGrid(float width, float depth, uint32 m, uint32 n)
+	GeometryGenerator::MeshData box = geoGen.CreateBox(1.5f, 0.5f, 1.5f, 3);
+	/*
+	Step1
 	GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);
-
-
+	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
+	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(0.5f, 0.3f, 3.0f, 20, 20);*/
 
 	//
 	// We are concatenating all the geometry into one big vertex/index buffer.  So
@@ -597,43 +549,92 @@ void ShapesApp::BuildShapeGeometry()
 	//
 
 	// Cache the vertex offsets to each object in the concatenated vertex buffer.
-	UINT gridVertexOffset = 0;
-
+	UINT boxVertexOffset = 0;
+	/*
+	Step2
+	UINT gridVertexOffset = (UINT)box.Vertices.size();
+	UINT sphereVertexOffset = gridVertexOffset + (UINT)grid.Vertices.size();
+	UINT cylinderVertexOffset = sphereVertexOffset + (UINT)sphere.Vertices.size();*/
 
 	// Cache the starting index for each object in the concatenated index buffer.
-	UINT gridIndexOffset = 0;
-
+	UINT boxIndexOffset = 0;
+	/*
+	Step3
+	UINT gridIndexOffset = (UINT)box.Indices32.size();
+	UINT sphereIndexOffset = gridIndexOffset + (UINT)grid.Indices32.size();
+	UINT cylinderIndexOffset = sphereIndexOffset + (UINT)sphere.Indices32.size();*/
 
 	// Define the SubmeshGeometry that cover different 
 	// regions of the vertex/index buffers.
 
-	SubmeshGeometry gridSubmesh;
-	gridSubmesh.IndexCount = (UINT)grid.Indices32.size();
-	gridSubmesh.StartIndexLocation = gridIndexOffset;
-	gridSubmesh.BaseVertexLocation = gridVertexOffset;
+	SubmeshGeometry boxSubmesh;
+	boxSubmesh.IndexCount = (UINT)box.Indices32.size();
+	boxSubmesh.StartIndexLocation = boxIndexOffset;
+	boxSubmesh.BaseVertexLocation = boxVertexOffset;
 
+	//step4
+	//SubmeshGeometry gridSubmesh;
+	//gridSubmesh.IndexCount = (UINT)grid.Indices32.size();
+	//gridSubmesh.StartIndexLocation = gridIndexOffset;
+	//gridSubmesh.BaseVertexLocation = gridVertexOffset;
+
+	//SubmeshGeometry sphereSubmesh;
+	//sphereSubmesh.IndexCount = (UINT)sphere.Indices32.size();
+	//sphereSubmesh.StartIndexLocation = sphereIndexOffset;
+	//sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
+
+	//SubmeshGeometry cylinderSubmesh;
+	//cylinderSubmesh.IndexCount = (UINT)cylinder.Indices32.size();
+	//cylinderSubmesh.StartIndexLocation = cylinderIndexOffset;
+	//cylinderSubmesh.BaseVertexLocation = cylinderVertexOffset;
 
 	//
 	// Extract the vertex elements we are interested in and pack the
 	// vertices of all the meshes into one vertex buffer.
 	//
 
-	auto totalVertexCount = grid.Vertices.size();
+	auto totalVertexCount = box.Vertices.size();
 
+	    //step5
+		//box.Vertices.size() +
+		//grid.Vertices.size() +
+		//sphere.Vertices.size() +
+		//cylinder.Vertices.size();
 
 	std::vector<Vertex> vertices(totalVertexCount);
 
 	UINT k = 0;
-	for (size_t i = 0; i < grid.Vertices.size(); ++i, ++k)
+	for (size_t i = 0; i < box.Vertices.size(); ++i, ++k)
 	{
-		vertices[k].Pos = grid.Vertices[i].Position;
+		vertices[k].Pos = box.Vertices[i].Position;
 		vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);
 	}
 
+	//step6
+	//for (size_t i = 0; i < grid.Vertices.size(); ++i, ++k)
+	//{
+	//	vertices[k].Pos = grid.Vertices[i].Position;
+	//	vertices[k].Color = XMFLOAT4(DirectX::Colors::ForestGreen);
+	//}
+
+	//for (size_t i = 0; i < sphere.Vertices.size(); ++i, ++k)
+	//{
+	//	vertices[k].Pos = sphere.Vertices[i].Position;
+	//	vertices[k].Color = XMFLOAT4(DirectX::Colors::Crimson);
+	//}
+
+	//for (size_t i = 0; i < cylinder.Vertices.size(); ++i, ++k)
+	//{
+	//	vertices[k].Pos = cylinder.Vertices[i].Position;
+	//	vertices[k].Color = XMFLOAT4(DirectX::Colors::SteelBlue);
+	//}
 
 	std::vector<std::uint16_t> indices;
-	indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
-
+	indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
+	//step7
+	//indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
+	//indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
+	//indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
@@ -658,8 +659,11 @@ void ShapesApp::BuildShapeGeometry()
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;
 
-	geo->DrawArgs["grid"] = gridSubmesh;
-
+	geo->DrawArgs["box"] = boxSubmesh;
+	//step8
+	//geo->DrawArgs["grid"] = gridSubmesh;
+	//geo->DrawArgs["sphere"] = sphereSubmesh;
+	//geo->DrawArgs["cylinder"] = cylinderSubmesh;
 
 	mGeometries[geo->Name] = std::move(geo);
 }
@@ -707,9 +711,6 @@ void ShapesApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
-//step6: build three frame resources
-//FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);
-
 void ShapesApp::BuildFrameResources()
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
@@ -721,20 +722,81 @@ void ShapesApp::BuildFrameResources()
 
 void ShapesApp::BuildRenderItems()
 {
+	auto boxRitem = std::make_unique<RenderItem>();
+	XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+	boxRitem->ObjCBIndex = 0;
+	boxRitem->Geo = mGeometries["shapeGeo"].get();
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
+	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
+	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(boxRitem));
+
+	/*
+	Step9
 	auto gridRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&gridRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-	gridRitem->ObjCBIndex = 0;
+	gridRitem->World = MathHelper::Identity4x4();
+	gridRitem->ObjCBIndex = 1;
 	gridRitem->Geo = mGeometries["shapeGeo"].get();
 	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;  //13806
-	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation; //0
-	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation; //0
+	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
+	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
+	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 	mAllRitems.push_back(std::move(gridRitem));
 
+	UINT objCBIndex = 2;
+	for (int i = 0; i < 5; ++i)
+	{
+		auto leftCylRitem = std::make_unique<RenderItem>();
+		auto rightCylRitem = std::make_unique<RenderItem>();
+		auto leftSphereRitem = std::make_unique<RenderItem>();
+		auto rightSphereRitem = std::make_unique<RenderItem>();
+
+		XMMATRIX leftCylWorld = XMMatrixTranslation(-5.0f, 1.5f, -10.0f + i * 5.0f);
+		XMMATRIX rightCylWorld = XMMatrixTranslation(+5.0f, 1.5f, -10.0f + i * 5.0f);
+
+		XMMATRIX leftSphereWorld = XMMatrixTranslation(-5.0f, 3.5f, -10.0f + i * 5.0f);
+		XMMATRIX rightSphereWorld = XMMatrixTranslation(+5.0f, 3.5f, -10.0f + i * 5.0f);
+
+		XMStoreFloat4x4(&leftCylRitem->World, rightCylWorld);
+		leftCylRitem->ObjCBIndex = objCBIndex++;
+		leftCylRitem->Geo = mGeometries["shapeGeo"].get();
+		leftCylRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		leftCylRitem->IndexCount = leftCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
+		leftCylRitem->StartIndexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
+		leftCylRitem->BaseVertexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&rightCylRitem->World, leftCylWorld);
+		rightCylRitem->ObjCBIndex = objCBIndex++;
+		rightCylRitem->Geo = mGeometries["shapeGeo"].get();
+		rightCylRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		rightCylRitem->IndexCount = rightCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
+		rightCylRitem->StartIndexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
+		rightCylRitem->BaseVertexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
+		leftSphereRitem->ObjCBIndex = objCBIndex++;
+		leftSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		leftSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
+		leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
+		leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
+		rightSphereRitem->ObjCBIndex = objCBIndex++;
+		rightSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		rightSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
+		rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
+		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+
+		mAllRitems.push_back(std::move(leftCylRitem));
+		mAllRitems.push_back(std::move(rightCylRitem));
+		mAllRitems.push_back(std::move(leftSphereRitem));
+		mAllRitems.push_back(std::move(rightSphereRitem));
+	}*/
 
 	// All the render items are opaque.
-	//Our application will maintain lists of render items based on how they need to be
-	//drawn; that is, render items that need different PSOs will be kept in different lists.
 	for (auto& e : mAllRitems)
 		mOpaqueRitems.push_back(e.get());
 }

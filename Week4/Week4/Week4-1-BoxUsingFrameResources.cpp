@@ -1,8 +1,19 @@
-//***************************************************************************************
-// Box Using Frame Resources
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @file Week4-1-BoxUsingFrameResources.cpp
+ *  @brief Draw a box using FrameResources.
+ *
+ *   With frame resources, we modify our render loop so that we
+ *   do not have to flush the command queue every frame; this improves CPU and GPU utilization.
+ *   Because the CPU only needs to modify constant buffers in this demo, the frame
+ *   resource class only contains constant buffers
+ *   Then we create a render item and we divide up our constant data based on update frequency.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode. 
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -17,7 +28,7 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-//step3: Our application class will then instantiate a vector of three frame resources, 
+//step3: Our application class instantiates a vector of three frame resources, 
 const int gNumFrameResources = 3;
 
 // Step10: Lightweight structure stores parameters to draw a shape.  This will vary from app-to-app.
@@ -223,11 +234,13 @@ void ShapesApp::Update(const GameTimer& gt)
 	OnKeyboardInput(gt);
 	UpdateCamera(gt);
 
-	// Cycle through the circular frame resource array.
+	//! Cycle through the circular frame resource array.
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-	//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
+	//! this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!
+	//! Has the GPU finished processing the commands of the current frame resource. 
+	//! If not, wait until the GPU has completed commands up to this fence point.
 	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
 		std::wstring text2 = L"GPU Completed " + std::to_wstring(mFence->GetCompletedValue()) + L" but current fence is " + std::to_wstring(mCurrFrameResource->Fence) + L"\n";
@@ -383,12 +396,16 @@ void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 {
-	//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
-	//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
-	//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.
-	//if (GetAsyncKeyState('1') & 0x8000)
+	//! Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
+	//! If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, 
+	//! and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.
+	//! if (GetAsyncKeyState('1') & 0x8000) 
 
 	short key = GetAsyncKeyState('1');
+	//! you can use the virtual key code (0x31) for '1' as well
+	//! https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+	//! short key = GetAsyncKeyState(0x31); 
+
 	if (key & 0x8000)  //if one is pressed, 0x8000 = 32767 , key = -32767 = FFFFFFFFFFFF8001
 		mIsWireframe = true;
 	else
@@ -597,7 +614,7 @@ void ShapesApp::BuildShapeGeometry()
 	//GeometryGenerator is a utility class for generating simple geometric shapes like grids, sphere, cylinders, and boxes
 	GeometryGenerator geoGen;
 	//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertex and index list
-	GeometryGenerator::MeshData box = geoGen.CreateBox(2.0f, 2.0f, 2.0f, 0);
+	GeometryGenerator::MeshData box = geoGen.CreateBox(2.0f, 2.0f, 2.0f, 3);
 
 
 	//
