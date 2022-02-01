@@ -1,8 +1,30 @@
-//***************************************************************************************
-// Water
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @fileWeek 4-1-WavesApp.cpp
+ *  @brief Draw waves.
+ *   So far we have stored our vertices in a default buffer resource. We use this kind of
+ *   resource when we want to store static geometry.
+ *   A dynamic vertex buffer is where we change the vertex data frequently, say per-frame. For example, suppose we are
+ *   doing a wave simulation, and we solve the wave equation for the solution function f(x, z, t). 
+ *   This function represents the wave height at each point in the xz-plane at time t.
+ * 
+ *    We use our UploadBuffer class, but instead of storing an array of constant buffers, we store an array of vertices:
+ *		std::unique_ptr<UploadBuffer<Vertex>> WavesVB = nullptr;
+ *      WavesVB = std::make_unique<UploadBuffer<Vertex>>(device, waveVertCount, false);
+ *   Because we need to upload the new contents from the CPU to the wave’s dynamic vertex buffer every frame, 
+ *   the dynamic vertex buffer needs to be a frame resource.
+ *     
+ * 
+ *  @note we use root descriptors so that we can bind CBVs directly without having to
+ *   use a descriptor heap. Here are the changes that need to be made to do this:
+ *   1. The root signature needs to be changed to take two root CBVs instead of two descriptor tables.
+ *   2. No CBV heap is needed nor needs to be populated with descriptors.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -82,7 +104,7 @@ private:
 	void UpdateCamera(const GameTimer& gt);
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
-	//step2
+	//step3
 	void UpdateWaves(const GameTimer& gt);
 
 	//void BuildDescriptorHeaps();
@@ -117,7 +139,8 @@ private:
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	//step3
+	//step4 We save a reference to the wave render item (mWavesRitem) so that we
+	//can set its vertex buffer on the fly.
 	RenderItem* mWavesRitem = nullptr;
 
 	// List of all the render items.
@@ -408,7 +431,7 @@ void WavesApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-//step8: Update resources (cbuffers) in mCurrFrameResource
+//Update resources (cbuffers) in mCurrFrameResource
 void WavesApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
@@ -505,7 +528,7 @@ void WavesApp::BuildShadersAndInputLayout()
 	};
 }
 
-//step5
+//step6
 void WavesApp::BuildWavesGeometry()
 {
 	std::vector<std::uint16_t> indices(3 * mWaves->TriangleCount()); // 3 indices per face
@@ -605,7 +628,7 @@ void WavesApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
-//step6: build three frame resources
+//build three frame resources
 //FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT waveverticescount);
 
 void WavesApp::BuildFrameResources()
@@ -619,7 +642,7 @@ void WavesApp::BuildFrameResources()
 
 void WavesApp::BuildRenderItems()
 {
-	//step1
+	//step7
 	auto wavesRitem = std::make_unique<RenderItem>();
 	wavesRitem->World = MathHelper::Identity4x4();
 	wavesRitem->ObjCBIndex = 0;
@@ -670,7 +693,7 @@ float WavesApp::GetHillsHeight(float x, float z)const
 }
 
 
-//step5: Because we need to upload the new contents from the CPU to the wave’s dynamic
+//step8: Because we need to upload the new contents from the CPU to the wave’s dynamic
 //vertex buffer every frame, the dynamic vertex buffer needs to be a frame resource.
 //Otherwise we could overwrite the memory before the GPU has finished processing the last frame.
 void WavesApp::UpdateWaves(const GameTimer& gt)

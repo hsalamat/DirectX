@@ -1,8 +1,15 @@
-//***************************************************************************************
-// LandAndWavesApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
-//
-// Hold down '1' key to view scene in wireframe mode.
-//***************************************************************************************
+/** @file Week4-2-LandAndWavesApp.cpp
+ *  @brief Land & Waves Demo.
+ * 
+ *   Adding Land to Waves Demo.
+ * 
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
