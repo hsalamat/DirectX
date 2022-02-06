@@ -1,6 +1,13 @@
-//***************************************************************************************
-// LitCarApp.cpp Car + Grid are lit using 2 PSOs
-//***************************************************************************************
+/** @file Week5-6-LitCarAppWithGrid_2PSOs
+ *  @brief  Car + Grid are lit using 2 PSOs
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

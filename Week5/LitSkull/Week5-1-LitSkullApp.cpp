@@ -1,6 +1,17 @@
-//***************************************************************************************
-// LitSkullApp.cpp Parallel Light (Direct Light)
-//***************************************************************************************
+/** @file Week5-1-LitSkullApp.cpp
+ *  @brief Parallel Light (Directional Light) - Basic Blinn-Phong model, no attenuation!
+ *  A parallel light (or directional light) approximates a light source that is very far away.
+ *  Consequently, we can approximate all incoming light rays as parallel to each other. 
+ *  Moreover, because the light source is very far away, we can ignore the effects of
+ *  distance and just specify the light intensity where the light strikes the scene.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -95,8 +106,12 @@ private:
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
-	//step2
+	
+	//!step2:we allow material changes at the draw call frequency. To do this, we
+	//define the properties of each unique materialand put them in a table :
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
+
+
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
 
     std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
@@ -383,7 +398,9 @@ void SkullApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-//step5
+//! step5:In the update function, the material data is then copied to a subregion of the constant
+//buffer whenever it is changed(“dirty”) so that the GPU material constant buffer data is
+//kept up to date with the system memory material data
 void SkullApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
@@ -436,6 +453,10 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 
 	//step6
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+
+	//mMainPassCB.Lights[0].Direction = { 0.0f, 0.0f, -1.0f };
+	//mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.9f };
+
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
 	mMainPassCB.Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
 	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
@@ -456,7 +477,7 @@ void SkullApp::BuildRootSignature()
 	slotRootParameter[0].InitAsConstantBufferView(0);
 	slotRootParameter[1].InitAsConstantBufferView(1);
 
-	//step7
+	//! step7
 	slotRootParameter[2].InitAsConstantBufferView(2);
 
 	// A root signature is an array of root parameters.
@@ -490,7 +511,7 @@ void SkullApp::BuildShadersAndInputLayout()
     mInputLayout =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		//step8: note that we use DXGI_FORMAT_R32G32B32_FLOAT instead of DXGI_FORMAT_R32G32B32A32_FLOAT in color
+		//! step8: note that we use DXGI_FORMAT_R32G32B32_FLOAT instead of DXGI_FORMAT_R32G32B32A32_FLOAT in color
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     };
 }
@@ -534,10 +555,7 @@ void SkullApp::BuildSkullGeometry()
 
 	fin.close();
 
-	//
 	// Pack the indices of all the meshes into one index buffer.
-	//
-
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::int32_t);
@@ -604,14 +622,11 @@ void SkullApp::BuildPSOs()
 	opaquePsoDesc.DSVFormat = mDepthStencilFormat;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
-	//
 	// PSO for opaque wireframe objects.
-	//
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = opaquePsoDesc;
 	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
-
 }
 
 void SkullApp::BuildFrameResources()
@@ -623,6 +638,11 @@ void SkullApp::BuildFrameResources()
     }
 }
 
+
+//! The above table stores the material data in system memory. In order for the GPU to
+//! access the material data in a shader, we need to mirror the relevant data in a constant
+//! buffer.Just like we did with per - object constant buffers, we add a constant buffer to each
+//! FrameResource that will store the constants for each material:
 void SkullApp::BuildMaterials()
 {
 
@@ -630,8 +650,15 @@ void SkullApp::BuildMaterials()
 	skullMat->Name = "skullMat";
 	skullMat->MatCBIndex = 0;
 	skullMat->DiffuseSrvHeapIndex = 0;
+	//! The diffuse albedo specifies the amount of
+	//! incoming light that the surface reflects due to diffuse reflectance
 	skullMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	skullMat->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05);
+	//! How much light is reflected depends on the medium (some materials will be more reflective than others)
+	//! RF(0°) is a property of the medium (in this case:plastic)
+	skullMat->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f); 
+	//! Even if an object’s surface appears flat, at the microscopic level we can think of it as having roughness.
+	//! As the roughness increases, the direction of the micro - normals diverge from the macro - normal, causing the
+	//! reflected light to spread out into a specular lobe
 	skullMat->Roughness = 0.3f;
 	
 
@@ -645,6 +672,8 @@ void SkullApp::BuildRenderItems()
 	XMStoreFloat4x4(&skullRitem->World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));
 
 	skullRitem->ObjCBIndex = 0;
+	//step9: Now each render item contains a pointer to a Material. Note that multiple render
+	//items can refer to the same Material object
 	skullRitem->Mat = mMaterials["skullMat"].get();
 	skullRitem->Geo = mGeometries["skullGeo"].get();
 	skullRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -662,11 +691,11 @@ void SkullApp::BuildRenderItems()
 void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-	//step10
+	//! step10
     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
  
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
-	//step11
+	//! step11
 	auto matCB = mCurrFrameResource->MaterialCB->Resource();
 
     // For each render item...
@@ -679,7 +708,8 @@ void SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
         cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex*objCBByteSize;
-		//step12
+		//! step12: we can offset to the virtual address of the constant data needed for the render item we are drawing, and set it to
+		//! the root descriptor that expects the material constant data.
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
 
         cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);

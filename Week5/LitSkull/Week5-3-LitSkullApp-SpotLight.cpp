@@ -1,6 +1,15 @@
-//***************************************************************************************
-// LitSkullApp.cpp SpotLight
-//***************************************************************************************
+/** @file Week5-3-LitSkullApp-SpotLight
+ *  @brief SpotLight
+ *   A good physical example of a spotlight is a flashlight. Essentially, a spotlight has a
+ *   position Q, is aimed in a direction d, and radiates light through a cone.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -439,10 +448,10 @@ void SkullApp::UpdateMainPassCB(const GameTimer& gt)
 	//mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
 
 
-	mMainPassCB.Lights[0].Position = { 0.0f, 5.0f, -3.0f };
-	mMainPassCB.Lights[0].Direction = { 0.0f, -5.0f, 3.0f };
+	mMainPassCB.Lights[0].Position = { 0.0f, 5.0f, 0.0f };
+	mMainPassCB.Lights[0].Direction = { 0.0f, -5.0f, 0.0f };
 	mMainPassCB.Lights[0].Strength = { 0.35f, 0.35f, 0.35f };
-	mMainPassCB.Lights[0].SpotPower = 1.0;
+	mMainPassCB.Lights[0].SpotPower = 0.95;
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);

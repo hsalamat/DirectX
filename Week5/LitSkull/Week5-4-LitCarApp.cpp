@@ -1,6 +1,13 @@
-//***************************************************************************************
-// LitCarApp.cpp Car is lit using 3 direct lights
-//***************************************************************************************
+/** @file Week5-4-LitCarApp
+ *  @brief  Car is lit using 3 direct lights
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

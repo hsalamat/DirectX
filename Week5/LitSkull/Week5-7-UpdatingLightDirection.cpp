@@ -1,14 +1,22 @@
-﻿//***************************************************************************************
-// LitCarApp.cpp Car + Grid are lit using 2 PSOs with updating light direction
-//The demo uses one directional light to represent the sun, and allows the user to rotate the sun
-//position using the left, right, up, and down arrow keys.
-//So every frame, we need to
-//calculate the new light direction from the sun, and set it to the per - pass constant buffer.
-//We track the sun position in spherical coordinates(ρ, θ, ϕ), but the radius ρ does not
-//matter, because we assume the sun is infinitely far away.In particular, we just use ρ = 1 so
-//that it lies on the unit sphere and interpret(1, θ, ϕ) as the direction towards the sun.The
-//direction of the light is just the negative of the direction towards the sun.
-//***************************************************************************************
+﻿/** @file Week5-7-UpdatingLightDirection
+ *  @brief  Car + Grid are lit using 2 PSOs
+ *   The demo uses one directional light to represent the sun, and allows the user to rotate the sun
+ *   position using the left, right, up, and down arrow keys.
+ *   So every frame, we need to
+ *   calculate the new light direction from the sun, and set it to the per - pass constant buffer.
+ *   We track the sun position in spherical coordinates(ρ, θ, ϕ), but the radius ρ does not
+ *   matter, because we assume the sun is infinitely far away.In particular, we just use ρ = 1 so
+ *   that it lies on the unit sphere and interpret(1, θ, ϕ) as the direction towards the sun.The
+ *   direction of the light is just the negative of the direction towards the sun.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *   Rotate the light position using the left, right, up, and down arrow keys.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

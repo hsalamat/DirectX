@@ -1,6 +1,13 @@
-//***************************************************************************************
-// LitCarApp.cpp Car + Grid lit using 3 direct lights
-//***************************************************************************************
+/** @file Week5-5-LitCarAppWithGrid
+ *  @brief  Car is lit using 3 direct lights With Grid
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -757,9 +764,6 @@ void CarApp::BuildRenderItems()
 	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 	mAllRitems.push_back(std::move(gridRitem));
-
-	//mOpaqueRitems.push_back(car)
-
 
 	// All the render items are opaque.
 	for(auto& e : mAllRitems)

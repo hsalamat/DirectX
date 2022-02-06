@@ -1,6 +1,22 @@
-//***************************************************************************************
-// LitSkullApp.cpp - PointLight
-//***************************************************************************************
+/** @file Week5-2-LitSkullApp-PointLight.cpp
+ *  @brief PointLight
+ *   A good physical example of a point light is a lightbulb; it radiates spherically in all directions.
+ *   Essentially, the only difference between point lights and parallel lights is how the light
+ *   vector is computed—it varies from point to point for point lights, but remains constant for
+ *   parallel lights.
+ *   
+ *   Physically, light intensity weakens as a function of distance based on the inverse squared law. 
+ *   @note: However, an easier formula to get started with, and the one we use, is a linear falloff function!
+ *   Using our falloff function, a point whose distance from the light source 
+ *   is greater than or equal to falloffEnd receives no light. 
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
