@@ -1,6 +1,15 @@
-//***************************************************************************************
-// CrateApp.cpp using Linear Wrap
-//***************************************************************************************
+﻿/** @file Week5-6-CrateApp-Border2.cpp
+ *  @brief Texture Demo using Linear Filtering and Border Address Mode With different color!
+ *  @note: we can't use static sampler if we want a different border color!
+ *   We have to create a sampler desciptor and a heap where sampler descriptor resides!
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

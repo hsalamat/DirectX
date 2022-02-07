@@ -1,6 +1,23 @@
-//***************************************************************************************
-// CrateApp.cpp using Anisotrpic Sampler
-//***************************************************************************************
+﻿/** @file Week5-2-CrateApp-AnisotropicSampler.cpp
+ *  @brief Texture Demo using Anisotropic filtering !
+ *   What happens if we have texture coordinates (u, v) that do not coincide with one of the texel points?
+ *   There are three types of filtering: 1. Magnification 2. Minification 3. Anisotropic
+ *   (1) Given the texel points, we construct a piecewise constant
+ *    function to approximate values between the texel points; this is sometimes called
+ *    nearest neighbor point sampling, as the value of the nearest texel point is used.
+ *   (2) Given the texel points, we construct a piecewise linear function to approximate
+ *    values between texel points.
+ *   (3) The Anisotropic filter helps alleviate the distortion that occurs
+ *    when the angle between a polygon’s normal vector and
+ *    camera’s look vector is wide (e.g., when a polygon is orthogonal to the view window).
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -453,7 +470,7 @@ void CrateApp::LoadTextures()
 {
 	auto woodCrateTex = std::make_unique<Texture>();
 	woodCrateTex->Name = "woodCrateTex";
-	woodCrateTex->Filename = L"../../Textures/Bricks2.dds";
+	woodCrateTex->Filename = L"../../Textures/WoodCrate01.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), woodCrateTex->Filename.c_str(),
 		woodCrateTex->Resource, woodCrateTex->UploadHeap));

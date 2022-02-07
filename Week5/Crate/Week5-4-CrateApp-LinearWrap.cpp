@@ -1,6 +1,23 @@
-//***************************************************************************************
-// CrateApp.cpp using Linear Wrap
-//***************************************************************************************
+﻿/** @file Week5-4-CrateApp-LinearWrap.cpp
+ *  @brief Texture Demo using Linear Filtering and Wrap Address Mode !
+ *   A texture, combined with constant or linear interpolation, defines a vector-valued
+ *   function T(u, v) = (r, g, b, a). That is, given the texture coordinates (u, v) ∈ [0, 1]2 the
+ *   texture function T returns a color (r, g, b, a). Direct3D allows us to extend the domain of
+ *   this function in four different ways (called address modes): wrap, border color, clamp,
+ *   and mirror.
+ *   1. wrap extends the texture function by repeating the image at every integer junction
+ *   2. border color extends the texture function by mapping each (u, v) not in [0, 1]  to some color specified by the programmer
+ *   3. clamp extends the texture function by mapping each (u, v) not in [0, 1] to the color
+ *   T(u0, v0), where (u0, v0) is the nearest point to (u, v) contained in [0, 1]
+ *   4. mirror extends the texture function by mirroring the image at every integer junction
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

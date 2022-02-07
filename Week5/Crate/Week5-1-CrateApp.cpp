@@ -1,6 +1,22 @@
-//***************************************************************************************
-// CrateApp.cpp 
-//***************************************************************************************
+﻿/** @file Week5-1-CrateApp.cpp
+ *  @brief Texture Demo!
+ *   Texture mapping is a technique that allows us to map image data onto a triangle, 
+ *   thereby enabling us to increase the details and realism of our scene significantly. 
+ *   In this demo, we build a cube and turn it into a stone by mapping a stone texture on each side.
+ * 
+ *   @note: uv coordinates start from the upper left corner (v-axis is facing down).
+ *   st coordinates start from the lower left corner (t-axis is facing up).
+ *   Direct3D uses a texture coordinate system that consists of a u-axis that runs
+ *   horizontally to the image and a v-axis that runs vertically to the image. The coordinates,
+ *   (u, v) such that 0 ≤ u, v ≤ 1, identify an element on the texture called a texel.
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -43,7 +59,7 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
     // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     // DrawIndexedInstanced parameters.
     UINT IndexCount = 0;
@@ -466,7 +482,7 @@ void CrateApp::LoadTextures()
 {
 	auto woodCrateTex = std::make_unique<Texture>();
 	woodCrateTex->Name = "woodCrateTex";
-	woodCrateTex->Filename = L"../../Textures/WoodCrate01.dds";
+	woodCrateTex->Filename = L"../../Textures/stone.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), woodCrateTex->Filename.c_str(),
 		woodCrateTex->Resource, woodCrateTex->UploadHeap));
@@ -674,6 +690,8 @@ void CrateApp::BuildMaterials()
 	auto woodCrate = std::make_unique<Material>();
 	woodCrate->Name = "woodCrate";
 	woodCrate->MatCBIndex = 0;
+	//! We add an index to our material definition, which references an SRV in the descriptor
+	//! heap specifying the texture associated with the material :
 	woodCrate->DiffuseSrvHeapIndex = 0;
 	woodCrate->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	woodCrate->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
@@ -689,7 +707,7 @@ void CrateApp::BuildRenderItems()
 	boxRitem->ObjCBIndex = 0;
 	boxRitem->Mat = mMaterials["woodCrate"].get();
 	boxRitem->Geo = mGeometries["boxGeo"].get();
-	boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
@@ -724,7 +742,8 @@ void CrateApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
         D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->ObjCBIndex*objCBByteSize;
 		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
 
-		//step19
+		//step19: assuming the root signature has been defined to expect a table of shader
+		//resource views to be bound to the 0th slot parameter
 		cmdList->SetGraphicsRootDescriptorTable(0, tex);
         cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
         cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
