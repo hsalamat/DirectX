@@ -1,8 +1,20 @@
-//***************************************************************************************
-// Week6-5-BlendApp-Adding.cpp 
-//Additive Blending: Suppose that we want to add the source pixels with the destination pixels. 
-//Adding creates a brighter image since color is being added.
-//***************************************************************************************
+/** @file Week6-4-BlendApp-Multiplying.cpp 
+ *  @brief Multiplicative Blending
+ *   Suppose that we want to multiply a source pixel with its corresponding destination pixel. 
+ *   To do this, we set 
+ *	 source blend factor : D3D12_BLEND_ZERO,
+ *	 destination blend factor : D3D12_BLEND_SRC_COLOR,
+ *	 the blend operator : D3D12_BLEND_OP_ADD.
+ *	 With this setup, the blending equation reduces to source pixel RGB * destination pixel 
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -876,15 +888,16 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
-	//Suppose that we want to add the source pixels with the destination pixels.
-	//To do this,
-	//source blend factor : D3D12_BLEND_ONE,
-	//destination blend factor = D3D12_BLEND_ONE,
-	//blend operator =  D3D12_BLEND_OP_ADD.
-	//The following adds source and destination color. Adding creates a brighter image since color is being added.
 	//step1
-	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ONE;
-	transparencyBlendDesc.DestBlend = D3D12_BLEND_ONE;
+	//Multiplying: Suppose that we want to multiply a source pixel with its corresponding destination pixel. To do this, we set 
+	//source blend factor : D3D12_BLEND_ZERO,
+	//destination blend factor : D3D12_BLEND_SRC_COLOR,
+	//the blend operator : D3D12_BLEND_OP_ADD.
+	//With this setup, the blending equation reduces to :
+
+
+	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ZERO;
+	transparencyBlendDesc.DestBlend = D3D12_BLEND_SRC_COLOR;
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,
 
 	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;  //default

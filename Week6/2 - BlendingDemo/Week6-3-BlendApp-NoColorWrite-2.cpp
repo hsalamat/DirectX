@@ -1,9 +1,19 @@
-//***************************************************************************************
-// Week6-2-BlendApp-NoColorWrite.cpp 
-//Suppose that we want to keep the original destination pixel exactly as it is and not
-//overwrite it or blend it with the source pixel currently being rasterized.This can be useful,
-//for example, if you just want to write to the depth / stencil buffer, and not the back buffer.
-//***************************************************************************************
+/** @file Week6-3-BlendApp-NoColorWrite2.cpp
+ *  @brief No Color Write blending by setting RenderTargetWriteMask to zero
+ *   Suppose that we want to keep the original destination pixel exactly as it is and not
+ *   overwrite it or blend it with the source pixel currently being rasterized.This can be useful,
+ *   for example, if you just want to write to the depth / stencil buffer, and not the back buffer.
+ *   //transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+ *   transparencyBlendDesc.RenderTargetWriteMask = 0;
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -877,20 +887,23 @@ void BlendApp::BuildPSOs()
 	transparencyBlendDesc.BlendEnable = true;
 	transparencyBlendDesc.LogicOpEnable = false;
 
-	//step1
 	//No Color Write: To do this, set the source pixel blend factor to D3D12_BLEND_ZERO, the destination
 	//blend factor to D3D12_BLEND_ONE, and the blend operator to D3D12_BLEND_OP_ADD.
+	//But another way to implement the same thing would be to set
+	//the D3D12_RENDER_TARGET_BLEND_DESC::RenderTargetWriteMask member to 0, 
+	//so that none of the color channels are written to.
 
-	transparencyBlendDesc.SrcBlend = D3D12_BLEND_ZERO;
-	transparencyBlendDesc.DestBlend = D3D12_BLEND_ONE;
+	transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD,
 
-	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ZERO;
-	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ONE;
+	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-	transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_BLUE;
+	//step1
+	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	transparencyBlendDesc.RenderTargetWriteMask = 0;
 	//Direct3D supports rendering to up to eight render targets simultaneously.
 	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
