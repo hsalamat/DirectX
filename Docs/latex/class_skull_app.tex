@@ -155,7 +155,7 @@ void \textbf{ Update\+Camera} (const \textbf{ Game\+Timer} \&gt)
 void \textbf{ Update\+Object\+CBs} (const \textbf{ Game\+Timer} \&gt)
 \item 
 void \textbf{ Update\+Material\+CBs} (const \textbf{ Game\+Timer} \&gt)
-\item 
+\begin{DoxyCompactList}\small\item\em step5\+:In the update function, the material data is then copied to a subregion of the constant \end{DoxyCompactList}\item 
 void \textbf{ Update\+Main\+Pass\+CB} (const \textbf{ Game\+Timer} \&gt)
 \item 
 void \textbf{ Build\+Root\+Signature} ()
@@ -169,7 +169,7 @@ void \textbf{ Build\+PSOs} ()
 void \textbf{ Build\+Frame\+Resources} ()
 \item 
 void \textbf{ Build\+Materials} ()
-\item 
+\begin{DoxyCompactList}\small\item\em The above table stores the material data in system memory. \end{DoxyCompactList}\item 
 void \textbf{ Build\+Render\+Items} ()
 \item 
 void \textbf{ Draw\+Render\+Items} (ID3\+D12\+Graphics\+Command\+List $\ast$cmd\+List, const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&ritems)
@@ -298,7 +298,7 @@ float \textbf{ m\+Radius} = 25.\+0f
 POINT \textbf{ m\+Last\+Mouse\+Pos}
 \item 
 std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \textbf{ Material} $>$ $>$ \textbf{ m\+Materials}
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em step2\+:we allow material changes at the draw call frequency. To do this, we \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
 
@@ -473,7 +473,15 @@ Definition at line \textbf{ 786} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+De
 
 
 
-Definition at line \textbf{ 626} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
+The above table stores the material data in system memory. 
+
+In order for the GPU to access the material data in a shader, we need to mirror the relevant data in a constant buffer.\+Just like we did with per -\/ object constant buffers, we add a constant buffer to each \doxyref{Frame\+Resource}{p.}{struct_frame_resource} that will store the constants for each material\+: The diffuse albedo specifies the amount of incoming light that the surface reflects due to diffuse reflectance
+
+How much light is reflected depends on the medium (some materials will be more reflective than others) RF(0°) is a property of the medium (in this case\+:plastic)
+
+Even if an object’s surface appears flat, at the microscopic level we can think of it as having roughness. As the roughness increases, the direction of the micro -\/ normals diverge from the macro -\/ normal, causing the reflected light to spread out into a specular lobe
+
+Definition at line \textbf{ 646} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
 
 \mbox{\label{class_skull_app_ab3c9d7bbe08500891c64fca37fa667e2}} 
 \index{SkullApp@{SkullApp}!BuildMaterials@{BuildMaterials}}
@@ -561,7 +569,7 @@ Definition at line \textbf{ 795} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+De
 \doxysubsubsection{BuildRootSignature()\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
 {\footnotesize\ttfamily void Skull\+App\+::\+Build\+Root\+Signature (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-
+step7
 
 Definition at line \textbf{ 518} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+Descriptor\+Table.\+cpp}.
 
@@ -595,7 +603,7 @@ Definition at line \textbf{ 518} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+De
 \doxysubsubsection{BuildShadersAndInputLayout()\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
 {\footnotesize\ttfamily void Skull\+App\+::\+Build\+Shaders\+And\+Input\+Layout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-
+step8\+: note that we use DXGI\+\_\+\+FORMAT\+\_\+\+R32\+G32\+B32\+\_\+\+FLOAT instead of DXGI\+\_\+\+FORMAT\+\_\+\+R32\+G32\+B32\+A32\+\_\+\+FLOAT in color
 
 Definition at line \textbf{ 562} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+Descriptor\+Table.\+cpp}.
 
@@ -727,7 +735,11 @@ Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59
 \doxysubsubsection{DrawRenderItems()\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
 {\footnotesize\ttfamily void Skull\+App\+::\+Draw\+Render\+Items (\begin{DoxyParamCaption}\item[{ID3\+D12\+Graphics\+Command\+List $\ast$}]{cmd\+List,  }\item[{const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&}]{ritems }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
+step10
 
+step11
+
+step12\+: we can offset to the virtual address of the constant data needed for the render item we are drawing, and set it to the root descriptor that expects the material constant data.
 
 Definition at line \textbf{ 813} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+Descriptor\+Table.\+cpp}.
 
@@ -1219,7 +1231,11 @@ Definition at line \textbf{ 419} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+De
 
 
 
-Definition at line \textbf{ 387} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
+step5\+:In the update function, the material data is then copied to a subregion of the constant 
+
+
+
+Definition at line \textbf{ 404} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
 
 \mbox{\label{class_skull_app_a7414c8a32cc702a4bb09ef202d8283d5}} 
 \index{SkullApp@{SkullApp}!UpdateMaterialCBs@{UpdateMaterialCBs}}
@@ -1388,7 +1404,11 @@ Definition at line \textbf{ 127} of file \textbf{ Week4-\/1-\/\+Skull\+Using\+De
 
 
 
-Definition at line \textbf{ 99} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
+step2\+:we allow material changes at the draw call frequency. To do this, we 
+
+
+
+Definition at line \textbf{ 112} of file \textbf{ Week5-\/1-\/\+Lit\+Skull\+App.\+cpp}.
 
 \mbox{\label{class_skull_app_a1e0d06c6d396de8433282323bc15f3ef}} 
 \index{SkullApp@{SkullApp}!mOpaqueRitems@{mOpaqueRitems}}

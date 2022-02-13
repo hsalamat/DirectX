@@ -148,9 +148,9 @@ virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
 \item 
 virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
 \item 
-void \textbf{ Build\+Root\+Signature} ()
-\item 
 void \textbf{ Build\+Shaders\+And\+Input\+Layout} ()
+\item 
+void \textbf{ Build\+Root\+Signature} ()
 \item 
 void \textbf{ Build\+Triangle\+Geometry} ()
 \item 
@@ -219,7 +219,7 @@ virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
 virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
 \item 
 void \textbf{ Build\+Descriptor\+Heaps} ()
-\item 
+\begin{DoxyCompactList}\small\item\em step3 \end{DoxyCompactList}\item 
 void \textbf{ Build\+Constant\+Buffers} ()
 \item 
 void \textbf{ Build\+Root\+Signature} ()
@@ -356,17 +356,17 @@ void \textbf{ Build\+PSO} ()
 \begin{DoxyCompactItemize}
 \item 
 Com\+Ptr$<$ ID3\+D12\+Resource $>$ \textbf{ m\+Vertex\+Buffer}
-\item 
+\begin{DoxyCompactList}\small\item\em step3\+: In order for the GPU to access an array of vertices, they need to be placed in a GPU resource(\+ID3\+D12\+Resource) called a buffer. \end{DoxyCompactList}\item 
 D3\+D12\+\_\+\+VERTEX\+\_\+\+BUFFER\+\_\+\+VIEW \textbf{ m\+Vertex\+Buffer\+View}
 \item 
 Com\+Ptr$<$ ID3\+D12\+Root\+Signature $>$ \textbf{ m\+Root\+Signature} = nullptr
 \item 
 Com\+Ptr$<$ ID3\+DBlob $>$ \textbf{ mvs\+Byte\+Code} = nullptr
-\item 
+\begin{DoxyCompactList}\small\item\em The ID3\+DBlob interface is used to return data of arbitrary length. It\textquotesingle{}s contained in D3dcompiler.\+lib. \end{DoxyCompactList}\item 
 Com\+Ptr$<$ ID3\+DBlob $>$ \textbf{ mps\+Byte\+Code} = nullptr
 \item 
 std\+::vector$<$ D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC $>$ \textbf{ m\+Input\+Layout}
-\item 
+\begin{DoxyCompactList}\small\item\em Once we have defined a vertex structure, we need to provide Direct3D with a description of our vertex structure so that it knows what to do with each component. \end{DoxyCompactList}\item 
 Com\+Ptr$<$ ID3\+D12\+Pipeline\+State $>$ \textbf{ m\+PSO} = nullptr
 \item 
 std\+::array$<$ \textbf{ Vertex}, 3 $>$ \textbf{ vertices}
@@ -378,11 +378,11 @@ std\+::array$<$ \textbf{ Vertex}, 10 $>$ \textbf{ vertices}
 std\+::unique\+\_\+ptr$<$ \textbf{ Mesh\+Geometry} $>$ \textbf{ m\+Box\+Geo} = nullptr
 \item 
 Com\+Ptr$<$ ID3\+D12\+Descriptor\+Heap $>$ \textbf{ m\+Cbv\+Heap} = nullptr
-\item 
+\begin{DoxyCompactList}\small\item\em step4 \end{DoxyCompactList}\item 
 std\+::unique\+\_\+ptr$<$ \textbf{ Upload\+Buffer}$<$ \textbf{ Object\+Constants} $>$ $>$ \textbf{ m\+Object\+CB} = nullptr
 \item 
 XMFLOAT4\+X4 \textbf{ m\+World} = \textbf{ Math\+Helper\+::\+Identity4x4}()
-\item 
+\begin{DoxyCompactList}\small\item\em step5 \end{DoxyCompactList}\item 
 XMFLOAT4\+X4 \textbf{ m\+View} = \textbf{ Math\+Helper\+::\+Identity4x4}()
 \item 
 XMFLOAT4\+X4 \textbf{ m\+Proj} = \textbf{ Math\+Helper\+::\+Identity4x4}()
@@ -393,9 +393,9 @@ float \textbf{ m\+Phi} = XM\+\_\+\+PIDIV4
 \item 
 float \textbf{ m\+Radius} = 5.\+0f
 \item 
-POINT \textbf{ m\+Last\+Mouse\+Pos}
-\item 
 float \textbf{ m\+Theta2} = 0.\+0f
+\begin{DoxyCompactList}\small\item\em step1 \end{DoxyCompactList}\item 
+POINT \textbf{ m\+Last\+Mouse\+Pos}
 \item 
 Com\+Ptr$<$ ID3\+DBlob $>$ \textbf{ mgs\+Byte\+Code} = nullptr
 \item 
@@ -409,7 +409,7 @@ Com\+Ptr$<$ ID3\+D12\+Pipeline\+State $>$ \textbf{ m\+Wireframe\+PSO} = nullptr
 \doxysubsection{Detailed Description}
 
 
-Definition at line \textbf{ 19} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 27} of file \textbf{ Triangle0.\+cpp}.
 
 
 
@@ -422,7 +422,7 @@ Definition at line \textbf{ 19} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 84} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 98} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a102fb6ff542cb9440496753c1d3926c5}} 
 \index{TriangleAPP@{TriangleAPP}!TriangleAPP@{TriangleAPP}}
@@ -438,7 +438,7 @@ Definition at line \textbf{ 84} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 90} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 104} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_afef97e57945bb6968b9688a6c99adcc4}} 
 \index{TriangleAPP@{TriangleAPP}!TriangleAPP@{TriangleAPP}}
@@ -667,7 +667,7 @@ Definition at line \textbf{ 90} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 435} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
+Definition at line \textbf{ 434} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_af7d88b9a9b7685618cd809b3563a08ea}} 
 \index{TriangleAPP@{TriangleAPP}!BuildConstantBuffers@{BuildConstantBuffers}}
@@ -713,7 +713,11 @@ Definition at line \textbf{ 435} of file \textbf{ Triangle5-\/constantbuffer.\+c
 
 
 
-Definition at line \textbf{ 424} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
+step3 
+
+step6 
+
+Definition at line \textbf{ 423} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_af2a257f73e77cd7ae8b9edd3932a55fd}} 
 \index{TriangleAPP@{TriangleAPP}!BuildDescriptorHeaps@{BuildDescriptorHeaps}}
@@ -757,9 +761,9 @@ Definition at line \textbf{ 424} of file \textbf{ Triangle5-\/constantbuffer.\+c
 \doxysubsubsection{BuildPSO()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Build\+PSO (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
+Fills a block of memory with zeros.
 
-
-Definition at line \textbf{ 309} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 329} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a07d94a5cf02586f8b60f6d80eca19801}} 
 \index{TriangleAPP@{TriangleAPP}!BuildPSO@{BuildPSO}}
@@ -839,9 +843,14 @@ Definition at line \textbf{ 309} of file \textbf{ Triangle0.\+cpp}.
 \doxysubsubsection{BuildRootSignature()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Build\+Root\+Signature (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
+Shader programs typically require resources as input (constant buffers, textures, samplers). The root signature defines the resources the shader programs expect. If we think of the shader programs as a function, and the input resources as function parameters, then the root signature can be thought of as defining the function signature. ~\newline
 
 
-Definition at line \textbf{ 204} of file \textbf{ Triangle0.\+cpp}.
+A root signature is an array of root parameters. We have no parameters yet, hence 0!
+
+create a root signature with no slot for now!
+
+Definition at line \textbf{ 228} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a28d5aed5ffc87b0c44313f9c04e5b6a9}} 
 \index{TriangleAPP@{TriangleAPP}!BuildRootSignature@{BuildRootSignature}}
@@ -921,9 +930,9 @@ Definition at line \textbf{ 204} of file \textbf{ Triangle0.\+cpp}.
 \doxysubsubsection{BuildShadersAndInputLayout()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Build\+Shaders\+And\+Input\+Layout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
+step2
 
-
-Definition at line \textbf{ 238} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 258} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a4f65c7069f501aae800b228200b30c5f}} 
 \index{TriangleAPP@{TriangleAPP}!BuildShadersAndInputLayout@{BuildShadersAndInputLayout}}
@@ -1003,9 +1012,21 @@ Definition at line \textbf{ 238} of file \textbf{ Triangle0.\+cpp}.
 \doxysubsubsection{BuildTriangleGeometry()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Build\+Triangle\+Geometry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
+Define the geometry for a triangle.
 
+Note\+: using upload heaps to transfer static data like vert buffers is not recommended. Every time the GPU needs it, the upload heap will be marshalled over. An upload heap is used here for code simplicity and because there are very few verts to actually transfer. For static geometry (i.\+e., geometry that does not change on a per-\/frame basis), we put vertex buffers in the default heap(\+D3\+D12\+\_\+\+HEAP\+\_\+\+TYPE\+\_\+\+DEFAULT) for optimal performance.
 
-Definition at line \textbf{ 266} of file \textbf{ Triangle0.\+cpp}.
+Copy the triangle data to the vertex buffer.
+
+We do not intend to read from this resource on the CPU.
+
+allocates a CPU virtual address range for the resource.
+
+Copies the values of num bytes from the location pointed to by vertices directly to the memory block pointed to by p\+Vertex\+Data\+Begin.
+
+Initialize the vertex buffer view.
+
+Definition at line \textbf{ 286} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a20cb93cfee183b09c754b602ad0282ee}} 
 \index{TriangleAPP@{TriangleAPP}!BuildTriangleGeometry@{BuildTriangleGeometry}}
@@ -1085,13 +1106,27 @@ Definition at line \textbf{ 266} of file \textbf{ Triangle0.\+cpp}.
 \doxysubsubsection{Draw()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Draw (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
 
+You cannot render without a view port. viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels. also you use viewport to map to subportion of the render target (like top left rectangle of your screen) also notice viewport(s), because you can have an array of view ports! \& is pointing to the address of the first viewport Uncomment the following line to see how viewport works
 
+Each scissor rectangle in the array corresponds to a viewport in an array of viewports Uncomment the following line to see how scissor works
+
+step5
+
+there used to a \doxyref{Draw()}{p.}{class_triangle_a_p_p_a32ec9cd0dcf0183f7a5d2f24a872f07b} function where we used to have vertices address as a parameter. PSO took care of this for us. Now we have different PSO for different sets of objects.
+
+Done recording commands.
+
+Add the command list to the queue for execution.
+
+swap the back and front buffers HRESULT Present(\+UINT Sync\+Interval,\+UINT Flags); Sync\+Interval\+: 0 -\/ The presentation occurs immediately, there is no synchronization. Flags defined by the DXGI\+\_\+\+PRESENT constants. 0\+: Present a frame from each buffer (starting with the current buffer) to the output.
+
+Wait until frame commands are complete. This waiting is inefficient and is done for simplicity. Later we will show how to organize our rendering code so we do not have to wait per frame.
 
 Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59edf2bc95e5e6a}.
 
 
 
-Definition at line \textbf{ 131} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 144} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a619562cc39bc4630eefb1b658ea37f61}} 
 \index{TriangleAPP@{TriangleAPP}!Draw@{Draw}}
@@ -1219,13 +1254,13 @@ Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59
 \doxysubsubsection{Initialize()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily bool Triangle\+APP\+::\+Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
 
-
+step4 Reset the command list to prep for initialization commands.
 
 Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a961fa79170dcbde858923a5250c322be}.
 
 
 
-Definition at line \textbf{ 94} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 108} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a8a19d524d41a5d3d1a86a136f7794a24}} 
 \index{TriangleAPP@{TriangleAPP}!Initialize@{Initialize}}
@@ -1359,7 +1394,7 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd015
 
 
 
-Definition at line \textbf{ 119} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 132} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a16ca94bd3f6a370977cceb23f987ee02}} 
 \index{TriangleAPP@{TriangleAPP}!OnResize@{OnResize}}
@@ -1565,13 +1600,18 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd015
 \doxysubsubsection{Update()\hspace{0.1cm}{\footnotesize\ttfamily [1/13]}}
 {\footnotesize\ttfamily void Triangle\+APP\+::\+Update (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
 
+step8\+: update the constant buffer
+
+Update the constant buffer with the latest world\+View\+Proj matrix. \begin{DoxyNote}{Note}
+that CPU matrix is row major , but GPU is column major. That\textquotesingle{}s why we need to transpose our matrix before sending it to GPU. the other way is to add \char`\"{}row\+\_\+major\char`\"{} attribute next to \char`\"{}matrix\char`\"{} data type in the shader itself. XMStore\+Float4x4(\&obj\+Constants.\+World\+View\+Proj, world\+View\+Proj);
+\end{DoxyNote}
 
 
 Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_ae31029e118e14ee3ae4649f1c6f8d2dd}.
 
 
 
-Definition at line \textbf{ 126} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 139} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a281e67605c03c9bb4ad8258f8bbaf6f8}} 
 \index{TriangleAPP@{TriangleAPP}!Update@{Update}}
@@ -1714,7 +1754,11 @@ Definition at line \textbf{ 47} of file \textbf{ Triangle4-\/meshgeo.\+cpp}.
 
 
 
-Definition at line \textbf{ 63} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
+step4 
+
+
+
+Definition at line \textbf{ 64} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a0486123a12b11344056f7b19e2cd026d}} 
 \index{TriangleAPP@{TriangleAPP}!mgsByteCode@{mgsByteCode}}
@@ -1734,7 +1778,11 @@ Definition at line \textbf{ 65} of file \textbf{ Week7-\/0-\/\+Triangle\+With\+A
 
 
 
-Definition at line \textbf{ 52} of file \textbf{ Triangle0.\+cpp}.
+Once we have defined a vertex structure, we need to provide Direct3D with a description of our vertex structure so that it knows what to do with each component. 
+
+This description is provided to Direct3D in the form of an input layout description which is represented by the D3\+D12\+\_\+\+INPUT\+\_\+\+LAYOUT\+\_\+\+DESC structure \+: 
+
+Definition at line \textbf{ 67} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a9f0f75b0a6acd430cdfe0741fe38fb0c}} 
 \index{TriangleAPP@{TriangleAPP}!mLastMousePos@{mLastMousePos}}
@@ -1744,7 +1792,7 @@ Definition at line \textbf{ 52} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 84} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
+Definition at line \textbf{ 81} of file \textbf{ Triangle6-\/rotationtransformation.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_ae2ce3ada9b47142ae156195f9ed2773a}} 
 \index{TriangleAPP@{TriangleAPP}!mObjectCB@{mObjectCB}}
@@ -1754,7 +1802,7 @@ Definition at line \textbf{ 84} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 64} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
+Definition at line \textbf{ 65} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a2ac699be0774120a5158f61f6284d504}} 
 \index{TriangleAPP@{TriangleAPP}!mPhi@{mPhi}}
@@ -1784,7 +1832,7 @@ Definition at line \textbf{ 78} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 50} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 61} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a4e399c0b9ed0313c1af2df4a88d99ed2}} 
 \index{TriangleAPP@{TriangleAPP}!mPSO@{mPSO}}
@@ -1794,7 +1842,7 @@ Definition at line \textbf{ 50} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 54} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 69} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a867dd8131e7e37d7ede95880721a044b}} 
 \index{TriangleAPP@{TriangleAPP}!mpsWByteCode@{mpsWByteCode}}
@@ -1824,7 +1872,7 @@ Definition at line \textbf{ 82} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 46} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 57} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_ab05555f82deacd28ccb11059fe4b5490}} 
 \index{TriangleAPP@{TriangleAPP}!mTheta@{mTheta}}
@@ -1844,7 +1892,11 @@ Definition at line \textbf{ 80} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 77} of file \textbf{ Triangle6-\/rotationtransformation.\+cpp}.
+step1 
+
+
+
+Definition at line \textbf{ 78} of file \textbf{ Triangle6-\/rotationtransformation.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_aa96993e7f8ea13762f25dbda6afe94f5}} 
 \index{TriangleAPP@{TriangleAPP}!mVertexBuffer@{mVertexBuffer}}
@@ -1854,7 +1906,11 @@ Definition at line \textbf{ 77} of file \textbf{ Triangle6-\/rotationtransformat
 
 
 
-Definition at line \textbf{ 42} of file \textbf{ Triangle0.\+cpp}.
+step3\+: In order for the GPU to access an array of vertices, they need to be placed in a GPU resource(\+ID3\+D12\+Resource) called a buffer. 
+
+We call a buffer that stores vertices a vertex buffer. Buffers are simpler resources than textures; they are not multidimensional, and do not have mipmaps, filters, or multisampling support.\+We will use buffers whenever we need to provide the GPU with an array of data elements such as vertices. 
+
+Definition at line \textbf{ 54} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a2438af35483f1dc7733c89b34f86b03e}} 
 \index{TriangleAPP@{TriangleAPP}!mVertexBufferView@{mVertexBufferView}}
@@ -1864,7 +1920,7 @@ Definition at line \textbf{ 42} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 43} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 55} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a2ecfdaf851b02d7305951d89d93c79bf}} 
 \index{TriangleAPP@{TriangleAPP}!mView@{mView}}
@@ -1884,7 +1940,11 @@ Definition at line \textbf{ 77} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 49} of file \textbf{ Triangle0.\+cpp}.
+The ID3\+DBlob interface is used to return data of arbitrary length. It\textquotesingle{}s contained in D3dcompiler.\+lib. 
+
+
+
+Definition at line \textbf{ 60} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_ae6c93a5b4ea752f7a73438a4a0230b98}} 
 \index{TriangleAPP@{TriangleAPP}!mWireframePSO@{mWireframePSO}}
@@ -1904,6 +1964,10 @@ Definition at line \textbf{ 70} of file \textbf{ Week7-\/2-\/\+SV\+\_\+\+Vertex\
 
 
 
+step5 
+
+
+
 Definition at line \textbf{ 76} of file \textbf{ Triangle5-\/constantbuffer.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a56500d26324c31b1d3a5bd892d23eb05}} 
@@ -1914,7 +1978,7 @@ Definition at line \textbf{ 76} of file \textbf{ Triangle5-\/constantbuffer.\+cp
 
 
 
-Definition at line \textbf{ 57} of file \textbf{ Triangle0.\+cpp}.
+Definition at line \textbf{ 71} of file \textbf{ Triangle0.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_ae38f57d88d7fededd5ffb2e944570b65}} 
 \index{TriangleAPP@{TriangleAPP}!vertices@{vertices}}
@@ -1924,7 +1988,7 @@ Definition at line \textbf{ 57} of file \textbf{ Triangle0.\+cpp}.
 
 
 
-Definition at line \textbf{ 58} of file \textbf{ Triangle1-\/backfaceculling.\+cpp}.
+Definition at line \textbf{ 66} of file \textbf{ Triangle1-\/backfaceculling.\+cpp}.
 
 \mbox{\label{class_triangle_a_p_p_a39896cadf4b744d304c03f3b52cd07a8}} 
 \index{TriangleAPP@{TriangleAPP}!vertices@{vertices}}
@@ -1934,5 +1998,5 @@ Definition at line \textbf{ 58} of file \textbf{ Triangle1-\/backfaceculling.\+c
 
 
 
-Definition at line \textbf{ 57} of file \textbf{ Triangle2-\/line.\+cpp}.
+Definition at line \textbf{ 54} of file \textbf{ Triangle2-\/line.\+cpp}.
 

@@ -1,11 +1,16 @@
 \doxysection{Week3/\+Week3-\/1-\/\+Triangle\+Step\+By\+Step/\+Triangle1-\/backfaceculling.cpp File Reference}
 \label{_triangle1-backfaceculling_8cpp}\index{Week3/Week3-\/1-\/TriangleStepByStep/Triangle1-\/backfaceculling.cpp@{Week3/Week3-\/1-\/TriangleStepByStep/Triangle1-\/backfaceculling.cpp}}
+
+
+Backface culling!  
+
+
 {\ttfamily \#include \char`\"{}../../\+Common/d3d\+App.\+h\char`\"{}}\newline
 \doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
 struct \textbf{ Vertex}
-\item 
+\begin{DoxyCompactList}\small\item\em step1. To create a custom vertex format, we first create a structure that holds the vertex data we choose \end{DoxyCompactList}\item 
 class \textbf{ Triangle\+APP}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
@@ -13,6 +18,22 @@ class \textbf{ Triangle\+APP}
 \item 
 int WINAPI \textbf{ Win\+Main} (HINSTANCE h\+Instance, HINSTANCE prev\+Instance, PSTR cmd\+Line, int show\+Cmd)
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Backface culling! 
+
+By default, Direct3D treats triangles with a clockwise winding order (with respect to the viewer) as front-\/facing, and triangles with a counterclockwise winding order (with respect to the viewer) as back-\/facing.
+
+why don\textquotesingle{}t we see this triangle? because you are setting up the vertices counterclockwise! by default, system does backface culling \doxyref{Vertex}{p.}{struct_vertex}(\{ XMFLOAT3(+0.\+5f, +1.\+0f, 0.\+0f)\}), \doxyref{Vertex}{p.}{struct_vertex}(\{ XMFLOAT3(+0.\+5f, +0.\+5f, 0.\+0f) \}), \doxyref{Vertex}{p.}{struct_vertex}(\{ XMFLOAT3(+1.\+0f, +0.\+5f, 0.\+0f) \}),
+
+\begin{DoxyAuthor}{Author}
+Hooman Salamat 
+\end{DoxyAuthor}
+
+
+Definition in file \textbf{ Triangle1-\/backfaceculling.\+cpp}.
+
 
 
 \doxysubsection{Function Documentation}
@@ -24,5 +45,5 @@ int WINAPI \textbf{ Win\+Main} (HINSTANCE h\+Instance, HINSTANCE prev\+Instance,
 
 
 
-Definition at line \textbf{ 62} of file \textbf{ Triangle1-\/backfaceculling.\+cpp}.
+Definition at line \textbf{ 70} of file \textbf{ Triangle1-\/backfaceculling.\+cpp}.
 

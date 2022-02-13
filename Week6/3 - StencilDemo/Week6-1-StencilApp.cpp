@@ -1,6 +1,19 @@
-//***************************************************************************************
-// StencilApp.cpp no shadow!
-//***************************************************************************************
+/** @file Week6-1-StencilApp.cpp
+ *  @brief Stencil Demo
+ *   Rendering the mirror to the stencil buffer, essentially marks the pixels in the stencil buffer 
+ *   that correspond to the visible parts of the mirror.
+ *   The solid black area on the stencil buffer denotes stencil entries set to 1. 
+ *  @note the area on the stencil buffer occluded by the box(or skull) does not get set to 1 since it fails the depth test (because the box or skull is in front of that part of the mirror).
+ *   It is important to draw the mirror to the stencil buffer after we have drawn the skull(box) so that pixels of the mirror occluded by the skull fail the depth test, and therefore do not modify the stencil buffer. We do not want to turn on parts of the stencil buffer that are occluded; otherwise the reflection will show through the skull.
+ *
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -174,6 +187,8 @@ StencilApp::StencilApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
 {
 	mMainWndCaption = L"Stencil Demo";
+	mClientWidth = 1200;
+	mClientHeight = 1200;
 }
 
 StencilApp::~StencilApp()

@@ -1,6 +1,28 @@
-//***************************************************************************************
-// StencilApp.cpp with shadow
-//***************************************************************************************
+/** @file Week6-2-StencilApp-Shadows.cpp
+ *  @brief Shadow Demo
+ *  
+ *  When we flatten out the geometry of an object onto the plane to describe its shadow, 
+ *  it is possible (and in fact likely) that two or more of the flattened triangles will overlap.
+ *
+ *  // Update shadow world matrix.
+ *  XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // xz plane
+ *  XMVECTOR toMainLight = -XMLoadFloat3(&mMainPassCB.Lights[0].Direction);
+ *  XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
+ *  XMMATRIX shadowOffsetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+ *  XMStoreFloat4x4(&mShadowedSkullRitem->World, skullWorld * S * shadowOffsetY);
+ *
+ *  @note: Note that we offset the projected shadow mesh along the y-axis by a small amount to
+ *  prevent z-fighting so the shadow mesh does not intersect the floor mesh
+
+ *  @note We then draw the skull shadow with the shadow PSO with a StencilRef value of 0
+ *
+ *   Controls:
+ *   Hold down '1' key to view scene in wireframe mode.
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

@@ -1,1236 +1,1235 @@
 \doxysection{Week6-\/1-\/\+Stencil\+App.cpp}
-\label{_week6-1-_stencil_app_8cpp_source}\index{Week6/4 -\/ StencilDemo/Week6-\/1-\/StencilApp.cpp@{Week6/4 -\/ StencilDemo/Week6-\/1-\/StencilApp.cpp}}
+\label{_week6-1-_stencil_app_8cpp_source}\index{Week6/3 -\/ StencilDemo/Week6-\/1-\/StencilApp.cpp@{Week6/3 -\/ StencilDemo/Week6-\/1-\/StencilApp.cpp}}
 \textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// StencilApp.cpp no shadow!}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00012 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
-\DoxyCodeLine{00021 \textcolor{comment}{// vary from app-\/to-\/app.}}
-\DoxyCodeLine{00022 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00023 \{}
-\DoxyCodeLine{00024     RenderItem() = \textcolor{keywordflow}{default};}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00027     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00028     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00029     XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00018 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00020 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00021 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{00022 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00023 }
+\DoxyCodeLine{00024 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{00025 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00026 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{00029 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
 \DoxyCodeLine{00030 }
-\DoxyCodeLine{00031     XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00031 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
 \DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00034     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00035     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
-\DoxyCodeLine{00036     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00037     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00033 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{00034 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{00035 \textcolor{keyword}{struct }RenderItem}
+\DoxyCodeLine{00036 \{}
+\DoxyCodeLine{00037     RenderItem() = \textcolor{keywordflow}{default};}
 \DoxyCodeLine{00038 }
-\DoxyCodeLine{00039     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00040     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00041 }
-\DoxyCodeLine{00042     Material* Mat = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00043     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00046     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00047 }
-\DoxyCodeLine{00048     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00049     UINT IndexCount = 0;}
-\DoxyCodeLine{00050     UINT StartIndexLocation = 0;}
-\DoxyCodeLine{00051     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
-\DoxyCodeLine{00052 \};}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054 \textcolor{keyword}{enum class} RenderLayer : int}
-\DoxyCodeLine{00055 \{}
-\DoxyCodeLine{00056     Opaque = 0,}
-\DoxyCodeLine{00057     Mirrors ,}
-\DoxyCodeLine{00058     Reflected,}
-\DoxyCodeLine{00059     Transparent,}
-\DoxyCodeLine{00060     Count}
-\DoxyCodeLine{00061 \};}
-\DoxyCodeLine{00062 }
-\DoxyCodeLine{00063 \textcolor{keyword}{class }StencilApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00064 \{}
-\DoxyCodeLine{00065 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00066     StencilApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00067     StencilApp(\textcolor{keyword}{const} StencilApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00068     StencilApp\& operator=(\textcolor{keyword}{const} StencilApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00069     \string~StencilApp();}
-\DoxyCodeLine{00070 }
-\DoxyCodeLine{00071     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00072 }
-\DoxyCodeLine{00073 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00074     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00077 }
-\DoxyCodeLine{00078     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00079     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00080     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00081 }
-\DoxyCodeLine{00082     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00083     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00085     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00086     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00087     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} UpdateReflectedPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090     \textcolor{keywordtype}{void} LoadTextures();}
-\DoxyCodeLine{00091     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00093     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00094     \textcolor{keywordtype}{void} BuildRoomGeometry();}
-\DoxyCodeLine{00095     \textcolor{keywordtype}{void} BuildSkullGeometry();}
-\DoxyCodeLine{00096     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00097     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00098     \textcolor{keywordtype}{void} BuildMaterials();}
-\DoxyCodeLine{00099     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00100     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
-\DoxyCodeLine{00103 }
-\DoxyCodeLine{00104 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00105 }
-\DoxyCodeLine{00106     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00107     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00108     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00109 }
-\DoxyCodeLine{00110     UINT mCbvSrvDescriptorSize = 0;}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00113 }
-\DoxyCodeLine{00114     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00117     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{00118     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
-\DoxyCodeLine{00119     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00120     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00121 }
-\DoxyCodeLine{00122     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124     \textcolor{comment}{// Cache render items of interest.}}
-\DoxyCodeLine{00125     RenderItem* mSkullRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00126     RenderItem* mReflectedSkullRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00127 }
-\DoxyCodeLine{00128     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00129     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     \textcolor{comment}{// Render items divided by PSO.}}
-\DoxyCodeLine{00132     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
-\DoxyCodeLine{00133 }
-\DoxyCodeLine{00134     PassConstants mMainPassCB;}
-\DoxyCodeLine{00135     PassConstants mReflectedPassCB;}
+\DoxyCodeLine{00039     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{00040     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{00041     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{00042     XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044     XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{00047     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{00048     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{00049     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{00050     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00051 }
+\DoxyCodeLine{00052     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{00053     UINT ObjCBIndex = -\/1;}
+\DoxyCodeLine{00054 }
+\DoxyCodeLine{00055     Material* Mat = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00056     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057 }
+\DoxyCodeLine{00058     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{00059     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00060 }
+\DoxyCodeLine{00061     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{00062     UINT IndexCount = 0;}
+\DoxyCodeLine{00063     UINT StartIndexLocation = 0;}
+\DoxyCodeLine{00064     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
+\DoxyCodeLine{00065 \};}
+\DoxyCodeLine{00066 }
+\DoxyCodeLine{00067 \textcolor{keyword}{enum class} RenderLayer : int}
+\DoxyCodeLine{00068 \{}
+\DoxyCodeLine{00069     Opaque = 0,}
+\DoxyCodeLine{00070     Mirrors ,}
+\DoxyCodeLine{00071     Reflected,}
+\DoxyCodeLine{00072     Transparent,}
+\DoxyCodeLine{00073     Count}
+\DoxyCodeLine{00074 \};}
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076 \textcolor{keyword}{class }StencilApp : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00077 \{}
+\DoxyCodeLine{00078 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00079     StencilApp(HINSTANCE hInstance);}
+\DoxyCodeLine{00080     StencilApp(\textcolor{keyword}{const} StencilApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00081     StencilApp\& operator=(\textcolor{keyword}{const} StencilApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00082     \string~StencilApp();}
+\DoxyCodeLine{00083 }
+\DoxyCodeLine{00084     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00085 }
+\DoxyCodeLine{00086 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00087     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00088     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00089     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00090 }
+\DoxyCodeLine{00091     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00092     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00093     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00094 }
+\DoxyCodeLine{00095     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00096     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00097     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00098     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00099     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00100     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00101     \textcolor{keywordtype}{void} UpdateReflectedPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00102 }
+\DoxyCodeLine{00103     \textcolor{keywordtype}{void} LoadTextures();}
+\DoxyCodeLine{00104     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{00105     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{00106     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{00107     \textcolor{keywordtype}{void} BuildRoomGeometry();}
+\DoxyCodeLine{00108     \textcolor{keywordtype}{void} BuildSkullGeometry();}
+\DoxyCodeLine{00109     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{00110     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{00111     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{00112     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{00113     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{00114 }
+\DoxyCodeLine{00115     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
+\DoxyCodeLine{00116 }
+\DoxyCodeLine{00117 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00118 }
+\DoxyCodeLine{00119     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{00120     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00121     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
+\DoxyCodeLine{00122 }
+\DoxyCodeLine{00123     UINT mCbvSrvDescriptorSize = 0;}
+\DoxyCodeLine{00124 }
+\DoxyCodeLine{00125     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00128 }
+\DoxyCodeLine{00129     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{00130     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{00131     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
+\DoxyCodeLine{00132     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{00133     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{00134 }
+\DoxyCodeLine{00135     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
 \DoxyCodeLine{00136 }
-\DoxyCodeLine{00137     XMFLOAT3 mSkullTranslation = \{ 0.0f, 1.0f, -\/5.0f \};}
-\DoxyCodeLine{00138 }
-\DoxyCodeLine{00139     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00140     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00141     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     \textcolor{keywordtype}{float} mTheta = 1.24f*XM\_PI;}
-\DoxyCodeLine{00144     \textcolor{keywordtype}{float} mPhi = 0.42f*XM\_PI;}
-\DoxyCodeLine{00145     \textcolor{keywordtype}{float} mRadius = 12.0f;}
+\DoxyCodeLine{00137     \textcolor{comment}{// Cache render items of interest.}}
+\DoxyCodeLine{00138     RenderItem* mSkullRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00139     RenderItem* mReflectedSkullRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00140 }
+\DoxyCodeLine{00141     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{00142     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{00143 }
+\DoxyCodeLine{00144     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{00145     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
 \DoxyCodeLine{00146 }
-\DoxyCodeLine{00147     POINT mLastMousePos;}
-\DoxyCodeLine{00148 \};}
+\DoxyCodeLine{00147     PassConstants mMainPassCB;}
+\DoxyCodeLine{00148     PassConstants mReflectedPassCB;}
 \DoxyCodeLine{00149 }
-\DoxyCodeLine{00150 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00151     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00152 \{}
-\DoxyCodeLine{00153     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00154 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00155     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00156 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00157 }
-\DoxyCodeLine{00158     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00159     \{}
-\DoxyCodeLine{00160         StencilApp theApp(hInstance);}
-\DoxyCodeLine{00161         \textcolor{keywordflow}{if}(!theApp.Initialize())}
-\DoxyCodeLine{00162             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00163 }
-\DoxyCodeLine{00164         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00165     \}}
-\DoxyCodeLine{00166     \textcolor{keywordflow}{catch}(DxException\& e)}
-\DoxyCodeLine{00167     \{}
-\DoxyCodeLine{00168         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00169         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00170     \}}
-\DoxyCodeLine{00171 \}}
-\DoxyCodeLine{00172 }
-\DoxyCodeLine{00173 StencilApp::StencilApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00174     : D3DApp(hInstance)}
-\DoxyCodeLine{00175 \{}
-\DoxyCodeLine{00176     mMainWndCaption = L\textcolor{stringliteral}{"{}Stencil Demo"{}};}
-\DoxyCodeLine{00177 \}}
-\DoxyCodeLine{00178 }
-\DoxyCodeLine{00179 StencilApp::\string~StencilApp()}
-\DoxyCodeLine{00180 \{}
-\DoxyCodeLine{00181     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00182         FlushCommandQueue();}
-\DoxyCodeLine{00183 \}}
-\DoxyCodeLine{00184 }
-\DoxyCodeLine{00185 \textcolor{keywordtype}{bool} StencilApp::Initialize()}
-\DoxyCodeLine{00186 \{}
-\DoxyCodeLine{00187     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
-\DoxyCodeLine{00188         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00189 }
-\DoxyCodeLine{00190     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00191     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00192 }
-\DoxyCodeLine{00193     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
-\DoxyCodeLine{00194     \textcolor{comment}{// so we have to query this information.}}
-\DoxyCodeLine{00195     mCbvSrvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00196 }
-\DoxyCodeLine{00197     LoadTextures();}
-\DoxyCodeLine{00198     BuildRootSignature();}
-\DoxyCodeLine{00199     BuildDescriptorHeaps();}
-\DoxyCodeLine{00200     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00201     BuildRoomGeometry();}
-\DoxyCodeLine{00202     BuildSkullGeometry();}
-\DoxyCodeLine{00203     BuildMaterials();}
-\DoxyCodeLine{00204     BuildRenderItems();}
-\DoxyCodeLine{00205     BuildFrameResources();}
-\DoxyCodeLine{00206     BuildPSOs();}
+\DoxyCodeLine{00150     XMFLOAT3 mSkullTranslation = \{ 0.0f, 1.0f, -\/5.0f \};}
+\DoxyCodeLine{00151 }
+\DoxyCodeLine{00152     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00153     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00154     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00155 }
+\DoxyCodeLine{00156     \textcolor{keywordtype}{float} mTheta = 1.24f*XM\_PI;}
+\DoxyCodeLine{00157     \textcolor{keywordtype}{float} mPhi = 0.42f*XM\_PI;}
+\DoxyCodeLine{00158     \textcolor{keywordtype}{float} mRadius = 12.0f;}
+\DoxyCodeLine{00159 }
+\DoxyCodeLine{00160     POINT mLastMousePos;}
+\DoxyCodeLine{00161 \};}
+\DoxyCodeLine{00162 }
+\DoxyCodeLine{00163 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{00164     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{00165 \{}
+\DoxyCodeLine{00166     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{00167 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{00168     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{00169 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00170 }
+\DoxyCodeLine{00171     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00172     \{}
+\DoxyCodeLine{00173         StencilApp theApp(hInstance);}
+\DoxyCodeLine{00174         \textcolor{keywordflow}{if}(!theApp.Initialize())}
+\DoxyCodeLine{00175             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00176 }
+\DoxyCodeLine{00177         \textcolor{keywordflow}{return} theApp.Run();}
+\DoxyCodeLine{00178     \}}
+\DoxyCodeLine{00179     \textcolor{keywordflow}{catch}(DxException\& e)}
+\DoxyCodeLine{00180     \{}
+\DoxyCodeLine{00181         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{00182         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00183     \}}
+\DoxyCodeLine{00184 \}}
+\DoxyCodeLine{00185 }
+\DoxyCodeLine{00186 StencilApp::StencilApp(HINSTANCE hInstance)}
+\DoxyCodeLine{00187     : D3DApp(hInstance)}
+\DoxyCodeLine{00188 \{}
+\DoxyCodeLine{00189     mMainWndCaption = L\textcolor{stringliteral}{"{}Stencil Demo"{}};}
+\DoxyCodeLine{00190     mClientWidth = 1200;}
+\DoxyCodeLine{00191     mClientHeight = 1200;}
+\DoxyCodeLine{00192 \}}
+\DoxyCodeLine{00193 }
+\DoxyCodeLine{00194 StencilApp::\string~StencilApp()}
+\DoxyCodeLine{00195 \{}
+\DoxyCodeLine{00196     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00197         FlushCommandQueue();}
+\DoxyCodeLine{00198 \}}
+\DoxyCodeLine{00199 }
+\DoxyCodeLine{00200 \textcolor{keywordtype}{bool} StencilApp::Initialize()}
+\DoxyCodeLine{00201 \{}
+\DoxyCodeLine{00202     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
+\DoxyCodeLine{00203         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00204 }
+\DoxyCodeLine{00205     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{00206     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
 \DoxyCodeLine{00207 }
-\DoxyCodeLine{00208     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00209     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00210     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00211     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00212 }
-\DoxyCodeLine{00213     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00214     FlushCommandQueue();}
-\DoxyCodeLine{00215 }
-\DoxyCodeLine{00216     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00217 \}}
-\DoxyCodeLine{00218  }
-\DoxyCodeLine{00219 \textcolor{keywordtype}{void} StencilApp::OnResize()}
-\DoxyCodeLine{00220 \{}
-\DoxyCodeLine{00221     D3DApp::OnResize();}
+\DoxyCodeLine{00208     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
+\DoxyCodeLine{00209     \textcolor{comment}{// so we have to query this information.}}
+\DoxyCodeLine{00210     mCbvSrvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{00211 }
+\DoxyCodeLine{00212     LoadTextures();}
+\DoxyCodeLine{00213     BuildRootSignature();}
+\DoxyCodeLine{00214     BuildDescriptorHeaps();}
+\DoxyCodeLine{00215     BuildShadersAndInputLayout();}
+\DoxyCodeLine{00216     BuildRoomGeometry();}
+\DoxyCodeLine{00217     BuildSkullGeometry();}
+\DoxyCodeLine{00218     BuildMaterials();}
+\DoxyCodeLine{00219     BuildRenderItems();}
+\DoxyCodeLine{00220     BuildFrameResources();}
+\DoxyCodeLine{00221     BuildPSOs();}
 \DoxyCodeLine{00222 }
-\DoxyCodeLine{00223     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00224     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00225     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00226 \}}
+\DoxyCodeLine{00223     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{00224     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00225     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00226     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
 \DoxyCodeLine{00227 }
-\DoxyCodeLine{00228 \textcolor{keywordtype}{void} StencilApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00229 \{}
-\DoxyCodeLine{00230     OnKeyboardInput(gt);}
-\DoxyCodeLine{00231     UpdateCamera(gt);}
-\DoxyCodeLine{00232 }
-\DoxyCodeLine{00233     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00234     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00235     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00236 }
-\DoxyCodeLine{00237     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
-\DoxyCodeLine{00238     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00239     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00240     \{}
-\DoxyCodeLine{00241         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00242         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00243         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00244         CloseHandle(eventHandle);}
-\DoxyCodeLine{00245     \}}
-\DoxyCodeLine{00246 }
-\DoxyCodeLine{00247     AnimateMaterials(gt);}
-\DoxyCodeLine{00248     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00249     UpdateMaterialCBs(gt);}
-\DoxyCodeLine{00250     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00251     UpdateReflectedPassCB(gt);}
-\DoxyCodeLine{00252 \}}
-\DoxyCodeLine{00253 }
-\DoxyCodeLine{00254 \textcolor{keywordtype}{void} StencilApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00255 \{}
-\DoxyCodeLine{00256     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00257 }
-\DoxyCodeLine{00258     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00259     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00260     ThrowIfFailed(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00228     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{00229     FlushCommandQueue();}
+\DoxyCodeLine{00230 }
+\DoxyCodeLine{00231     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00232 \}}
+\DoxyCodeLine{00233  }
+\DoxyCodeLine{00234 \textcolor{keywordtype}{void} StencilApp::OnResize()}
+\DoxyCodeLine{00235 \{}
+\DoxyCodeLine{00236     D3DApp::OnResize();}
+\DoxyCodeLine{00237 }
+\DoxyCodeLine{00238     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{00239     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
+\DoxyCodeLine{00240     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{00241 \}}
+\DoxyCodeLine{00242 }
+\DoxyCodeLine{00243 \textcolor{keywordtype}{void} StencilApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00244 \{}
+\DoxyCodeLine{00245     OnKeyboardInput(gt);}
+\DoxyCodeLine{00246     UpdateCamera(gt);}
+\DoxyCodeLine{00247 }
+\DoxyCodeLine{00248     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{00249     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
+\DoxyCodeLine{00250     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{00251 }
+\DoxyCodeLine{00252     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{00253     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{00254     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
+\DoxyCodeLine{00255     \{}
+\DoxyCodeLine{00256         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{00257         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
+\DoxyCodeLine{00258         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{00259         CloseHandle(eventHandle);}
+\DoxyCodeLine{00260     \}}
 \DoxyCodeLine{00261 }
-\DoxyCodeLine{00262     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00263     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00264     ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00265 }
-\DoxyCodeLine{00266     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00267     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{00262     AnimateMaterials(gt);}
+\DoxyCodeLine{00263     UpdateObjectCBs(gt);}
+\DoxyCodeLine{00264     UpdateMaterialCBs(gt);}
+\DoxyCodeLine{00265     UpdateMainPassCB(gt);}
+\DoxyCodeLine{00266     UpdateReflectedPassCB(gt);}
+\DoxyCodeLine{00267 \}}
 \DoxyCodeLine{00268 }
-\DoxyCodeLine{00269     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00270     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00271         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00269 \textcolor{keywordtype}{void} StencilApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00270 \{}
+\DoxyCodeLine{00271     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
 \DoxyCodeLine{00272 }
-\DoxyCodeLine{00273     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00274     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.FogColor, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00275 }
-\DoxyCodeLine{00276     \textcolor{comment}{//the stencil buffer should be reset to some value at the beginning of each frame.}}
-\DoxyCodeLine{00277     \textcolor{comment}{//This is done with the following method(which also clears the depth buffer) :}}
-\DoxyCodeLine{00278     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00279 }
-\DoxyCodeLine{00280     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00281     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00282 }
-\DoxyCodeLine{00283     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
-\DoxyCodeLine{00284     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00285 }
-\DoxyCodeLine{00286     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00273     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{00274     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{00275     ThrowIfFailed(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00276 }
+\DoxyCodeLine{00277     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{00278     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{00279     ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{00280 }
+\DoxyCodeLine{00281     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
+\DoxyCodeLine{00282     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{00283 }
+\DoxyCodeLine{00284     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00285     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00286         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
 \DoxyCodeLine{00287 }
-\DoxyCodeLine{00288     UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(PassConstants));}
-\DoxyCodeLine{00289 }
-\DoxyCodeLine{00290     \textcolor{comment}{// Draw opaque items-\/-\/floors, walls, skull.}}
-\DoxyCodeLine{00291     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00292     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
-\DoxyCodeLine{00293     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
-\DoxyCodeLine{00294     }
-\DoxyCodeLine{00295     \textcolor{comment}{// Mark the visible mirror pixels in the stencil buffer with the value 1}}
-\DoxyCodeLine{00296     mCommandList-\/>OMSetStencilRef(1);}
-\DoxyCodeLine{00297     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}markStencilMirrors"{}}].Get());}
-\DoxyCodeLine{00298     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Mirrors]);}
-\DoxyCodeLine{00299 }
-\DoxyCodeLine{00300     \textcolor{comment}{// Draw the reflection into the mirror only (only for pixels where the stencil buffer is 1).}}
-\DoxyCodeLine{00301     \textcolor{comment}{// Note that we must supply a different per-\/pass constant buffer-\/-\/one with the lights reflected.}}
-\DoxyCodeLine{00302     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress() + 1 * passCBByteSize);}
-\DoxyCodeLine{00303     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}drawStencilReflections"{}}].Get());}
-\DoxyCodeLine{00304     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Reflected]);}
-\DoxyCodeLine{00305 }
-\DoxyCodeLine{00306     \textcolor{comment}{// Restore main pass constants and stencil ref.}}
+\DoxyCodeLine{00288     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{00289     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.FogColor, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00290 }
+\DoxyCodeLine{00291     \textcolor{comment}{//the stencil buffer should be reset to some value at the beginning of each frame.}}
+\DoxyCodeLine{00292     \textcolor{comment}{//This is done with the following method(which also clears the depth buffer) :}}
+\DoxyCodeLine{00293     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00294 }
+\DoxyCodeLine{00295     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{00296     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
+\DoxyCodeLine{00297 }
+\DoxyCodeLine{00298     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
+\DoxyCodeLine{00299     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{00300 }
+\DoxyCodeLine{00301     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00302 }
+\DoxyCodeLine{00303     UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(PassConstants));}
+\DoxyCodeLine{00304 }
+\DoxyCodeLine{00305     \textcolor{comment}{// Draw opaque items-\/-\/floors, walls, skull.}}
+\DoxyCodeLine{00306     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
 \DoxyCodeLine{00307     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
-\DoxyCodeLine{00308     mCommandList-\/>OMSetStencilRef(0);}
-\DoxyCodeLine{00309 }
-\DoxyCodeLine{00310     \textcolor{comment}{// Draw mirror with transparency so reflection blends through.}}
-\DoxyCodeLine{00311     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}transparent"{}}].Get());}
-\DoxyCodeLine{00312     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
-\DoxyCodeLine{00313 }
-\DoxyCodeLine{00314     }
-\DoxyCodeLine{00315     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00316     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00317         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00318 }
-\DoxyCodeLine{00319     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00320     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00321 }
-\DoxyCodeLine{00322     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00323     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00324     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00325 }
-\DoxyCodeLine{00326     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00327     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00328     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00329 }
-\DoxyCodeLine{00330     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00331     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00332 }
-\DoxyCodeLine{00333     \textcolor{comment}{// Notify the fence when the GPU completes commands up to this fence point.}}
-\DoxyCodeLine{00334     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00335 \}}
+\DoxyCodeLine{00308     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
+\DoxyCodeLine{00309     }
+\DoxyCodeLine{00310     \textcolor{comment}{// Mark the visible mirror pixels in the stencil buffer with the value 1}}
+\DoxyCodeLine{00311     mCommandList-\/>OMSetStencilRef(1);}
+\DoxyCodeLine{00312     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}markStencilMirrors"{}}].Get());}
+\DoxyCodeLine{00313     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Mirrors]);}
+\DoxyCodeLine{00314 }
+\DoxyCodeLine{00315     \textcolor{comment}{// Draw the reflection into the mirror only (only for pixels where the stencil buffer is 1).}}
+\DoxyCodeLine{00316     \textcolor{comment}{// Note that we must supply a different per-\/pass constant buffer-\/-\/one with the lights reflected.}}
+\DoxyCodeLine{00317     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress() + 1 * passCBByteSize);}
+\DoxyCodeLine{00318     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}drawStencilReflections"{}}].Get());}
+\DoxyCodeLine{00319     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Reflected]);}
+\DoxyCodeLine{00320 }
+\DoxyCodeLine{00321     \textcolor{comment}{// Restore main pass constants and stencil ref.}}
+\DoxyCodeLine{00322     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{00323     mCommandList-\/>OMSetStencilRef(0);}
+\DoxyCodeLine{00324 }
+\DoxyCodeLine{00325     \textcolor{comment}{// Draw mirror with transparency so reflection blends through.}}
+\DoxyCodeLine{00326     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}transparent"{}}].Get());}
+\DoxyCodeLine{00327     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
+\DoxyCodeLine{00328 }
+\DoxyCodeLine{00329     }
+\DoxyCodeLine{00330     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00331     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00332         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00333 }
+\DoxyCodeLine{00334     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{00335     ThrowIfFailed(mCommandList-\/>Close());}
 \DoxyCodeLine{00336 }
-\DoxyCodeLine{00337 \textcolor{keywordtype}{void} StencilApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00338 \{}
-\DoxyCodeLine{00339     mLastMousePos.x = x;}
-\DoxyCodeLine{00340     mLastMousePos.y = y;}
-\DoxyCodeLine{00341 }
-\DoxyCodeLine{00342     SetCapture(mhMainWnd);}
-\DoxyCodeLine{00343 \}}
+\DoxyCodeLine{00337     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{00338     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00339     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00340 }
+\DoxyCodeLine{00341     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{00342     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
+\DoxyCodeLine{00343     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
 \DoxyCodeLine{00344 }
-\DoxyCodeLine{00345 \textcolor{keywordtype}{void} StencilApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00346 \{}
-\DoxyCodeLine{00347     ReleaseCapture();}
-\DoxyCodeLine{00348 \}}
-\DoxyCodeLine{00349 }
-\DoxyCodeLine{00350 \textcolor{keywordtype}{void} StencilApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00351 \{}
-\DoxyCodeLine{00352     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00353     \{}
-\DoxyCodeLine{00354         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00355         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00356         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
-\DoxyCodeLine{00357 }
-\DoxyCodeLine{00358         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00359         mTheta += dx;}
-\DoxyCodeLine{00360         mPhi += dy;}
-\DoxyCodeLine{00361 }
-\DoxyCodeLine{00362         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00363         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00364     \}}
-\DoxyCodeLine{00365     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
-\DoxyCodeLine{00366     \{}
-\DoxyCodeLine{00367         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00368         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00369         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
-\DoxyCodeLine{00370 }
-\DoxyCodeLine{00371         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00372         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00373 }
-\DoxyCodeLine{00374         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00375         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00376     \}}
-\DoxyCodeLine{00377 }
-\DoxyCodeLine{00378     mLastMousePos.x = x;}
-\DoxyCodeLine{00379     mLastMousePos.y = y;}
-\DoxyCodeLine{00380 \}}
-\DoxyCodeLine{00381  }
-\DoxyCodeLine{00382 \textcolor{keywordtype}{void} StencilApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00383 \{}
-\DoxyCodeLine{00384     \textcolor{comment}{//}}
-\DoxyCodeLine{00385     \textcolor{comment}{// Allow user to move skull.}}
-\DoxyCodeLine{00386     \textcolor{comment}{//}}
-\DoxyCodeLine{00387 }
-\DoxyCodeLine{00388     \textcolor{keyword}{const} \textcolor{keywordtype}{float} dt = gt.DeltaTime();}
-\DoxyCodeLine{00389 }
-\DoxyCodeLine{00390     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'A'}) \& 0x8000)}
-\DoxyCodeLine{00391         mSkullTranslation.x -\/= 1.0f*dt;}
+\DoxyCodeLine{00345     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{00346     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
+\DoxyCodeLine{00347 }
+\DoxyCodeLine{00348     \textcolor{comment}{// Notify the fence when the GPU completes commands up to this fence point.}}
+\DoxyCodeLine{00349     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
+\DoxyCodeLine{00350 \}}
+\DoxyCodeLine{00351 }
+\DoxyCodeLine{00352 \textcolor{keywordtype}{void} StencilApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00353 \{}
+\DoxyCodeLine{00354     mLastMousePos.x = x;}
+\DoxyCodeLine{00355     mLastMousePos.y = y;}
+\DoxyCodeLine{00356 }
+\DoxyCodeLine{00357     SetCapture(mhMainWnd);}
+\DoxyCodeLine{00358 \}}
+\DoxyCodeLine{00359 }
+\DoxyCodeLine{00360 \textcolor{keywordtype}{void} StencilApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00361 \{}
+\DoxyCodeLine{00362     ReleaseCapture();}
+\DoxyCodeLine{00363 \}}
+\DoxyCodeLine{00364 }
+\DoxyCodeLine{00365 \textcolor{keywordtype}{void} StencilApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00366 \{}
+\DoxyCodeLine{00367     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{00368     \{}
+\DoxyCodeLine{00369         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{00370         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{00371         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{00372 }
+\DoxyCodeLine{00373         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{00374         mTheta += dx;}
+\DoxyCodeLine{00375         mPhi += dy;}
+\DoxyCodeLine{00376 }
+\DoxyCodeLine{00377         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{00378         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
+\DoxyCodeLine{00379     \}}
+\DoxyCodeLine{00380     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{00381     \{}
+\DoxyCodeLine{00382         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{00383         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{00384         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{00385 }
+\DoxyCodeLine{00386         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{00387         mRadius += dx -\/ dy;}
+\DoxyCodeLine{00388 }
+\DoxyCodeLine{00389         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{00390         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{00391     \}}
 \DoxyCodeLine{00392 }
-\DoxyCodeLine{00393     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'D'}) \& 0x8000)}
-\DoxyCodeLine{00394         mSkullTranslation.x += 1.0f*dt;}
-\DoxyCodeLine{00395 }
-\DoxyCodeLine{00396     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'W'}) \& 0x8000)}
-\DoxyCodeLine{00397         mSkullTranslation.y += 1.0f*dt;}
-\DoxyCodeLine{00398 }
-\DoxyCodeLine{00399     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'S'}) \& 0x8000)}
-\DoxyCodeLine{00400         mSkullTranslation.y -\/= 1.0f*dt;}
-\DoxyCodeLine{00401 }
-\DoxyCodeLine{00402     \textcolor{comment}{// Don't let user move below ground plane.}}
-\DoxyCodeLine{00403     mSkullTranslation.y = MathHelper::Max(mSkullTranslation.y, 0.0f);}
+\DoxyCodeLine{00393     mLastMousePos.x = x;}
+\DoxyCodeLine{00394     mLastMousePos.y = y;}
+\DoxyCodeLine{00395 \}}
+\DoxyCodeLine{00396  }
+\DoxyCodeLine{00397 \textcolor{keywordtype}{void} StencilApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00398 \{}
+\DoxyCodeLine{00399     \textcolor{comment}{//}}
+\DoxyCodeLine{00400     \textcolor{comment}{// Allow user to move skull.}}
+\DoxyCodeLine{00401     \textcolor{comment}{//}}
+\DoxyCodeLine{00402 }
+\DoxyCodeLine{00403     \textcolor{keyword}{const} \textcolor{keywordtype}{float} dt = gt.DeltaTime();}
 \DoxyCodeLine{00404 }
-\DoxyCodeLine{00405     \textcolor{comment}{// Update the new world matrix.}}
-\DoxyCodeLine{00406     XMMATRIX skullRotate = XMMatrixRotationY(0.5f*MathHelper::Pi);}
-\DoxyCodeLine{00407     XMMATRIX skullScale = XMMatrixScaling(0.45f, 0.45f, 0.45f);}
-\DoxyCodeLine{00408     XMMATRIX skullOffset = XMMatrixTranslation(mSkullTranslation.x, mSkullTranslation.y, mSkullTranslation.z);}
-\DoxyCodeLine{00409     XMMATRIX skullWorld = skullRotate*skullScale*skullOffset;}
-\DoxyCodeLine{00410     XMStoreFloat4x4(\&mSkullRitem-\/>World, skullWorld);}
-\DoxyCodeLine{00411 }
-\DoxyCodeLine{00412     \textcolor{comment}{// Update reflection world matrix.}}
-\DoxyCodeLine{00413     XMVECTOR mirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); \textcolor{comment}{// xy plane}}
-\DoxyCodeLine{00414     \textcolor{comment}{//Builds a transformation matrix designed to reflect vectors through a given plane.}}
-\DoxyCodeLine{00415     XMMATRIX R = XMMatrixReflect(mirrorPlane);}
-\DoxyCodeLine{00416     XMStoreFloat4x4(\&mReflectedSkullRitem-\/>World, skullWorld * R);}
-\DoxyCodeLine{00417 }
-\DoxyCodeLine{00418     mSkullRitem-\/>NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00419     mReflectedSkullRitem-\/>NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00420 \}}
-\DoxyCodeLine{00421  }
-\DoxyCodeLine{00422 \textcolor{keywordtype}{void} StencilApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00423 \{}
-\DoxyCodeLine{00424     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00425     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
-\DoxyCodeLine{00426     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
-\DoxyCodeLine{00427     mEyePos.y = mRadius*cosf(mPhi);}
-\DoxyCodeLine{00428 }
-\DoxyCodeLine{00429     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00430     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00431     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00432     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00433 }
-\DoxyCodeLine{00434     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00435     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00436 \}}
-\DoxyCodeLine{00437 }
-\DoxyCodeLine{00438 \textcolor{keywordtype}{void} StencilApp::AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00439 \{}
-\DoxyCodeLine{00440 }
-\DoxyCodeLine{00441 \}}
-\DoxyCodeLine{00442 }
-\DoxyCodeLine{00443 \textcolor{keywordtype}{void} StencilApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00444 \{}
-\DoxyCodeLine{00445     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00446     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00447     \{}
-\DoxyCodeLine{00448         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00449         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00450         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00451         \{}
-\DoxyCodeLine{00452             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00453             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
-\DoxyCodeLine{00454 }
-\DoxyCodeLine{00455             ObjectConstants objConstants;}
-\DoxyCodeLine{00456             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00457             XMStoreFloat4x4(\&objConstants.TexTransform, XMMatrixTranspose(texTransform));}
-\DoxyCodeLine{00458 }
-\DoxyCodeLine{00459             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00460 }
-\DoxyCodeLine{00461             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00462             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00463         \}}
-\DoxyCodeLine{00464     \}}
-\DoxyCodeLine{00465 \}}
-\DoxyCodeLine{00466 }
-\DoxyCodeLine{00467 \textcolor{keywordtype}{void} StencilApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00468 \{}
-\DoxyCodeLine{00469     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
-\DoxyCodeLine{00470     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{00471     \{}
-\DoxyCodeLine{00472         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{00473         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{00474         Material* mat = e.second.get();}
-\DoxyCodeLine{00475         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00476         \{}
-\DoxyCodeLine{00477             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
-\DoxyCodeLine{00478 }
-\DoxyCodeLine{00479             MaterialConstants matConstants;}
-\DoxyCodeLine{00480             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
-\DoxyCodeLine{00481             matConstants.FresnelR0 = mat-\/>FresnelR0;}
-\DoxyCodeLine{00482             matConstants.Roughness = mat-\/>Roughness;}
-\DoxyCodeLine{00483             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
-\DoxyCodeLine{00484 }
-\DoxyCodeLine{00485             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
-\DoxyCodeLine{00486 }
-\DoxyCodeLine{00487             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00488             mat-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00489         \}}
-\DoxyCodeLine{00490     \}}
-\DoxyCodeLine{00491 \}}
-\DoxyCodeLine{00492 }
-\DoxyCodeLine{00493 \textcolor{keywordtype}{void} StencilApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00494 \{}
-\DoxyCodeLine{00495     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00496     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00497 }
-\DoxyCodeLine{00498     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00499     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00500     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00501     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00502 }
-\DoxyCodeLine{00503     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00504     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00505     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00506     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00507     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00508     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00509     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00510     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00511     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00512     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00513     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00514     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00515     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00516     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
-\DoxyCodeLine{00517     mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00518     mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}
-\DoxyCodeLine{00519     mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00520     mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}
-\DoxyCodeLine{00521     mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}
-\DoxyCodeLine{00522     mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}
-\DoxyCodeLine{00523 }
-\DoxyCodeLine{00524     \textcolor{comment}{// Main pass stored in index 0}}
-\DoxyCodeLine{00525     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00526     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00527 \}}
-\DoxyCodeLine{00528 }
-\DoxyCodeLine{00529 \textcolor{comment}{//Note: when drawing the image, we need to reflect the light source on the mirror plane. Otherwise, the light in the image is not true.}}
-\DoxyCodeLine{00530 }
-\DoxyCodeLine{00531 }
-\DoxyCodeLine{00532 \textcolor{keywordtype}{void} StencilApp::UpdateReflectedPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00533 \{}
-\DoxyCodeLine{00534     mReflectedPassCB = mMainPassCB;}
-\DoxyCodeLine{00535 }
-\DoxyCodeLine{00536     XMVECTOR mirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); \textcolor{comment}{// xy plane}}
-\DoxyCodeLine{00537     XMMATRIX R = XMMatrixReflect(mirrorPlane);}
+\DoxyCodeLine{00405     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'A'}) \& 0x8000)}
+\DoxyCodeLine{00406         mSkullTranslation.x -\/= 1.0f*dt;}
+\DoxyCodeLine{00407 }
+\DoxyCodeLine{00408     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'D'}) \& 0x8000)}
+\DoxyCodeLine{00409         mSkullTranslation.x += 1.0f*dt;}
+\DoxyCodeLine{00410 }
+\DoxyCodeLine{00411     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'W'}) \& 0x8000)}
+\DoxyCodeLine{00412         mSkullTranslation.y += 1.0f*dt;}
+\DoxyCodeLine{00413 }
+\DoxyCodeLine{00414     \textcolor{keywordflow}{if}(GetAsyncKeyState(\textcolor{charliteral}{'S'}) \& 0x8000)}
+\DoxyCodeLine{00415         mSkullTranslation.y -\/= 1.0f*dt;}
+\DoxyCodeLine{00416 }
+\DoxyCodeLine{00417     \textcolor{comment}{// Don't let user move below ground plane.}}
+\DoxyCodeLine{00418     mSkullTranslation.y = MathHelper::Max(mSkullTranslation.y, 0.0f);}
+\DoxyCodeLine{00419 }
+\DoxyCodeLine{00420     \textcolor{comment}{// Update the new world matrix.}}
+\DoxyCodeLine{00421     XMMATRIX skullRotate = XMMatrixRotationY(0.5f*MathHelper::Pi);}
+\DoxyCodeLine{00422     XMMATRIX skullScale = XMMatrixScaling(0.45f, 0.45f, 0.45f);}
+\DoxyCodeLine{00423     XMMATRIX skullOffset = XMMatrixTranslation(mSkullTranslation.x, mSkullTranslation.y, mSkullTranslation.z);}
+\DoxyCodeLine{00424     XMMATRIX skullWorld = skullRotate*skullScale*skullOffset;}
+\DoxyCodeLine{00425     XMStoreFloat4x4(\&mSkullRitem-\/>World, skullWorld);}
+\DoxyCodeLine{00426 }
+\DoxyCodeLine{00427     \textcolor{comment}{// Update reflection world matrix.}}
+\DoxyCodeLine{00428     XMVECTOR mirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); \textcolor{comment}{// xy plane}}
+\DoxyCodeLine{00429     \textcolor{comment}{//Builds a transformation matrix designed to reflect vectors through a given plane.}}
+\DoxyCodeLine{00430     XMMATRIX R = XMMatrixReflect(mirrorPlane);}
+\DoxyCodeLine{00431     XMStoreFloat4x4(\&mReflectedSkullRitem-\/>World, skullWorld * R);}
+\DoxyCodeLine{00432 }
+\DoxyCodeLine{00433     mSkullRitem-\/>NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00434     mReflectedSkullRitem-\/>NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00435 \}}
+\DoxyCodeLine{00436  }
+\DoxyCodeLine{00437 \textcolor{keywordtype}{void} StencilApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00438 \{}
+\DoxyCodeLine{00439     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{00440     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
+\DoxyCodeLine{00441     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
+\DoxyCodeLine{00442     mEyePos.y = mRadius*cosf(mPhi);}
+\DoxyCodeLine{00443 }
+\DoxyCodeLine{00444     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{00445     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{00446     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{00447     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{00448 }
+\DoxyCodeLine{00449     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{00450     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{00451 \}}
+\DoxyCodeLine{00452 }
+\DoxyCodeLine{00453 \textcolor{keywordtype}{void} StencilApp::AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00454 \{}
+\DoxyCodeLine{00455 }
+\DoxyCodeLine{00456 \}}
+\DoxyCodeLine{00457 }
+\DoxyCodeLine{00458 \textcolor{keywordtype}{void} StencilApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00459 \{}
+\DoxyCodeLine{00460     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
+\DoxyCodeLine{00461     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{00462     \{}
+\DoxyCodeLine{00463         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{00464         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{00465         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00466         \{}
+\DoxyCodeLine{00467             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{00468             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
+\DoxyCodeLine{00469 }
+\DoxyCodeLine{00470             ObjectConstants objConstants;}
+\DoxyCodeLine{00471             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
+\DoxyCodeLine{00472             XMStoreFloat4x4(\&objConstants.TexTransform, XMMatrixTranspose(texTransform));}
+\DoxyCodeLine{00473 }
+\DoxyCodeLine{00474             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{00475 }
+\DoxyCodeLine{00476             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00477             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00478         \}}
+\DoxyCodeLine{00479     \}}
+\DoxyCodeLine{00480 \}}
+\DoxyCodeLine{00481 }
+\DoxyCodeLine{00482 \textcolor{keywordtype}{void} StencilApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00483 \{}
+\DoxyCodeLine{00484     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
+\DoxyCodeLine{00485     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{00486     \{}
+\DoxyCodeLine{00487         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{00488         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{00489         Material* mat = e.second.get();}
+\DoxyCodeLine{00490         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00491         \{}
+\DoxyCodeLine{00492             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
+\DoxyCodeLine{00493 }
+\DoxyCodeLine{00494             MaterialConstants matConstants;}
+\DoxyCodeLine{00495             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
+\DoxyCodeLine{00496             matConstants.FresnelR0 = mat-\/>FresnelR0;}
+\DoxyCodeLine{00497             matConstants.Roughness = mat-\/>Roughness;}
+\DoxyCodeLine{00498             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
+\DoxyCodeLine{00499 }
+\DoxyCodeLine{00500             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
+\DoxyCodeLine{00501 }
+\DoxyCodeLine{00502             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00503             mat-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00504         \}}
+\DoxyCodeLine{00505     \}}
+\DoxyCodeLine{00506 \}}
+\DoxyCodeLine{00507 }
+\DoxyCodeLine{00508 \textcolor{keywordtype}{void} StencilApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00509 \{}
+\DoxyCodeLine{00510     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{00511     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{00512 }
+\DoxyCodeLine{00513     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{00514     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{00515     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{00516     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{00517 }
+\DoxyCodeLine{00518     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
+\DoxyCodeLine{00519     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
+\DoxyCodeLine{00520     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
+\DoxyCodeLine{00521     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{00522     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{00523     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{00524     mMainPassCB.EyePosW = mEyePos;}
+\DoxyCodeLine{00525     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
+\DoxyCodeLine{00526     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
+\DoxyCodeLine{00527     mMainPassCB.NearZ = 1.0f;}
+\DoxyCodeLine{00528     mMainPassCB.FarZ = 1000.0f;}
+\DoxyCodeLine{00529     mMainPassCB.TotalTime = gt.TotalTime();}
+\DoxyCodeLine{00530     mMainPassCB.DeltaTime = gt.DeltaTime();}
+\DoxyCodeLine{00531     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{00532     mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{00533     mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}
+\DoxyCodeLine{00534     mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{00535     mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}
+\DoxyCodeLine{00536     mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}
+\DoxyCodeLine{00537     mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}
 \DoxyCodeLine{00538 }
-\DoxyCodeLine{00539     \textcolor{comment}{// Reflect the lighting.}}
-\DoxyCodeLine{00540     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 3; ++i)}
-\DoxyCodeLine{00541     \{}
-\DoxyCodeLine{00542         XMVECTOR lightDir = XMLoadFloat3(\&mMainPassCB.Lights[i].Direction);}
-\DoxyCodeLine{00543         \textcolor{comment}{//DirectXMath uses a completely wrong and misleading name. It has nothing to do with normals which typically require a special transform since they originate from cross products.}}
-\DoxyCodeLine{00544         \textcolor{comment}{//XMVector3TransformNormal() transforms 3D directions (w-\/coordinate is implicitly set to 0), XMVector3TransformCoord() transforms 3D points (w-\/coordinate is implicitly set to 1).}}
-\DoxyCodeLine{00545         XMVECTOR reflectedLightDir = XMVector3TransformNormal(lightDir, R);}
-\DoxyCodeLine{00546         XMStoreFloat3(\&mReflectedPassCB.Lights[i].Direction, reflectedLightDir);}
-\DoxyCodeLine{00547     \}}
-\DoxyCodeLine{00548 }
-\DoxyCodeLine{00549     \textcolor{comment}{// Reflected pass stored in index 1}}
-\DoxyCodeLine{00550     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00551     currPassCB-\/>CopyData(1, mReflectedPassCB);}
-\DoxyCodeLine{00552 \}}
+\DoxyCodeLine{00539     \textcolor{comment}{// Main pass stored in index 0}}
+\DoxyCodeLine{00540     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
+\DoxyCodeLine{00541     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{00542 \}}
+\DoxyCodeLine{00543 }
+\DoxyCodeLine{00544 \textcolor{comment}{//Note: when drawing the image, we need to reflect the light source on the mirror plane. Otherwise, the light in the image is not true.}}
+\DoxyCodeLine{00545 }
+\DoxyCodeLine{00546 }
+\DoxyCodeLine{00547 \textcolor{keywordtype}{void} StencilApp::UpdateReflectedPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00548 \{}
+\DoxyCodeLine{00549     mReflectedPassCB = mMainPassCB;}
+\DoxyCodeLine{00550 }
+\DoxyCodeLine{00551     XMVECTOR mirrorPlane = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f); \textcolor{comment}{// xy plane}}
+\DoxyCodeLine{00552     XMMATRIX R = XMMatrixReflect(mirrorPlane);}
 \DoxyCodeLine{00553 }
-\DoxyCodeLine{00554 \textcolor{keywordtype}{void} StencilApp::LoadTextures()}
-\DoxyCodeLine{00555 \{}
-\DoxyCodeLine{00556     \textcolor{keyword}{auto} bricksTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00557     bricksTex-\/>Name = \textcolor{stringliteral}{"{}bricksTex"{}};}
-\DoxyCodeLine{00558     bricksTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/bricks3.dds"{}};}
-\DoxyCodeLine{00559     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00560         mCommandList.Get(), bricksTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00561         bricksTex-\/>Resource, bricksTex-\/>UploadHeap));}
-\DoxyCodeLine{00562 }
-\DoxyCodeLine{00563     \textcolor{keyword}{auto} checkboardTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00564     checkboardTex-\/>Name = \textcolor{stringliteral}{"{}checkboardTex"{}};}
-\DoxyCodeLine{00565     checkboardTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/checkboard.dds"{}};}
-\DoxyCodeLine{00566     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00567         mCommandList.Get(), checkboardTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00568         checkboardTex-\/>Resource, checkboardTex-\/>UploadHeap));}
-\DoxyCodeLine{00569 }
-\DoxyCodeLine{00570     \textcolor{keyword}{auto} iceTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00571     iceTex-\/>Name = \textcolor{stringliteral}{"{}iceTex"{}};}
-\DoxyCodeLine{00572     iceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/ice.dds"{}};}
-\DoxyCodeLine{00573     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00574         mCommandList.Get(), iceTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00575         iceTex-\/>Resource, iceTex-\/>UploadHeap));}
-\DoxyCodeLine{00576 }
-\DoxyCodeLine{00577     \textcolor{keyword}{auto} white1x1Tex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00578     white1x1Tex-\/>Name = \textcolor{stringliteral}{"{}white1x1Tex"{}};}
-\DoxyCodeLine{00579     white1x1Tex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/white1x1.dds"{}};}
-\DoxyCodeLine{00580     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00581         mCommandList.Get(), white1x1Tex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00582         white1x1Tex-\/>Resource, white1x1Tex-\/>UploadHeap));}
-\DoxyCodeLine{00583 }
-\DoxyCodeLine{00584     mTextures[bricksTex-\/>Name] = std::move(bricksTex);}
-\DoxyCodeLine{00585     mTextures[checkboardTex-\/>Name] = std::move(checkboardTex);}
-\DoxyCodeLine{00586     mTextures[iceTex-\/>Name] = std::move(iceTex);}
-\DoxyCodeLine{00587     mTextures[white1x1Tex-\/>Name] = std::move(white1x1Tex);}
-\DoxyCodeLine{00588 \}}
-\DoxyCodeLine{00589 }
-\DoxyCodeLine{00590 \textcolor{keywordtype}{void} StencilApp::BuildRootSignature()}
-\DoxyCodeLine{00591 \{}
-\DoxyCodeLine{00592     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
-\DoxyCodeLine{00593     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
-\DoxyCodeLine{00594 }
-\DoxyCodeLine{00595     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00596     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
-\DoxyCodeLine{00597 }
-\DoxyCodeLine{00598     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
-\DoxyCodeLine{00599     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
-\DoxyCodeLine{00600     slotRootParameter[1].InitAsConstantBufferView(0);}
-\DoxyCodeLine{00601     slotRootParameter[2].InitAsConstantBufferView(1);}
-\DoxyCodeLine{00602     slotRootParameter[3].InitAsConstantBufferView(2);}
-\DoxyCodeLine{00603 }
-\DoxyCodeLine{00604     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
-\DoxyCodeLine{00605 }
-\DoxyCodeLine{00606     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00607     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
-\DoxyCodeLine{00608         (UINT)staticSamplers.size(), staticSamplers.data(),}
-\DoxyCodeLine{00609         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{00610 }
-\DoxyCodeLine{00611     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00612     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00613     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00614     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00615         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00616 }
-\DoxyCodeLine{00617     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00618     \{}
-\DoxyCodeLine{00619         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00620     \}}
-\DoxyCodeLine{00621     ThrowIfFailed(hr);}
-\DoxyCodeLine{00622 }
-\DoxyCodeLine{00623     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00624         0,}
-\DoxyCodeLine{00625         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00626         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00627         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00628 \}}
-\DoxyCodeLine{00629 }
-\DoxyCodeLine{00630 \textcolor{keywordtype}{void} StencilApp::BuildDescriptorHeaps()}
-\DoxyCodeLine{00631 \{}
-\DoxyCodeLine{00632     \textcolor{comment}{//}}
-\DoxyCodeLine{00633     \textcolor{comment}{// Create the SRV heap.}}
-\DoxyCodeLine{00634     \textcolor{comment}{//}}
-\DoxyCodeLine{00635     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
-\DoxyCodeLine{00636     srvHeapDesc.NumDescriptors = 4;}
-\DoxyCodeLine{00637     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00638     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00639     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
-\DoxyCodeLine{00640 }
-\DoxyCodeLine{00641     \textcolor{comment}{//}}
-\DoxyCodeLine{00642     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
-\DoxyCodeLine{00643     \textcolor{comment}{//}}
-\DoxyCodeLine{00644     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00645 }
-\DoxyCodeLine{00646     \textcolor{keyword}{auto} bricksTex = mTextures[\textcolor{stringliteral}{"{}bricksTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00647     \textcolor{keyword}{auto} checkboardTex = mTextures[\textcolor{stringliteral}{"{}checkboardTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00648     \textcolor{keyword}{auto} iceTex = mTextures[\textcolor{stringliteral}{"{}iceTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00649     \textcolor{keyword}{auto} white1x1Tex = mTextures[\textcolor{stringliteral}{"{}white1x1Tex"{}}]-\/>Resource;}
-\DoxyCodeLine{00650 }
-\DoxyCodeLine{00651     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00652     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00653     srvDesc.Format = bricksTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00654     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00655     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00656     srvDesc.Texture2D.MipLevels = -\/1;}
-\DoxyCodeLine{00657     md3dDevice-\/>CreateShaderResourceView(bricksTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00658 }
-\DoxyCodeLine{00659     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00660     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00661 }
-\DoxyCodeLine{00662     srvDesc.Format = checkboardTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00663     md3dDevice-\/>CreateShaderResourceView(checkboardTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00664 }
-\DoxyCodeLine{00665     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00666     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00667 }
-\DoxyCodeLine{00668     srvDesc.Format = iceTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00669     md3dDevice-\/>CreateShaderResourceView(iceTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00670 }
-\DoxyCodeLine{00671     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00672     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00554     \textcolor{comment}{// Reflect the lighting.}}
+\DoxyCodeLine{00555     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 3; ++i)}
+\DoxyCodeLine{00556     \{}
+\DoxyCodeLine{00557         XMVECTOR lightDir = XMLoadFloat3(\&mMainPassCB.Lights[i].Direction);}
+\DoxyCodeLine{00558         \textcolor{comment}{//DirectXMath uses a completely wrong and misleading name. It has nothing to do with normals which typically require a special transform since they originate from cross products.}}
+\DoxyCodeLine{00559         \textcolor{comment}{//XMVector3TransformNormal() transforms 3D directions (w-\/coordinate is implicitly set to 0), XMVector3TransformCoord() transforms 3D points (w-\/coordinate is implicitly set to 1).}}
+\DoxyCodeLine{00560         XMVECTOR reflectedLightDir = XMVector3TransformNormal(lightDir, R);}
+\DoxyCodeLine{00561         XMStoreFloat3(\&mReflectedPassCB.Lights[i].Direction, reflectedLightDir);}
+\DoxyCodeLine{00562     \}}
+\DoxyCodeLine{00563 }
+\DoxyCodeLine{00564     \textcolor{comment}{// Reflected pass stored in index 1}}
+\DoxyCodeLine{00565     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
+\DoxyCodeLine{00566     currPassCB-\/>CopyData(1, mReflectedPassCB);}
+\DoxyCodeLine{00567 \}}
+\DoxyCodeLine{00568 }
+\DoxyCodeLine{00569 \textcolor{keywordtype}{void} StencilApp::LoadTextures()}
+\DoxyCodeLine{00570 \{}
+\DoxyCodeLine{00571     \textcolor{keyword}{auto} bricksTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00572     bricksTex-\/>Name = \textcolor{stringliteral}{"{}bricksTex"{}};}
+\DoxyCodeLine{00573     bricksTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/bricks3.dds"{}};}
+\DoxyCodeLine{00574     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00575         mCommandList.Get(), bricksTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00576         bricksTex-\/>Resource, bricksTex-\/>UploadHeap));}
+\DoxyCodeLine{00577 }
+\DoxyCodeLine{00578     \textcolor{keyword}{auto} checkboardTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00579     checkboardTex-\/>Name = \textcolor{stringliteral}{"{}checkboardTex"{}};}
+\DoxyCodeLine{00580     checkboardTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/checkboard.dds"{}};}
+\DoxyCodeLine{00581     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00582         mCommandList.Get(), checkboardTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00583         checkboardTex-\/>Resource, checkboardTex-\/>UploadHeap));}
+\DoxyCodeLine{00584 }
+\DoxyCodeLine{00585     \textcolor{keyword}{auto} iceTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00586     iceTex-\/>Name = \textcolor{stringliteral}{"{}iceTex"{}};}
+\DoxyCodeLine{00587     iceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/ice.dds"{}};}
+\DoxyCodeLine{00588     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00589         mCommandList.Get(), iceTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00590         iceTex-\/>Resource, iceTex-\/>UploadHeap));}
+\DoxyCodeLine{00591 }
+\DoxyCodeLine{00592     \textcolor{keyword}{auto} white1x1Tex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00593     white1x1Tex-\/>Name = \textcolor{stringliteral}{"{}white1x1Tex"{}};}
+\DoxyCodeLine{00594     white1x1Tex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/white1x1.dds"{}};}
+\DoxyCodeLine{00595     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00596         mCommandList.Get(), white1x1Tex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00597         white1x1Tex-\/>Resource, white1x1Tex-\/>UploadHeap));}
+\DoxyCodeLine{00598 }
+\DoxyCodeLine{00599     mTextures[bricksTex-\/>Name] = std::move(bricksTex);}
+\DoxyCodeLine{00600     mTextures[checkboardTex-\/>Name] = std::move(checkboardTex);}
+\DoxyCodeLine{00601     mTextures[iceTex-\/>Name] = std::move(iceTex);}
+\DoxyCodeLine{00602     mTextures[white1x1Tex-\/>Name] = std::move(white1x1Tex);}
+\DoxyCodeLine{00603 \}}
+\DoxyCodeLine{00604 }
+\DoxyCodeLine{00605 \textcolor{keywordtype}{void} StencilApp::BuildRootSignature()}
+\DoxyCodeLine{00606 \{}
+\DoxyCodeLine{00607     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
+\DoxyCodeLine{00608     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
+\DoxyCodeLine{00609 }
+\DoxyCodeLine{00610     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{00611     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
+\DoxyCodeLine{00612 }
+\DoxyCodeLine{00613     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
+\DoxyCodeLine{00614     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
+\DoxyCodeLine{00615     slotRootParameter[1].InitAsConstantBufferView(0);}
+\DoxyCodeLine{00616     slotRootParameter[2].InitAsConstantBufferView(1);}
+\DoxyCodeLine{00617     slotRootParameter[3].InitAsConstantBufferView(2);}
+\DoxyCodeLine{00618 }
+\DoxyCodeLine{00619     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
+\DoxyCodeLine{00620 }
+\DoxyCodeLine{00621     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{00622     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
+\DoxyCodeLine{00623         (UINT)staticSamplers.size(), staticSamplers.data(),}
+\DoxyCodeLine{00624         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00625 }
+\DoxyCodeLine{00626     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{00627     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00628     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00629     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{00630         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{00631 }
+\DoxyCodeLine{00632     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00633     \{}
+\DoxyCodeLine{00634         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{00635     \}}
+\DoxyCodeLine{00636     ThrowIfFailed(hr);}
+\DoxyCodeLine{00637 }
+\DoxyCodeLine{00638     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
+\DoxyCodeLine{00639         0,}
+\DoxyCodeLine{00640         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{00641         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{00642         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{00643 \}}
+\DoxyCodeLine{00644 }
+\DoxyCodeLine{00645 \textcolor{keywordtype}{void} StencilApp::BuildDescriptorHeaps()}
+\DoxyCodeLine{00646 \{}
+\DoxyCodeLine{00647     \textcolor{comment}{//}}
+\DoxyCodeLine{00648     \textcolor{comment}{// Create the SRV heap.}}
+\DoxyCodeLine{00649     \textcolor{comment}{//}}
+\DoxyCodeLine{00650     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
+\DoxyCodeLine{00651     srvHeapDesc.NumDescriptors = 4;}
+\DoxyCodeLine{00652     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{00653     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{00654     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
+\DoxyCodeLine{00655 }
+\DoxyCodeLine{00656     \textcolor{comment}{//}}
+\DoxyCodeLine{00657     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
+\DoxyCodeLine{00658     \textcolor{comment}{//}}
+\DoxyCodeLine{00659     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{00660 }
+\DoxyCodeLine{00661     \textcolor{keyword}{auto} bricksTex = mTextures[\textcolor{stringliteral}{"{}bricksTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00662     \textcolor{keyword}{auto} checkboardTex = mTextures[\textcolor{stringliteral}{"{}checkboardTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00663     \textcolor{keyword}{auto} iceTex = mTextures[\textcolor{stringliteral}{"{}iceTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00664     \textcolor{keyword}{auto} white1x1Tex = mTextures[\textcolor{stringliteral}{"{}white1x1Tex"{}}]-\/>Resource;}
+\DoxyCodeLine{00665 }
+\DoxyCodeLine{00666     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{00667     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{00668     srvDesc.Format = bricksTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00669     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{00670     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{00671     srvDesc.Texture2D.MipLevels = -\/1;}
+\DoxyCodeLine{00672     md3dDevice-\/>CreateShaderResourceView(bricksTex.Get(), \&srvDesc, hDescriptor);}
 \DoxyCodeLine{00673 }
-\DoxyCodeLine{00674     srvDesc.Format = white1x1Tex-\/>GetDesc().Format;}
-\DoxyCodeLine{00675     md3dDevice-\/>CreateShaderResourceView(white1x1Tex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00676 \}}
-\DoxyCodeLine{00677 }
-\DoxyCodeLine{00678 \textcolor{keywordtype}{void} StencilApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00679 \{}
-\DoxyCodeLine{00680     \textcolor{keyword}{const} D3D\_SHADER\_MACRO defines[] =}
-\DoxyCodeLine{00681     \{}
-\DoxyCodeLine{00682         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
-\DoxyCodeLine{00683         NULL, NULL}
-\DoxyCodeLine{00684     \};}
+\DoxyCodeLine{00674     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{00675     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00676 }
+\DoxyCodeLine{00677     srvDesc.Format = checkboardTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00678     md3dDevice-\/>CreateShaderResourceView(checkboardTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{00679 }
+\DoxyCodeLine{00680     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{00681     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00682 }
+\DoxyCodeLine{00683     srvDesc.Format = iceTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00684     md3dDevice-\/>CreateShaderResourceView(iceTex.Get(), \&srvDesc, hDescriptor);}
 \DoxyCodeLine{00685 }
-\DoxyCodeLine{00686     \textcolor{keyword}{const} D3D\_SHADER\_MACRO alphaTestDefines[] =}
-\DoxyCodeLine{00687     \{}
-\DoxyCodeLine{00688         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
-\DoxyCodeLine{00689         \textcolor{stringliteral}{"{}ALPHA\_TEST"{}}, \textcolor{stringliteral}{"{}1"{}},}
-\DoxyCodeLine{00690         NULL, NULL}
-\DoxyCodeLine{00691     \};}
+\DoxyCodeLine{00686     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{00687     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00688 }
+\DoxyCodeLine{00689     srvDesc.Format = white1x1Tex-\/>GetDesc().Format;}
+\DoxyCodeLine{00690     md3dDevice-\/>CreateShaderResourceView(white1x1Tex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{00691 \}}
 \DoxyCodeLine{00692 }
-\DoxyCodeLine{00693     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
-\DoxyCodeLine{00694     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, defines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00695     mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, alphaTestDefines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00696     }
-\DoxyCodeLine{00697     mInputLayout =}
-\DoxyCodeLine{00698     \{}
-\DoxyCodeLine{00699         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00700         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00701         \{ \textcolor{stringliteral}{"{}TEXCOORD"{}}, 0, DXGI\_FORMAT\_R32G32\_FLOAT, 0, 24, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00702     \};}
-\DoxyCodeLine{00703 \}}
-\DoxyCodeLine{00704 }
-\DoxyCodeLine{00705 \textcolor{keywordtype}{void} StencilApp::BuildRoomGeometry()}
-\DoxyCodeLine{00706 \{}
-\DoxyCodeLine{00707         \textcolor{comment}{// Create and specify geometry.  For this sample we draw a floor}}
-\DoxyCodeLine{00708     \textcolor{comment}{// and a wall with a mirror on it.  We put the floor, wall, and}}
-\DoxyCodeLine{00709     \textcolor{comment}{// mirror geometry in one vertex buffer.}}
-\DoxyCodeLine{00710     \textcolor{comment}{//}}
-\DoxyCodeLine{00711     \textcolor{comment}{//   |-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|}}
-\DoxyCodeLine{00712     \textcolor{comment}{//   |              |}}
-\DoxyCodeLine{00713     \textcolor{comment}{//   |-\/-\/-\/-\/|-\/-\/-\/-\/|-\/-\/-\/-\/|}}
-\DoxyCodeLine{00714     \textcolor{comment}{//   |Wall|Mirr|Wall|}}
-\DoxyCodeLine{00715     \textcolor{comment}{//   |    | or |    |}}
-\DoxyCodeLine{00716     \textcolor{comment}{//   /-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\//}}
-\DoxyCodeLine{00717     \textcolor{comment}{//  /   Floor      /}}
-\DoxyCodeLine{00718     \textcolor{comment}{// /-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\//}}
+\DoxyCodeLine{00693 \textcolor{keywordtype}{void} StencilApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{00694 \{}
+\DoxyCodeLine{00695     \textcolor{keyword}{const} D3D\_SHADER\_MACRO defines[] =}
+\DoxyCodeLine{00696     \{}
+\DoxyCodeLine{00697         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
+\DoxyCodeLine{00698         NULL, NULL}
+\DoxyCodeLine{00699     \};}
+\DoxyCodeLine{00700 }
+\DoxyCodeLine{00701     \textcolor{keyword}{const} D3D\_SHADER\_MACRO alphaTestDefines[] =}
+\DoxyCodeLine{00702     \{}
+\DoxyCodeLine{00703         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
+\DoxyCodeLine{00704         \textcolor{stringliteral}{"{}ALPHA\_TEST"{}}, \textcolor{stringliteral}{"{}1"{}},}
+\DoxyCodeLine{00705         NULL, NULL}
+\DoxyCodeLine{00706     \};}
+\DoxyCodeLine{00707 }
+\DoxyCodeLine{00708     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
+\DoxyCodeLine{00709     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, defines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{00710     mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, alphaTestDefines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{00711     }
+\DoxyCodeLine{00712     mInputLayout =}
+\DoxyCodeLine{00713     \{}
+\DoxyCodeLine{00714         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00715         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00716         \{ \textcolor{stringliteral}{"{}TEXCOORD"{}}, 0, DXGI\_FORMAT\_R32G32\_FLOAT, 0, 24, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00717     \};}
+\DoxyCodeLine{00718 \}}
 \DoxyCodeLine{00719 }
-\DoxyCodeLine{00720     std::array<Vertex, 20> vertices = }
-\DoxyCodeLine{00721     \{}
-\DoxyCodeLine{00722         \textcolor{comment}{// Floor: Observe we tile texture coordinates.}}
-\DoxyCodeLine{00723         Vertex(-\/3.5f, 0.0f, -\/10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 4.0f), \textcolor{comment}{// 0 }}
-\DoxyCodeLine{00724         Vertex(-\/3.5f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00725         Vertex(7.5f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f),}
-\DoxyCodeLine{00726         Vertex(7.5f, 0.0f, -\/10.0f, 0.0f, 1.0f, 0.0f, 4.0f, 4.0f),}
-\DoxyCodeLine{00727 }
-\DoxyCodeLine{00728         \textcolor{comment}{// Wall: Observe we tile texture coordinates, and that we}}
-\DoxyCodeLine{00729         \textcolor{comment}{// leave a gap in the middle for the mirror.}}
-\DoxyCodeLine{00730         Vertex(-\/3.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 2.0f), \textcolor{comment}{// 4}}
-\DoxyCodeLine{00731         Vertex(-\/3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00732         Vertex(-\/2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.5f, 0.0f),}
-\DoxyCodeLine{00733         Vertex(-\/2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.5f, 2.0f),}
+\DoxyCodeLine{00720 \textcolor{keywordtype}{void} StencilApp::BuildRoomGeometry()}
+\DoxyCodeLine{00721 \{}
+\DoxyCodeLine{00722         \textcolor{comment}{// Create and specify geometry.  For this sample we draw a floor}}
+\DoxyCodeLine{00723     \textcolor{comment}{// and a wall with a mirror on it.  We put the floor, wall, and}}
+\DoxyCodeLine{00724     \textcolor{comment}{// mirror geometry in one vertex buffer.}}
+\DoxyCodeLine{00725     \textcolor{comment}{//}}
+\DoxyCodeLine{00726     \textcolor{comment}{//   |-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|}}
+\DoxyCodeLine{00727     \textcolor{comment}{//   |              |}}
+\DoxyCodeLine{00728     \textcolor{comment}{//   |-\/-\/-\/-\/|-\/-\/-\/-\/|-\/-\/-\/-\/|}}
+\DoxyCodeLine{00729     \textcolor{comment}{//   |Wall|Mirr|Wall|}}
+\DoxyCodeLine{00730     \textcolor{comment}{//   |    | or |    |}}
+\DoxyCodeLine{00731     \textcolor{comment}{//   /-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\//}}
+\DoxyCodeLine{00732     \textcolor{comment}{//  /   Floor      /}}
+\DoxyCodeLine{00733     \textcolor{comment}{// /-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\//}}
 \DoxyCodeLine{00734 }
-\DoxyCodeLine{00735         Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 2.0f), \textcolor{comment}{// 8 }}
-\DoxyCodeLine{00736         Vertex(2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00737         Vertex(7.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 2.0f, 0.0f),}
-\DoxyCodeLine{00738         Vertex(7.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 2.0f, 2.0f),}
-\DoxyCodeLine{00739 }
-\DoxyCodeLine{00740         Vertex(-\/3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 1.0f), \textcolor{comment}{// 12}}
-\DoxyCodeLine{00741         Vertex(-\/3.5f, 6.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00742         Vertex(7.5f, 6.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 6.0f, 0.0f),}
-\DoxyCodeLine{00743         Vertex(7.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 6.0f, 1.0f),}
-\DoxyCodeLine{00744 }
-\DoxyCodeLine{00745         \textcolor{comment}{// Mirror}}
-\DoxyCodeLine{00746         Vertex(-\/2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 1.0f), \textcolor{comment}{// 16}}
-\DoxyCodeLine{00747         Vertex(-\/2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00748         Vertex(2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 1.0f, 0.0f),}
-\DoxyCodeLine{00749         Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 1.0f, 1.0f)}
-\DoxyCodeLine{00750     \};}
-\DoxyCodeLine{00751 }
-\DoxyCodeLine{00752     std::array<std::int16\_t, 30> indices = }
-\DoxyCodeLine{00753     \{}
-\DoxyCodeLine{00754         \textcolor{comment}{// Floor}}
-\DoxyCodeLine{00755         0, 1, 2,    }
-\DoxyCodeLine{00756         0, 2, 3,}
-\DoxyCodeLine{00757 }
-\DoxyCodeLine{00758         \textcolor{comment}{// Walls}}
-\DoxyCodeLine{00759         4, 5, 6,}
-\DoxyCodeLine{00760         4, 6, 7,}
-\DoxyCodeLine{00761 }
-\DoxyCodeLine{00762         8, 9, 10,}
-\DoxyCodeLine{00763         8, 10, 11,}
-\DoxyCodeLine{00764 }
-\DoxyCodeLine{00765         12, 13, 14,}
-\DoxyCodeLine{00766         12, 14, 15,}
-\DoxyCodeLine{00767 }
-\DoxyCodeLine{00768         \textcolor{comment}{// Mirror}}
-\DoxyCodeLine{00769         16, 17, 18,}
-\DoxyCodeLine{00770         16, 18, 19}
-\DoxyCodeLine{00771     \};}
+\DoxyCodeLine{00735     std::array<Vertex, 20> vertices = }
+\DoxyCodeLine{00736     \{}
+\DoxyCodeLine{00737         \textcolor{comment}{// Floor: Observe we tile texture coordinates.}}
+\DoxyCodeLine{00738         Vertex(-\/3.5f, 0.0f, -\/10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 4.0f), \textcolor{comment}{// 0 }}
+\DoxyCodeLine{00739         Vertex(-\/3.5f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00740         Vertex(7.5f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f),}
+\DoxyCodeLine{00741         Vertex(7.5f, 0.0f, -\/10.0f, 0.0f, 1.0f, 0.0f, 4.0f, 4.0f),}
+\DoxyCodeLine{00742 }
+\DoxyCodeLine{00743         \textcolor{comment}{// Wall: Observe we tile texture coordinates, and that we}}
+\DoxyCodeLine{00744         \textcolor{comment}{// leave a gap in the middle for the mirror.}}
+\DoxyCodeLine{00745         Vertex(-\/3.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 2.0f), \textcolor{comment}{// 4}}
+\DoxyCodeLine{00746         Vertex(-\/3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00747         Vertex(-\/2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.5f, 0.0f),}
+\DoxyCodeLine{00748         Vertex(-\/2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.5f, 2.0f),}
+\DoxyCodeLine{00749 }
+\DoxyCodeLine{00750         Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 2.0f), \textcolor{comment}{// 8 }}
+\DoxyCodeLine{00751         Vertex(2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00752         Vertex(7.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 2.0f, 0.0f),}
+\DoxyCodeLine{00753         Vertex(7.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 2.0f, 2.0f),}
+\DoxyCodeLine{00754 }
+\DoxyCodeLine{00755         Vertex(-\/3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 1.0f), \textcolor{comment}{// 12}}
+\DoxyCodeLine{00756         Vertex(-\/3.5f, 6.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00757         Vertex(7.5f, 6.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 6.0f, 0.0f),}
+\DoxyCodeLine{00758         Vertex(7.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 6.0f, 1.0f),}
+\DoxyCodeLine{00759 }
+\DoxyCodeLine{00760         \textcolor{comment}{// Mirror}}
+\DoxyCodeLine{00761         Vertex(-\/2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 1.0f), \textcolor{comment}{// 16}}
+\DoxyCodeLine{00762         Vertex(-\/2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{00763         Vertex(2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 1.0f, 0.0f),}
+\DoxyCodeLine{00764         Vertex(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -\/1.0f, 1.0f, 1.0f)}
+\DoxyCodeLine{00765     \};}
+\DoxyCodeLine{00766 }
+\DoxyCodeLine{00767     std::array<std::int16\_t, 30> indices = }
+\DoxyCodeLine{00768     \{}
+\DoxyCodeLine{00769         \textcolor{comment}{// Floor}}
+\DoxyCodeLine{00770         0, 1, 2,    }
+\DoxyCodeLine{00771         0, 2, 3,}
 \DoxyCodeLine{00772 }
-\DoxyCodeLine{00773     SubmeshGeometry floorSubmesh;}
-\DoxyCodeLine{00774     floorSubmesh.IndexCount = 6;}
-\DoxyCodeLine{00775     floorSubmesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00776     floorSubmesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00777 }
-\DoxyCodeLine{00778     SubmeshGeometry wallSubmesh;}
-\DoxyCodeLine{00779     wallSubmesh.IndexCount = 18;}
-\DoxyCodeLine{00780     wallSubmesh.StartIndexLocation = 6;}
-\DoxyCodeLine{00781     wallSubmesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00773         \textcolor{comment}{// Walls}}
+\DoxyCodeLine{00774         4, 5, 6,}
+\DoxyCodeLine{00775         4, 6, 7,}
+\DoxyCodeLine{00776 }
+\DoxyCodeLine{00777         8, 9, 10,}
+\DoxyCodeLine{00778         8, 10, 11,}
+\DoxyCodeLine{00779 }
+\DoxyCodeLine{00780         12, 13, 14,}
+\DoxyCodeLine{00781         12, 14, 15,}
 \DoxyCodeLine{00782 }
-\DoxyCodeLine{00783     SubmeshGeometry mirrorSubmesh;}
-\DoxyCodeLine{00784     mirrorSubmesh.IndexCount = 6;}
-\DoxyCodeLine{00785     mirrorSubmesh.StartIndexLocation = 24;}
-\DoxyCodeLine{00786     mirrorSubmesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00783         \textcolor{comment}{// Mirror}}
+\DoxyCodeLine{00784         16, 17, 18,}
+\DoxyCodeLine{00785         16, 18, 19}
+\DoxyCodeLine{00786     \};}
 \DoxyCodeLine{00787 }
-\DoxyCodeLine{00788     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00789     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00790 }
-\DoxyCodeLine{00791     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00792     geo-\/>Name = \textcolor{stringliteral}{"{}roomGeo"{}};}
-\DoxyCodeLine{00793 }
-\DoxyCodeLine{00794     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00795     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00796 }
-\DoxyCodeLine{00797     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00798     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00799 }
-\DoxyCodeLine{00800     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00801         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{00788     SubmeshGeometry floorSubmesh;}
+\DoxyCodeLine{00789     floorSubmesh.IndexCount = 6;}
+\DoxyCodeLine{00790     floorSubmesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00791     floorSubmesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00792 }
+\DoxyCodeLine{00793     SubmeshGeometry wallSubmesh;}
+\DoxyCodeLine{00794     wallSubmesh.IndexCount = 18;}
+\DoxyCodeLine{00795     wallSubmesh.StartIndexLocation = 6;}
+\DoxyCodeLine{00796     wallSubmesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00797 }
+\DoxyCodeLine{00798     SubmeshGeometry mirrorSubmesh;}
+\DoxyCodeLine{00799     mirrorSubmesh.IndexCount = 6;}
+\DoxyCodeLine{00800     mirrorSubmesh.StartIndexLocation = 24;}
+\DoxyCodeLine{00801     mirrorSubmesh.BaseVertexLocation = 0;}
 \DoxyCodeLine{00802 }
-\DoxyCodeLine{00803     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00804         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00803     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00804     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
 \DoxyCodeLine{00805 }
-\DoxyCodeLine{00806     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00807     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00808     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00809     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00810 }
-\DoxyCodeLine{00811     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}] = floorSubmesh;}
-\DoxyCodeLine{00812     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}] = wallSubmesh;}
-\DoxyCodeLine{00813     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}] = mirrorSubmesh;}
+\DoxyCodeLine{00806     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00807     geo-\/>Name = \textcolor{stringliteral}{"{}roomGeo"{}};}
+\DoxyCodeLine{00808 }
+\DoxyCodeLine{00809     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00810     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00811 }
+\DoxyCodeLine{00812     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00813     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
 \DoxyCodeLine{00814 }
-\DoxyCodeLine{00815     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00816 \}}
+\DoxyCodeLine{00815     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00816         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00817 }
-\DoxyCodeLine{00818 \textcolor{keywordtype}{void} StencilApp::BuildSkullGeometry()}
-\DoxyCodeLine{00819 \{}
-\DoxyCodeLine{00820     std::ifstream fin(\textcolor{stringliteral}{"{}Models/skull.txt"{}});}
-\DoxyCodeLine{00821     }
-\DoxyCodeLine{00822     \textcolor{keywordflow}{if}(!fin)}
-\DoxyCodeLine{00823     \{}
-\DoxyCodeLine{00824         MessageBox(0, L\textcolor{stringliteral}{"{}Models/skull.txt not found."{}}, 0, 0);}
-\DoxyCodeLine{00825         \textcolor{keywordflow}{return};}
-\DoxyCodeLine{00826     \}}
-\DoxyCodeLine{00827 }
-\DoxyCodeLine{00828     UINT vcount = 0;}
-\DoxyCodeLine{00829     UINT tcount = 0;}
-\DoxyCodeLine{00830     std::string ignore;}
-\DoxyCodeLine{00831 }
-\DoxyCodeLine{00832     fin >> ignore >> vcount;}
-\DoxyCodeLine{00833     fin >> ignore >> tcount;}
-\DoxyCodeLine{00834     fin >> ignore >> ignore >> ignore >> ignore;}
-\DoxyCodeLine{00835     }
-\DoxyCodeLine{00836     std::vector<Vertex> vertices(vcount);}
-\DoxyCodeLine{00837     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
+\DoxyCodeLine{00818     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00819         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00820 }
+\DoxyCodeLine{00821     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00822     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00823     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00824     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00825 }
+\DoxyCodeLine{00826     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}] = floorSubmesh;}
+\DoxyCodeLine{00827     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}] = wallSubmesh;}
+\DoxyCodeLine{00828     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}] = mirrorSubmesh;}
+\DoxyCodeLine{00829 }
+\DoxyCodeLine{00830     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{00831 \}}
+\DoxyCodeLine{00832 }
+\DoxyCodeLine{00833 \textcolor{keywordtype}{void} StencilApp::BuildSkullGeometry()}
+\DoxyCodeLine{00834 \{}
+\DoxyCodeLine{00835     std::ifstream fin(\textcolor{stringliteral}{"{}Models/skull.txt"{}});}
+\DoxyCodeLine{00836     }
+\DoxyCodeLine{00837     \textcolor{keywordflow}{if}(!fin)}
 \DoxyCodeLine{00838     \{}
-\DoxyCodeLine{00839         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
-\DoxyCodeLine{00840         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
-\DoxyCodeLine{00841 }
-\DoxyCodeLine{00842         \textcolor{comment}{// Model does not have texture coordinates, so just zero them out.}}
-\DoxyCodeLine{00843         vertices[i].TexC = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00844     \}}
-\DoxyCodeLine{00845 }
-\DoxyCodeLine{00846     fin >> ignore;}
-\DoxyCodeLine{00847     fin >> ignore;}
-\DoxyCodeLine{00848     fin >> ignore;}
-\DoxyCodeLine{00849 }
-\DoxyCodeLine{00850     std::vector<std::int32\_t> indices(3 * tcount);}
-\DoxyCodeLine{00851     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
-\DoxyCodeLine{00852     \{}
-\DoxyCodeLine{00853         fin >> indices[i*3+0] >> indices[i*3+1] >> indices[i*3+2];}
-\DoxyCodeLine{00854     \}}
-\DoxyCodeLine{00855 }
-\DoxyCodeLine{00856     fin.close();}
-\DoxyCodeLine{00857  }
-\DoxyCodeLine{00858     \textcolor{comment}{//}}
-\DoxyCodeLine{00859     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
-\DoxyCodeLine{00860     \textcolor{comment}{//}}
-\DoxyCodeLine{00861  }
-\DoxyCodeLine{00862     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00863 }
-\DoxyCodeLine{00864     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
-\DoxyCodeLine{00865 }
-\DoxyCodeLine{00866     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00867     geo-\/>Name = \textcolor{stringliteral}{"{}skullGeo"{}};}
-\DoxyCodeLine{00868 }
-\DoxyCodeLine{00869     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00870     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00871 }
-\DoxyCodeLine{00872     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00873     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00874 }
-\DoxyCodeLine{00875     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00876         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00877 }
-\DoxyCodeLine{00878     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00879         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00839         MessageBox(0, L\textcolor{stringliteral}{"{}Models/skull.txt not found."{}}, 0, 0);}
+\DoxyCodeLine{00840         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00841     \}}
+\DoxyCodeLine{00842 }
+\DoxyCodeLine{00843     UINT vcount = 0;}
+\DoxyCodeLine{00844     UINT tcount = 0;}
+\DoxyCodeLine{00845     std::string ignore;}
+\DoxyCodeLine{00846 }
+\DoxyCodeLine{00847     fin >> ignore >> vcount;}
+\DoxyCodeLine{00848     fin >> ignore >> tcount;}
+\DoxyCodeLine{00849     fin >> ignore >> ignore >> ignore >> ignore;}
+\DoxyCodeLine{00850     }
+\DoxyCodeLine{00851     std::vector<Vertex> vertices(vcount);}
+\DoxyCodeLine{00852     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
+\DoxyCodeLine{00853     \{}
+\DoxyCodeLine{00854         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
+\DoxyCodeLine{00855         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
+\DoxyCodeLine{00856 }
+\DoxyCodeLine{00857         \textcolor{comment}{// Model does not have texture coordinates, so just zero them out.}}
+\DoxyCodeLine{00858         vertices[i].TexC = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{00859     \}}
+\DoxyCodeLine{00860 }
+\DoxyCodeLine{00861     fin >> ignore;}
+\DoxyCodeLine{00862     fin >> ignore;}
+\DoxyCodeLine{00863     fin >> ignore;}
+\DoxyCodeLine{00864 }
+\DoxyCodeLine{00865     std::vector<std::int32\_t> indices(3 * tcount);}
+\DoxyCodeLine{00866     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
+\DoxyCodeLine{00867     \{}
+\DoxyCodeLine{00868         fin >> indices[i*3+0] >> indices[i*3+1] >> indices[i*3+2];}
+\DoxyCodeLine{00869     \}}
+\DoxyCodeLine{00870 }
+\DoxyCodeLine{00871     fin.close();}
+\DoxyCodeLine{00872  }
+\DoxyCodeLine{00873     \textcolor{comment}{//}}
+\DoxyCodeLine{00874     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
+\DoxyCodeLine{00875     \textcolor{comment}{//}}
+\DoxyCodeLine{00876  }
+\DoxyCodeLine{00877     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00878 }
+\DoxyCodeLine{00879     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
 \DoxyCodeLine{00880 }
-\DoxyCodeLine{00881     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00882     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00883     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
-\DoxyCodeLine{00884     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00885 }
-\DoxyCodeLine{00886     SubmeshGeometry submesh;}
-\DoxyCodeLine{00887     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00888     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00889     submesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00890 }
-\DoxyCodeLine{00891     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}] = submesh;}
+\DoxyCodeLine{00881     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00882     geo-\/>Name = \textcolor{stringliteral}{"{}skullGeo"{}};}
+\DoxyCodeLine{00883 }
+\DoxyCodeLine{00884     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00885     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00886 }
+\DoxyCodeLine{00887     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00888     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00889 }
+\DoxyCodeLine{00890     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00891         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00892 }
-\DoxyCodeLine{00893     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00894 \}}
+\DoxyCodeLine{00893     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00894         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
 \DoxyCodeLine{00895 }
-\DoxyCodeLine{00896 \textcolor{keywordtype}{void} StencilApp::BuildPSOs()}
-\DoxyCodeLine{00897 \{}
-\DoxyCodeLine{00898     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00899 }
-\DoxyCodeLine{00900     \textcolor{comment}{//}}
-\DoxyCodeLine{00901     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00902     \textcolor{comment}{//}}
-\DoxyCodeLine{00903     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00904     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00905     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00906     opaquePsoDesc.VS = }
-\DoxyCodeLine{00907     \{ }
-\DoxyCodeLine{00908         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
-\DoxyCodeLine{00909         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00910     \};}
-\DoxyCodeLine{00911     opaquePsoDesc.PS = }
-\DoxyCodeLine{00912     \{ }
-\DoxyCodeLine{00913         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00914         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00915     \};}
-\DoxyCodeLine{00916     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00917     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00918     \textcolor{comment}{//step1}}
-\DoxyCodeLine{00919     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00920     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00921     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00922     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00923     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00924     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00925     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00926     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00927     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00928 }
-\DoxyCodeLine{00929     \textcolor{comment}{//}}
-\DoxyCodeLine{00930     \textcolor{comment}{// PSO for transparent objects}}
-\DoxyCodeLine{00931     \textcolor{comment}{//}}
-\DoxyCodeLine{00932 }
-\DoxyCodeLine{00933     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC transparentPsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00934 }
-\DoxyCodeLine{00935     D3D12\_RENDER\_TARGET\_BLEND\_DESC transparencyBlendDesc;}
-\DoxyCodeLine{00936     transparencyBlendDesc.BlendEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00937     transparencyBlendDesc.LogicOpEnable = \textcolor{keyword}{false};}
-\DoxyCodeLine{00938     transparencyBlendDesc.SrcBlend = D3D12\_BLEND\_SRC\_ALPHA;}
-\DoxyCodeLine{00939     transparencyBlendDesc.DestBlend = D3D12\_BLEND\_INV\_SRC\_ALPHA;}
-\DoxyCodeLine{00940     transparencyBlendDesc.BlendOp = D3D12\_BLEND\_OP\_ADD;}
-\DoxyCodeLine{00941     transparencyBlendDesc.SrcBlendAlpha = D3D12\_BLEND\_ONE;}
-\DoxyCodeLine{00942     transparencyBlendDesc.DestBlendAlpha = D3D12\_BLEND\_ZERO;}
-\DoxyCodeLine{00943     transparencyBlendDesc.BlendOpAlpha = D3D12\_BLEND\_OP\_ADD;}
-\DoxyCodeLine{00944     transparencyBlendDesc.LogicOp = D3D12\_LOGIC\_OP\_NOOP;}
-\DoxyCodeLine{00945     transparencyBlendDesc.RenderTargetWriteMask = D3D12\_COLOR\_WRITE\_ENABLE\_ALL;}
-\DoxyCodeLine{00946 }
-\DoxyCodeLine{00947     transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;}
-\DoxyCodeLine{00948     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&transparentPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}transparent"{}}])));}
+\DoxyCodeLine{00896     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00897     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00898     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
+\DoxyCodeLine{00899     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00900 }
+\DoxyCodeLine{00901     SubmeshGeometry submesh;}
+\DoxyCodeLine{00902     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00903     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00904     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00905 }
+\DoxyCodeLine{00906     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}] = submesh;}
+\DoxyCodeLine{00907 }
+\DoxyCodeLine{00908     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{00909 \}}
+\DoxyCodeLine{00910 }
+\DoxyCodeLine{00911 \textcolor{keywordtype}{void} StencilApp::BuildPSOs()}
+\DoxyCodeLine{00912 \{}
+\DoxyCodeLine{00913     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{00914 }
+\DoxyCodeLine{00915     \textcolor{comment}{//}}
+\DoxyCodeLine{00916     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{00917     \textcolor{comment}{//}}
+\DoxyCodeLine{00918     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{00919     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{00920     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{00921     opaquePsoDesc.VS = }
+\DoxyCodeLine{00922     \{ }
+\DoxyCodeLine{00923         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{00924         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00925     \};}
+\DoxyCodeLine{00926     opaquePsoDesc.PS = }
+\DoxyCodeLine{00927     \{ }
+\DoxyCodeLine{00928         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{00929         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00930     \};}
+\DoxyCodeLine{00931     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00932     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00933     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00934     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00935     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00936     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00937     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00938     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
+\DoxyCodeLine{00939     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
+\DoxyCodeLine{00940     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
+\DoxyCodeLine{00941     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
+\DoxyCodeLine{00942     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{00943 }
+\DoxyCodeLine{00944     \textcolor{comment}{//}}
+\DoxyCodeLine{00945     \textcolor{comment}{// PSO for transparent objects}}
+\DoxyCodeLine{00946     \textcolor{comment}{//}}
+\DoxyCodeLine{00947 }
+\DoxyCodeLine{00948     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC transparentPsoDesc = opaquePsoDesc;}
 \DoxyCodeLine{00949 }
-\DoxyCodeLine{00950     \textcolor{comment}{//}}
-\DoxyCodeLine{00951     \textcolor{comment}{// PSO for marking stencil mirrors.}}
-\DoxyCodeLine{00952     \textcolor{comment}{//}}
-\DoxyCodeLine{00953 }
-\DoxyCodeLine{00954     CD3DX12\_BLEND\_DESC mirrorBlendState(D3D12\_DEFAULT);}
-\DoxyCodeLine{00956     mirrorBlendState.RenderTarget[0].RenderTargetWriteMask = 0;}
-\DoxyCodeLine{00957 }
-\DoxyCodeLine{00958     D3D12\_DEPTH\_STENCIL\_DESC mirrorDSS;}
-\DoxyCodeLine{00959     mirrorDSS.DepthEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00960     mirrorDSS.DepthWriteMask = D3D12\_DEPTH\_WRITE\_MASK\_ZERO; \textcolor{comment}{//which portion of the depth/stencil buffer that depth data can be written to.}}
-\DoxyCodeLine{00961     mirrorDSS.DepthFunc = D3D12\_COMPARISON\_FUNC\_LESS; \textcolor{comment}{//the function the depth test should use}}
-\DoxyCodeLine{00962     mirrorDSS.StencilEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00963     mirrorDSS.StencilReadMask = 0xff; \textcolor{comment}{//This is the portion of the depth/stencil buffer that the stencil test can read from}}
-\DoxyCodeLine{00964     mirrorDSS.StencilWriteMask = 0xff; \textcolor{comment}{//This is the portion of the depth/stencil buffer that the stencil test can write to}}
-\DoxyCodeLine{00965 }
-\DoxyCodeLine{00966     \textcolor{comment}{// This is a D3D12\_DEPTH\_STENCILOP\_DESC structure which describes what the depth or stencil test is supposed to do with pixels whose surface normals are facing camera (like the frontside of a triangle)}}
-\DoxyCodeLine{00967     mirrorDSS.FrontFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP; \textcolor{comment}{//when a pixel fragment fails the stencil test.}}
-\DoxyCodeLine{00968     mirrorDSS.FrontFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP; \textcolor{comment}{// when the stencil test passes but the depth test fails}}
-\DoxyCodeLine{00969     mirrorDSS.FrontFace.StencilPassOp = D3D12\_STENCIL\_OP\_REPLACE; \textcolor{comment}{// when stencil and depth tests both pass}}
-\DoxyCodeLine{00970     mirrorDSS.FrontFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_ALWAYS; \textcolor{comment}{//the function the stencil test should use}}
-\DoxyCodeLine{00971 }
-\DoxyCodeLine{00972     \textcolor{comment}{// We are not rendering backfacing polygons, so these settings do not matter.}}
-\DoxyCodeLine{00973     mirrorDSS.BackFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{00974     mirrorDSS.BackFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{00975     mirrorDSS.BackFace.StencilPassOp = D3D12\_STENCIL\_OP\_REPLACE;}
-\DoxyCodeLine{00976     mirrorDSS.BackFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_ALWAYS;}
-\DoxyCodeLine{00977 }
-\DoxyCodeLine{00978     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC markMirrorsPsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00979     markMirrorsPsoDesc.BlendState = mirrorBlendState;}
-\DoxyCodeLine{00980     markMirrorsPsoDesc.DepthStencilState = mirrorDSS;}
-\DoxyCodeLine{00981     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&markMirrorsPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}markStencilMirrors"{}}])));}
-\DoxyCodeLine{00982 }
-\DoxyCodeLine{00983     \textcolor{comment}{//}}
-\DoxyCodeLine{00984     \textcolor{comment}{// PSO for stencil reflections.}}
-\DoxyCodeLine{00985     \textcolor{comment}{//}}
+\DoxyCodeLine{00950     D3D12\_RENDER\_TARGET\_BLEND\_DESC transparencyBlendDesc;}
+\DoxyCodeLine{00951     transparencyBlendDesc.BlendEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{00952     transparencyBlendDesc.LogicOpEnable = \textcolor{keyword}{false};}
+\DoxyCodeLine{00953     transparencyBlendDesc.SrcBlend = D3D12\_BLEND\_SRC\_ALPHA;}
+\DoxyCodeLine{00954     transparencyBlendDesc.DestBlend = D3D12\_BLEND\_INV\_SRC\_ALPHA;}
+\DoxyCodeLine{00955     transparencyBlendDesc.BlendOp = D3D12\_BLEND\_OP\_ADD;}
+\DoxyCodeLine{00956     transparencyBlendDesc.SrcBlendAlpha = D3D12\_BLEND\_ONE;}
+\DoxyCodeLine{00957     transparencyBlendDesc.DestBlendAlpha = D3D12\_BLEND\_ZERO;}
+\DoxyCodeLine{00958     transparencyBlendDesc.BlendOpAlpha = D3D12\_BLEND\_OP\_ADD;}
+\DoxyCodeLine{00959     transparencyBlendDesc.LogicOp = D3D12\_LOGIC\_OP\_NOOP;}
+\DoxyCodeLine{00960     transparencyBlendDesc.RenderTargetWriteMask = D3D12\_COLOR\_WRITE\_ENABLE\_ALL;}
+\DoxyCodeLine{00961 }
+\DoxyCodeLine{00962     transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;}
+\DoxyCodeLine{00963     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&transparentPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}transparent"{}}])));}
+\DoxyCodeLine{00964 }
+\DoxyCodeLine{00965     \textcolor{comment}{//}}
+\DoxyCodeLine{00966     \textcolor{comment}{// PSO for marking stencil mirrors.}}
+\DoxyCodeLine{00967     \textcolor{comment}{//}}
+\DoxyCodeLine{00968 }
+\DoxyCodeLine{00969     CD3DX12\_BLEND\_DESC mirrorBlendState(D3D12\_DEFAULT);}
+\DoxyCodeLine{00971     mirrorBlendState.RenderTarget[0].RenderTargetWriteMask = 0;}
+\DoxyCodeLine{00972 }
+\DoxyCodeLine{00973     D3D12\_DEPTH\_STENCIL\_DESC mirrorDSS;}
+\DoxyCodeLine{00974     mirrorDSS.DepthEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{00975     mirrorDSS.DepthWriteMask = D3D12\_DEPTH\_WRITE\_MASK\_ZERO; \textcolor{comment}{//which portion of the depth/stencil buffer that depth data can be written to.}}
+\DoxyCodeLine{00976     mirrorDSS.DepthFunc = D3D12\_COMPARISON\_FUNC\_LESS; \textcolor{comment}{//the function the depth test should use}}
+\DoxyCodeLine{00977     mirrorDSS.StencilEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{00978     mirrorDSS.StencilReadMask = 0xff; \textcolor{comment}{//This is the portion of the depth/stencil buffer that the stencil test can read from}}
+\DoxyCodeLine{00979     mirrorDSS.StencilWriteMask = 0xff; \textcolor{comment}{//This is the portion of the depth/stencil buffer that the stencil test can write to}}
+\DoxyCodeLine{00980 }
+\DoxyCodeLine{00981     \textcolor{comment}{// This is a D3D12\_DEPTH\_STENCILOP\_DESC structure which describes what the depth or stencil test is supposed to do with pixels whose surface normals are facing camera (like the frontside of a triangle)}}
+\DoxyCodeLine{00982     mirrorDSS.FrontFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP; \textcolor{comment}{//when a pixel fragment fails the stencil test.}}
+\DoxyCodeLine{00983     mirrorDSS.FrontFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP; \textcolor{comment}{// when the stencil test passes but the depth test fails}}
+\DoxyCodeLine{00984     mirrorDSS.FrontFace.StencilPassOp = D3D12\_STENCIL\_OP\_REPLACE; \textcolor{comment}{// when stencil and depth tests both pass}}
+\DoxyCodeLine{00985     mirrorDSS.FrontFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_ALWAYS; \textcolor{comment}{//the function the stencil test should use}}
 \DoxyCodeLine{00986 }
-\DoxyCodeLine{00987     D3D12\_DEPTH\_STENCIL\_DESC reflectionsDSS;}
-\DoxyCodeLine{00988     \textcolor{comment}{//By using the depth/stencil buffer, we can block the reflected from being rendered on the wall}}
-\DoxyCodeLine{00989     \textcolor{comment}{//what happens when you set reflectionsDSS.DepthEnable = false; and reflectionsDSS.StencilEnable = false;}}
-\DoxyCodeLine{00990     \textcolor{comment}{//the mirror would not occlude the reflection}}
-\DoxyCodeLine{00991     reflectionsDSS.DepthEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00992     reflectionsDSS.DepthWriteMask = D3D12\_DEPTH\_WRITE\_MASK\_ALL;}
-\DoxyCodeLine{00993     reflectionsDSS.DepthFunc = D3D12\_COMPARISON\_FUNC\_LESS;}
-\DoxyCodeLine{00994     \textcolor{comment}{//By using the stencil buffer, we can block  the reflected skull from being rendered unless it is being drawn in the mirror.}}
-\DoxyCodeLine{00995     \textcolor{comment}{//what happens when you set reflectionsDSS.StencilEnable = false;}}
-\DoxyCodeLine{00996     reflectionsDSS.StencilEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00997     reflectionsDSS.StencilReadMask = 0xff;}
-\DoxyCodeLine{00998     reflectionsDSS.StencilWriteMask = 0xff;}
-\DoxyCodeLine{00999 }
-\DoxyCodeLine{01000     reflectionsDSS.FrontFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01001     reflectionsDSS.FrontFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01002     reflectionsDSS.FrontFace.StencilPassOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01003     \textcolor{comment}{//we set the stencil test to only succeed if the value in the stencil buffer equals 1 (stencil ref)}}
-\DoxyCodeLine{01004     reflectionsDSS.FrontFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_EQUAL;}
-\DoxyCodeLine{01005 }
-\DoxyCodeLine{01006     \textcolor{comment}{// We are not rendering backfacing polygons, so these settings do not matter.}}
-\DoxyCodeLine{01007     reflectionsDSS.BackFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01008     reflectionsDSS.BackFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01009     reflectionsDSS.BackFace.StencilPassOp = D3D12\_STENCIL\_OP\_KEEP;}
-\DoxyCodeLine{01010     reflectionsDSS.BackFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_EQUAL;}
-\DoxyCodeLine{01011 }
-\DoxyCodeLine{01012     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC drawReflectionsPsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{01013     drawReflectionsPsoDesc.DepthStencilState = reflectionsDSS;}
-\DoxyCodeLine{01014     drawReflectionsPsoDesc.RasterizerState.CullMode = D3D12\_CULL\_MODE\_BACK;}
-\DoxyCodeLine{01015     drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = \textcolor{keyword}{true};}
-\DoxyCodeLine{01016     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&drawReflectionsPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}drawStencilReflections"{}}])));}
-\DoxyCodeLine{01017 }
-\DoxyCodeLine{01018 }
-\DoxyCodeLine{01019 \}}
+\DoxyCodeLine{00987     \textcolor{comment}{// We are not rendering backfacing polygons, so these settings do not matter.}}
+\DoxyCodeLine{00988     mirrorDSS.BackFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{00989     mirrorDSS.BackFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{00990     mirrorDSS.BackFace.StencilPassOp = D3D12\_STENCIL\_OP\_REPLACE;}
+\DoxyCodeLine{00991     mirrorDSS.BackFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_ALWAYS;}
+\DoxyCodeLine{00992 }
+\DoxyCodeLine{00993     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC markMirrorsPsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{00994     markMirrorsPsoDesc.BlendState = mirrorBlendState;}
+\DoxyCodeLine{00995     markMirrorsPsoDesc.DepthStencilState = mirrorDSS;}
+\DoxyCodeLine{00996     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&markMirrorsPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}markStencilMirrors"{}}])));}
+\DoxyCodeLine{00997 }
+\DoxyCodeLine{00998     \textcolor{comment}{//}}
+\DoxyCodeLine{00999     \textcolor{comment}{// PSO for stencil reflections.}}
+\DoxyCodeLine{01000     \textcolor{comment}{//}}
+\DoxyCodeLine{01001 }
+\DoxyCodeLine{01002     D3D12\_DEPTH\_STENCIL\_DESC reflectionsDSS;}
+\DoxyCodeLine{01003     \textcolor{comment}{//By using the depth/stencil buffer, we can block the reflected from being rendered on the wall}}
+\DoxyCodeLine{01004     \textcolor{comment}{//what happens when you set reflectionsDSS.DepthEnable = false; and reflectionsDSS.StencilEnable = false;}}
+\DoxyCodeLine{01005     \textcolor{comment}{//the mirror would not occlude the reflection}}
+\DoxyCodeLine{01006     reflectionsDSS.DepthEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{01007     reflectionsDSS.DepthWriteMask = D3D12\_DEPTH\_WRITE\_MASK\_ALL;}
+\DoxyCodeLine{01008     reflectionsDSS.DepthFunc = D3D12\_COMPARISON\_FUNC\_LESS;}
+\DoxyCodeLine{01009     \textcolor{comment}{//By using the stencil buffer, we can block  the reflected skull from being rendered unless it is being drawn in the mirror.}}
+\DoxyCodeLine{01010     \textcolor{comment}{//what happens when you set reflectionsDSS.StencilEnable = false;}}
+\DoxyCodeLine{01011     reflectionsDSS.StencilEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{01012     reflectionsDSS.StencilReadMask = 0xff;}
+\DoxyCodeLine{01013     reflectionsDSS.StencilWriteMask = 0xff;}
+\DoxyCodeLine{01014 }
+\DoxyCodeLine{01015     reflectionsDSS.FrontFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01016     reflectionsDSS.FrontFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01017     reflectionsDSS.FrontFace.StencilPassOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01018     \textcolor{comment}{//we set the stencil test to only succeed if the value in the stencil buffer equals 1 (stencil ref)}}
+\DoxyCodeLine{01019     reflectionsDSS.FrontFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_EQUAL;}
 \DoxyCodeLine{01020 }
-\DoxyCodeLine{01021 \textcolor{keywordtype}{void} StencilApp::BuildFrameResources()}
-\DoxyCodeLine{01022 \{}
-\DoxyCodeLine{01023     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{01024     \{}
-\DoxyCodeLine{01025         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{01026             2, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
-\DoxyCodeLine{01027     \}}
-\DoxyCodeLine{01028 \}}
-\DoxyCodeLine{01029 }
-\DoxyCodeLine{01030 \textcolor{keywordtype}{void} StencilApp::BuildMaterials()}
-\DoxyCodeLine{01031 \{}
-\DoxyCodeLine{01032     \textcolor{keyword}{auto} bricks = std::make\_unique<Material>();}
-\DoxyCodeLine{01033     bricks-\/>Name = \textcolor{stringliteral}{"{}bricks"{}};}
-\DoxyCodeLine{01034     bricks-\/>MatCBIndex = 0;}
-\DoxyCodeLine{01035     bricks-\/>DiffuseSrvHeapIndex = 0;}
-\DoxyCodeLine{01036     bricks-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{01037     bricks-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);}
-\DoxyCodeLine{01038     bricks-\/>Roughness = 0.25f;}
-\DoxyCodeLine{01039 }
-\DoxyCodeLine{01040     \textcolor{keyword}{auto} checkertile = std::make\_unique<Material>();}
-\DoxyCodeLine{01041     checkertile-\/>Name = \textcolor{stringliteral}{"{}checkertile"{}};}
-\DoxyCodeLine{01042     checkertile-\/>MatCBIndex = 1;}
-\DoxyCodeLine{01043     checkertile-\/>DiffuseSrvHeapIndex = 1;}
-\DoxyCodeLine{01044     checkertile-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{01045     checkertile-\/>FresnelR0 = XMFLOAT3(0.07f, 0.07f, 0.07f);}
-\DoxyCodeLine{01046     checkertile-\/>Roughness = 0.3f;}
-\DoxyCodeLine{01047 }
-\DoxyCodeLine{01048     \textcolor{keyword}{auto} icemirror = std::make\_unique<Material>();}
-\DoxyCodeLine{01049     icemirror-\/>Name = \textcolor{stringliteral}{"{}icemirror"{}};}
-\DoxyCodeLine{01050     icemirror-\/>MatCBIndex = 2;}
-\DoxyCodeLine{01051     icemirror-\/>DiffuseSrvHeapIndex = 2;}
-\DoxyCodeLine{01052     \textcolor{comment}{//In order for the skull reflection to show through(which lies behind the mirror), we need to render the}}
-\DoxyCodeLine{01053     \textcolor{comment}{//mirror with transparency blending.If we did not render the mirror with transparency,}}
-\DoxyCodeLine{01054     \textcolor{comment}{//the mirror would simply occlude the reflection since its depth is less than that of the reflection.}}
-\DoxyCodeLine{01055     \textcolor{comment}{//try this:     icemirror-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}}
-\DoxyCodeLine{01056     icemirror-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);}
-\DoxyCodeLine{01057     icemirror-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
-\DoxyCodeLine{01058     icemirror-\/>Roughness = 0.5f;}
-\DoxyCodeLine{01059 }
-\DoxyCodeLine{01060     \textcolor{keyword}{auto} skullMat = std::make\_unique<Material>();}
-\DoxyCodeLine{01061     skullMat-\/>Name = \textcolor{stringliteral}{"{}skullMat"{}};}
-\DoxyCodeLine{01062     skullMat-\/>MatCBIndex = 3;}
-\DoxyCodeLine{01063     skullMat-\/>DiffuseSrvHeapIndex = 3;}
-\DoxyCodeLine{01064     skullMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{01065     skullMat-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);}
-\DoxyCodeLine{01066     skullMat-\/>Roughness = 0.3f;}
-\DoxyCodeLine{01067 }
-\DoxyCodeLine{01068 }
-\DoxyCodeLine{01069     mMaterials[\textcolor{stringliteral}{"{}bricks"{}}] = std::move(bricks);}
-\DoxyCodeLine{01070     mMaterials[\textcolor{stringliteral}{"{}checkertile"{}}] = std::move(checkertile);}
-\DoxyCodeLine{01071     mMaterials[\textcolor{stringliteral}{"{}icemirror"{}}] = std::move(icemirror);}
-\DoxyCodeLine{01072     mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}] = std::move(skullMat);}
-\DoxyCodeLine{01073 \}}
+\DoxyCodeLine{01021     \textcolor{comment}{// We are not rendering backfacing polygons, so these settings do not matter.}}
+\DoxyCodeLine{01022     reflectionsDSS.BackFace.StencilFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01023     reflectionsDSS.BackFace.StencilDepthFailOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01024     reflectionsDSS.BackFace.StencilPassOp = D3D12\_STENCIL\_OP\_KEEP;}
+\DoxyCodeLine{01025     reflectionsDSS.BackFace.StencilFunc = D3D12\_COMPARISON\_FUNC\_EQUAL;}
+\DoxyCodeLine{01026 }
+\DoxyCodeLine{01027     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC drawReflectionsPsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{01028     drawReflectionsPsoDesc.DepthStencilState = reflectionsDSS;}
+\DoxyCodeLine{01029     drawReflectionsPsoDesc.RasterizerState.CullMode = D3D12\_CULL\_MODE\_BACK;}
+\DoxyCodeLine{01030     drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = \textcolor{keyword}{true};}
+\DoxyCodeLine{01031     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&drawReflectionsPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}drawStencilReflections"{}}])));}
+\DoxyCodeLine{01032 }
+\DoxyCodeLine{01033 }
+\DoxyCodeLine{01034 \}}
+\DoxyCodeLine{01035 }
+\DoxyCodeLine{01036 \textcolor{keywordtype}{void} StencilApp::BuildFrameResources()}
+\DoxyCodeLine{01037 \{}
+\DoxyCodeLine{01038     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
+\DoxyCodeLine{01039     \{}
+\DoxyCodeLine{01040         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
+\DoxyCodeLine{01041             2, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
+\DoxyCodeLine{01042     \}}
+\DoxyCodeLine{01043 \}}
+\DoxyCodeLine{01044 }
+\DoxyCodeLine{01045 \textcolor{keywordtype}{void} StencilApp::BuildMaterials()}
+\DoxyCodeLine{01046 \{}
+\DoxyCodeLine{01047     \textcolor{keyword}{auto} bricks = std::make\_unique<Material>();}
+\DoxyCodeLine{01048     bricks-\/>Name = \textcolor{stringliteral}{"{}bricks"{}};}
+\DoxyCodeLine{01049     bricks-\/>MatCBIndex = 0;}
+\DoxyCodeLine{01050     bricks-\/>DiffuseSrvHeapIndex = 0;}
+\DoxyCodeLine{01051     bricks-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{01052     bricks-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);}
+\DoxyCodeLine{01053     bricks-\/>Roughness = 0.25f;}
+\DoxyCodeLine{01054 }
+\DoxyCodeLine{01055     \textcolor{keyword}{auto} checkertile = std::make\_unique<Material>();}
+\DoxyCodeLine{01056     checkertile-\/>Name = \textcolor{stringliteral}{"{}checkertile"{}};}
+\DoxyCodeLine{01057     checkertile-\/>MatCBIndex = 1;}
+\DoxyCodeLine{01058     checkertile-\/>DiffuseSrvHeapIndex = 1;}
+\DoxyCodeLine{01059     checkertile-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{01060     checkertile-\/>FresnelR0 = XMFLOAT3(0.07f, 0.07f, 0.07f);}
+\DoxyCodeLine{01061     checkertile-\/>Roughness = 0.3f;}
+\DoxyCodeLine{01062 }
+\DoxyCodeLine{01063     \textcolor{keyword}{auto} icemirror = std::make\_unique<Material>();}
+\DoxyCodeLine{01064     icemirror-\/>Name = \textcolor{stringliteral}{"{}icemirror"{}};}
+\DoxyCodeLine{01065     icemirror-\/>MatCBIndex = 2;}
+\DoxyCodeLine{01066     icemirror-\/>DiffuseSrvHeapIndex = 2;}
+\DoxyCodeLine{01067     \textcolor{comment}{//In order for the skull reflection to show through(which lies behind the mirror), we need to render the}}
+\DoxyCodeLine{01068     \textcolor{comment}{//mirror with transparency blending.If we did not render the mirror with transparency,}}
+\DoxyCodeLine{01069     \textcolor{comment}{//the mirror would simply occlude the reflection since its depth is less than that of the reflection.}}
+\DoxyCodeLine{01070     \textcolor{comment}{//try this:     icemirror-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}}
+\DoxyCodeLine{01071     icemirror-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);}
+\DoxyCodeLine{01072     icemirror-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{01073     icemirror-\/>Roughness = 0.5f;}
 \DoxyCodeLine{01074 }
-\DoxyCodeLine{01075 \textcolor{keywordtype}{void} StencilApp::BuildRenderItems()}
-\DoxyCodeLine{01076 \{}
-\DoxyCodeLine{01077     \textcolor{keyword}{auto} floorRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{01078     floorRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{01079     floorRitem-\/>TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{01080     floorRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{01081     floorRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}checkertile"{}}].get();}
-\DoxyCodeLine{01082     floorRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
-\DoxyCodeLine{01083     floorRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{01084     floorRitem-\/>IndexCount = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].IndexCount;}
-\DoxyCodeLine{01085     floorRitem-\/>StartIndexLocation = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].StartIndexLocation;}
-\DoxyCodeLine{01086     floorRitem-\/>BaseVertexLocation = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].BaseVertexLocation;}
-\DoxyCodeLine{01087     mRitemLayer[(int)RenderLayer::Opaque].push\_back(floorRitem.get());}
-\DoxyCodeLine{01088 }
-\DoxyCodeLine{01089     \textcolor{keyword}{auto} wallsRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{01090     wallsRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{01091     wallsRitem-\/>TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{01092     wallsRitem-\/>ObjCBIndex = 1;}
-\DoxyCodeLine{01093     wallsRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}bricks"{}}].get();}
-\DoxyCodeLine{01094     wallsRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
-\DoxyCodeLine{01095     wallsRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{01096     wallsRitem-\/>IndexCount = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].IndexCount;}
-\DoxyCodeLine{01097     wallsRitem-\/>StartIndexLocation = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].StartIndexLocation;}
-\DoxyCodeLine{01098     wallsRitem-\/>BaseVertexLocation = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].BaseVertexLocation;}
-\DoxyCodeLine{01099     mRitemLayer[(int)RenderLayer::Opaque].push\_back(wallsRitem.get());}
-\DoxyCodeLine{01100 }
-\DoxyCodeLine{01101     \textcolor{keyword}{auto} skullRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{01102     skullRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{01103     skullRitem-\/>TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{01104     skullRitem-\/>ObjCBIndex = 2;}
-\DoxyCodeLine{01105     skullRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}].get();}
-\DoxyCodeLine{01106     skullRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}skullGeo"{}}].get();}
-\DoxyCodeLine{01107     skullRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{01108     skullRitem-\/>IndexCount = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].IndexCount;}
-\DoxyCodeLine{01109     skullRitem-\/>StartIndexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].StartIndexLocation;}
-\DoxyCodeLine{01110     skullRitem-\/>BaseVertexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].BaseVertexLocation;}
-\DoxyCodeLine{01111     mSkullRitem = skullRitem.get();}
-\DoxyCodeLine{01112     mRitemLayer[(int)RenderLayer::Opaque].push\_back(skullRitem.get());}
-\DoxyCodeLine{01113 }
-\DoxyCodeLine{01114     \textcolor{comment}{// Reflected skull will have different world matrix, so it needs to be its own render item.}}
-\DoxyCodeLine{01115     \textcolor{keyword}{auto} reflectedSkullRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{01116     *reflectedSkullRitem = *skullRitem;}
-\DoxyCodeLine{01117     reflectedSkullRitem-\/>ObjCBIndex = 3;}
-\DoxyCodeLine{01118     mReflectedSkullRitem = reflectedSkullRitem.get();}
-\DoxyCodeLine{01119     mRitemLayer[(int)RenderLayer::Reflected].push\_back(reflectedSkullRitem.get());}
-\DoxyCodeLine{01120 }
-\DoxyCodeLine{01121 }
-\DoxyCodeLine{01122     \textcolor{keyword}{auto} mirrorRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{01123     mirrorRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{01124     mirrorRitem-\/>TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{01125     mirrorRitem-\/>ObjCBIndex = 4;}
-\DoxyCodeLine{01126     mirrorRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}icemirror"{}}].get();}
-\DoxyCodeLine{01127     mirrorRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
-\DoxyCodeLine{01128     mirrorRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{01129     mirrorRitem-\/>IndexCount = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].IndexCount;}
-\DoxyCodeLine{01130     mirrorRitem-\/>StartIndexLocation = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].StartIndexLocation;}
-\DoxyCodeLine{01131     mirrorRitem-\/>BaseVertexLocation = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].BaseVertexLocation;}
-\DoxyCodeLine{01132     mRitemLayer[(int)RenderLayer::Mirrors].push\_back(mirrorRitem.get());}
-\DoxyCodeLine{01133     mRitemLayer[(int)RenderLayer::Transparent].push\_back(mirrorRitem.get());}
-\DoxyCodeLine{01134     \textcolor{comment}{//mRitemLayer[(int)RenderLayer::Opaque].push\_back(mirrorRitem.get());}}
+\DoxyCodeLine{01075     \textcolor{keyword}{auto} skullMat = std::make\_unique<Material>();}
+\DoxyCodeLine{01076     skullMat-\/>Name = \textcolor{stringliteral}{"{}skullMat"{}};}
+\DoxyCodeLine{01077     skullMat-\/>MatCBIndex = 3;}
+\DoxyCodeLine{01078     skullMat-\/>DiffuseSrvHeapIndex = 3;}
+\DoxyCodeLine{01079     skullMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{01080     skullMat-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);}
+\DoxyCodeLine{01081     skullMat-\/>Roughness = 0.3f;}
+\DoxyCodeLine{01082 }
+\DoxyCodeLine{01083 }
+\DoxyCodeLine{01084     mMaterials[\textcolor{stringliteral}{"{}bricks"{}}] = std::move(bricks);}
+\DoxyCodeLine{01085     mMaterials[\textcolor{stringliteral}{"{}checkertile"{}}] = std::move(checkertile);}
+\DoxyCodeLine{01086     mMaterials[\textcolor{stringliteral}{"{}icemirror"{}}] = std::move(icemirror);}
+\DoxyCodeLine{01087     mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}] = std::move(skullMat);}
+\DoxyCodeLine{01088 \}}
+\DoxyCodeLine{01089 }
+\DoxyCodeLine{01090 \textcolor{keywordtype}{void} StencilApp::BuildRenderItems()}
+\DoxyCodeLine{01091 \{}
+\DoxyCodeLine{01092     \textcolor{keyword}{auto} floorRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01093     floorRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{01094     floorRitem-\/>TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{01095     floorRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{01096     floorRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}checkertile"{}}].get();}
+\DoxyCodeLine{01097     floorRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
+\DoxyCodeLine{01098     floorRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{01099     floorRitem-\/>IndexCount = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].IndexCount;}
+\DoxyCodeLine{01100     floorRitem-\/>StartIndexLocation = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].StartIndexLocation;}
+\DoxyCodeLine{01101     floorRitem-\/>BaseVertexLocation = floorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}floor"{}}].BaseVertexLocation;}
+\DoxyCodeLine{01102     mRitemLayer[(int)RenderLayer::Opaque].push\_back(floorRitem.get());}
+\DoxyCodeLine{01103 }
+\DoxyCodeLine{01104     \textcolor{keyword}{auto} wallsRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01105     wallsRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{01106     wallsRitem-\/>TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{01107     wallsRitem-\/>ObjCBIndex = 1;}
+\DoxyCodeLine{01108     wallsRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}bricks"{}}].get();}
+\DoxyCodeLine{01109     wallsRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
+\DoxyCodeLine{01110     wallsRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{01111     wallsRitem-\/>IndexCount = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].IndexCount;}
+\DoxyCodeLine{01112     wallsRitem-\/>StartIndexLocation = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].StartIndexLocation;}
+\DoxyCodeLine{01113     wallsRitem-\/>BaseVertexLocation = wallsRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}wall"{}}].BaseVertexLocation;}
+\DoxyCodeLine{01114     mRitemLayer[(int)RenderLayer::Opaque].push\_back(wallsRitem.get());}
+\DoxyCodeLine{01115 }
+\DoxyCodeLine{01116     \textcolor{keyword}{auto} skullRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01117     skullRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{01118     skullRitem-\/>TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{01119     skullRitem-\/>ObjCBIndex = 2;}
+\DoxyCodeLine{01120     skullRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}].get();}
+\DoxyCodeLine{01121     skullRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}skullGeo"{}}].get();}
+\DoxyCodeLine{01122     skullRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{01123     skullRitem-\/>IndexCount = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].IndexCount;}
+\DoxyCodeLine{01124     skullRitem-\/>StartIndexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].StartIndexLocation;}
+\DoxyCodeLine{01125     skullRitem-\/>BaseVertexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].BaseVertexLocation;}
+\DoxyCodeLine{01126     mSkullRitem = skullRitem.get();}
+\DoxyCodeLine{01127     mRitemLayer[(int)RenderLayer::Opaque].push\_back(skullRitem.get());}
+\DoxyCodeLine{01128 }
+\DoxyCodeLine{01129     \textcolor{comment}{// Reflected skull will have different world matrix, so it needs to be its own render item.}}
+\DoxyCodeLine{01130     \textcolor{keyword}{auto} reflectedSkullRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01131     *reflectedSkullRitem = *skullRitem;}
+\DoxyCodeLine{01132     reflectedSkullRitem-\/>ObjCBIndex = 3;}
+\DoxyCodeLine{01133     mReflectedSkullRitem = reflectedSkullRitem.get();}
+\DoxyCodeLine{01134     mRitemLayer[(int)RenderLayer::Reflected].push\_back(reflectedSkullRitem.get());}
 \DoxyCodeLine{01135 }
-\DoxyCodeLine{01136     mAllRitems.push\_back(std::move(floorRitem));}
-\DoxyCodeLine{01137     mAllRitems.push\_back(std::move(wallsRitem));}
-\DoxyCodeLine{01138     mAllRitems.push\_back(std::move(skullRitem));}
-\DoxyCodeLine{01139     mAllRitems.push\_back(std::move(reflectedSkullRitem));}
-\DoxyCodeLine{01140     mAllRitems.push\_back(std::move(mirrorRitem));}
-\DoxyCodeLine{01141 \}}
-\DoxyCodeLine{01142 }
-\DoxyCodeLine{01143 \textcolor{keywordtype}{void} StencilApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{01144 \{}
-\DoxyCodeLine{01145     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{01146     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
-\DoxyCodeLine{01147 }
-\DoxyCodeLine{01148     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{01149     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
+\DoxyCodeLine{01136 }
+\DoxyCodeLine{01137     \textcolor{keyword}{auto} mirrorRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01138     mirrorRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{01139     mirrorRitem-\/>TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{01140     mirrorRitem-\/>ObjCBIndex = 4;}
+\DoxyCodeLine{01141     mirrorRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}icemirror"{}}].get();}
+\DoxyCodeLine{01142     mirrorRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}roomGeo"{}}].get();}
+\DoxyCodeLine{01143     mirrorRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{01144     mirrorRitem-\/>IndexCount = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].IndexCount;}
+\DoxyCodeLine{01145     mirrorRitem-\/>StartIndexLocation = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].StartIndexLocation;}
+\DoxyCodeLine{01146     mirrorRitem-\/>BaseVertexLocation = mirrorRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}mirror"{}}].BaseVertexLocation;}
+\DoxyCodeLine{01147     mRitemLayer[(int)RenderLayer::Mirrors].push\_back(mirrorRitem.get());}
+\DoxyCodeLine{01148     mRitemLayer[(int)RenderLayer::Transparent].push\_back(mirrorRitem.get());}
+\DoxyCodeLine{01149     \textcolor{comment}{//mRitemLayer[(int)RenderLayer::Opaque].push\_back(mirrorRitem.get());}}
 \DoxyCodeLine{01150 }
-\DoxyCodeLine{01151     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{01152     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{01153     \{}
-\DoxyCodeLine{01154         \textcolor{keyword}{auto} ri = ritems[i];}
-\DoxyCodeLine{01155 }
-\DoxyCodeLine{01156         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{01157         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{01158         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{01159 }
-\DoxyCodeLine{01160         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{01161         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{01151     mAllRitems.push\_back(std::move(floorRitem));}
+\DoxyCodeLine{01152     mAllRitems.push\_back(std::move(wallsRitem));}
+\DoxyCodeLine{01153     mAllRitems.push\_back(std::move(skullRitem));}
+\DoxyCodeLine{01154     mAllRitems.push\_back(std::move(reflectedSkullRitem));}
+\DoxyCodeLine{01155     mAllRitems.push\_back(std::move(mirrorRitem));}
+\DoxyCodeLine{01156 \}}
+\DoxyCodeLine{01157 }
+\DoxyCodeLine{01158 \textcolor{keywordtype}{void} StencilApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{01159 \{}
+\DoxyCodeLine{01160     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
+\DoxyCodeLine{01161     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
 \DoxyCodeLine{01162 }
-\DoxyCodeLine{01163         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
-\DoxyCodeLine{01164         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{01163     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
+\DoxyCodeLine{01164     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
 \DoxyCodeLine{01165 }
-\DoxyCodeLine{01166         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
-\DoxyCodeLine{01167         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
-\DoxyCodeLine{01168         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
-\DoxyCodeLine{01169 }
-\DoxyCodeLine{01170         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{01171     \}}
-\DoxyCodeLine{01172 \}}
-\DoxyCodeLine{01173 }
-\DoxyCodeLine{01174 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> StencilApp::GetStaticSamplers()}
-\DoxyCodeLine{01175 \{}
-\DoxyCodeLine{01176     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
-\DoxyCodeLine{01177     \textcolor{comment}{// and keep them available as part of the root signature.  }}
-\DoxyCodeLine{01178 }
-\DoxyCodeLine{01179     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
-\DoxyCodeLine{01180         0, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01181         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01182         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01183         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01184         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01185 }
-\DoxyCodeLine{01186     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
-\DoxyCodeLine{01187         1, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01188         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01189         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01190         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01191         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01192 }
-\DoxyCodeLine{01193     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
-\DoxyCodeLine{01194         2, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01195         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01196         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01197         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01198         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01199 }
-\DoxyCodeLine{01200     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
-\DoxyCodeLine{01201         3, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01202         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01203         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01204         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01205         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01206 }
-\DoxyCodeLine{01207     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
-\DoxyCodeLine{01208         4, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01209         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01210         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01211         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01212         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01213         0.0f,                             \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{01214         8);                               \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{01215 }
-\DoxyCodeLine{01216     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
-\DoxyCodeLine{01217         5, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01218         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01219         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01220         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01221         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01222         0.0f,                              \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{01223         8);                                \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{01224 }
-\DoxyCodeLine{01225     \textcolor{keywordflow}{return} \{ }
-\DoxyCodeLine{01226         pointWrap, pointClamp,}
-\DoxyCodeLine{01227         linearWrap, linearClamp, }
-\DoxyCodeLine{01228         anisotropicWrap, anisotropicClamp \};}
-\DoxyCodeLine{01229 \}}
+\DoxyCodeLine{01166     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{01167     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{01168     \{}
+\DoxyCodeLine{01169         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{01170 }
+\DoxyCodeLine{01171         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{01172         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{01173         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{01174 }
+\DoxyCodeLine{01175         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{01176         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{01177 }
+\DoxyCodeLine{01178         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{01179         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{01180 }
+\DoxyCodeLine{01181         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
+\DoxyCodeLine{01182         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
+\DoxyCodeLine{01183         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
+\DoxyCodeLine{01184 }
+\DoxyCodeLine{01185         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{01186     \}}
+\DoxyCodeLine{01187 \}}
+\DoxyCodeLine{01188 }
+\DoxyCodeLine{01189 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> StencilApp::GetStaticSamplers()}
+\DoxyCodeLine{01190 \{}
+\DoxyCodeLine{01191     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
+\DoxyCodeLine{01192     \textcolor{comment}{// and keep them available as part of the root signature.  }}
+\DoxyCodeLine{01193 }
+\DoxyCodeLine{01194     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
+\DoxyCodeLine{01195         0, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01196         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01197         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01198         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01199         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01200 }
+\DoxyCodeLine{01201     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
+\DoxyCodeLine{01202         1, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01203         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01204         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01205         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01206         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01207 }
+\DoxyCodeLine{01208     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
+\DoxyCodeLine{01209         2, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01210         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01211         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01212         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01213         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01214 }
+\DoxyCodeLine{01215     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
+\DoxyCodeLine{01216         3, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01217         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01218         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01219         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01220         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01221 }
+\DoxyCodeLine{01222     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
+\DoxyCodeLine{01223         4, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01224         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01225         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01226         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01227         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01228         0.0f,                             \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{01229         8);                               \textcolor{comment}{// maxAnisotropy}}
 \DoxyCodeLine{01230 }
-\DoxyCodeLine{01231 }
+\DoxyCodeLine{01231     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
+\DoxyCodeLine{01232         5, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01233         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01234         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01235         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01236         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01237         0.0f,                              \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{01238         8);                                \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{01239 }
+\DoxyCodeLine{01240     \textcolor{keywordflow}{return} \{ }
+\DoxyCodeLine{01241         pointWrap, pointClamp,}
+\DoxyCodeLine{01242         linearWrap, linearClamp, }
+\DoxyCodeLine{01243         anisotropicWrap, anisotropicClamp \};}
+\DoxyCodeLine{01244 \}}
+\DoxyCodeLine{01245 }
+\DoxyCodeLine{01246 }
 
 \end{DoxyCode}

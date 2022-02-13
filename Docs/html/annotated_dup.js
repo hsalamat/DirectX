@@ -92,5 +92,6 @@ var annotated_dup =
     [ "Waves", "class_waves.html", "class_waves" ],
     [ "WavesApp", "class_waves_app.html", "class_waves_app" ],
     [ "WavesCSApp", "class_waves_c_s_app.html", "class_waves_c_s_app" ],
-    [ "Win32Application", "class_win32_application.html", null ]
+    [ "Win32Application", "class_win32_application.html", null ],
+    [ "WindowsMessageMap", "class_windows_message_map.html", "class_windows_message_map" ]
 ];

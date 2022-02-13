@@ -1,5 +1,10 @@
-\doxysection{Week6/1 -\/ Crate\+Blending\+Demo/\+Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.cpp File Reference}
-\label{_week6-1-_crate_app___alpha_test_8cpp}\index{Week6/1 -\/ CrateBlendingDemo/Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6/1 -\/ CrateBlendingDemo/Week6-\/1-\/CrateApp\_AlphaTest.cpp}}
+\doxysection{Week6/1 -\/ Alpha\+Test\+Demo/\+Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.cpp File Reference}
+\label{_week6-1-_crate_app___alpha_test_8cpp}\index{Week6/1 -\/ AlphaTestDemo/Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6/1 -\/ AlphaTestDemo/Week6-\/1-\/CrateApp\_AlphaTest.cpp}}
+
+
+Alpha Testing Demo.  
+
+
 {\ttfamily \#include \char`\"{}../../\+Common/d3d\+App.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}../../\+Common/\+Math\+Helper.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}../../\+Common/\+Upload\+Buffer.\+h\char`\"{}}\newline
@@ -79,40 +84,40 @@ enum class \textbf{ Render\+Layer} \+: int \{ \newline
 \textbf{ Transparent}
 , \textbf{ Count}
 , \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
+, \textbf{ Transparent}
+, \newline
+\textbf{ Alpha\+Tested}
+, \textbf{ Count}
+, \textbf{ Opaque} = 0
 , \textbf{ Count}
 , \newline
 \textbf{ Opaque} = 0
 , \textbf{ Transparent}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
-, \textbf{ Count}
-, \textbf{ Opaque} = 0
-, \newline
-\textbf{ Transparent}
-, \textbf{ Alpha\+Tested}
 , \textbf{ Count}
 , \textbf{ Opaque} = 0
 , \newline
@@ -181,6 +186,23 @@ int WINAPI \textbf{ Win\+Main} (HINSTANCE h\+Instance, HINSTANCE prev\+Instance,
 \item 
 const int \textbf{ g\+Num\+Frame\+Resources} = 3
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Alpha Testing Demo. 
+
+In the pixel shader, we grab the alpha component of the texture. If it is a small value close to 0, which indicates that the pixel is completely transparent, then we clip the pixel from further processing. Observe that we only clip if ALPHA\+\_\+\+TEST is defined Due to filtering, the alpha channel can get blurred a bit, so you should leave some buffer room when clipping pixels.\+For example, clip pixels with alpha values close to 0, but not necessarily exactly zero. \begin{DoxyNote}{Note}
+we disabled back face culling for alpha tested objects\+:
+\end{DoxyNote}
+Controls\+: Hold down \textquotesingle{}1\textquotesingle{} key to view scene in wireframe mode. Hold the left mouse button down and move the mouse to rotate. Hold the right mouse button down and move the mouse to zoom in and out.
+
+\begin{DoxyAuthor}{Author}
+Hooman Salamat 
+\end{DoxyAuthor}
+
+
+Definition in file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
+
 
 
 \doxysubsection{Enumeration Type Documentation}
@@ -395,26 +417,6 @@ Count&\\
 Opaque&\\
 \hline
 
-\raisebox{\heightof{T}}[0pt][0pt]{\index{Count@{Count}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Count@{Count}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}} 
-Count&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{Opaque@{Opaque}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Opaque@{Opaque}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}} 
-Opaque&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{Transparent@{Transparent}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Transparent@{Transparent}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}} 
-Transparent&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{Count@{Count}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Count@{Count}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}} 
-Count&\\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{Opaque@{Opaque}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Opaque@{Opaque}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}} 
-Opaque&\\
-\hline
-
 \raisebox{\heightof{T}}[0pt][0pt]{\index{Transparent@{Transparent}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Transparent@{Transparent}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}} 
 Transparent&\\
 \hline
@@ -501,6 +503,26 @@ Transparent&\\
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{AlphaTested@{AlphaTested}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!AlphaTested@{AlphaTested}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159a0627db3fa05f110738a259ea9a97a225}} 
 Alpha\+Tested&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Count@{Count}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Count@{Count}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}} 
+Count&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Opaque@{Opaque}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Opaque@{Opaque}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}} 
+Opaque&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Count@{Count}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Count@{Count}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}} 
+Count&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Opaque@{Opaque}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Opaque@{Opaque}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}} 
+Opaque&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Transparent@{Transparent}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Transparent@{Transparent}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7}} 
+Transparent&\\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{Count@{Count}!Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}}\index{Week6-\/1-\/CrateApp\_AlphaTest.cpp@{Week6-\/1-\/CrateApp\_AlphaTest.cpp}!Count@{Count}}}\mbox{\label{_week6-1-_crate_app___alpha_test_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}} 
@@ -686,7 +708,7 @@ Count&\\
 \end{DoxyEnumFields}
 
 
-Definition at line \textbf{ 62} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
+Definition at line \textbf{ 70} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
 
 
 
@@ -699,7 +721,7 @@ Definition at line \textbf{ 62} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\
 
 
 
-Definition at line \textbf{ 156} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
+Definition at line \textbf{ 164} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
 
 
 
@@ -712,5 +734,5 @@ Definition at line \textbf{ 156} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+
 
 
 
-Definition at line \textbf{ 25} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
+Definition at line \textbf{ 33} of file \textbf{ Week6-\/1-\/\+Crate\+App\+\_\+\+Alpha\+Test.\+cpp}.
 

@@ -2,66 +2,61 @@
 \label{com-demo_8cpp_source}\index{Week2/Week2-\/8-\/Console-\/COM-\/Demo/com-\/demo.cpp@{Week2/Week2-\/8-\/Console-\/COM-\/Demo/com-\/demo.cpp}}
 \textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//Hooman: The following code shows how to find an image file that is used as your desktop wall paper and save it as a link on your desktop}}
-\DoxyCodeLine{00002 }
-\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include <Windows.h>}}
-\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include <Wininet.h>}}
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include <ShlObj.h>}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{00007 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{00008 \textcolor{keywordtype}{int} main()}
-\DoxyCodeLine{00009 \{}
-\DoxyCodeLine{00010     \textcolor{comment}{//Initializes the COM library on the current thread and identifies the concurrency model as single-\/thread apartment (STA).}}
-\DoxyCodeLine{00011     HRESULT hr;}
-\DoxyCodeLine{00012     hr = CoInitializeEx(0, COINIT\_MULTITHREADED);}
-\DoxyCodeLine{00013     \textcolor{keywordflow}{if} (FAILED(hr))}
-\DoxyCodeLine{00014     \{}
-\DoxyCodeLine{00015         cout << \textcolor{stringliteral}{"{}Failed to initialize COM library. Error code = 0x"{}}}
-\DoxyCodeLine{00016             << hex << hr << endl;}
-\DoxyCodeLine{00017         \textcolor{keywordflow}{return} hr;}
-\DoxyCodeLine{00018     \}}
-\DoxyCodeLine{00019     \textcolor{comment}{//this is the simplified version of above...}}
-\DoxyCodeLine{00020     \textcolor{comment}{//CoInitialize(nullptr);}}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00022     IActiveDesktop* pDesktop = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00023     WCHAR wszWallpaper[MAX\_PATH];}
-\DoxyCodeLine{00024     \textcolor{comment}{//factory function to create a COM object: a factory is a function that returns objects of a class from some method call}}
-\DoxyCodeLine{00025     hr = CoCreateInstance(}
-\DoxyCodeLine{00026         CLSID\_ActiveDesktop,  \textcolor{comment}{//underlying COM object that we want to create}}
-\DoxyCodeLine{00027         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00028         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
-\DoxyCodeLine{00029         \_\_uuidof(IActiveDesktop),}
-\DoxyCodeLine{00030         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pDesktop)  \textcolor{comment}{//this pointer will be filled}}
-\DoxyCodeLine{00031     );}
-\DoxyCodeLine{00032     pDesktop-\/>GetWallpaper(wszWallpaper, MAX\_PATH, 0);}
-\DoxyCodeLine{00033     pDesktop-\/>Release();}
-\DoxyCodeLine{00034     std::wcout << wszWallpaper;}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 }
-\DoxyCodeLine{00037 \textcolor{preprocessor}{\#pragma region Add this section below CoUninitialize}}
-\DoxyCodeLine{00038     \textcolor{comment}{//the following section create a short cut to the wall paper}}
-\DoxyCodeLine{00039     IShellLink* pLink = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00040     hr = CoCreateInstance(}
-\DoxyCodeLine{00041         CLSID\_ShellLink,  \textcolor{comment}{//underlying COM object that we want to create}}
-\DoxyCodeLine{00042         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00043         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
-\DoxyCodeLine{00044         \_\_uuidof(IShellLink),}
-\DoxyCodeLine{00045         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pLink)  \textcolor{comment}{//this pointer will be filled}}
-\DoxyCodeLine{00046     );}
-\DoxyCodeLine{00047     pLink-\/>SetPath(wszWallpaper);}
-\DoxyCodeLine{00048     IPersistFile* pPersist = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00049     pLink-\/>QueryInterface(\_\_uuidof(IPersistFile), \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>} (\&pPersist));}
-\DoxyCodeLine{00050     \textcolor{comment}{//change this to a "{}proper path"{}}}
-\DoxyCodeLine{00051     pPersist-\/>Save(L\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)hooman\(\backslash\)\(\backslash\)wallpaper.lnk"{}}, FALSE);}
-\DoxyCodeLine{00052     pPersist-\/>Release();}
-\DoxyCodeLine{00053     pLink-\/>Release();}
-\DoxyCodeLine{00054 \textcolor{preprocessor}{\#pragma endregion}}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     CoUninitialize();}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058     std::cin.get();}
-\DoxyCodeLine{00059     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00060 \}}
-\DoxyCodeLine{00061 }
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include <Windows.h>}}
+\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include <Wininet.h>}}
+\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include <ShlObj\_core.h>}}
+\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{00016 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{00017 \textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{00018 \{}
+\DoxyCodeLine{00020     HRESULT hr;}
+\DoxyCodeLine{00021     \textcolor{comment}{/*hr = CoInitializeEx(0, COINIT\_MULTITHREADED);}}
+\DoxyCodeLine{00022 \textcolor{comment}{    if (FAILED(hr))}}
+\DoxyCodeLine{00023 \textcolor{comment}{    \{}}
+\DoxyCodeLine{00024 \textcolor{comment}{        cout << "{}Failed to initialize COM library. Error code = 0x"{}}}
+\DoxyCodeLine{00025 \textcolor{comment}{            << hex << hr << endl;}}
+\DoxyCodeLine{00026 \textcolor{comment}{        return hr;}}
+\DoxyCodeLine{00027 \textcolor{comment}{    \}*/}}
+\DoxyCodeLine{00028     \textcolor{comment}{//this is the simplified version of above...}}
+\DoxyCodeLine{00029     CoInitialize(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00030 }
+\DoxyCodeLine{00031     IActiveDesktop* pDesktop = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00032     WCHAR wszWallpaper[MAX\_PATH];}
+\DoxyCodeLine{00034     hr = CoCreateInstance(}
+\DoxyCodeLine{00035         CLSID\_ActiveDesktop,  \textcolor{comment}{//underlying COM object that we want to create}}
+\DoxyCodeLine{00036         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00037         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
+\DoxyCodeLine{00038         \_\_uuidof(IActiveDesktop),}
+\DoxyCodeLine{00039         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pDesktop)  \textcolor{comment}{//this pointer will be filled}}
+\DoxyCodeLine{00040     );}
+\DoxyCodeLine{00041     pDesktop-\/>GetWallpaper(wszWallpaper, MAX\_PATH, 0);}
+\DoxyCodeLine{00042     pDesktop-\/>Release();}
+\DoxyCodeLine{00043     std::wcout << wszWallpaper;}
+\DoxyCodeLine{00044 }
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046 \textcolor{preprocessor}{\#pragma region Add this section below CoUninitialize}}
+\DoxyCodeLine{00048     IShellLink* pLink = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00049     hr = CoCreateInstance(}
+\DoxyCodeLine{00050         CLSID\_ShellLink,  \textcolor{comment}{//underlying COM object that we want to create}}
+\DoxyCodeLine{00051         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00052         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
+\DoxyCodeLine{00053         \_\_uuidof(IShellLink),}
+\DoxyCodeLine{00054         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pLink)  \textcolor{comment}{//this pointer will be filled}}
+\DoxyCodeLine{00055     );}
+\DoxyCodeLine{00056     pLink-\/>SetPath(wszWallpaper);}
+\DoxyCodeLine{00057     IPersistFile* pPersist = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058     pLink-\/>QueryInterface(\_\_uuidof(IPersistFile), \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>} (\&pPersist));}
+\DoxyCodeLine{00060     pPersist-\/>Save(L\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)wallpaper.lnk"{}}, FALSE);}
+\DoxyCodeLine{00061     pPersist-\/>Release();}
+\DoxyCodeLine{00062     pLink-\/>Release();}
+\DoxyCodeLine{00063 \textcolor{preprocessor}{\#pragma endregion}}
+\DoxyCodeLine{00064 }
+\DoxyCodeLine{00065     CoUninitialize();}
+\DoxyCodeLine{00066 }
+\DoxyCodeLine{00067     std::cin.get();}
+\DoxyCodeLine{00068     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00069 \}}
+\DoxyCodeLine{00070 }
 
 \end{DoxyCode}

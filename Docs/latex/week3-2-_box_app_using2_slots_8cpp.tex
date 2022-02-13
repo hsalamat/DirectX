@@ -1,0 +1,55 @@
+\doxysection{Week3/\+Week3-\/2-\/\+Box/week3-\/2-\/\+Box\+App\+Using2\+Slots.cpp File Reference}
+\label{week3-2-_box_app_using2_slots_8cpp}\index{Week3/Week3-\/2-\/Box/week3-\/2-\/BoxAppUsing2Slots.cpp@{Week3/Week3-\/2-\/Box/week3-\/2-\/BoxAppUsing2Slots.cpp}}
+
+
+Shows how to draw a box in Direct3D 12 using 2 vertex buffer \& input slots.  
+
+
+{\ttfamily \#include \char`\"{}../../\+Common/d3d\+App.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../../\+Common/\+Math\+Helper.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}../../\+Common/\+Upload\+Buffer.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ VPos\+Data}
+\item 
+struct \textbf{ VColor\+Data}
+\item 
+struct \textbf{ Object\+Constants}
+\begin{DoxyCompactList}\small\item\em step2 \end{DoxyCompactList}\item 
+class \textbf{ Box\+App}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int WINAPI \textbf{ Win\+Main} (HINSTANCE h\+Instance, HINSTANCE prev\+Instance, PSTR cmd\+Line, int show\+Cmd)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Shows how to draw a box in Direct3D 12 using 2 vertex buffer \& input slots. 
+
+This time, we use two vertex buffers(and two input slots) to feed the pipeline with vertices, one that stores the position elementand the other that stores the color element. For this you will use two vertex structures to store the split data \+: struct \doxyref{VPos\+Data}{p.}{struct_v_pos_data} \{ XMFLOAT3 Pos; \}; struct \doxyref{VColor\+Data}{p.}{struct_v_color_data} \{ XMFLOAT4 Color; \}; Your D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC array will look like this\+: D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC vertex\+Desc[] = \{ \{“\+POSITION”, 0, DXGI\+\_\+\+FORMAT\+\_\+\+R32\+G32\+B32\+\_\+\+FLOAT, 0, 0, D3\+D12\+\_\+\+INPUT\+\_\+\+PER\+\_\+\+VERTEX\+\_\+\+DATA, 0\}, \{“\+COLOR”, 0, DXGI\+\_\+\+FORMAT\+\_\+\+R32\+G32\+B32\+A32\+\_\+\+FLOAT, 1, 0, D3\+D12\+\_\+\+INPUT\+\_\+\+PER\+\_\+\+VERTEX\+\_\+\+DATA, 0\} \};
+
+The position element is hooked up to input slot 0, and the color element is hooked up to input slot 1. Moreover note that the D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC\+::\+Aligned\+Byte\+Offset is 0 for both elements; this is because the positionand color elements are no longer interleaved in a single input slot.\+Then use ID3\+D12\+Command\+List\+::\+IASet\+Vertex\+Buffers to bind the two vertex buffers to slots 0 and 1. Direct3D will then use the elements from the different input slots to assemble the vertices.
+
+\begin{DoxyAuthor}{Author}
+Hooman Salamat 
+\end{DoxyAuthor}
+
+
+Definition in file \textbf{ week3-\/2-\/\+Box\+App\+Using2\+Slots.\+cpp}.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{week3-2-_box_app_using2_slots_8cpp_aabcda87589d774901aa87061b8fd0176}} 
+\index{week3-\/2-\/BoxAppUsing2Slots.cpp@{week3-\/2-\/BoxAppUsing2Slots.cpp}!WinMain@{WinMain}}
+\index{WinMain@{WinMain}!week3-\/2-\/BoxAppUsing2Slots.cpp@{week3-\/2-\/BoxAppUsing2Slots.cpp}}
+\doxysubsubsection{WinMain()}
+{\footnotesize\ttfamily int WINAPI Win\+Main (\begin{DoxyParamCaption}\item[{HINSTANCE}]{h\+Instance,  }\item[{HINSTANCE}]{prev\+Instance,  }\item[{PSTR}]{cmd\+Line,  }\item[{int}]{show\+Cmd }\end{DoxyParamCaption})}
+
+
+
+Definition at line \textbf{ 89} of file \textbf{ week3-\/2-\/\+Box\+App\+Using2\+Slots.\+cpp}.
+

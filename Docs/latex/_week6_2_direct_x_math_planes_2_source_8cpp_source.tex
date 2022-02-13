@@ -51,64 +51,65 @@
 \DoxyCodeLine{00047 }
 \DoxyCodeLine{00048     XMVECTOR p = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
 \DoxyCodeLine{00049     XMVECTOR v = XMVectorSet(3.0f, 5.0f, 2.0f, 1.0f);}
-\DoxyCodeLine{00050     \textcolor{keywordtype}{float} x = XMVectorGetX(XMPlaneDotCoord(p, v));}
-\DoxyCodeLine{00051     \textcolor{keywordflow}{if} (x <= 0.001f \&\& x >= 0.001f) \textcolor{comment}{// if x approximately equals 0.0f}}
-\DoxyCodeLine{00052         cout << \textcolor{stringliteral}{"{} v is coplanar to the plane."{}} << endl;}
-\DoxyCodeLine{00053     \textcolor{keywordflow}{if} (x > 0)}
-\DoxyCodeLine{00054         cout << \textcolor{stringliteral}{"{}v is in positive half-\/space."{}} << endl;}
-\DoxyCodeLine{00055     \textcolor{keywordflow}{if} (x < 0) }
-\DoxyCodeLine{00056         cout << \textcolor{stringliteral}{"{}v is in negative half-\/space."{}} << endl;}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058     \textcolor{comment}{//This returns the dot product of the plane normal vector and the given 3D vector which is (5.0f, 5.0f, 5.0f, 5.0f), }}
-\DoxyCodeLine{00059     \textcolor{comment}{//it means the shortest distance to the plane equals to p.v = 5 where p is the normal and v is a point. }}
-\DoxyCodeLine{00060     XMVECTOR d =  XMPlaneDotNormal(p, v);}
-\DoxyCodeLine{00061     cout << \textcolor{stringliteral}{"{}The shortest distance to the plane: "{}} << d << endl;}
-\DoxyCodeLine{00062 }
-\DoxyCodeLine{00063     \textcolor{comment}{//It is useful to think of plane as a 4D vector, which we denote as (n, d) = (a, b, c, d). }}
-\DoxyCodeLine{00064     \textcolor{comment}{//𝑛.(𝑝−𝑝0) = 𝑛.𝑝 – 𝑛𝑝0 = 𝑛.𝑝 + 𝑑 =0  where d = −n · p0}}
-\DoxyCodeLine{00065     \textcolor{comment}{//to construct a plane from a point and normal, you could use:}}
-\DoxyCodeLine{00066     \textcolor{comment}{//XMVECTOR XMPlaneFromPointNormal( XMVECTOR Point, XMVECTOR Normal);}}
-\DoxyCodeLine{00067     cout << \textcolor{stringliteral}{"{}Construct a plane vector (n,d) from Point-\/Normal: "{}} << XMPlaneFromPointNormal(v, p) << endl; \textcolor{comment}{//(0.0f, 1.0f, 0.0f, -\/5.0f)}}
-\DoxyCodeLine{00068 }
-\DoxyCodeLine{00069     \textcolor{comment}{//compute a plane given three points on the plane :}}
-\DoxyCodeLine{00070     \textcolor{comment}{//XMVECTOR XMPlaneFromPoints(XMVECTOR Point1, XMVECTOR Point2, XMVECTOR Point3);}}
-\DoxyCodeLine{00071 }
+\DoxyCodeLine{00050     \textcolor{comment}{//Calculates the dot product between an input plane and a 3D vector.}}
+\DoxyCodeLine{00051     \textcolor{keywordtype}{float} x = XMVectorGetX(XMPlaneDotCoord(p, v));}
+\DoxyCodeLine{00052     \textcolor{keywordflow}{if} (x <= 0.001f \&\& x >= 0.001f) \textcolor{comment}{// if x approximately equals 0.0f}}
+\DoxyCodeLine{00053         cout << \textcolor{stringliteral}{"{} v is coplanar to the plane."{}} << endl;}
+\DoxyCodeLine{00054     \textcolor{keywordflow}{if} (x > 0)}
+\DoxyCodeLine{00055         cout << \textcolor{stringliteral}{"{}v is in positive half-\/space."{}} << endl;}
+\DoxyCodeLine{00056     \textcolor{keywordflow}{if} (x < 0) }
+\DoxyCodeLine{00057         cout << \textcolor{stringliteral}{"{}v is in negative half-\/space."{}} << endl;}
+\DoxyCodeLine{00058 }
+\DoxyCodeLine{00059     \textcolor{comment}{//This returns the dot product of the plane normal vector and the given 3D vector which is (5.0f, 5.0f, 5.0f, 5.0f), }}
+\DoxyCodeLine{00060     \textcolor{comment}{//it means the shortest distance to the plane equals to p.v = 5 where p is the normal and v is a point. }}
+\DoxyCodeLine{00061     XMVECTOR d =  XMPlaneDotNormal(p, v);}
+\DoxyCodeLine{00062     cout << \textcolor{stringliteral}{"{}The shortest distance to the plane: "{}} << d << endl;}
+\DoxyCodeLine{00063 }
+\DoxyCodeLine{00064     \textcolor{comment}{//It is useful to think of plane as a 4D vector, which we denote as (n, d) = (a, b, c, d). }}
+\DoxyCodeLine{00065     \textcolor{comment}{//𝑛.(𝑝−𝑝0) = 𝑛.𝑝 – 𝑛𝑝0 = 𝑛.𝑝 + 𝑑 =0  where d = −n · p0}}
+\DoxyCodeLine{00066     \textcolor{comment}{//to construct a plane from a point and normal, you could use:}}
+\DoxyCodeLine{00067     \textcolor{comment}{//XMVECTOR XMPlaneFromPointNormal( XMVECTOR Point, XMVECTOR Normal);}}
+\DoxyCodeLine{00068     cout << \textcolor{stringliteral}{"{}Construct a plane vector (n,d) from Point-\/Normal: "{}} << XMPlaneFromPointNormal(v, p) << endl; \textcolor{comment}{//(0.0f, 1.0f, 0.0f, -\/5.0f)}}
+\DoxyCodeLine{00069 }
+\DoxyCodeLine{00070     \textcolor{comment}{//compute a plane given three points on the plane :}}
+\DoxyCodeLine{00071     \textcolor{comment}{//XMVECTOR XMPlaneFromPoints(XMVECTOR Point1, XMVECTOR Point2, XMVECTOR Point3);}}
 \DoxyCodeLine{00072 }
-\DoxyCodeLine{00073     XMVECTOR p0 = XMVectorSet(5.0f, 1.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00074     XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 5.0f, 1.0f);}
-\DoxyCodeLine{00075     XMVECTOR p2 = XMVectorSet(5.0f, 1.0f, 5.0f, 1.0f);}
-\DoxyCodeLine{00076     cout << \textcolor{stringliteral}{"{}Construct a plane vector (n,d) from three points: "{}} << XMPlaneFromPoints(p0, p1, p2) << endl; \textcolor{comment}{//(0, 1, 0, -\/1)}}
-\DoxyCodeLine{00077 }
+\DoxyCodeLine{00073 }
+\DoxyCodeLine{00074     XMVECTOR p0 = XMVectorSet(5.0f, 1.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00075     XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 5.0f, 1.0f);}
+\DoxyCodeLine{00076     XMVECTOR p2 = XMVectorSet(5.0f, 1.0f, 5.0f, 1.0f);}
+\DoxyCodeLine{00077     cout << \textcolor{stringliteral}{"{}Construct a plane vector (n,d) from three points: "{}} << XMPlaneFromPoints(p0, p1, p2) << endl; \textcolor{comment}{//(0, 1, 0, -\/1)}}
 \DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     \textcolor{comment}{//Sometimes we might have a plane and would like to normalize the normal vector.At first thought, }}
-\DoxyCodeLine{00080     \textcolor{comment}{//it would seem that we could just normalize the normal vector as we would any other vector.}}
-\DoxyCodeLine{00081     \textcolor{comment}{//But recall that the d component also depends on the normal vector : d = −n · p0.Therefore, }}
-\DoxyCodeLine{00082     \textcolor{comment}{//if we normalize the normal vector, we must also recalculate d.}}
-\DoxyCodeLine{00083     \textcolor{comment}{//We can use the following DirectX Math function to normalize a plane’s normal vector :}}
-\DoxyCodeLine{00084     \textcolor{comment}{//XMVECTOR XMPlaneNormalize(XMVECTOR P);}}
-\DoxyCodeLine{00085     cout << \textcolor{stringliteral}{"{}To normalize a plane’s normal vector :"{}} << XMPlaneNormalize(p) << endl; \textcolor{comment}{//(0, 1, 0, 0)}}
-\DoxyCodeLine{00086 }
-\DoxyCodeLine{00087     \textcolor{comment}{//The set of intersection points found by shooting a ray through each of the object’s vertices with the plane}}
-\DoxyCodeLine{00088     \textcolor{comment}{//defines the projected geometry of the shadow. For a vertex p, its shadow projection is given by:}}
-\DoxyCodeLine{00089     \textcolor{comment}{//XMVECTOR XMPlaneIntersectLine(}}
-\DoxyCodeLine{00090     \textcolor{comment}{//  XMVECTOR P, => the plane coefficients (A, B, C, D)}}
-\DoxyCodeLine{00091     \textcolor{comment}{//  XMVECTOR LinePoint1, => the first point on the line}}
-\DoxyCodeLine{00092     \textcolor{comment}{//  XMVECTOR LinePoint2); => the second point on the line}}
-\DoxyCodeLine{00093 }
-\DoxyCodeLine{00094     XMVECTOR LinePoint1 = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00095     XMVECTOR LinePoint2 = XMVectorSet(0.0f, -\/5.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00096     cout << \textcolor{stringliteral}{"{}The intersection of the ray r(t) with the shadow plane (n, d) gives s: "{}}}
-\DoxyCodeLine{00097         << XMPlaneIntersectLine(XMPlaneFromPointNormal(v, p), LinePoint1, LinePoint2) << endl;}
-\DoxyCodeLine{00098 }
-\DoxyCodeLine{00099     \textcolor{comment}{//Builds a transformation matrix that flattens geometry into a plane.}}
-\DoxyCodeLine{00100     XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); \textcolor{comment}{// xz plane}}
-\DoxyCodeLine{00101     XMVECTOR lightPosition = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00102     XMMATRIX S = XMMatrixShadow(shadowPlane, lightPosition);}
-\DoxyCodeLine{00103     cout << \textcolor{stringliteral}{"{}The transformation matrix that flattens geometry into a plane given a light position: "{}} << endl << S << endl;}
-\DoxyCodeLine{00104 }
-\DoxyCodeLine{00105     system(\textcolor{stringliteral}{"{}pause"{}});}
-\DoxyCodeLine{00106     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00107 \}}
-\DoxyCodeLine{00108 }
+\DoxyCodeLine{00079 }
+\DoxyCodeLine{00080     \textcolor{comment}{//Sometimes we might have a plane and would like to normalize the normal vector.At first thought, }}
+\DoxyCodeLine{00081     \textcolor{comment}{//it would seem that we could just normalize the normal vector as we would any other vector.}}
+\DoxyCodeLine{00082     \textcolor{comment}{//But recall that the d component also depends on the normal vector : d = −n · p0.Therefore, }}
+\DoxyCodeLine{00083     \textcolor{comment}{//if we normalize the normal vector, we must also recalculate d.}}
+\DoxyCodeLine{00084     \textcolor{comment}{//We can use the following DirectX Math function to normalize a plane’s normal vector :}}
+\DoxyCodeLine{00085     \textcolor{comment}{//XMVECTOR XMPlaneNormalize(XMVECTOR P);}}
+\DoxyCodeLine{00086     cout << \textcolor{stringliteral}{"{}To normalize a plane’s normal vector :"{}} << XMPlaneNormalize(p) << endl; \textcolor{comment}{//(0, 1, 0, 0)}}
+\DoxyCodeLine{00087 }
+\DoxyCodeLine{00088     \textcolor{comment}{//The set of intersection points found by shooting a ray through each of the object’s vertices with the plane}}
+\DoxyCodeLine{00089     \textcolor{comment}{//defines the projected geometry of the shadow. For a vertex p, its shadow projection is given by:}}
+\DoxyCodeLine{00090     \textcolor{comment}{//XMVECTOR XMPlaneIntersectLine(}}
+\DoxyCodeLine{00091     \textcolor{comment}{//  XMVECTOR P, => the plane coefficients (A, B, C, D)}}
+\DoxyCodeLine{00092     \textcolor{comment}{//  XMVECTOR LinePoint1, => the first point on the line}}
+\DoxyCodeLine{00093     \textcolor{comment}{//  XMVECTOR LinePoint2); => the second point on the line}}
+\DoxyCodeLine{00094 }
+\DoxyCodeLine{00095     XMVECTOR LinePoint1 = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00096     XMVECTOR LinePoint2 = XMVectorSet(0.0f, -\/5.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00097     cout << \textcolor{stringliteral}{"{}The intersection of the ray r(t) with the shadow plane (n, d) gives s: "{}}}
+\DoxyCodeLine{00098         << XMPlaneIntersectLine(XMPlaneFromPointNormal(v, p), LinePoint1, LinePoint2) << endl;}
+\DoxyCodeLine{00099 }
+\DoxyCodeLine{00100     \textcolor{comment}{//Builds a transformation matrix that flattens geometry into a plane.}}
+\DoxyCodeLine{00101     XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); \textcolor{comment}{// xz plane}}
+\DoxyCodeLine{00102     XMVECTOR lightPosition = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{00103     XMMATRIX S = XMMatrixShadow(shadowPlane, lightPosition);}
+\DoxyCodeLine{00104     cout << \textcolor{stringliteral}{"{}The transformation matrix that flattens geometry into a plane given a light position: "{}} << endl << S << endl;}
+\DoxyCodeLine{00105 }
+\DoxyCodeLine{00106     system(\textcolor{stringliteral}{"{}pause"{}});}
+\DoxyCodeLine{00107     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00108 \}}
+\DoxyCodeLine{00109 }
 
 \end{DoxyCode}

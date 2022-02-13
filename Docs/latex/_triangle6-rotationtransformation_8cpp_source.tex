@@ -2,464 +2,457 @@
 \label{_triangle6-rotationtransformation_8cpp_source}\index{Week3/Week3-\/1-\/TriangleStepByStep/Triangle6-\/rotationtransformation.cpp@{Week3/Week3-\/1-\/TriangleStepByStep/Triangle6-\/rotationtransformation.cpp}}
 \textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// Use constant buffer to do a rotation}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009 }
-\DoxyCodeLine{00010 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00011 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00012 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014 \textcolor{keyword}{struct }Vertex}
-\DoxyCodeLine{00015 \{}
-\DoxyCodeLine{00016     XMFLOAT3 Pos;}
-\DoxyCodeLine{00017     XMFLOAT4 Color;}
-\DoxyCodeLine{00018 \};}
-\DoxyCodeLine{00019 }
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00010 }
+\DoxyCodeLine{00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{00012 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00014 }
+\DoxyCodeLine{00015 \textcolor{keyword}{struct }Vertex}
+\DoxyCodeLine{00016 \{}
+\DoxyCodeLine{00017     XMFLOAT3 Pos;}
+\DoxyCodeLine{00018     XMFLOAT4 Color;}
+\DoxyCodeLine{00019 \};}
 \DoxyCodeLine{00020 }
-\DoxyCodeLine{00021 \textcolor{keyword}{struct }ObjectConstants}
-\DoxyCodeLine{00022 \{}
-\DoxyCodeLine{00023     XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00024 \};}
-\DoxyCodeLine{00025 }
+\DoxyCodeLine{00021 }
+\DoxyCodeLine{00022 \textcolor{keyword}{struct }ObjectConstants}
+\DoxyCodeLine{00023 \{}
+\DoxyCodeLine{00024     XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00025 \};}
 \DoxyCodeLine{00026 }
-\DoxyCodeLine{00027 \textcolor{keyword}{class }TriangleAPP : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00028 \{}
-\DoxyCodeLine{00029 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00030     TriangleAPP(HINSTANCE hInstance);}
-\DoxyCodeLine{00031     TriangleAPP(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00032     TriangleAPP\& operator=(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00033     \string~TriangleAPP();}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00036 }
-\DoxyCodeLine{00037 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00038     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00039     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00040     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00041 }
+\DoxyCodeLine{00027 }
+\DoxyCodeLine{00028 \textcolor{keyword}{class }TriangleAPP : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00029 \{}
+\DoxyCodeLine{00030 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00031     TriangleAPP(HINSTANCE hInstance);}
+\DoxyCodeLine{00032     TriangleAPP(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00033     TriangleAPP\& operator=(\textcolor{keyword}{const} TriangleAPP\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00034     \string~TriangleAPP();}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00037 }
+\DoxyCodeLine{00038 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00040     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00041     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
 \DoxyCodeLine{00042 }
-\DoxyCodeLine{00043     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00044     \textcolor{keywordtype}{void} BuildConstantBuffers();}
-\DoxyCodeLine{00045     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00046     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00047     \textcolor{keywordtype}{void} BuildTriangleGeometry();}
-\DoxyCodeLine{00048     \textcolor{keywordtype}{void} BuildPSO();}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00051 }
-\DoxyCodeLine{00052     std::unique\_ptr<MeshGeometry> mBoxGeo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00053 }
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{00045     \textcolor{keywordtype}{void} BuildConstantBuffers();}
+\DoxyCodeLine{00046     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{00047     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{00048     \textcolor{keywordtype}{void} BuildTriangleGeometry();}
+\DoxyCodeLine{00049     \textcolor{keywordtype}{void} BuildPSO();}
+\DoxyCodeLine{00050 }
+\DoxyCodeLine{00051 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     std::unique\_ptr<MeshGeometry> mBoxGeo = \textcolor{keyword}{nullptr};}
 \DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00056     ComPtr<ID3D12DescriptorHeap> mCbvHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00057     std::unique\_ptr<UploadBuffer<ObjectConstants>> mObjectCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00058 }
-\DoxyCodeLine{00059     \textcolor{comment}{//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib }}
-\DoxyCodeLine{00060     ComPtr<ID3DBlob> mvsByteCode = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00061     ComPtr<ID3DBlob> mpsByteCode = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00062 }
-\DoxyCodeLine{00063     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     ComPtr<ID3D12PipelineState> mPSO = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00066 }
+\DoxyCodeLine{00055 }
+\DoxyCodeLine{00056     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057     ComPtr<ID3D12DescriptorHeap> mCbvHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058     std::unique\_ptr<UploadBuffer<ObjectConstants>> mObjectCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00059 }
+\DoxyCodeLine{00060     \textcolor{comment}{//The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler.lib }}
+\DoxyCodeLine{00061     ComPtr<ID3DBlob> mvsByteCode = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00062     ComPtr<ID3DBlob> mpsByteCode = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00063 }
+\DoxyCodeLine{00064     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{00065 }
+\DoxyCodeLine{00066     ComPtr<ID3D12PipelineState> mPSO = \textcolor{keyword}{nullptr};}
 \DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();}
-\DoxyCodeLine{00069     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00070     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072     \textcolor{keywordtype}{float} mTheta = 1.5f * XM\_PI;}
-\DoxyCodeLine{00073     \textcolor{keywordtype}{float} mPhi = XM\_PIDIV4;}
-\DoxyCodeLine{00074     \textcolor{keywordtype}{float} mRadius = 5.0f;}
-\DoxyCodeLine{00075 }
-\DoxyCodeLine{00076     \textcolor{comment}{//step1}}
-\DoxyCodeLine{00077     \textcolor{keywordtype}{float} mTheta2 = 0.0f;}
-\DoxyCodeLine{00078     \textcolor{comment}{//}}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();}
+\DoxyCodeLine{00070     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00071     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00072 }
+\DoxyCodeLine{00073     \textcolor{keywordtype}{float} mTheta = 1.5f * XM\_PI;}
+\DoxyCodeLine{00074     \textcolor{keywordtype}{float} mPhi = XM\_PIDIV4;}
+\DoxyCodeLine{00075     \textcolor{keywordtype}{float} mRadius = 5.0f;}
+\DoxyCodeLine{00076 }
+\DoxyCodeLine{00078     \textcolor{keywordtype}{float} mTheta2 = 0.0f;}
 \DoxyCodeLine{00079 }
-\DoxyCodeLine{00080     POINT mLastMousePos;}
-\DoxyCodeLine{00081 }
-\DoxyCodeLine{00082 \};}
-\DoxyCodeLine{00083 }
-\DoxyCodeLine{00084 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00085     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00086 \{}
-\DoxyCodeLine{00087     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00088 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00089     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00090 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00091 }
-\DoxyCodeLine{00092     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00093     \{}
-\DoxyCodeLine{00094         TriangleAPP theApp(hInstance);}
-\DoxyCodeLine{00095         \textcolor{keywordflow}{if} (!theApp.Initialize())}
-\DoxyCodeLine{00096             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00097 }
-\DoxyCodeLine{00098         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00099     \}}
-\DoxyCodeLine{00100     \textcolor{keywordflow}{catch} (DxException\& e)}
-\DoxyCodeLine{00101     \{}
-\DoxyCodeLine{00102         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00103         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00104     \}}
-\DoxyCodeLine{00105 \}}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107 TriangleAPP::TriangleAPP(HINSTANCE hInstance)}
-\DoxyCodeLine{00108     : D3DApp(hInstance)}
-\DoxyCodeLine{00109 \{}
-\DoxyCodeLine{00110     mMainWndCaption = L\textcolor{stringliteral}{"{}Rotation Demo"{}};}
-\DoxyCodeLine{00111 \}}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113 TriangleAPP::\string~TriangleAPP()}
-\DoxyCodeLine{00114 \{}
-\DoxyCodeLine{00115 \}}
-\DoxyCodeLine{00116 }
-\DoxyCodeLine{00117 \textcolor{keywordtype}{bool} TriangleAPP::Initialize()}
-\DoxyCodeLine{00118 \{}
-\DoxyCodeLine{00119     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
-\DoxyCodeLine{00120         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00121 }
-\DoxyCodeLine{00122     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00123     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00124 }
+\DoxyCodeLine{00080 }
+\DoxyCodeLine{00081     POINT mLastMousePos;}
+\DoxyCodeLine{00082 }
+\DoxyCodeLine{00083 \};}
+\DoxyCodeLine{00084 }
+\DoxyCodeLine{00085 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{00086     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{00087 \{}
+\DoxyCodeLine{00088     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{00089 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{00090     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{00091 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00092 }
+\DoxyCodeLine{00093     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00094     \{}
+\DoxyCodeLine{00095         TriangleAPP theApp(hInstance);}
+\DoxyCodeLine{00096         \textcolor{keywordflow}{if} (!theApp.Initialize())}
+\DoxyCodeLine{00097             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00098 }
+\DoxyCodeLine{00099         \textcolor{keywordflow}{return} theApp.Run();}
+\DoxyCodeLine{00100     \}}
+\DoxyCodeLine{00101     \textcolor{keywordflow}{catch} (DxException\& e)}
+\DoxyCodeLine{00102     \{}
+\DoxyCodeLine{00103         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{00104         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00105     \}}
+\DoxyCodeLine{00106 \}}
+\DoxyCodeLine{00107 }
+\DoxyCodeLine{00108 TriangleAPP::TriangleAPP(HINSTANCE hInstance)}
+\DoxyCodeLine{00109     : D3DApp(hInstance)}
+\DoxyCodeLine{00110 \{}
+\DoxyCodeLine{00111     mMainWndCaption = L\textcolor{stringliteral}{"{}Rotation Demo"{}};}
+\DoxyCodeLine{00112 \}}
+\DoxyCodeLine{00113 }
+\DoxyCodeLine{00114 TriangleAPP::\string~TriangleAPP()}
+\DoxyCodeLine{00115 \{}
+\DoxyCodeLine{00116 \}}
+\DoxyCodeLine{00117 }
+\DoxyCodeLine{00118 \textcolor{keywordtype}{bool} TriangleAPP::Initialize()}
+\DoxyCodeLine{00119 \{}
+\DoxyCodeLine{00120     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
+\DoxyCodeLine{00121         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00122 }
+\DoxyCodeLine{00123     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{00124     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
 \DoxyCodeLine{00125 }
-\DoxyCodeLine{00126     BuildDescriptorHeaps();}
-\DoxyCodeLine{00127     BuildConstantBuffers();}
-\DoxyCodeLine{00128 }
-\DoxyCodeLine{00129     BuildRootSignature();}
-\DoxyCodeLine{00130     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00131     BuildTriangleGeometry();}
-\DoxyCodeLine{00132     BuildPSO();}
-\DoxyCodeLine{00133 }
-\DoxyCodeLine{00134     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00135     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00136     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00137     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00138 }
-\DoxyCodeLine{00139     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00140     FlushCommandQueue();}
-\DoxyCodeLine{00141 }
-\DoxyCodeLine{00142     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00143 \}}
-\DoxyCodeLine{00144 }
-\DoxyCodeLine{00145 \textcolor{keywordtype}{void} TriangleAPP::OnResize()}
-\DoxyCodeLine{00146 \{}
-\DoxyCodeLine{00147     D3DApp::OnResize();}
-\DoxyCodeLine{00148 }
-\DoxyCodeLine{00149         \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00150     XMMATRIX P = XMMatrixPerspectiveFovLH(0.10f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00151     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00152 \}}
-\DoxyCodeLine{00153 }
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127     BuildDescriptorHeaps();}
+\DoxyCodeLine{00128     BuildConstantBuffers();}
+\DoxyCodeLine{00129 }
+\DoxyCodeLine{00130     BuildRootSignature();}
+\DoxyCodeLine{00131     BuildShadersAndInputLayout();}
+\DoxyCodeLine{00132     BuildTriangleGeometry();}
+\DoxyCodeLine{00133     BuildPSO();}
+\DoxyCodeLine{00134 }
+\DoxyCodeLine{00135     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{00136     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00137     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00138     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00139 }
+\DoxyCodeLine{00140     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{00141     FlushCommandQueue();}
+\DoxyCodeLine{00142 }
+\DoxyCodeLine{00143     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00144 \}}
+\DoxyCodeLine{00145 }
+\DoxyCodeLine{00146 \textcolor{keywordtype}{void} TriangleAPP::OnResize()}
+\DoxyCodeLine{00147 \{}
+\DoxyCodeLine{00148     D3DApp::OnResize();}
+\DoxyCodeLine{00149 }
+\DoxyCodeLine{00150         \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{00151     XMMATRIX P = XMMatrixPerspectiveFovLH(0.10f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
+\DoxyCodeLine{00152     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{00153 \}}
 \DoxyCodeLine{00154 }
 \DoxyCodeLine{00155 }
-\DoxyCodeLine{00156 \textcolor{keywordtype}{void} TriangleAPP::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00157 \{}
-\DoxyCodeLine{00158 }
-\DoxyCodeLine{00159     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00160     \textcolor{keywordtype}{float} x = mRadius * sinf(mPhi) * cosf(mTheta);}
-\DoxyCodeLine{00161     \textcolor{keywordtype}{float} z = mRadius * sinf(mPhi) * sinf(mTheta);}
-\DoxyCodeLine{00162     \textcolor{keywordtype}{float} y = mRadius * cosf(mPhi);}
-\DoxyCodeLine{00163 }
-\DoxyCodeLine{00164     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00165     XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);}
-\DoxyCodeLine{00166     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00167     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00168 }
-\DoxyCodeLine{00169     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00170     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00171 }
+\DoxyCodeLine{00156 }
+\DoxyCodeLine{00157 \textcolor{keywordtype}{void} TriangleAPP::Update(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00158 \{}
+\DoxyCodeLine{00159 }
+\DoxyCodeLine{00160     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{00161     \textcolor{keywordtype}{float} x = mRadius * sinf(mPhi) * cosf(mTheta);}
+\DoxyCodeLine{00162     \textcolor{keywordtype}{float} z = mRadius * sinf(mPhi) * sinf(mTheta);}
+\DoxyCodeLine{00163     \textcolor{keywordtype}{float} y = mRadius * cosf(mPhi);}
+\DoxyCodeLine{00164 }
+\DoxyCodeLine{00165     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{00166     XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);}
+\DoxyCodeLine{00167     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{00168     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{00169 }
+\DoxyCodeLine{00170     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{00171     XMStoreFloat4x4(\&mView, view);}
 \DoxyCodeLine{00172 }
 \DoxyCodeLine{00173 }
 \DoxyCodeLine{00174     XMMATRIX world = XMLoadFloat4x4(\&mWorld);}
 \DoxyCodeLine{00175 }
 \DoxyCodeLine{00176     \textcolor{comment}{//step2 a rotation around z axis}}
-\DoxyCodeLine{00177     \textcolor{comment}{//mTheta2 += 0.01f;}}
-\DoxyCodeLine{00178     mTheta2 += gt.DeltaTime();}
-\DoxyCodeLine{00179     world = XMMatrixRotationZ((-\/XM\_PI+ mTheta2) / 6.0f);}
-\DoxyCodeLine{00180     \textcolor{comment}{//}}
-\DoxyCodeLine{00181 }
-\DoxyCodeLine{00182     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00183     XMMATRIX worldViewProj = world * view * proj;}
-\DoxyCodeLine{00184 }
-\DoxyCodeLine{00185     \textcolor{comment}{// Update the constant buffer with the latest worldViewProj matrix.}}
-\DoxyCodeLine{00186     ObjectConstants objConstants;}
-\DoxyCodeLine{00187     XMStoreFloat4x4(\&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));}
-\DoxyCodeLine{00188     mObjectCB-\/>CopyData(0, objConstants);}
-\DoxyCodeLine{00189 }
-\DoxyCodeLine{00190 \}}
-\DoxyCodeLine{00191 }
-\DoxyCodeLine{00192 \textcolor{keywordtype}{void} TriangleAPP::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00193 \{}
-\DoxyCodeLine{00194     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00195     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00196     ThrowIfFailed(mDirectCmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00197 }
-\DoxyCodeLine{00198     \textcolor{comment}{//A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00199     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00200     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));}
-\DoxyCodeLine{00201 }
-\DoxyCodeLine{00202     \textcolor{comment}{//You cannot render without a view port. }}
-\DoxyCodeLine{00203     \textcolor{comment}{//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.}}
-\DoxyCodeLine{00204     \textcolor{comment}{//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)}}
-\DoxyCodeLine{00205     \textcolor{comment}{//also notice viewport(s), because you can have an array of view ports! \& is poiting to the address of the first viewport}}
-\DoxyCodeLine{00206     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00207 }
-\DoxyCodeLine{00208     \textcolor{comment}{//Each scissor rectangle in the array corresponds to a viewport in an array of viewports}}
-\DoxyCodeLine{00209     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00210 }
-\DoxyCodeLine{00211     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00212     \textcolor{comment}{//Specifies the state of a resource regarding how the resource is being used.}}
-\DoxyCodeLine{00213     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_PRESENT same as D3D12\_RESOURCE\_STATE\_COMMON}}
-\DoxyCodeLine{00214     \textcolor{comment}{//Applications should only transition to this state for accessing a resource across different graphics engine types.}}
-\DoxyCodeLine{00215     \textcolor{comment}{//Specifically, a resource must be in the COMMON state before being used on a COPY queue}}
-\DoxyCodeLine{00216     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00217         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00177     mTheta2 += gt.DeltaTime();}
+\DoxyCodeLine{00178     world = XMMatrixRotationZ((-\/XM\_PI+ mTheta2) / 6.0f);}
+\DoxyCodeLine{00179 }
+\DoxyCodeLine{00180 }
+\DoxyCodeLine{00181     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{00182     XMMATRIX worldViewProj = world * view * proj;}
+\DoxyCodeLine{00183 }
+\DoxyCodeLine{00184     \textcolor{comment}{// Update the constant buffer with the latest worldViewProj matrix.}}
+\DoxyCodeLine{00185     ObjectConstants objConstants;}
+\DoxyCodeLine{00186     XMStoreFloat4x4(\&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));}
+\DoxyCodeLine{00187     mObjectCB-\/>CopyData(0, objConstants);}
+\DoxyCodeLine{00188 }
+\DoxyCodeLine{00189 \}}
+\DoxyCodeLine{00190 }
+\DoxyCodeLine{00191 \textcolor{keywordtype}{void} TriangleAPP::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00192 \{}
+\DoxyCodeLine{00193     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{00194     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{00195     ThrowIfFailed(mDirectCmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00196 }
+\DoxyCodeLine{00197     \textcolor{comment}{//A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{00198     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{00199     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), mPSO.Get()));}
+\DoxyCodeLine{00200 }
+\DoxyCodeLine{00201     \textcolor{comment}{//You cannot render without a view port. }}
+\DoxyCodeLine{00202     \textcolor{comment}{//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.}}
+\DoxyCodeLine{00203     \textcolor{comment}{//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)}}
+\DoxyCodeLine{00204     \textcolor{comment}{//also notice viewport(s), because you can have an array of view ports! \& is poiting to the address of the first viewport}}
+\DoxyCodeLine{00205     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
+\DoxyCodeLine{00206 }
+\DoxyCodeLine{00207     \textcolor{comment}{//Each scissor rectangle in the array corresponds to a viewport in an array of viewports}}
+\DoxyCodeLine{00208     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{00209 }
+\DoxyCodeLine{00210     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00211     \textcolor{comment}{//Specifies the state of a resource regarding how the resource is being used.}}
+\DoxyCodeLine{00212     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_PRESENT same as D3D12\_RESOURCE\_STATE\_COMMON}}
+\DoxyCodeLine{00213     \textcolor{comment}{//Applications should only transition to this state for accessing a resource across different graphics engine types.}}
+\DoxyCodeLine{00214     \textcolor{comment}{//Specifically, a resource must be in the COMMON state before being used on a COPY queue}}
+\DoxyCodeLine{00215     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00216         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00217 }
 \DoxyCodeLine{00218 }
-\DoxyCodeLine{00219 }
-\DoxyCodeLine{00220     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00221     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00222 }
-\DoxyCodeLine{00223     \textcolor{comment}{//step6: let's get ready for 3D}}
-\DoxyCodeLine{00224     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00225     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00226     \textcolor{comment}{//mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), true, nullptr);}}
-\DoxyCodeLine{00227     \textcolor{comment}{//}}
-\DoxyCodeLine{00228 }
-\DoxyCodeLine{00229     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}
-\DoxyCodeLine{00230     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00231 }
-\DoxyCodeLine{00232     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00233 }
-\DoxyCodeLine{00234     mCommandList-\/>IASetVertexBuffers(0, 1, \&mBoxGeo-\/>VertexBufferView());}
-\DoxyCodeLine{00235     mCommandList-\/>IASetIndexBuffer(\&mBoxGeo-\/>IndexBufferView());   \textcolor{comment}{//bind it to the pipeline}}
-\DoxyCodeLine{00236 }
-\DoxyCodeLine{00237     mCommandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
-\DoxyCodeLine{00238 }
-\DoxyCodeLine{00239     \textcolor{comment}{//step12 bind the constant buffer to the pipeline}}
-\DoxyCodeLine{00240     mCommandList-\/>SetGraphicsRootDescriptorTable(0, mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00241     \textcolor{comment}{// if you compile the code at this point, there is no build problem. but it doesn't do anything, because the shader is not making a use of it.}}
-\DoxyCodeLine{00242 }
-\DoxyCodeLine{00243     mCommandList-\/>DrawIndexedInstanced(mBoxGeo-\/>DrawArgs[\textcolor{stringliteral}{"{}triangle"{}}].IndexCount, 1, 0, 0, 0);}
+\DoxyCodeLine{00219     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{00220     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00221 }
+\DoxyCodeLine{00222     \textcolor{comment}{//step6: let's get ready for 3D}}
+\DoxyCodeLine{00223     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00224     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
+\DoxyCodeLine{00225     \textcolor{comment}{//mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), true, nullptr);}}
+\DoxyCodeLine{00226     \textcolor{comment}{//}}
+\DoxyCodeLine{00227 }
+\DoxyCodeLine{00228     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}
+\DoxyCodeLine{00229     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{00230 }
+\DoxyCodeLine{00231     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00232 }
+\DoxyCodeLine{00233     mCommandList-\/>IASetVertexBuffers(0, 1, \&mBoxGeo-\/>VertexBufferView());}
+\DoxyCodeLine{00234     mCommandList-\/>IASetIndexBuffer(\&mBoxGeo-\/>IndexBufferView());   \textcolor{comment}{//bind it to the pipeline}}
+\DoxyCodeLine{00235 }
+\DoxyCodeLine{00236     mCommandList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
+\DoxyCodeLine{00237 }
+\DoxyCodeLine{00238     \textcolor{comment}{//step12 bind the constant buffer to the pipeline}}
+\DoxyCodeLine{00239     mCommandList-\/>SetGraphicsRootDescriptorTable(0, mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{00240     \textcolor{comment}{// if you compile the code at this point, there is no build problem. but it doesn't do anything, because the shader is not making a use of it.}}
+\DoxyCodeLine{00241 }
+\DoxyCodeLine{00242     mCommandList-\/>DrawIndexedInstanced(mBoxGeo-\/>DrawArgs[\textcolor{stringliteral}{"{}triangle"{}}].IndexCount, 1, 0, 0, 0);}
+\DoxyCodeLine{00243 }
 \DoxyCodeLine{00244 }
-\DoxyCodeLine{00245 }
-\DoxyCodeLine{00246     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00247     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00248         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00249 }
-\DoxyCodeLine{00250     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00251     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00252 }
-\DoxyCodeLine{00253     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00254     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00255     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00256 }
-\DoxyCodeLine{00257     \textcolor{comment}{// swap the back and front buffers}}
-\DoxyCodeLine{00258         \textcolor{comment}{//HRESULT Present(UINT SyncInterval,UINT Flags);}}
-\DoxyCodeLine{00259     \textcolor{comment}{//SyncInterval: 0 -\/ The presentation occurs immediately, there is no synchronization.}}
-\DoxyCodeLine{00260     \textcolor{comment}{//Flags defined by the DXGI\_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.}}
-\DoxyCodeLine{00261     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00262     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00263 }
-\DoxyCodeLine{00264     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
-\DoxyCodeLine{00265     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
-\DoxyCodeLine{00266     \textcolor{comment}{// so we do not have to wait per frame.}}
-\DoxyCodeLine{00267     FlushCommandQueue();}
-\DoxyCodeLine{00268 \}}
+\DoxyCodeLine{00245     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00246     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00247         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00248 }
+\DoxyCodeLine{00249     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{00250     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00251 }
+\DoxyCodeLine{00252     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{00253     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00254     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00255 }
+\DoxyCodeLine{00256     \textcolor{comment}{// swap the back and front buffers}}
+\DoxyCodeLine{00257         \textcolor{comment}{//HRESULT Present(UINT SyncInterval,UINT Flags);}}
+\DoxyCodeLine{00258     \textcolor{comment}{//SyncInterval: 0 -\/ The presentation occurs immediately, there is no synchronization.}}
+\DoxyCodeLine{00259     \textcolor{comment}{//Flags defined by the DXGI\_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.}}
+\DoxyCodeLine{00260     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
+\DoxyCodeLine{00261     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
+\DoxyCodeLine{00262 }
+\DoxyCodeLine{00263     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
+\DoxyCodeLine{00264     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
+\DoxyCodeLine{00265     \textcolor{comment}{// so we do not have to wait per frame.}}
+\DoxyCodeLine{00266     FlushCommandQueue();}
+\DoxyCodeLine{00267 \}}
+\DoxyCodeLine{00268 }
 \DoxyCodeLine{00269 }
 \DoxyCodeLine{00270 }
-\DoxyCodeLine{00271 }
-\DoxyCodeLine{00272 \textcolor{keywordtype}{void} TriangleAPP::BuildRootSignature()}
-\DoxyCodeLine{00273 \{}
-\DoxyCodeLine{00274  }
-\DoxyCodeLine{00275     \textcolor{comment}{// Shader programs typically require resources as input (constant buffers,}}
-\DoxyCodeLine{00276     \textcolor{comment}{// textures, samplers).  The root signature defines the resources the shader}}
-\DoxyCodeLine{00277     \textcolor{comment}{// programs expect.  If we think of the shader programs as a function, and}}
-\DoxyCodeLine{00278     \textcolor{comment}{// the input resources as function parameters, then the root signature can be}}
-\DoxyCodeLine{00279     \textcolor{comment}{// thought of as defining the function signature.  }}
-\DoxyCodeLine{00280 }
-\DoxyCodeLine{00281     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00282     CD3DX12\_ROOT\_PARAMETER slotRootParameter[1];}
-\DoxyCodeLine{00283 }
-\DoxyCodeLine{00284     \textcolor{comment}{// Create a single descriptor table of CBVs.}}
-\DoxyCodeLine{00285     CD3DX12\_DESCRIPTOR\_RANGE cbvTable;}
-\DoxyCodeLine{00286     cbvTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 0);}
-\DoxyCodeLine{00287     slotRootParameter[0].InitAsDescriptorTable(1, \&cbvTable);}
-\DoxyCodeLine{00288 }
-\DoxyCodeLine{00289     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00290     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(1, slotRootParameter, 0, \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00291         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00271 \textcolor{keywordtype}{void} TriangleAPP::BuildRootSignature()}
+\DoxyCodeLine{00272 \{}
+\DoxyCodeLine{00273  }
+\DoxyCodeLine{00274     \textcolor{comment}{// Shader programs typically require resources as input (constant buffers,}}
+\DoxyCodeLine{00275     \textcolor{comment}{// textures, samplers).  The root signature defines the resources the shader}}
+\DoxyCodeLine{00276     \textcolor{comment}{// programs expect.  If we think of the shader programs as a function, and}}
+\DoxyCodeLine{00277     \textcolor{comment}{// the input resources as function parameters, then the root signature can be}}
+\DoxyCodeLine{00278     \textcolor{comment}{// thought of as defining the function signature.  }}
+\DoxyCodeLine{00279 }
+\DoxyCodeLine{00280     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{00281     CD3DX12\_ROOT\_PARAMETER slotRootParameter[1];}
+\DoxyCodeLine{00282 }
+\DoxyCodeLine{00283     \textcolor{comment}{// Create a single descriptor table of CBVs.}}
+\DoxyCodeLine{00284     CD3DX12\_DESCRIPTOR\_RANGE cbvTable;}
+\DoxyCodeLine{00285     cbvTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 0);}
+\DoxyCodeLine{00286     slotRootParameter[0].InitAsDescriptorTable(1, \&cbvTable);}
+\DoxyCodeLine{00287 }
+\DoxyCodeLine{00288     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{00289     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(1, slotRootParameter, 0, \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{00290         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00291 }
 \DoxyCodeLine{00292 }
-\DoxyCodeLine{00293 }
-\DoxyCodeLine{00294     \textcolor{comment}{// create a root signature with no slot for now!}}
-\DoxyCodeLine{00295     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00296     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00297     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&serializedRootSig, \&errorBlob);}
-\DoxyCodeLine{00298 }
-\DoxyCodeLine{00299     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00300     \{}
-\DoxyCodeLine{00301         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00302     \}}
-\DoxyCodeLine{00303     ThrowIfFailed(hr);}
-\DoxyCodeLine{00304 }
-\DoxyCodeLine{00305     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00306         0,}
-\DoxyCodeLine{00307         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00308         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00309         IID\_PPV\_ARGS(\&mRootSignature)));}
-\DoxyCodeLine{00310 \}}
+\DoxyCodeLine{00293     \textcolor{comment}{// create a root signature with no slot for now!}}
+\DoxyCodeLine{00294     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00295     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00296     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1, \&serializedRootSig, \&errorBlob);}
+\DoxyCodeLine{00297 }
+\DoxyCodeLine{00298     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00299     \{}
+\DoxyCodeLine{00300         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{00301     \}}
+\DoxyCodeLine{00302     ThrowIfFailed(hr);}
+\DoxyCodeLine{00303 }
+\DoxyCodeLine{00304     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
+\DoxyCodeLine{00305         0,}
+\DoxyCodeLine{00306         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{00307         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{00308         IID\_PPV\_ARGS(\&mRootSignature)));}
+\DoxyCodeLine{00309 \}}
+\DoxyCodeLine{00310 }
 \DoxyCodeLine{00311 }
 \DoxyCodeLine{00312 }
 \DoxyCodeLine{00313 }
-\DoxyCodeLine{00314 }
-\DoxyCodeLine{00315 \textcolor{keywordtype}{void} TriangleAPP::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00316 \{}
-\DoxyCodeLine{00317     HRESULT hr = S\_OK;}
-\DoxyCodeLine{00318 }
-\DoxyCodeLine{00319     \textcolor{comment}{//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler }}
-\DoxyCodeLine{00320     \textcolor{comment}{//step3: refactoring the vertex shader to use structs for both ins and outs parameters}}
-\DoxyCodeLine{00321     \textcolor{comment}{//note that I changed "{}main"{} to PS and VS}}
-\DoxyCodeLine{00322     mvsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS3.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
-\DoxyCodeLine{00323     mpsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS3.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00324 }
-\DoxyCodeLine{00325     mInputLayout =}
-\DoxyCodeLine{00326     \{}
-\DoxyCodeLine{00327         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00328         \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00329     \};}
-\DoxyCodeLine{00330 \}}
-\DoxyCodeLine{00331 }
-\DoxyCodeLine{00332 \textcolor{keywordtype}{void} TriangleAPP::BuildTriangleGeometry()}
-\DoxyCodeLine{00333 \{}
-\DoxyCodeLine{00334     std::array<Vertex, 3> vertices =}
-\DoxyCodeLine{00335     \{}
-\DoxyCodeLine{00336                 Vertex(\{ XMFLOAT3(-\/0.5f, -\/0.5f, 0.0f), XMFLOAT4(Colors::Red)\}),}
-\DoxyCodeLine{00337                 Vertex(\{ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Green) \}),}
-\DoxyCodeLine{00338                 Vertex(\{ XMFLOAT3(+0.5f, -\/0.5f, 0.0f) , XMFLOAT4(Colors::Blue)\}),}
-\DoxyCodeLine{00339     \};}
+\DoxyCodeLine{00314 \textcolor{keywordtype}{void} TriangleAPP::BuildShadersAndInputLayout()}
+\DoxyCodeLine{00315 \{}
+\DoxyCodeLine{00316     HRESULT hr = S\_OK;}
+\DoxyCodeLine{00317 }
+\DoxyCodeLine{00318     \textcolor{comment}{//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler }}
+\DoxyCodeLine{00319     \textcolor{comment}{//step3: refactoring the vertex shader to use structs for both ins and outs parameters}}
+\DoxyCodeLine{00320     \textcolor{comment}{//note that I changed "{}main"{} to PS and VS}}
+\DoxyCodeLine{00321     mvsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS3.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{00322     mpsByteCode = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS3.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{00323 }
+\DoxyCodeLine{00324     mInputLayout =}
+\DoxyCodeLine{00325     \{}
+\DoxyCodeLine{00326         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00327         \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00328     \};}
+\DoxyCodeLine{00329 \}}
+\DoxyCodeLine{00330 }
+\DoxyCodeLine{00331 \textcolor{keywordtype}{void} TriangleAPP::BuildTriangleGeometry()}
+\DoxyCodeLine{00332 \{}
+\DoxyCodeLine{00333     std::array<Vertex, 3> vertices =}
+\DoxyCodeLine{00334     \{}
+\DoxyCodeLine{00335                 Vertex(\{ XMFLOAT3(-\/0.5f, -\/0.5f, 0.0f), XMFLOAT4(Colors::Red)\}),}
+\DoxyCodeLine{00336                 Vertex(\{ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Green) \}),}
+\DoxyCodeLine{00337                 Vertex(\{ XMFLOAT3(+0.5f, -\/0.5f, 0.0f) , XMFLOAT4(Colors::Blue)\}),}
+\DoxyCodeLine{00338     \};}
+\DoxyCodeLine{00339 }
 \DoxyCodeLine{00340 }
-\DoxyCodeLine{00341 }
-\DoxyCodeLine{00342     std::array<std::uint16\_t, 3> indices =}
-\DoxyCodeLine{00343     \{}
-\DoxyCodeLine{00344 }
-\DoxyCodeLine{00345         0, 1, 2,}
-\DoxyCodeLine{00346     \};}
+\DoxyCodeLine{00341     std::array<std::uint16\_t, 3> indices =}
+\DoxyCodeLine{00342     \{}
+\DoxyCodeLine{00343 }
+\DoxyCodeLine{00344         0, 1, 2,}
+\DoxyCodeLine{00345     \};}
+\DoxyCodeLine{00346 }
 \DoxyCodeLine{00347 }
 \DoxyCodeLine{00348 }
-\DoxyCodeLine{00349 }
-\DoxyCodeLine{00350     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00351     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00352 }
-\DoxyCodeLine{00353     mBoxGeo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00354     mBoxGeo-\/>Name = \textcolor{stringliteral}{"{}triangleGeo"{}};}
-\DoxyCodeLine{00355 }
-\DoxyCodeLine{00356     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&mBoxGeo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00357     CopyMemory(mBoxGeo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00358 }
-\DoxyCodeLine{00359     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&mBoxGeo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00360     CopyMemory(mBoxGeo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00361 }
-\DoxyCodeLine{00362     mBoxGeo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00363         mCommandList.Get(), vertices.data(), vbByteSize, mBoxGeo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00364 }
-\DoxyCodeLine{00365     mBoxGeo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00366         mCommandList.Get(), indices.data(), ibByteSize, mBoxGeo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00367 }
-\DoxyCodeLine{00368     mBoxGeo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00369     mBoxGeo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00370     mBoxGeo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00371     mBoxGeo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00372 }
-\DoxyCodeLine{00373     SubmeshGeometry submesh;}
-\DoxyCodeLine{00374     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00375     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00376     submesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00377 }
-\DoxyCodeLine{00378     mBoxGeo-\/>DrawArgs[\textcolor{stringliteral}{"{}triangle"{}}] = submesh;}
+\DoxyCodeLine{00349     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00350     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{00351 }
+\DoxyCodeLine{00352     mBoxGeo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00353     mBoxGeo-\/>Name = \textcolor{stringliteral}{"{}triangleGeo"{}};}
+\DoxyCodeLine{00354 }
+\DoxyCodeLine{00355     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&mBoxGeo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00356     CopyMemory(mBoxGeo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00357 }
+\DoxyCodeLine{00358     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&mBoxGeo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00359     CopyMemory(mBoxGeo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00360 }
+\DoxyCodeLine{00361     mBoxGeo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00362         mCommandList.Get(), vertices.data(), vbByteSize, mBoxGeo-\/>VertexBufferUploader);}
+\DoxyCodeLine{00363 }
+\DoxyCodeLine{00364     mBoxGeo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00365         mCommandList.Get(), indices.data(), ibByteSize, mBoxGeo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00366 }
+\DoxyCodeLine{00367     mBoxGeo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00368     mBoxGeo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00369     mBoxGeo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00370     mBoxGeo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00371 }
+\DoxyCodeLine{00372     SubmeshGeometry submesh;}
+\DoxyCodeLine{00373     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00374     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00375     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00376 }
+\DoxyCodeLine{00377     mBoxGeo-\/>DrawArgs[\textcolor{stringliteral}{"{}triangle"{}}] = submesh;}
+\DoxyCodeLine{00378 }
 \DoxyCodeLine{00379 }
-\DoxyCodeLine{00380 }
-\DoxyCodeLine{00381 \}}
-\DoxyCodeLine{00382 }
-\DoxyCodeLine{00383 \textcolor{keywordtype}{void} TriangleAPP::BuildPSO()}
-\DoxyCodeLine{00384 \{}
-\DoxyCodeLine{00385     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc;}
-\DoxyCodeLine{00386     ZeroMemory(\&psoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00387 }
-\DoxyCodeLine{00388     \textcolor{comment}{//bind the input layout to pipeline}}
-\DoxyCodeLine{00389     psoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00390     psoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00391 }
-\DoxyCodeLine{00392     \textcolor{comment}{//in old days, we use to call create vertex shader, now we hook it up to the PSO!}}
-\DoxyCodeLine{00393     psoDesc.VS =}
-\DoxyCodeLine{00394     \{}
-\DoxyCodeLine{00395         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mvsByteCode-\/>GetBufferPointer()),}
-\DoxyCodeLine{00396         mvsByteCode-\/>GetBufferSize()}
-\DoxyCodeLine{00397     \};}
-\DoxyCodeLine{00398     psoDesc.PS =}
-\DoxyCodeLine{00399     \{}
-\DoxyCodeLine{00400         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mpsByteCode-\/>GetBufferPointer()),}
-\DoxyCodeLine{00401         mpsByteCode-\/>GetBufferSize()}
-\DoxyCodeLine{00402     \};}
-\DoxyCodeLine{00403     psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00404     psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00405 }
-\DoxyCodeLine{00406     \textcolor{comment}{//step8}}
-\DoxyCodeLine{00407     psoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00408     \textcolor{comment}{//psoDesc.DepthStencilState.DepthEnable = FALSE;}}
-\DoxyCodeLine{00409     \textcolor{comment}{//psoDesc.DepthStencilState.StencilEnable = FALSE;}}
+\DoxyCodeLine{00380 \}}
+\DoxyCodeLine{00381 }
+\DoxyCodeLine{00382 \textcolor{keywordtype}{void} TriangleAPP::BuildPSO()}
+\DoxyCodeLine{00383 \{}
+\DoxyCodeLine{00384     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC psoDesc;}
+\DoxyCodeLine{00385     ZeroMemory(\&psoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{00386 }
+\DoxyCodeLine{00387     \textcolor{comment}{//bind the input layout to pipeline}}
+\DoxyCodeLine{00388     psoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{00389     psoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{00390 }
+\DoxyCodeLine{00391     \textcolor{comment}{//in old days, we use to call create vertex shader, now we hook it up to the PSO!}}
+\DoxyCodeLine{00392     psoDesc.VS =}
+\DoxyCodeLine{00393     \{}
+\DoxyCodeLine{00394         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mvsByteCode-\/>GetBufferPointer()),}
+\DoxyCodeLine{00395         mvsByteCode-\/>GetBufferSize()}
+\DoxyCodeLine{00396     \};}
+\DoxyCodeLine{00397     psoDesc.PS =}
+\DoxyCodeLine{00398     \{}
+\DoxyCodeLine{00399         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mpsByteCode-\/>GetBufferPointer()),}
+\DoxyCodeLine{00400         mpsByteCode-\/>GetBufferSize()}
+\DoxyCodeLine{00401     \};}
+\DoxyCodeLine{00402     psoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00403     psoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00404 }
+\DoxyCodeLine{00405     \textcolor{comment}{//step8}}
+\DoxyCodeLine{00406     psoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00407     \textcolor{comment}{//psoDesc.DepthStencilState.DepthEnable = FALSE;}}
+\DoxyCodeLine{00408     \textcolor{comment}{//psoDesc.DepthStencilState.StencilEnable = FALSE;}}
+\DoxyCodeLine{00409 }
 \DoxyCodeLine{00410 }
-\DoxyCodeLine{00411 }
-\DoxyCodeLine{00412     psoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00413     psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00414 }
-\DoxyCodeLine{00415     psoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00416     psoDesc.RTVFormats[0] = mBackBufferFormat;  \textcolor{comment}{//DXGI\_FORMAT\_R8G8B8A8\_UNORM;}}
-\DoxyCodeLine{00417 }
-\DoxyCodeLine{00418     \textcolor{comment}{//step9}}
-\DoxyCodeLine{00419     \textcolor{comment}{//  psoDesc.SampleDesc.Count = 1;}}
-\DoxyCodeLine{00420     psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00421     psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00422     psoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00423     \textcolor{comment}{//end}}
-\DoxyCodeLine{00424     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&mPSO)));}
-\DoxyCodeLine{00425 \}}
+\DoxyCodeLine{00411     psoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00412     psoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00413 }
+\DoxyCodeLine{00414     psoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00415     psoDesc.RTVFormats[0] = mBackBufferFormat;  \textcolor{comment}{//DXGI\_FORMAT\_R8G8B8A8\_UNORM;}}
+\DoxyCodeLine{00416 }
+\DoxyCodeLine{00417     \textcolor{comment}{//step9}}
+\DoxyCodeLine{00418     \textcolor{comment}{//  psoDesc.SampleDesc.Count = 1;}}
+\DoxyCodeLine{00419     psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
+\DoxyCodeLine{00420     psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
+\DoxyCodeLine{00421     psoDesc.DSVFormat = mDepthStencilFormat;}
+\DoxyCodeLine{00422     \textcolor{comment}{//end}}
+\DoxyCodeLine{00423     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&psoDesc, IID\_PPV\_ARGS(\&mPSO)));}
+\DoxyCodeLine{00424 \}}
+\DoxyCodeLine{00425 }
 \DoxyCodeLine{00426 }
-\DoxyCodeLine{00427 }
-\DoxyCodeLine{00428 \textcolor{keywordtype}{void} TriangleAPP::BuildDescriptorHeaps()}
-\DoxyCodeLine{00429 \{}
-\DoxyCodeLine{00430     D3D12\_DESCRIPTOR\_HEAP\_DESC cbvHeapDesc;}
-\DoxyCodeLine{00431     cbvHeapDesc.NumDescriptors = 1;}
-\DoxyCodeLine{00432     cbvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00433     cbvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00434     cbvHeapDesc.NodeMask = 0;}
-\DoxyCodeLine{00435     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&cbvHeapDesc,}
-\DoxyCodeLine{00436         IID\_PPV\_ARGS(\&mCbvHeap)));}
-\DoxyCodeLine{00437 \}}
-\DoxyCodeLine{00438 }
-\DoxyCodeLine{00439 \textcolor{keywordtype}{void} TriangleAPP::BuildConstantBuffers()}
-\DoxyCodeLine{00440 \{}
-\DoxyCodeLine{00441     mObjectCB = std::make\_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, \textcolor{keyword}{true});}
-\DoxyCodeLine{00442 }
-\DoxyCodeLine{00443     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00444 }
-\DoxyCodeLine{00445     D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = mObjectCB-\/>Resource()-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{00446     \textcolor{comment}{// Offset to the ith object constant buffer in the buffer.}}
-\DoxyCodeLine{00447     \textcolor{keywordtype}{int} boxCBufIndex = 0;}
-\DoxyCodeLine{00448     cbAddress += boxCBufIndex * objCBByteSize;}
-\DoxyCodeLine{00449 }
-\DoxyCodeLine{00450     D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
-\DoxyCodeLine{00451     cbvDesc.BufferLocation = cbAddress;}
-\DoxyCodeLine{00452     cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00453 }
-\DoxyCodeLine{00454     md3dDevice-\/>CreateConstantBufferView(}
-\DoxyCodeLine{00455         \&cbvDesc,}
-\DoxyCodeLine{00456         mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00457 \}}
+\DoxyCodeLine{00427 \textcolor{keywordtype}{void} TriangleAPP::BuildDescriptorHeaps()}
+\DoxyCodeLine{00428 \{}
+\DoxyCodeLine{00429     D3D12\_DESCRIPTOR\_HEAP\_DESC cbvHeapDesc;}
+\DoxyCodeLine{00430     cbvHeapDesc.NumDescriptors = 1;}
+\DoxyCodeLine{00431     cbvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{00432     cbvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{00433     cbvHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{00434     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&cbvHeapDesc,}
+\DoxyCodeLine{00435         IID\_PPV\_ARGS(\&mCbvHeap)));}
+\DoxyCodeLine{00436 \}}
+\DoxyCodeLine{00437 }
+\DoxyCodeLine{00438 \textcolor{keywordtype}{void} TriangleAPP::BuildConstantBuffers()}
+\DoxyCodeLine{00439 \{}
+\DoxyCodeLine{00440     mObjectCB = std::make\_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, \textcolor{keyword}{true});}
+\DoxyCodeLine{00441 }
+\DoxyCodeLine{00442     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
+\DoxyCodeLine{00443 }
+\DoxyCodeLine{00444     D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = mObjectCB-\/>Resource()-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{00445     \textcolor{comment}{// Offset to the ith object constant buffer in the buffer.}}
+\DoxyCodeLine{00446     \textcolor{keywordtype}{int} boxCBufIndex = 0;}
+\DoxyCodeLine{00447     cbAddress += boxCBufIndex * objCBByteSize;}
+\DoxyCodeLine{00448 }
+\DoxyCodeLine{00449     D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
+\DoxyCodeLine{00450     cbvDesc.BufferLocation = cbAddress;}
+\DoxyCodeLine{00451     cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
+\DoxyCodeLine{00452 }
+\DoxyCodeLine{00453     md3dDevice-\/>CreateConstantBufferView(}
+\DoxyCodeLine{00454         \&cbvDesc,}
+\DoxyCodeLine{00455         mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{00456 \}}
+\DoxyCodeLine{00457 }
 \DoxyCodeLine{00458 }
-\DoxyCodeLine{00459 }
 
 \end{DoxyCode}

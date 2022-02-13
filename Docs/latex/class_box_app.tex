@@ -99,7 +99,7 @@ virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
 virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
 \item 
 virtual void \textbf{ On\+Mouse\+Down} (WPARAM btn\+State, int x, int y) override
-\item 
+\begin{DoxyCompactList}\small\item\em step5 \end{DoxyCompactList}\item 
 virtual void \textbf{ On\+Mouse\+Up} (WPARAM btn\+State, int x, int y) override
 \item 
 virtual void \textbf{ On\+Mouse\+Move} (WPARAM btn\+State, int x, int y) override
@@ -147,7 +147,7 @@ virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
 virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
 \item 
 virtual void \textbf{ On\+Mouse\+Down} (WPARAM btn\+State, int x, int y) override
-\item 
+\begin{DoxyCompactList}\small\item\em step1 \end{DoxyCompactList}\item 
 virtual void \textbf{ On\+Mouse\+Up} (WPARAM btn\+State, int x, int y) override
 \item 
 virtual void \textbf{ On\+Mouse\+Move} (WPARAM btn\+State, int x, int y) override
@@ -296,7 +296,7 @@ std\+::unique\+\_\+ptr$<$ \textbf{ Upload\+Buffer}$<$ \textbf{ Object\+Constants
 std\+::unique\+\_\+ptr$<$ \textbf{ Mesh\+Geometry} $>$ \textbf{ m\+Box\+Geo} = nullptr
 \item 
 Com\+Ptr$<$ ID3\+DBlob $>$ \textbf{ mvs\+Byte\+Code} = nullptr
-\item 
+\begin{DoxyCompactList}\small\item\em The ID3\+DBlob interface is used to return data of arbitrary length. It\textquotesingle{}s contained in D3dcompiler.\+lib. \end{DoxyCompactList}\item 
 Com\+Ptr$<$ ID3\+DBlob $>$ \textbf{ mps\+Byte\+Code} = nullptr
 \item 
 std\+::vector$<$ D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC $>$ \textbf{ m\+Input\+Layout}
@@ -316,7 +316,7 @@ float \textbf{ m\+Phi} = XM\+\_\+\+PIDIV4
 float \textbf{ m\+Radius} = 5.\+0f
 \item 
 POINT \textbf{ m\+Last\+Mouse\+Pos}
-\item 
+\begin{DoxyCompactList}\small\item\em step2 \end{DoxyCompactList}\item 
 float \textbf{ m\+Theta2} = 0
 \item 
 std\+::unique\+\_\+ptr$<$ \textbf{ Upload\+Buffer}$<$ \textbf{ Object\+Constant2} $>$ $>$ \textbf{ m\+Object\+CB2} = nullptr
@@ -683,7 +683,7 @@ Definition at line \textbf{ 436} of file \textbf{ Box\+App.\+cpp}.
 \doxysubsubsection{BuildRootSignature()\hspace{0.1cm}{\footnotesize\ttfamily [1/8]}}
 {\footnotesize\ttfamily void Box\+App\+::\+Build\+Root\+Signature (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
 
-
+Root parameter can be a table, root descriptor or root constants. Step7\+: we can add two ranges with two tables parameters
 
 Definition at line \textbf{ 311} of file \textbf{ Box\+App.\+cpp}.
 
@@ -789,7 +789,7 @@ Definition at line \textbf{ 350} of file \textbf{ Box\+App.\+cpp}.
 
 
 
-Definition at line \textbf{ 316} of file \textbf{ Triangle7-\/box.\+cpp}.
+Definition at line \textbf{ 318} of file \textbf{ Triangle7-\/box.\+cpp}.
 
 \mbox{\label{class_box_app_a52f8c833e9b728be740bc454dcfb168b}} 
 \index{BoxApp@{BoxApp}!BuildTriangleGeometry@{BuildTriangleGeometry}}
@@ -809,7 +809,17 @@ Definition at line \textbf{ 316} of file \textbf{ Triangle7-\/box.\+cpp}.
 \doxysubsubsection{Draw()\hspace{0.1cm}{\footnotesize\ttfamily [1/8]}}
 {\footnotesize\ttfamily void Box\+App\+::\+Draw (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
 
+step5\+: Set Graphics Descriptor Table for \char`\"{}\+Face Color\char`\"{}
 
+Indicate a state transition on the resource usage.
+
+Done recording commands.
+
+Add the command list to the queue for execution.
+
+swap the back and front buffers HRESULT Present(\+UINT Sync\+Interval,\+UINT Flags); Sync\+Interval\+: 0 -\/ The presentation occurs immediately, there is no synchronization. Flags defined by the DXGI\+\_\+\+PRESENT constants. 0\+: Present a frame from each buffer (starting with the current buffer) to the output.
+
+Wait until frame commands are complete. This waiting is inefficient and is done for simplicity. Later we will show how to organize our rendering code so we do not have to wait per frame.
 
 Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59edf2bc95e5e6a}.
 
@@ -979,6 +989,11 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a961fa79170d
 
 
 
+step5 
+
+The mouse capture is a windows feature that can direct all mouse messages to a single window or control (HWND) even if the cursor is outside of the specified window. ~\newline
+
+
 Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afa0d546d52408a9b55866e6ba065ddae}.
 
 
@@ -1000,6 +1015,10 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afa0d546d524
 \index{OnMouseDown@{OnMouseDown}!BoxApp@{BoxApp}}
 \doxysubsubsection{OnMouseDown()\hspace{0.1cm}{\footnotesize\ttfamily [3/8]}}
 {\footnotesize\ttfamily virtual void Box\+App\+::\+On\+Mouse\+Down (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
+
+
+
+step1 
 
 
 
@@ -1229,7 +1248,7 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a98be07429ac
 \doxysubsubsection{OnResize()\hspace{0.1cm}{\footnotesize\ttfamily [1/8]}}
 {\footnotesize\ttfamily void Box\+App\+::\+On\+Resize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
 
-
+The window resized, so update the aspect ratio and recompute the projection matrix. step2\+: change FOV angle to 45 degree
 
 Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}.
 
@@ -1361,7 +1380,7 @@ Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd015
 \doxysubsubsection{Update()\hspace{0.1cm}{\footnotesize\ttfamily [1/8]}}
 {\footnotesize\ttfamily void Box\+App\+::\+Update (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
 
-
+Update the constant buffer with the latest world\+View\+Proj matrix.
 
 Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_ae31029e118e14ee3ae4649f1c6f8d2dd}.
 
@@ -1480,6 +1499,10 @@ Definition at line \textbf{ 68} of file \textbf{ Box\+App.\+cpp}.
 
 
 
+step2 
+
+
+
 Definition at line \textbf{ 80} of file \textbf{ Box\+App.\+cpp}.
 
 \mbox{\label{class_box_app_a506b93b4a185ea560f36f5526af5d7ff}} 
@@ -1500,7 +1523,7 @@ Definition at line \textbf{ 61} of file \textbf{ Box\+App.\+cpp}.
 
 
 
-Definition at line \textbf{ 86} of file \textbf{ Triangle9-\/cubewith6 colors.\+cpp}.
+Definition at line \textbf{ 84} of file \textbf{ Triangle9-\/cubewith6 colors.\+cpp}.
 
 \mbox{\label{class_box_app_a9b4e56ae54ee5e3fbbe4d9a56513cc53}} 
 \index{BoxApp@{BoxApp}!mPhi@{mPhi}}
@@ -1580,7 +1603,7 @@ Definition at line \textbf{ 76} of file \textbf{ Box\+App.\+cpp}.
 
 
 
-Definition at line \textbf{ 82} of file \textbf{ Triangle8-\/box-\/rotation.\+cpp}.
+Definition at line \textbf{ 78} of file \textbf{ Triangle8-\/box-\/rotation.\+cpp}.
 
 \mbox{\label{class_box_app_a7060a4fd073e6afd0460bb5f21d3ec26}} 
 \index{BoxApp@{BoxApp}!mView@{mView}}
@@ -1597,6 +1620,10 @@ Definition at line \textbf{ 73} of file \textbf{ Box\+App.\+cpp}.
 \index{mvsByteCode@{mvsByteCode}!BoxApp@{BoxApp}}
 \doxysubsubsection{mvsByteCode}
 {\footnotesize\ttfamily Com\+Ptr$<$ ID3\+DBlob $>$ Box\+App\+::mvs\+Byte\+Code = nullptr\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The ID3\+DBlob interface is used to return data of arbitrary length. It\textquotesingle{}s contained in D3dcompiler.\+lib. 
 
 
 

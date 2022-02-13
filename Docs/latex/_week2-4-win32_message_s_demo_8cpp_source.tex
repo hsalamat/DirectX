@@ -1,0 +1,84 @@
+\doxysection{Week2-\/4-\/win32\+Message\+SDemo.cpp}
+\label{_week2-4-win32_message_s_demo_8cpp_source}\index{Week2/Win32Examples/Week2-\/4-\/win32MessageSDemo.cpp@{Week2/Win32Examples/Week2-\/4-\/win32MessageSDemo.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include "{}WindowsMessageMap.h"{}}}
+\DoxyCodeLine{00018 }
+\DoxyCodeLine{00019 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) }
+\DoxyCodeLine{00020 \{}
+\DoxyCodeLine{00021     \textcolor{keyword}{static} WindowsMessageMap mm;}
+\DoxyCodeLine{00022     std::string message = mm(msg, wParam, lParam);}
+\DoxyCodeLine{00023     OutputDebugStringA(message.c\_str());}
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{00026     \{}
+\DoxyCodeLine{00027     \textcolor{keywordflow}{case} WM\_CLOSE:}
+\DoxyCodeLine{00028         PostQuitMessage(100); \textcolor{comment}{//if you like to return 100}}
+\DoxyCodeLine{00029         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00030     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{00031         \textcolor{keywordflow}{if} (wParam == \textcolor{charliteral}{'F'})}
+\DoxyCodeLine{00032         \{}
+\DoxyCodeLine{00033             SetWindowText(hWnd, L\textcolor{stringliteral}{"{}F has been pressed"{}});}
+\DoxyCodeLine{00034         \}}
+\DoxyCodeLine{00035     \}}
+\DoxyCodeLine{00036     \textcolor{keywordflow}{return} DefWindowProcW(hWnd, msg, wParam, lParam);}
+\DoxyCodeLine{00037 \}}
+\DoxyCodeLine{00038 }
+\DoxyCodeLine{00039 }
+\DoxyCodeLine{00041 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043 \{}
+\DoxyCodeLine{00044     \textcolor{comment}{//register window class}}
+\DoxyCodeLine{00045     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/ns-\/winuser-\/wndclassexa}}
+\DoxyCodeLine{00046     \textcolor{keyword}{const} \textcolor{keyword}{auto} pClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
+\DoxyCodeLine{00047     WNDCLASSEX wc = \{ 0 \};}
+\DoxyCodeLine{00048     wc.cbSize = \textcolor{keyword}{sizeof}(wc);}
+\DoxyCodeLine{00049     wc.style = CS\_OWNDC; \textcolor{comment}{//own its Device Context}}
+\DoxyCodeLine{00050     wc.lpfnWndProc = WndProc;}
+\DoxyCodeLine{00051     wc.cbClsExtra = 0;   }
+\DoxyCodeLine{00052     wc.cbWndExtra = 0;    }
+\DoxyCodeLine{00053     wc.hInstance = hInstance;}
+\DoxyCodeLine{00054     wc.hIcon = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00055     wc.hCursor = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00056     wc.hbrBackground = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057     wc.lpszMenuName = \textcolor{keyword}{nullptr}; }
+\DoxyCodeLine{00058     \textcolor{comment}{//wc.lpszClassName = L"{}BasicWndClass"{};}}
+\DoxyCodeLine{00059     wc.lpszClassName = pClassName;}
+\DoxyCodeLine{00060     RegisterClassEx(\&wc);}
+\DoxyCodeLine{00061 }
+\DoxyCodeLine{00062     \textcolor{comment}{//create window}}
+\DoxyCodeLine{00063     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/nf-\/winuser-\/createwindowexa}}
+\DoxyCodeLine{00064     HWND hWnd = CreateWindowEx(}
+\DoxyCodeLine{00065         0,}
+\DoxyCodeLine{00066         pClassName,}
+\DoxyCodeLine{00067         L\textcolor{stringliteral}{"{}My First Window"{}},}
+\DoxyCodeLine{00068         WS\_CAPTION | WS\_MINIMIZEBOX | WS\_SYSMENU,}
+\DoxyCodeLine{00069         200, 200, 640, 480,}
+\DoxyCodeLine{00070         \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, hInstance, \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{00071     );}
+\DoxyCodeLine{00072     ShowWindow(hWnd, SW\_SHOW);}
+\DoxyCodeLine{00073     \textcolor{comment}{//while (true);}}
+\DoxyCodeLine{00074     MSG msg = \{ 0 \};}
+\DoxyCodeLine{00081     BOOL bRet = 1;}
+\DoxyCodeLine{00082     \textcolor{keywordflow}{while} ((bRet = GetMessage(\&msg, 0, 0, 0)) != 0)}
+\DoxyCodeLine{00083     \{}
+\DoxyCodeLine{00084         TranslateMessage(\&msg);}
+\DoxyCodeLine{00085         DispatchMessage(\&msg);      }
+\DoxyCodeLine{00086     \}}
+\DoxyCodeLine{00087 }
+\DoxyCodeLine{00088     \textcolor{keywordflow}{if} (bRet == -\/1)}
+\DoxyCodeLine{00089     \{}
+\DoxyCodeLine{00090         MessageBox(0, L\textcolor{stringliteral}{"{}GetMessage FAILED"{}}, L\textcolor{stringliteral}{"{}Error"{}}, MB\_OK);}
+\DoxyCodeLine{00091         \textcolor{keywordflow}{return} bRet;}
+\DoxyCodeLine{00092     \}}
+\DoxyCodeLine{00093     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00094     \{}
+\DoxyCodeLine{00095 }
+\DoxyCodeLine{00096         \textcolor{keywordflow}{return} msg.wParam;}
+\DoxyCodeLine{00097     \}}
+\DoxyCodeLine{00098 \}}
+
+\end{DoxyCode}

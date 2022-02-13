@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DirectX: Week4/BoxUsingFrameResource/Week4-2-SphereUsingFrameResources.cpp File Reference</title>
+<title>DirectX: Week4/Week4/Week4-2-SphereUsingFrameResources.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -98,11 +98,14 @@ $(document).ready(function(){initNavTree('_week4-2-_sphere_using_frame_resources
   <div class="headertitle"><div class="title">Week4-2-SphereUsingFrameResources.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Draw a sphere using FrameResources.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="d3d_app_8h_source.html">../../Common/d3dApp.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_common_2_math_helper_8h_source.html">../../Common/MathHelper.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_upload_buffer_8h_source.html">../../Common/UploadBuffer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_geometry_generator_8h_source.html">../../Common/GeometryGenerator.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_week4_2_box_using_frame_resource_2_frame_resource_8h_source.html">FrameResource.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_week4_2_week4_2_frame_resource_8h_source.html">FrameResource.h</a>&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 </div>
@@ -125,7 +128,16 @@ Variables</h2></td></tr>
 <tr class="memitem:a7c82b7821d2662eb6e0cfdc08a6c4bd4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp.html#a7c82b7821d2662eb6e0cfdc08a6c4bd4">gNumFrameResources</a> = 3</td></tr>
 <tr class="separator:a7c82b7821d2662eb6e0cfdc08a6c4bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Draw a sphere using FrameResources. </p>
+<p >We put our procedural geometry generation code in the <a class="el" href="class_geometry_generator.html">GeometryGenerator</a> class (<a class="el" href="_geometry_generator_8h.html">GeometryGenerator.h</a>/.cpp). <a class="el" href="class_geometry_generator.html">GeometryGenerator</a> is a utility class for generating simple geometric shapes like grids, sphere, cylinders, and boxes. This class generates the data in system memory, and we must then copy the data we want to our vertex and index buffers. We define a sphere by specifying its radius, and the slice and stack count. The algorithm for generating the sphere is very similar to that of the cylinder, except that the radius per ring changes is a nonlinear way based on trigonometric functions.</p>
+<dl class="section note"><dt>Note</dt><dd>: Note that the triangles of the sphere do not have equal areas. This can be undesirable for some situations. A geosphere approximates a sphere using triangles with almost equal areas as well as equal side lengths.</dd></dl>
+<p>To generate a geosphere, we start with an icosahedron, subdivide the triangles, and then project the new vertices onto the sphere with the given radius. We can repeat this process to improve the tessellation.</p>
+<p >Controls: Hold down '1' key to view scene in wireframe mode. Hold the left mouse button down and move the mouse to rotate. Hold the right mouse button down and move the mouse to zoom in and out.</p>
+<dl class="section author"><dt>Author</dt><dd>Hooman Salamat </dd></dl>
+
+<p class="definition">Definition in file <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html">Week4-2-SphereUsingFrameResources.cpp</a>.</p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="aabcda87589d774901aa87061b8fd0176" name="aabcda87589d774901aa87061b8fd0176"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aabcda87589d774901aa87061b8fd0176">&#9670;&nbsp;</a></span>WinMain()</h2>
 
@@ -164,7 +176,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html#l00145">145</a> of file <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html">Week4-2-SphereUsingFrameResources.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html#l00163">163</a> of file <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html">Week4-2-SphereUsingFrameResources.cpp</a>.</p>
 
 </div>
 </div>
@@ -181,7 +193,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html#l00021">21</a> of file <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html">Week4-2-SphereUsingFrameResources.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html#l00042">42</a> of file <a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp_source.html">Week4-2-SphereUsingFrameResources.cpp</a>.</p>
 
 </div>
 </div>
@@ -190,7 +202,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_a5903971ae9d23fa051f94cbebb5dc7b.html">Week4</a></li><li class="navelem"><a class="el" href="dir_8aa347a7416d0034179c9a8677f18e92.html">BoxUsingFrameResource</a></li><li class="navelem"><a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp.html">Week4-2-SphereUsingFrameResources.cpp</a></li>
+    <li class="navelem"><a class="el" href="dir_a5903971ae9d23fa051f94cbebb5dc7b.html">Week4</a></li><li class="navelem"><a class="el" href="dir_9705f5efe1608ce76424982fa181784e.html">Week4</a></li><li class="navelem"><a class="el" href="_week4-2-_sphere_using_frame_resources_8cpp.html">Week4-2-SphereUsingFrameResources.cpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
   </ul>
 </div>

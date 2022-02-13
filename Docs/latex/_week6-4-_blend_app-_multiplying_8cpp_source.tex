@@ -1,1114 +1,1110 @@
 \doxysection{Week6-\/4-\/\+Blend\+App-\/\+Multiplying.cpp}
-\label{_week6-4-_blend_app-_multiplying_8cpp_source}\index{Week6/3 -\/ BlendingDemo/Week6-\/4-\/BlendApp-\/Multiplying.cpp@{Week6/3 -\/ BlendingDemo/Week6-\/4-\/BlendApp-\/Multiplying.cpp}}
+\label{_week6-4-_blend_app-_multiplying_8cpp_source}\index{Week6/2 -\/ BlendingDemo/Week6-\/4-\/BlendApp-\/Multiplying.cpp@{Week6/2 -\/ BlendingDemo/Week6-\/4-\/BlendApp-\/Multiplying.cpp}}
 \textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// Week6-\/4-\/BlendApp-\/Multiplying.cpp }}
-\DoxyCodeLine{00003 \textcolor{comment}{//Multiplicative Blending: Suppose that we want to multiply a source pixel with its corresponding destination pixel. }}
-\DoxyCodeLine{00004 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00005 }
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00010 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00011 \textcolor{preprocessor}{\#include "{}Waves.h"{}}}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00014 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00015 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00018 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00022 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
-\DoxyCodeLine{00023 \textcolor{comment}{// vary from app-\/to-\/app.}}
-\DoxyCodeLine{00024 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00025 \{}
-\DoxyCodeLine{00026     RenderItem() = \textcolor{keywordflow}{default};}
-\DoxyCodeLine{00027  }
-\DoxyCodeLine{00028     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00029     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00030     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00031     XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{00020 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00021 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00022 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{00023 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00024 \textcolor{preprocessor}{\#include "{}Waves.h"{}}}
+\DoxyCodeLine{00025 }
+\DoxyCodeLine{00026 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{00027 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00028 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00029 }
+\DoxyCodeLine{00030 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{00031 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
 \DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00033 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
 \DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00036     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00037     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
-\DoxyCodeLine{00038     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00039     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00042     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00043 }
-\DoxyCodeLine{00044     Material* Mat = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00045     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00048     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D11\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00051     UINT IndexCount = 0;}
-\DoxyCodeLine{00052     UINT StartIndexLocation = 0;}
-\DoxyCodeLine{00053     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
-\DoxyCodeLine{00054 \};}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056 \textcolor{keyword}{enum class} RenderLayer : int}
-\DoxyCodeLine{00057 \{}
-\DoxyCodeLine{00058     Opaque = 0,}
-\DoxyCodeLine{00059     Transparent,}
-\DoxyCodeLine{00060     AlphaTested,}
-\DoxyCodeLine{00061     Count}
-\DoxyCodeLine{00062 \};}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064 \textcolor{keyword}{class }BlendApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00065 \{}
-\DoxyCodeLine{00066 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00067     BlendApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00068     BlendApp(\textcolor{keyword}{const} BlendApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00069     BlendApp\& operator=(\textcolor{keyword}{const} BlendApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00070     \string~BlendApp();}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00073 }
-\DoxyCodeLine{00074 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00080     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00081     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00082 }
-\DoxyCodeLine{00083     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00085     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00086     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00087     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{void} UpdateWaves(\textcolor{keyword}{const} GameTimer\& gt); }
-\DoxyCodeLine{00090 }
-\DoxyCodeLine{00091     \textcolor{keywordtype}{void} LoadTextures();}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00093     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00094     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00095     \textcolor{keywordtype}{void} BuildLandGeometry();}
-\DoxyCodeLine{00096     \textcolor{keywordtype}{void} BuildWavesGeometry();}
-\DoxyCodeLine{00097     \textcolor{keywordtype}{void} BuildBoxGeometry();}
-\DoxyCodeLine{00098     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00099     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00100     \textcolor{keywordtype}{void} BuildMaterials();}
-\DoxyCodeLine{00101     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00102     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{00035 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{00036 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{00037 \textcolor{keyword}{struct }RenderItem}
+\DoxyCodeLine{00038 \{}
+\DoxyCodeLine{00039     RenderItem() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00040  }
+\DoxyCodeLine{00041     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{00042     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{00043     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{00044     XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00045 }
+\DoxyCodeLine{00046     XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
+\DoxyCodeLine{00047 }
+\DoxyCodeLine{00048     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{00049     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{00050     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{00051     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{00052     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{00055     UINT ObjCBIndex = -\/1;}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     Material* Mat = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00059 }
+\DoxyCodeLine{00060     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{00061     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D11\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00062 }
+\DoxyCodeLine{00063     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{00064     UINT IndexCount = 0;}
+\DoxyCodeLine{00065     UINT StartIndexLocation = 0;}
+\DoxyCodeLine{00066     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
+\DoxyCodeLine{00067 \};}
+\DoxyCodeLine{00068 }
+\DoxyCodeLine{00069 \textcolor{keyword}{enum class} RenderLayer : int}
+\DoxyCodeLine{00070 \{}
+\DoxyCodeLine{00071     Opaque = 0,}
+\DoxyCodeLine{00072     Transparent,}
+\DoxyCodeLine{00073     AlphaTested,}
+\DoxyCodeLine{00074     Count}
+\DoxyCodeLine{00075 \};}
+\DoxyCodeLine{00076 }
+\DoxyCodeLine{00077 \textcolor{keyword}{class }BlendApp : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00078 \{}
+\DoxyCodeLine{00079 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00080     BlendApp(HINSTANCE hInstance);}
+\DoxyCodeLine{00081     BlendApp(\textcolor{keyword}{const} BlendApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00082     BlendApp\& operator=(\textcolor{keyword}{const} BlendApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00083     \string~BlendApp();}
+\DoxyCodeLine{00084 }
+\DoxyCodeLine{00085     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00086 }
+\DoxyCodeLine{00087 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00088     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00089     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00090     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00091 }
+\DoxyCodeLine{00092     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00093     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00094     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00095 }
+\DoxyCodeLine{00096     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00097     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00098     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00099     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00100     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00101     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00102     \textcolor{keywordtype}{void} UpdateWaves(\textcolor{keyword}{const} GameTimer\& gt); }
 \DoxyCodeLine{00103 }
-\DoxyCodeLine{00104     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
-\DoxyCodeLine{00105 }
-\DoxyCodeLine{00106     \textcolor{keywordtype}{float} GetHillsHeight(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
-\DoxyCodeLine{00107     XMFLOAT3 GetHillsNormal(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00112     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00113     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00114 }
-\DoxyCodeLine{00115     UINT mCbvSrvDescriptorSize = 0;}
+\DoxyCodeLine{00104     \textcolor{keywordtype}{void} LoadTextures();}
+\DoxyCodeLine{00105     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{00106     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{00107     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{00108     \textcolor{keywordtype}{void} BuildLandGeometry();}
+\DoxyCodeLine{00109     \textcolor{keywordtype}{void} BuildWavesGeometry();}
+\DoxyCodeLine{00110     \textcolor{keywordtype}{void} BuildBoxGeometry();}
+\DoxyCodeLine{00111     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{00112     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{00113     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{00114     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{00115     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
 \DoxyCodeLine{00116 }
-\DoxyCodeLine{00117     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00117     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
 \DoxyCodeLine{00118 }
-\DoxyCodeLine{00119     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00120 }
-\DoxyCodeLine{00121     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00122     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{00123     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
-\DoxyCodeLine{00124     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00125     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00126 }
-\DoxyCodeLine{00127     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00128  }
-\DoxyCodeLine{00129     RenderItem* mWavesRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00132     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{00119     \textcolor{keywordtype}{float} GetHillsHeight(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
+\DoxyCodeLine{00120     XMFLOAT3 GetHillsNormal(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const};}
+\DoxyCodeLine{00121 }
+\DoxyCodeLine{00122 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00123 }
+\DoxyCodeLine{00124     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{00125     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00126     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
+\DoxyCodeLine{00127 }
+\DoxyCodeLine{00128     UINT mCbvSrvDescriptorSize = 0;}
+\DoxyCodeLine{00129 }
+\DoxyCodeLine{00130     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00131 }
+\DoxyCodeLine{00132     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
 \DoxyCodeLine{00133 }
-\DoxyCodeLine{00134     \textcolor{comment}{// Render items divided by PSO.}}
-\DoxyCodeLine{00135     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
-\DoxyCodeLine{00136 }
-\DoxyCodeLine{00137     std::unique\_ptr<Waves> mWaves;}
-\DoxyCodeLine{00138 }
-\DoxyCodeLine{00139     PassConstants mMainPassCB;}
-\DoxyCodeLine{00140 }
-\DoxyCodeLine{00141     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00142     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00143     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00144 }
-\DoxyCodeLine{00145     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
-\DoxyCodeLine{00146     \textcolor{keywordtype}{float} mPhi = XM\_PIDIV2 -\/ 0.1f;}
-\DoxyCodeLine{00147     \textcolor{keywordtype}{float} mRadius = 50.0f;}
-\DoxyCodeLine{00148 }
-\DoxyCodeLine{00149     POINT mLastMousePos;}
-\DoxyCodeLine{00150 \};}
+\DoxyCodeLine{00134     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{00135     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{00136     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
+\DoxyCodeLine{00137     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{00138     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{00139 }
+\DoxyCodeLine{00140     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{00141  }
+\DoxyCodeLine{00142     RenderItem* mWavesRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00143 }
+\DoxyCodeLine{00144     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{00145     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{00146 }
+\DoxyCodeLine{00147     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{00148     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
+\DoxyCodeLine{00149 }
+\DoxyCodeLine{00150     std::unique\_ptr<Waves> mWaves;}
 \DoxyCodeLine{00151 }
-\DoxyCodeLine{00152 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00153     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00154 \{}
-\DoxyCodeLine{00155     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00156 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00157     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00158 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00159 }
-\DoxyCodeLine{00160     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00161     \{}
-\DoxyCodeLine{00162         BlendApp theApp(hInstance);}
-\DoxyCodeLine{00163         \textcolor{keywordflow}{if}(!theApp.Initialize())}
-\DoxyCodeLine{00164             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00165 }
-\DoxyCodeLine{00166         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00167     \}}
-\DoxyCodeLine{00168     \textcolor{keywordflow}{catch}(DxException\& e)}
-\DoxyCodeLine{00169     \{}
-\DoxyCodeLine{00170         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00171         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00172     \}}
-\DoxyCodeLine{00173 \}}
-\DoxyCodeLine{00174 }
-\DoxyCodeLine{00175 BlendApp::BlendApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00176     : D3DApp(hInstance)}
-\DoxyCodeLine{00177 \{}
-\DoxyCodeLine{00178 \}}
-\DoxyCodeLine{00179 }
-\DoxyCodeLine{00180 BlendApp::\string~BlendApp()}
-\DoxyCodeLine{00181 \{}
-\DoxyCodeLine{00182     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00183         FlushCommandQueue();}
-\DoxyCodeLine{00184 \}}
-\DoxyCodeLine{00185 }
-\DoxyCodeLine{00186 \textcolor{keywordtype}{bool} BlendApp::Initialize()}
-\DoxyCodeLine{00187 \{}
-\DoxyCodeLine{00188     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
-\DoxyCodeLine{00189         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00190 }
-\DoxyCodeLine{00191     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00192     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00193 }
-\DoxyCodeLine{00194     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
-\DoxyCodeLine{00195     \textcolor{comment}{// so we have to query this information.}}
-\DoxyCodeLine{00196     mCbvSrvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00197 }
-\DoxyCodeLine{00198     mWaves = std::make\_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);}
-\DoxyCodeLine{00199  }
-\DoxyCodeLine{00200     LoadTextures();}
-\DoxyCodeLine{00201     BuildRootSignature();}
-\DoxyCodeLine{00202     BuildDescriptorHeaps();}
-\DoxyCodeLine{00203     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00204     BuildLandGeometry();}
-\DoxyCodeLine{00205     BuildWavesGeometry();}
-\DoxyCodeLine{00206     BuildBoxGeometry();}
-\DoxyCodeLine{00207     BuildMaterials();}
-\DoxyCodeLine{00208     BuildRenderItems();}
-\DoxyCodeLine{00209     BuildFrameResources();}
-\DoxyCodeLine{00210     BuildPSOs();}
-\DoxyCodeLine{00211 }
-\DoxyCodeLine{00212     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00213     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00214     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00215     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00216 }
-\DoxyCodeLine{00217     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00218     FlushCommandQueue();}
-\DoxyCodeLine{00219 }
-\DoxyCodeLine{00220     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00221 \}}
-\DoxyCodeLine{00222  }
-\DoxyCodeLine{00223 \textcolor{keywordtype}{void} BlendApp::OnResize()}
-\DoxyCodeLine{00224 \{}
-\DoxyCodeLine{00225     D3DApp::OnResize();}
-\DoxyCodeLine{00226 }
-\DoxyCodeLine{00227     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00228     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00229     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00230 \}}
-\DoxyCodeLine{00231 }
-\DoxyCodeLine{00232 \textcolor{keywordtype}{void} BlendApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00233 \{}
-\DoxyCodeLine{00234     OnKeyboardInput(gt);}
-\DoxyCodeLine{00235     UpdateCamera(gt);}
-\DoxyCodeLine{00236 }
-\DoxyCodeLine{00237     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00238     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00239     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00240 }
-\DoxyCodeLine{00241     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
-\DoxyCodeLine{00242     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00243     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00244     \{}
-\DoxyCodeLine{00245         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00246         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00247         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00248         CloseHandle(eventHandle);}
-\DoxyCodeLine{00249     \}}
-\DoxyCodeLine{00250 }
-\DoxyCodeLine{00251     AnimateMaterials(gt);}
-\DoxyCodeLine{00252     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00253     UpdateMaterialCBs(gt);}
-\DoxyCodeLine{00254     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00255     UpdateWaves(gt);}
-\DoxyCodeLine{00256 \}}
-\DoxyCodeLine{00257 }
-\DoxyCodeLine{00258 \textcolor{keywordtype}{void} BlendApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00259 \{}
-\DoxyCodeLine{00260     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00261 }
-\DoxyCodeLine{00262     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00263     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00264     ThrowIfFailed(cmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00265 }
-\DoxyCodeLine{00266     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00267     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00268     ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00269 }
-\DoxyCodeLine{00270     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00271     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00272 }
-\DoxyCodeLine{00273     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00274     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00275         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00276 }
-\DoxyCodeLine{00277     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00278     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.FogColor, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00279     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00280 }
-\DoxyCodeLine{00281     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00282     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00283 }
-\DoxyCodeLine{00284     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
-\DoxyCodeLine{00285     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00286 }
-\DoxyCodeLine{00287     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00288 }
-\DoxyCodeLine{00289     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00290     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
-\DoxyCodeLine{00291 }
-\DoxyCodeLine{00292     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
+\DoxyCodeLine{00152     PassConstants mMainPassCB;}
+\DoxyCodeLine{00153 }
+\DoxyCodeLine{00154     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00155     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00156     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00157 }
+\DoxyCodeLine{00158     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
+\DoxyCodeLine{00159     \textcolor{keywordtype}{float} mPhi = XM\_PIDIV2 -\/ 0.1f;}
+\DoxyCodeLine{00160     \textcolor{keywordtype}{float} mRadius = 50.0f;}
+\DoxyCodeLine{00161 }
+\DoxyCodeLine{00162     POINT mLastMousePos;}
+\DoxyCodeLine{00163 \};}
+\DoxyCodeLine{00164 }
+\DoxyCodeLine{00165 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{00166     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{00167 \{}
+\DoxyCodeLine{00168     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{00169 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{00170     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{00171 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00172 }
+\DoxyCodeLine{00173     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00174     \{}
+\DoxyCodeLine{00175         BlendApp theApp(hInstance);}
+\DoxyCodeLine{00176         \textcolor{keywordflow}{if}(!theApp.Initialize())}
+\DoxyCodeLine{00177             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00178 }
+\DoxyCodeLine{00179         \textcolor{keywordflow}{return} theApp.Run();}
+\DoxyCodeLine{00180     \}}
+\DoxyCodeLine{00181     \textcolor{keywordflow}{catch}(DxException\& e)}
+\DoxyCodeLine{00182     \{}
+\DoxyCodeLine{00183         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{00184         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00185     \}}
+\DoxyCodeLine{00186 \}}
+\DoxyCodeLine{00187 }
+\DoxyCodeLine{00188 BlendApp::BlendApp(HINSTANCE hInstance)}
+\DoxyCodeLine{00189     : D3DApp(hInstance)}
+\DoxyCodeLine{00190 \{}
+\DoxyCodeLine{00191 \}}
+\DoxyCodeLine{00192 }
+\DoxyCodeLine{00193 BlendApp::\string~BlendApp()}
+\DoxyCodeLine{00194 \{}
+\DoxyCodeLine{00195     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00196         FlushCommandQueue();}
+\DoxyCodeLine{00197 \}}
+\DoxyCodeLine{00198 }
+\DoxyCodeLine{00199 \textcolor{keywordtype}{bool} BlendApp::Initialize()}
+\DoxyCodeLine{00200 \{}
+\DoxyCodeLine{00201     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
+\DoxyCodeLine{00202         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00203 }
+\DoxyCodeLine{00204     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{00205     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00206 }
+\DoxyCodeLine{00207     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
+\DoxyCodeLine{00208     \textcolor{comment}{// so we have to query this information.}}
+\DoxyCodeLine{00209     mCbvSrvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{00210 }
+\DoxyCodeLine{00211     mWaves = std::make\_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);}
+\DoxyCodeLine{00212  }
+\DoxyCodeLine{00213     LoadTextures();}
+\DoxyCodeLine{00214     BuildRootSignature();}
+\DoxyCodeLine{00215     BuildDescriptorHeaps();}
+\DoxyCodeLine{00216     BuildShadersAndInputLayout();}
+\DoxyCodeLine{00217     BuildLandGeometry();}
+\DoxyCodeLine{00218     BuildWavesGeometry();}
+\DoxyCodeLine{00219     BuildBoxGeometry();}
+\DoxyCodeLine{00220     BuildMaterials();}
+\DoxyCodeLine{00221     BuildRenderItems();}
+\DoxyCodeLine{00222     BuildFrameResources();}
+\DoxyCodeLine{00223     BuildPSOs();}
+\DoxyCodeLine{00224 }
+\DoxyCodeLine{00225     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{00226     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00227     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00228     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00229 }
+\DoxyCodeLine{00230     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{00231     FlushCommandQueue();}
+\DoxyCodeLine{00232 }
+\DoxyCodeLine{00233     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00234 \}}
+\DoxyCodeLine{00235  }
+\DoxyCodeLine{00236 \textcolor{keywordtype}{void} BlendApp::OnResize()}
+\DoxyCodeLine{00237 \{}
+\DoxyCodeLine{00238     D3DApp::OnResize();}
+\DoxyCodeLine{00239 }
+\DoxyCodeLine{00240     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{00241     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
+\DoxyCodeLine{00242     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{00243 \}}
+\DoxyCodeLine{00244 }
+\DoxyCodeLine{00245 \textcolor{keywordtype}{void} BlendApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00246 \{}
+\DoxyCodeLine{00247     OnKeyboardInput(gt);}
+\DoxyCodeLine{00248     UpdateCamera(gt);}
+\DoxyCodeLine{00249 }
+\DoxyCodeLine{00250     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{00251     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
+\DoxyCodeLine{00252     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{00253 }
+\DoxyCodeLine{00254     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{00255     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{00256     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
+\DoxyCodeLine{00257     \{}
+\DoxyCodeLine{00258         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{00259         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
+\DoxyCodeLine{00260         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{00261         CloseHandle(eventHandle);}
+\DoxyCodeLine{00262     \}}
+\DoxyCodeLine{00263 }
+\DoxyCodeLine{00264     AnimateMaterials(gt);}
+\DoxyCodeLine{00265     UpdateObjectCBs(gt);}
+\DoxyCodeLine{00266     UpdateMaterialCBs(gt);}
+\DoxyCodeLine{00267     UpdateMainPassCB(gt);}
+\DoxyCodeLine{00268     UpdateWaves(gt);}
+\DoxyCodeLine{00269 \}}
+\DoxyCodeLine{00270 }
+\DoxyCodeLine{00271 \textcolor{keywordtype}{void} BlendApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00272 \{}
+\DoxyCodeLine{00273     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
+\DoxyCodeLine{00274 }
+\DoxyCodeLine{00275     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{00276     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{00277     ThrowIfFailed(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00278 }
+\DoxyCodeLine{00279     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{00280     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{00281     ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{00282 }
+\DoxyCodeLine{00283     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
+\DoxyCodeLine{00284     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{00285 }
+\DoxyCodeLine{00286     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00287     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00288         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00289 }
+\DoxyCodeLine{00290     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{00291     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.FogColor, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00292     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
 \DoxyCodeLine{00293 }
-\DoxyCodeLine{00294     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}alphaTested"{}}].Get());}
-\DoxyCodeLine{00295     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::AlphaTested]);}
+\DoxyCodeLine{00294     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{00295     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
 \DoxyCodeLine{00296 }
-\DoxyCodeLine{00297     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}transparent"{}}].Get());}
-\DoxyCodeLine{00298     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
+\DoxyCodeLine{00297     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
+\DoxyCodeLine{00298     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
 \DoxyCodeLine{00299 }
-\DoxyCodeLine{00300     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00301     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00302         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00303 }
-\DoxyCodeLine{00304     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00305     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00300     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00301 }
+\DoxyCodeLine{00302     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
+\DoxyCodeLine{00303     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{00304 }
+\DoxyCodeLine{00305     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
 \DoxyCodeLine{00306 }
-\DoxyCodeLine{00307     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00308     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00309     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00310 }
-\DoxyCodeLine{00311     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00312     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00313     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00314 }
-\DoxyCodeLine{00315     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00316     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00317 }
-\DoxyCodeLine{00318 }
-\DoxyCodeLine{00319     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
-\DoxyCodeLine{00320     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
-\DoxyCodeLine{00321     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00322     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00323 \}}
-\DoxyCodeLine{00324 }
-\DoxyCodeLine{00325 \textcolor{keywordtype}{void} BlendApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00326 \{}
-\DoxyCodeLine{00327     mLastMousePos.x = x;}
-\DoxyCodeLine{00328     mLastMousePos.y = y;}
-\DoxyCodeLine{00329 }
-\DoxyCodeLine{00330     SetCapture(mhMainWnd);}
-\DoxyCodeLine{00331 \}}
-\DoxyCodeLine{00332 }
-\DoxyCodeLine{00333 \textcolor{keywordtype}{void} BlendApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00334 \{}
-\DoxyCodeLine{00335     ReleaseCapture();}
+\DoxyCodeLine{00307     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}alphaTested"{}}].Get());}
+\DoxyCodeLine{00308     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::AlphaTested]);}
+\DoxyCodeLine{00309 }
+\DoxyCodeLine{00310     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}transparent"{}}].Get());}
+\DoxyCodeLine{00311     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
+\DoxyCodeLine{00312 }
+\DoxyCodeLine{00313     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00314     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00315         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00316 }
+\DoxyCodeLine{00317     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{00318     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00319 }
+\DoxyCodeLine{00320     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{00321     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00322     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00323 }
+\DoxyCodeLine{00324     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{00325     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
+\DoxyCodeLine{00326     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
+\DoxyCodeLine{00327 }
+\DoxyCodeLine{00328     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{00329     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
+\DoxyCodeLine{00330 }
+\DoxyCodeLine{00331 }
+\DoxyCodeLine{00332     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{00333     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{00334     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{00335     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
 \DoxyCodeLine{00336 \}}
 \DoxyCodeLine{00337 }
-\DoxyCodeLine{00338 \textcolor{keywordtype}{void} BlendApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00338 \textcolor{keywordtype}{void} BlendApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
 \DoxyCodeLine{00339 \{}
-\DoxyCodeLine{00340     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00341     \{}
-\DoxyCodeLine{00342         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00343         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00344         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{00340     mLastMousePos.x = x;}
+\DoxyCodeLine{00341     mLastMousePos.y = y;}
+\DoxyCodeLine{00342 }
+\DoxyCodeLine{00343     SetCapture(mhMainWnd);}
+\DoxyCodeLine{00344 \}}
 \DoxyCodeLine{00345 }
-\DoxyCodeLine{00346         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00347         mTheta += dx;}
-\DoxyCodeLine{00348         mPhi += dy;}
-\DoxyCodeLine{00349 }
-\DoxyCodeLine{00350         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00351         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00352     \}}
-\DoxyCodeLine{00353     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{00346 \textcolor{keywordtype}{void} BlendApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00347 \{}
+\DoxyCodeLine{00348     ReleaseCapture();}
+\DoxyCodeLine{00349 \}}
+\DoxyCodeLine{00350 }
+\DoxyCodeLine{00351 \textcolor{keywordtype}{void} BlendApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00352 \{}
+\DoxyCodeLine{00353     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
 \DoxyCodeLine{00354     \{}
-\DoxyCodeLine{00355         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00356         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00357         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{00355         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{00356         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{00357         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
 \DoxyCodeLine{00358 }
-\DoxyCodeLine{00359         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00360         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00361 }
-\DoxyCodeLine{00362         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00363         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00364     \}}
-\DoxyCodeLine{00365 }
-\DoxyCodeLine{00366     mLastMousePos.x = x;}
-\DoxyCodeLine{00367     mLastMousePos.y = y;}
-\DoxyCodeLine{00368 \}}
-\DoxyCodeLine{00369  }
-\DoxyCodeLine{00370 \textcolor{keywordtype}{void} BlendApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00371 \{}
-\DoxyCodeLine{00372 \}}
-\DoxyCodeLine{00373  }
-\DoxyCodeLine{00374 \textcolor{keywordtype}{void} BlendApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00375 \{}
-\DoxyCodeLine{00376     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00377     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
-\DoxyCodeLine{00378     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
-\DoxyCodeLine{00379     mEyePos.y = mRadius*cosf(mPhi);}
-\DoxyCodeLine{00380 }
-\DoxyCodeLine{00381     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00382     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00383     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00384     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00385 }
-\DoxyCodeLine{00386     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00387     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00388 \}}
-\DoxyCodeLine{00389 }
-\DoxyCodeLine{00390 \textcolor{keywordtype}{void} BlendApp::AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00391 \{}
-\DoxyCodeLine{00392     \textcolor{comment}{// Scroll the water material texture coordinates.}}
-\DoxyCodeLine{00393     \textcolor{keyword}{auto} waterMat = mMaterials[\textcolor{stringliteral}{"{}water"{}}].get();}
-\DoxyCodeLine{00394 }
-\DoxyCodeLine{00395     \textcolor{keywordtype}{float}\& tu = waterMat-\/>MatTransform(3, 0);}
-\DoxyCodeLine{00396     \textcolor{keywordtype}{float}\& tv = waterMat-\/>MatTransform(3, 1);}
-\DoxyCodeLine{00397 }
-\DoxyCodeLine{00398     tu += 0.1f * gt.DeltaTime();}
-\DoxyCodeLine{00399     tv += 0.02f * gt.DeltaTime();}
-\DoxyCodeLine{00400 }
-\DoxyCodeLine{00401     \textcolor{keywordflow}{if}(tu >= 1.0f)}
-\DoxyCodeLine{00402         tu -\/= 1.0f;}
-\DoxyCodeLine{00403 }
-\DoxyCodeLine{00404     \textcolor{keywordflow}{if}(tv >= 1.0f)}
-\DoxyCodeLine{00405         tv -\/= 1.0f;}
-\DoxyCodeLine{00406 }
-\DoxyCodeLine{00407     waterMat-\/>MatTransform(3, 0) = tu;}
-\DoxyCodeLine{00408     waterMat-\/>MatTransform(3, 1) = tv;}
-\DoxyCodeLine{00409 }
-\DoxyCodeLine{00410     \textcolor{comment}{// Material has changed, so need to update cbuffer.}}
-\DoxyCodeLine{00411     waterMat-\/>NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00412 \}}
+\DoxyCodeLine{00359         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{00360         mTheta += dx;}
+\DoxyCodeLine{00361         mPhi += dy;}
+\DoxyCodeLine{00362 }
+\DoxyCodeLine{00363         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{00364         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
+\DoxyCodeLine{00365     \}}
+\DoxyCodeLine{00366     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{00367     \{}
+\DoxyCodeLine{00368         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{00369         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{00370         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{00371 }
+\DoxyCodeLine{00372         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{00373         mRadius += dx -\/ dy;}
+\DoxyCodeLine{00374 }
+\DoxyCodeLine{00375         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{00376         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{00377     \}}
+\DoxyCodeLine{00378 }
+\DoxyCodeLine{00379     mLastMousePos.x = x;}
+\DoxyCodeLine{00380     mLastMousePos.y = y;}
+\DoxyCodeLine{00381 \}}
+\DoxyCodeLine{00382  }
+\DoxyCodeLine{00383 \textcolor{keywordtype}{void} BlendApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00384 \{}
+\DoxyCodeLine{00385 \}}
+\DoxyCodeLine{00386  }
+\DoxyCodeLine{00387 \textcolor{keywordtype}{void} BlendApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00388 \{}
+\DoxyCodeLine{00389     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{00390     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
+\DoxyCodeLine{00391     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
+\DoxyCodeLine{00392     mEyePos.y = mRadius*cosf(mPhi);}
+\DoxyCodeLine{00393 }
+\DoxyCodeLine{00394     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{00395     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{00396     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{00397     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{00398 }
+\DoxyCodeLine{00399     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{00400     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{00401 \}}
+\DoxyCodeLine{00402 }
+\DoxyCodeLine{00403 \textcolor{keywordtype}{void} BlendApp::AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00404 \{}
+\DoxyCodeLine{00405     \textcolor{comment}{// Scroll the water material texture coordinates.}}
+\DoxyCodeLine{00406     \textcolor{keyword}{auto} waterMat = mMaterials[\textcolor{stringliteral}{"{}water"{}}].get();}
+\DoxyCodeLine{00407 }
+\DoxyCodeLine{00408     \textcolor{keywordtype}{float}\& tu = waterMat-\/>MatTransform(3, 0);}
+\DoxyCodeLine{00409     \textcolor{keywordtype}{float}\& tv = waterMat-\/>MatTransform(3, 1);}
+\DoxyCodeLine{00410 }
+\DoxyCodeLine{00411     tu += 0.1f * gt.DeltaTime();}
+\DoxyCodeLine{00412     tv += 0.02f * gt.DeltaTime();}
 \DoxyCodeLine{00413 }
-\DoxyCodeLine{00414 \textcolor{keywordtype}{void} BlendApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00415 \{}
-\DoxyCodeLine{00416     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00417     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00418     \{}
-\DoxyCodeLine{00419         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00420         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00421         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00422         \{}
-\DoxyCodeLine{00423             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00424             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
-\DoxyCodeLine{00425 }
-\DoxyCodeLine{00426             ObjectConstants objConstants;}
-\DoxyCodeLine{00427             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00428             XMStoreFloat4x4(\&objConstants.TexTransform, XMMatrixTranspose(texTransform));}
-\DoxyCodeLine{00429 }
-\DoxyCodeLine{00430             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00431 }
-\DoxyCodeLine{00432             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00433             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00434         \}}
-\DoxyCodeLine{00435     \}}
-\DoxyCodeLine{00436 \}}
-\DoxyCodeLine{00437 }
-\DoxyCodeLine{00438 \textcolor{keywordtype}{void} BlendApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00439 \{}
-\DoxyCodeLine{00440     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
-\DoxyCodeLine{00441     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{00442     \{}
-\DoxyCodeLine{00443         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{00444         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{00445         Material* mat = e.second.get();}
-\DoxyCodeLine{00446         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00447         \{}
-\DoxyCodeLine{00448             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
-\DoxyCodeLine{00449 }
-\DoxyCodeLine{00450             MaterialConstants matConstants;}
-\DoxyCodeLine{00451             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
-\DoxyCodeLine{00452             matConstants.FresnelR0 = mat-\/>FresnelR0;}
-\DoxyCodeLine{00453             matConstants.Roughness = mat-\/>Roughness;}
-\DoxyCodeLine{00454             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
-\DoxyCodeLine{00455 }
-\DoxyCodeLine{00456             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
-\DoxyCodeLine{00457 }
-\DoxyCodeLine{00458             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00459             mat-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00460         \}}
-\DoxyCodeLine{00461     \}}
-\DoxyCodeLine{00462 \}}
-\DoxyCodeLine{00463 }
-\DoxyCodeLine{00464 \textcolor{keywordtype}{void} BlendApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00465 \{}
-\DoxyCodeLine{00466     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00467     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{00414     \textcolor{keywordflow}{if}(tu >= 1.0f)}
+\DoxyCodeLine{00415         tu -\/= 1.0f;}
+\DoxyCodeLine{00416 }
+\DoxyCodeLine{00417     \textcolor{keywordflow}{if}(tv >= 1.0f)}
+\DoxyCodeLine{00418         tv -\/= 1.0f;}
+\DoxyCodeLine{00419 }
+\DoxyCodeLine{00420     waterMat-\/>MatTransform(3, 0) = tu;}
+\DoxyCodeLine{00421     waterMat-\/>MatTransform(3, 1) = tv;}
+\DoxyCodeLine{00422 }
+\DoxyCodeLine{00423     \textcolor{comment}{// Material has changed, so need to update cbuffer.}}
+\DoxyCodeLine{00424     waterMat-\/>NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00425 \}}
+\DoxyCodeLine{00426 }
+\DoxyCodeLine{00427 \textcolor{keywordtype}{void} BlendApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00428 \{}
+\DoxyCodeLine{00429     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
+\DoxyCodeLine{00430     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{00431     \{}
+\DoxyCodeLine{00432         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{00433         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{00434         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00435         \{}
+\DoxyCodeLine{00436             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{00437             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
+\DoxyCodeLine{00438 }
+\DoxyCodeLine{00439             ObjectConstants objConstants;}
+\DoxyCodeLine{00440             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
+\DoxyCodeLine{00441             XMStoreFloat4x4(\&objConstants.TexTransform, XMMatrixTranspose(texTransform));}
+\DoxyCodeLine{00442 }
+\DoxyCodeLine{00443             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{00444 }
+\DoxyCodeLine{00445             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00446             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00447         \}}
+\DoxyCodeLine{00448     \}}
+\DoxyCodeLine{00449 \}}
+\DoxyCodeLine{00450 }
+\DoxyCodeLine{00451 \textcolor{keywordtype}{void} BlendApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00452 \{}
+\DoxyCodeLine{00453     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
+\DoxyCodeLine{00454     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{00455     \{}
+\DoxyCodeLine{00456         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{00457         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{00458         Material* mat = e.second.get();}
+\DoxyCodeLine{00459         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00460         \{}
+\DoxyCodeLine{00461             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
+\DoxyCodeLine{00462 }
+\DoxyCodeLine{00463             MaterialConstants matConstants;}
+\DoxyCodeLine{00464             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
+\DoxyCodeLine{00465             matConstants.FresnelR0 = mat-\/>FresnelR0;}
+\DoxyCodeLine{00466             matConstants.Roughness = mat-\/>Roughness;}
+\DoxyCodeLine{00467             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
 \DoxyCodeLine{00468 }
-\DoxyCodeLine{00469     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00470     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00471     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00472     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00473 }
-\DoxyCodeLine{00474     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00475     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00476     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00477     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00478     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00479     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00480     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00481     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00482     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00483     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00484     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00485     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00486     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00487     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
-\DoxyCodeLine{00488     mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00489     mMainPassCB.Lights[0].Strength = \{ 0.9f, 0.9f, 0.8f \};}
-\DoxyCodeLine{00490     mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00491     mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}
-\DoxyCodeLine{00492     mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}
-\DoxyCodeLine{00493     mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}
-\DoxyCodeLine{00494 }
-\DoxyCodeLine{00495     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00496     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00497 \}}
-\DoxyCodeLine{00498 }
-\DoxyCodeLine{00499 \textcolor{keywordtype}{void} BlendApp::UpdateWaves(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00500 \{}
-\DoxyCodeLine{00501     \textcolor{comment}{// Every quarter second, generate a random wave.}}
-\DoxyCodeLine{00502     \textcolor{keyword}{static} \textcolor{keywordtype}{float} t\_base = 0.0f;}
-\DoxyCodeLine{00503     \textcolor{keywordflow}{if}((mTimer.TotalTime() -\/ t\_base) >= 0.25f)}
-\DoxyCodeLine{00504     \{}
-\DoxyCodeLine{00505         t\_base += 0.25f;}
-\DoxyCodeLine{00506 }
-\DoxyCodeLine{00507         \textcolor{keywordtype}{int} i = MathHelper::Rand(4, mWaves-\/>RowCount() -\/ 5);}
-\DoxyCodeLine{00508         \textcolor{keywordtype}{int} j = MathHelper::Rand(4, mWaves-\/>ColumnCount() -\/ 5);}
-\DoxyCodeLine{00509 }
-\DoxyCodeLine{00510         \textcolor{keywordtype}{float} r = MathHelper::RandF(0.2f, 0.5f);}
+\DoxyCodeLine{00469             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
+\DoxyCodeLine{00470 }
+\DoxyCodeLine{00471             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00472             mat-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00473         \}}
+\DoxyCodeLine{00474     \}}
+\DoxyCodeLine{00475 \}}
+\DoxyCodeLine{00476 }
+\DoxyCodeLine{00477 \textcolor{keywordtype}{void} BlendApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00478 \{}
+\DoxyCodeLine{00479     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{00480     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{00481 }
+\DoxyCodeLine{00482     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{00483     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{00484     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{00485     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{00486 }
+\DoxyCodeLine{00487     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
+\DoxyCodeLine{00488     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
+\DoxyCodeLine{00489     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
+\DoxyCodeLine{00490     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{00491     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{00492     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{00493     mMainPassCB.EyePosW = mEyePos;}
+\DoxyCodeLine{00494     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
+\DoxyCodeLine{00495     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
+\DoxyCodeLine{00496     mMainPassCB.NearZ = 1.0f;}
+\DoxyCodeLine{00497     mMainPassCB.FarZ = 1000.0f;}
+\DoxyCodeLine{00498     mMainPassCB.TotalTime = gt.TotalTime();}
+\DoxyCodeLine{00499     mMainPassCB.DeltaTime = gt.DeltaTime();}
+\DoxyCodeLine{00500     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{00501     mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{00502     mMainPassCB.Lights[0].Strength = \{ 0.9f, 0.9f, 0.8f \};}
+\DoxyCodeLine{00503     mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{00504     mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}
+\DoxyCodeLine{00505     mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}
+\DoxyCodeLine{00506     mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}
+\DoxyCodeLine{00507 }
+\DoxyCodeLine{00508     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
+\DoxyCodeLine{00509     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{00510 \}}
 \DoxyCodeLine{00511 }
-\DoxyCodeLine{00512         mWaves-\/>Disturb(i, j, r);}
-\DoxyCodeLine{00513     \}}
-\DoxyCodeLine{00514 }
-\DoxyCodeLine{00515     \textcolor{comment}{// Update the wave simulation.}}
-\DoxyCodeLine{00516     mWaves-\/>Update(gt.DeltaTime());}
-\DoxyCodeLine{00517 }
-\DoxyCodeLine{00518     \textcolor{comment}{// Update the wave vertex buffer with the new solution.}}
-\DoxyCodeLine{00519     \textcolor{keyword}{auto} currWavesVB = mCurrFrameResource-\/>WavesVB.get();}
-\DoxyCodeLine{00520     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < mWaves-\/>VertexCount(); ++i)}
-\DoxyCodeLine{00521     \{}
-\DoxyCodeLine{00522         Vertex v;}
-\DoxyCodeLine{00523 }
-\DoxyCodeLine{00524         v.Pos = mWaves-\/>Position(i);}
-\DoxyCodeLine{00525         v.Normal = mWaves-\/>Normal(i);}
-\DoxyCodeLine{00526         }
-\DoxyCodeLine{00527         \textcolor{comment}{// Derive tex-\/coords from position by }}
-\DoxyCodeLine{00528         \textcolor{comment}{// mapping [-\/w/2,w/2] -\/-\/> [0,1]}}
-\DoxyCodeLine{00529         v.TexC.x = 0.5f + v.Pos.x / mWaves-\/>Width();}
-\DoxyCodeLine{00530         v.TexC.y = 0.5f -\/ v.Pos.z / mWaves-\/>Depth();}
-\DoxyCodeLine{00531 }
-\DoxyCodeLine{00532         currWavesVB-\/>CopyData(i, v);}
-\DoxyCodeLine{00533     \}}
-\DoxyCodeLine{00534 }
-\DoxyCodeLine{00535     \textcolor{comment}{// Set the dynamic VB of the wave renderitem to the current frame VB.}}
-\DoxyCodeLine{00536     mWavesRitem-\/>Geo-\/>VertexBufferGPU = currWavesVB-\/>Resource();}
-\DoxyCodeLine{00537 \}}
-\DoxyCodeLine{00538 }
-\DoxyCodeLine{00539 \textcolor{keywordtype}{void} BlendApp::LoadTextures()}
-\DoxyCodeLine{00540 \{}
-\DoxyCodeLine{00541     \textcolor{keyword}{auto} grassTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00542     grassTex-\/>Name = \textcolor{stringliteral}{"{}grassTex"{}};}
-\DoxyCodeLine{00543     grassTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/grass.dds"{}};}
-\DoxyCodeLine{00544     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00545         mCommandList.Get(), grassTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00546         grassTex-\/>Resource, grassTex-\/>UploadHeap));}
+\DoxyCodeLine{00512 \textcolor{keywordtype}{void} BlendApp::UpdateWaves(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00513 \{}
+\DoxyCodeLine{00514     \textcolor{comment}{// Every quarter second, generate a random wave.}}
+\DoxyCodeLine{00515     \textcolor{keyword}{static} \textcolor{keywordtype}{float} t\_base = 0.0f;}
+\DoxyCodeLine{00516     \textcolor{keywordflow}{if}((mTimer.TotalTime() -\/ t\_base) >= 0.25f)}
+\DoxyCodeLine{00517     \{}
+\DoxyCodeLine{00518         t\_base += 0.25f;}
+\DoxyCodeLine{00519 }
+\DoxyCodeLine{00520         \textcolor{keywordtype}{int} i = MathHelper::Rand(4, mWaves-\/>RowCount() -\/ 5);}
+\DoxyCodeLine{00521         \textcolor{keywordtype}{int} j = MathHelper::Rand(4, mWaves-\/>ColumnCount() -\/ 5);}
+\DoxyCodeLine{00522 }
+\DoxyCodeLine{00523         \textcolor{keywordtype}{float} r = MathHelper::RandF(0.2f, 0.5f);}
+\DoxyCodeLine{00524 }
+\DoxyCodeLine{00525         mWaves-\/>Disturb(i, j, r);}
+\DoxyCodeLine{00526     \}}
+\DoxyCodeLine{00527 }
+\DoxyCodeLine{00528     \textcolor{comment}{// Update the wave simulation.}}
+\DoxyCodeLine{00529     mWaves-\/>Update(gt.DeltaTime());}
+\DoxyCodeLine{00530 }
+\DoxyCodeLine{00531     \textcolor{comment}{// Update the wave vertex buffer with the new solution.}}
+\DoxyCodeLine{00532     \textcolor{keyword}{auto} currWavesVB = mCurrFrameResource-\/>WavesVB.get();}
+\DoxyCodeLine{00533     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < mWaves-\/>VertexCount(); ++i)}
+\DoxyCodeLine{00534     \{}
+\DoxyCodeLine{00535         Vertex v;}
+\DoxyCodeLine{00536 }
+\DoxyCodeLine{00537         v.Pos = mWaves-\/>Position(i);}
+\DoxyCodeLine{00538         v.Normal = mWaves-\/>Normal(i);}
+\DoxyCodeLine{00539         }
+\DoxyCodeLine{00540         \textcolor{comment}{// Derive tex-\/coords from position by }}
+\DoxyCodeLine{00541         \textcolor{comment}{// mapping [-\/w/2,w/2] -\/-\/> [0,1]}}
+\DoxyCodeLine{00542         v.TexC.x = 0.5f + v.Pos.x / mWaves-\/>Width();}
+\DoxyCodeLine{00543         v.TexC.y = 0.5f -\/ v.Pos.z / mWaves-\/>Depth();}
+\DoxyCodeLine{00544 }
+\DoxyCodeLine{00545         currWavesVB-\/>CopyData(i, v);}
+\DoxyCodeLine{00546     \}}
 \DoxyCodeLine{00547 }
-\DoxyCodeLine{00548     \textcolor{keyword}{auto} waterTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00549     waterTex-\/>Name = \textcolor{stringliteral}{"{}waterTex"{}};}
-\DoxyCodeLine{00550     waterTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/water1.dds"{}};}
-\DoxyCodeLine{00551     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00552         mCommandList.Get(), waterTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00553         waterTex-\/>Resource, waterTex-\/>UploadHeap));}
-\DoxyCodeLine{00554 }
-\DoxyCodeLine{00555     \textcolor{keyword}{auto} fenceTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00556     fenceTex-\/>Name = \textcolor{stringliteral}{"{}fenceTex"{}};}
-\DoxyCodeLine{00557     fenceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/WireFence.dds"{}};}
-\DoxyCodeLine{00558     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00559         mCommandList.Get(), fenceTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00560         fenceTex-\/>Resource, fenceTex-\/>UploadHeap));}
-\DoxyCodeLine{00561 }
-\DoxyCodeLine{00562     mTextures[grassTex-\/>Name] = std::move(grassTex);}
-\DoxyCodeLine{00563     mTextures[waterTex-\/>Name] = std::move(waterTex);}
-\DoxyCodeLine{00564     mTextures[fenceTex-\/>Name] = std::move(fenceTex);}
-\DoxyCodeLine{00565 \}}
-\DoxyCodeLine{00566 }
-\DoxyCodeLine{00567 \textcolor{keywordtype}{void} BlendApp::BuildRootSignature()}
-\DoxyCodeLine{00568 \{}
-\DoxyCodeLine{00569     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
-\DoxyCodeLine{00570     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
-\DoxyCodeLine{00571 }
-\DoxyCodeLine{00572     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00573     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
+\DoxyCodeLine{00548     \textcolor{comment}{// Set the dynamic VB of the wave renderitem to the current frame VB.}}
+\DoxyCodeLine{00549     mWavesRitem-\/>Geo-\/>VertexBufferGPU = currWavesVB-\/>Resource();}
+\DoxyCodeLine{00550 \}}
+\DoxyCodeLine{00551 }
+\DoxyCodeLine{00552 \textcolor{keywordtype}{void} BlendApp::LoadTextures()}
+\DoxyCodeLine{00553 \{}
+\DoxyCodeLine{00554     \textcolor{keyword}{auto} grassTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00555     grassTex-\/>Name = \textcolor{stringliteral}{"{}grassTex"{}};}
+\DoxyCodeLine{00556     grassTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/grass.dds"{}};}
+\DoxyCodeLine{00557     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00558         mCommandList.Get(), grassTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00559         grassTex-\/>Resource, grassTex-\/>UploadHeap));}
+\DoxyCodeLine{00560 }
+\DoxyCodeLine{00561     \textcolor{keyword}{auto} waterTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00562     waterTex-\/>Name = \textcolor{stringliteral}{"{}waterTex"{}};}
+\DoxyCodeLine{00563     waterTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/water1.dds"{}};}
+\DoxyCodeLine{00564     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00565         mCommandList.Get(), waterTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00566         waterTex-\/>Resource, waterTex-\/>UploadHeap));}
+\DoxyCodeLine{00567 }
+\DoxyCodeLine{00568     \textcolor{keyword}{auto} fenceTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{00569     fenceTex-\/>Name = \textcolor{stringliteral}{"{}fenceTex"{}};}
+\DoxyCodeLine{00570     fenceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/WireFence.dds"{}};}
+\DoxyCodeLine{00571     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
+\DoxyCodeLine{00572         mCommandList.Get(), fenceTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{00573         fenceTex-\/>Resource, fenceTex-\/>UploadHeap));}
 \DoxyCodeLine{00574 }
-\DoxyCodeLine{00575     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
-\DoxyCodeLine{00576     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
-\DoxyCodeLine{00577     slotRootParameter[1].InitAsConstantBufferView(0);}
-\DoxyCodeLine{00578     slotRootParameter[2].InitAsConstantBufferView(1);}
-\DoxyCodeLine{00579     slotRootParameter[3].InitAsConstantBufferView(2);}
-\DoxyCodeLine{00580 }
-\DoxyCodeLine{00581     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
-\DoxyCodeLine{00582 }
-\DoxyCodeLine{00583     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00584     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
-\DoxyCodeLine{00585         (UINT)staticSamplers.size(), staticSamplers.data(),}
-\DoxyCodeLine{00586         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00575     mTextures[grassTex-\/>Name] = std::move(grassTex);}
+\DoxyCodeLine{00576     mTextures[waterTex-\/>Name] = std::move(waterTex);}
+\DoxyCodeLine{00577     mTextures[fenceTex-\/>Name] = std::move(fenceTex);}
+\DoxyCodeLine{00578 \}}
+\DoxyCodeLine{00579 }
+\DoxyCodeLine{00580 \textcolor{keywordtype}{void} BlendApp::BuildRootSignature()}
+\DoxyCodeLine{00581 \{}
+\DoxyCodeLine{00582     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
+\DoxyCodeLine{00583     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
+\DoxyCodeLine{00584 }
+\DoxyCodeLine{00585     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{00586     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
 \DoxyCodeLine{00587 }
-\DoxyCodeLine{00588     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00589     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00590     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00591     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00592         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{00588     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
+\DoxyCodeLine{00589     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
+\DoxyCodeLine{00590     slotRootParameter[1].InitAsConstantBufferView(0);}
+\DoxyCodeLine{00591     slotRootParameter[2].InitAsConstantBufferView(1);}
+\DoxyCodeLine{00592     slotRootParameter[3].InitAsConstantBufferView(2);}
 \DoxyCodeLine{00593 }
-\DoxyCodeLine{00594     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00595     \{}
-\DoxyCodeLine{00596         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00597     \}}
-\DoxyCodeLine{00598     ThrowIfFailed(hr);}
-\DoxyCodeLine{00599 }
-\DoxyCodeLine{00600     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00601         0,}
-\DoxyCodeLine{00602         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00603         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00604         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00605 \}}
+\DoxyCodeLine{00594     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
+\DoxyCodeLine{00595 }
+\DoxyCodeLine{00596     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{00597     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
+\DoxyCodeLine{00598         (UINT)staticSamplers.size(), staticSamplers.data(),}
+\DoxyCodeLine{00599         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00600 }
+\DoxyCodeLine{00601     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{00602     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00603     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00604     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{00605         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
 \DoxyCodeLine{00606 }
-\DoxyCodeLine{00607 \textcolor{keywordtype}{void} BlendApp::BuildDescriptorHeaps()}
-\DoxyCodeLine{00608 \{}
-\DoxyCodeLine{00609     \textcolor{comment}{//}}
-\DoxyCodeLine{00610     \textcolor{comment}{// Create the SRV heap.}}
-\DoxyCodeLine{00611     \textcolor{comment}{//}}
-\DoxyCodeLine{00612     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
-\DoxyCodeLine{00613     srvHeapDesc.NumDescriptors = 3;}
-\DoxyCodeLine{00614     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00615     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00616     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
-\DoxyCodeLine{00617 }
-\DoxyCodeLine{00618     \textcolor{comment}{//}}
-\DoxyCodeLine{00619     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
-\DoxyCodeLine{00620     \textcolor{comment}{//}}
-\DoxyCodeLine{00621     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00622 }
-\DoxyCodeLine{00623     \textcolor{keyword}{auto} grassTex = mTextures[\textcolor{stringliteral}{"{}grassTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00624     \textcolor{keyword}{auto} waterTex = mTextures[\textcolor{stringliteral}{"{}waterTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00625     \textcolor{keyword}{auto} fenceTex = mTextures[\textcolor{stringliteral}{"{}fenceTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00626 }
-\DoxyCodeLine{00627     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00628     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00629     srvDesc.Format = grassTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00630     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00631     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00632     srvDesc.Texture2D.MipLevels = -\/1;}
-\DoxyCodeLine{00633     md3dDevice-\/>CreateShaderResourceView(grassTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00634 }
-\DoxyCodeLine{00635     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00636     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00637 }
-\DoxyCodeLine{00638     srvDesc.Format = waterTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00639     md3dDevice-\/>CreateShaderResourceView(waterTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00640 }
-\DoxyCodeLine{00641     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00642     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00643 }
-\DoxyCodeLine{00644     srvDesc.Format = fenceTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00645     md3dDevice-\/>CreateShaderResourceView(fenceTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00646 \}}
+\DoxyCodeLine{00607     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00608     \{}
+\DoxyCodeLine{00609         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{00610     \}}
+\DoxyCodeLine{00611     ThrowIfFailed(hr);}
+\DoxyCodeLine{00612 }
+\DoxyCodeLine{00613     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
+\DoxyCodeLine{00614         0,}
+\DoxyCodeLine{00615         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{00616         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{00617         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{00618 \}}
+\DoxyCodeLine{00619 }
+\DoxyCodeLine{00620 \textcolor{keywordtype}{void} BlendApp::BuildDescriptorHeaps()}
+\DoxyCodeLine{00621 \{}
+\DoxyCodeLine{00622     \textcolor{comment}{//}}
+\DoxyCodeLine{00623     \textcolor{comment}{// Create the SRV heap.}}
+\DoxyCodeLine{00624     \textcolor{comment}{//}}
+\DoxyCodeLine{00625     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
+\DoxyCodeLine{00626     srvHeapDesc.NumDescriptors = 3;}
+\DoxyCodeLine{00627     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{00628     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{00629     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
+\DoxyCodeLine{00630 }
+\DoxyCodeLine{00631     \textcolor{comment}{//}}
+\DoxyCodeLine{00632     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
+\DoxyCodeLine{00633     \textcolor{comment}{//}}
+\DoxyCodeLine{00634     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{00635 }
+\DoxyCodeLine{00636     \textcolor{keyword}{auto} grassTex = mTextures[\textcolor{stringliteral}{"{}grassTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00637     \textcolor{keyword}{auto} waterTex = mTextures[\textcolor{stringliteral}{"{}waterTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00638     \textcolor{keyword}{auto} fenceTex = mTextures[\textcolor{stringliteral}{"{}fenceTex"{}}]-\/>Resource;}
+\DoxyCodeLine{00639 }
+\DoxyCodeLine{00640     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{00641     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{00642     srvDesc.Format = grassTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00643     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{00644     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{00645     srvDesc.Texture2D.MipLevels = -\/1;}
+\DoxyCodeLine{00646     md3dDevice-\/>CreateShaderResourceView(grassTex.Get(), \&srvDesc, hDescriptor);}
 \DoxyCodeLine{00647 }
-\DoxyCodeLine{00648 \textcolor{keywordtype}{void} BlendApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00649 \{}
-\DoxyCodeLine{00650     \textcolor{keyword}{const} D3D\_SHADER\_MACRO defines[] =}
-\DoxyCodeLine{00651     \{}
-\DoxyCodeLine{00652         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
-\DoxyCodeLine{00653         NULL, NULL}
-\DoxyCodeLine{00654     \};}
-\DoxyCodeLine{00655 }
-\DoxyCodeLine{00656     \textcolor{keyword}{const} D3D\_SHADER\_MACRO alphaTestDefines[] =}
-\DoxyCodeLine{00657     \{}
-\DoxyCodeLine{00658         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
-\DoxyCodeLine{00659         \textcolor{stringliteral}{"{}ALPHA\_TEST"{}}, }
-\DoxyCodeLine{00660         NULL, NULL}
-\DoxyCodeLine{00661     \};}
-\DoxyCodeLine{00662 }
-\DoxyCodeLine{00663     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
-\DoxyCodeLine{00664     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, defines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00665     mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, alphaTestDefines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00666     }
-\DoxyCodeLine{00667     mInputLayout =}
-\DoxyCodeLine{00668     \{}
-\DoxyCodeLine{00669         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00670         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00671         \{ \textcolor{stringliteral}{"{}TEXCOORD"{}}, 0, DXGI\_FORMAT\_R32G32\_FLOAT, 0, 24, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00672     \};}
-\DoxyCodeLine{00673 \}}
-\DoxyCodeLine{00674 }
-\DoxyCodeLine{00675 \textcolor{keywordtype}{void} BlendApp::BuildLandGeometry()}
-\DoxyCodeLine{00676 \{}
-\DoxyCodeLine{00677     GeometryGenerator geoGen;}
-\DoxyCodeLine{00678     GeometryGenerator::MeshData grid = geoGen.CreateGrid(160.0f, 160.0f, 50, 50);}
-\DoxyCodeLine{00679 }
-\DoxyCodeLine{00680     \textcolor{comment}{//}}
-\DoxyCodeLine{00681     \textcolor{comment}{// Extract the vertex elements we are interested and apply the height function to}}
-\DoxyCodeLine{00682     \textcolor{comment}{// each vertex.  In addition, color the vertices based on their height so we have}}
-\DoxyCodeLine{00683     \textcolor{comment}{// sandy looking beaches, grassy low hills, and snow mountain peaks.}}
-\DoxyCodeLine{00684     \textcolor{comment}{//}}
-\DoxyCodeLine{00685 }
-\DoxyCodeLine{00686     std::vector<Vertex> vertices(grid.Vertices.size());}
-\DoxyCodeLine{00687     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < grid.Vertices.size(); ++i)}
-\DoxyCodeLine{00688     \{}
-\DoxyCodeLine{00689         \textcolor{keyword}{auto}\& p = grid.Vertices[i].Position;}
-\DoxyCodeLine{00690         vertices[i].Pos = p;}
-\DoxyCodeLine{00691         vertices[i].Pos.y = GetHillsHeight(p.x, p.z);}
-\DoxyCodeLine{00692         vertices[i].Normal = GetHillsNormal(p.x, p.z);}
-\DoxyCodeLine{00693         vertices[i].TexC = grid.Vertices[i].TexC;}
-\DoxyCodeLine{00694     \}}
-\DoxyCodeLine{00695 }
-\DoxyCodeLine{00696     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00697 }
-\DoxyCodeLine{00698     std::vector<std::uint16\_t> indices = grid.GetIndices16();}
-\DoxyCodeLine{00699     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00700 }
-\DoxyCodeLine{00701     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00702     geo-\/>Name = \textcolor{stringliteral}{"{}landGeo"{}};}
-\DoxyCodeLine{00703 }
-\DoxyCodeLine{00704     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00705     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00706 }
-\DoxyCodeLine{00707     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00708     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00709 }
-\DoxyCodeLine{00710     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00711         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00712 }
-\DoxyCodeLine{00713     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00714         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00715 }
-\DoxyCodeLine{00716     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00717     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00718     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00719     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00720 }
-\DoxyCodeLine{00721     SubmeshGeometry submesh;}
-\DoxyCodeLine{00722     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00723     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00724     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00648     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{00649     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00650 }
+\DoxyCodeLine{00651     srvDesc.Format = waterTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00652     md3dDevice-\/>CreateShaderResourceView(waterTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{00653 }
+\DoxyCodeLine{00654     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{00655     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{00656 }
+\DoxyCodeLine{00657     srvDesc.Format = fenceTex-\/>GetDesc().Format;}
+\DoxyCodeLine{00658     md3dDevice-\/>CreateShaderResourceView(fenceTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{00659 \}}
+\DoxyCodeLine{00660 }
+\DoxyCodeLine{00661 \textcolor{keywordtype}{void} BlendApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{00662 \{}
+\DoxyCodeLine{00663     \textcolor{keyword}{const} D3D\_SHADER\_MACRO defines[] =}
+\DoxyCodeLine{00664     \{}
+\DoxyCodeLine{00665         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
+\DoxyCodeLine{00666         NULL, NULL}
+\DoxyCodeLine{00667     \};}
+\DoxyCodeLine{00668 }
+\DoxyCodeLine{00669     \textcolor{keyword}{const} D3D\_SHADER\_MACRO alphaTestDefines[] =}
+\DoxyCodeLine{00670     \{}
+\DoxyCodeLine{00671         \textcolor{stringliteral}{"{}FOG"{}}, \textcolor{stringliteral}{"{}1"{}},}
+\DoxyCodeLine{00672         \textcolor{stringliteral}{"{}ALPHA\_TEST"{}}, }
+\DoxyCodeLine{00673         NULL, NULL}
+\DoxyCodeLine{00674     \};}
+\DoxyCodeLine{00675 }
+\DoxyCodeLine{00676     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
+\DoxyCodeLine{00677     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, defines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{00678     mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)Default.hlsl"{}}, alphaTestDefines, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{00679     }
+\DoxyCodeLine{00680     mInputLayout =}
+\DoxyCodeLine{00681     \{}
+\DoxyCodeLine{00682         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00683         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00684         \{ \textcolor{stringliteral}{"{}TEXCOORD"{}}, 0, DXGI\_FORMAT\_R32G32\_FLOAT, 0, 24, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00685     \};}
+\DoxyCodeLine{00686 \}}
+\DoxyCodeLine{00687 }
+\DoxyCodeLine{00688 \textcolor{keywordtype}{void} BlendApp::BuildLandGeometry()}
+\DoxyCodeLine{00689 \{}
+\DoxyCodeLine{00690     GeometryGenerator geoGen;}
+\DoxyCodeLine{00691     GeometryGenerator::MeshData grid = geoGen.CreateGrid(160.0f, 160.0f, 50, 50);}
+\DoxyCodeLine{00692 }
+\DoxyCodeLine{00693     \textcolor{comment}{//}}
+\DoxyCodeLine{00694     \textcolor{comment}{// Extract the vertex elements we are interested and apply the height function to}}
+\DoxyCodeLine{00695     \textcolor{comment}{// each vertex.  In addition, color the vertices based on their height so we have}}
+\DoxyCodeLine{00696     \textcolor{comment}{// sandy looking beaches, grassy low hills, and snow mountain peaks.}}
+\DoxyCodeLine{00697     \textcolor{comment}{//}}
+\DoxyCodeLine{00698 }
+\DoxyCodeLine{00699     std::vector<Vertex> vertices(grid.Vertices.size());}
+\DoxyCodeLine{00700     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < grid.Vertices.size(); ++i)}
+\DoxyCodeLine{00701     \{}
+\DoxyCodeLine{00702         \textcolor{keyword}{auto}\& p = grid.Vertices[i].Position;}
+\DoxyCodeLine{00703         vertices[i].Pos = p;}
+\DoxyCodeLine{00704         vertices[i].Pos.y = GetHillsHeight(p.x, p.z);}
+\DoxyCodeLine{00705         vertices[i].Normal = GetHillsNormal(p.x, p.z);}
+\DoxyCodeLine{00706         vertices[i].TexC = grid.Vertices[i].TexC;}
+\DoxyCodeLine{00707     \}}
+\DoxyCodeLine{00708 }
+\DoxyCodeLine{00709     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00710 }
+\DoxyCodeLine{00711     std::vector<std::uint16\_t> indices = grid.GetIndices16();}
+\DoxyCodeLine{00712     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{00713 }
+\DoxyCodeLine{00714     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00715     geo-\/>Name = \textcolor{stringliteral}{"{}landGeo"{}};}
+\DoxyCodeLine{00716 }
+\DoxyCodeLine{00717     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00718     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00719 }
+\DoxyCodeLine{00720     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00721     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00722 }
+\DoxyCodeLine{00723     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00724         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00725 }
-\DoxyCodeLine{00726     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
-\DoxyCodeLine{00727 }
-\DoxyCodeLine{00728     mGeometries[\textcolor{stringliteral}{"{}landGeo"{}}] = std::move(geo);}
-\DoxyCodeLine{00729 \}}
-\DoxyCodeLine{00730 }
-\DoxyCodeLine{00731 \textcolor{keywordtype}{void} BlendApp::BuildWavesGeometry()}
-\DoxyCodeLine{00732 \{}
-\DoxyCodeLine{00733     std::vector<std::uint16\_t> indices(3 * mWaves-\/>TriangleCount()); \textcolor{comment}{// 3 indices per face}}
-\DoxyCodeLine{00734     assert(mWaves-\/>VertexCount() < 0x0000ffff);}
-\DoxyCodeLine{00735 }
-\DoxyCodeLine{00736     \textcolor{comment}{// Iterate over each quad.}}
-\DoxyCodeLine{00737     \textcolor{keywordtype}{int} m = mWaves-\/>RowCount();}
-\DoxyCodeLine{00738     \textcolor{keywordtype}{int} n = mWaves-\/>ColumnCount();}
-\DoxyCodeLine{00739     \textcolor{keywordtype}{int} k = 0;}
-\DoxyCodeLine{00740     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < m -\/ 1; ++i)}
-\DoxyCodeLine{00741     \{}
-\DoxyCodeLine{00742         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < n -\/ 1; ++j)}
-\DoxyCodeLine{00743         \{}
-\DoxyCodeLine{00744             indices[k] = i*n + j;}
-\DoxyCodeLine{00745             indices[k + 1] = i*n + j + 1;}
-\DoxyCodeLine{00746             indices[k + 2] = (i + 1)*n + j;}
-\DoxyCodeLine{00747 }
-\DoxyCodeLine{00748             indices[k + 3] = (i + 1)*n + j;}
-\DoxyCodeLine{00749             indices[k + 4] = i*n + j + 1;}
-\DoxyCodeLine{00750             indices[k + 5] = (i + 1)*n + j + 1;}
-\DoxyCodeLine{00751 }
-\DoxyCodeLine{00752             k += 6; \textcolor{comment}{// next quad}}
-\DoxyCodeLine{00753         \}}
-\DoxyCodeLine{00754     \}}
-\DoxyCodeLine{00755 }
-\DoxyCodeLine{00756     UINT vbByteSize = mWaves-\/>VertexCount()*\textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00757     UINT ibByteSize = (UINT)indices.size()*\textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00758 }
-\DoxyCodeLine{00759     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00760     geo-\/>Name = \textcolor{stringliteral}{"{}waterGeo"{}};}
-\DoxyCodeLine{00761 }
-\DoxyCodeLine{00762     \textcolor{comment}{// Set dynamically.}}
-\DoxyCodeLine{00763     geo-\/>VertexBufferCPU = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00764     geo-\/>VertexBufferGPU = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00765 }
-\DoxyCodeLine{00766     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00767     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00726     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00727         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00728 }
+\DoxyCodeLine{00729     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00730     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00731     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00732     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00733 }
+\DoxyCodeLine{00734     SubmeshGeometry submesh;}
+\DoxyCodeLine{00735     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00736     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00737     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00738 }
+\DoxyCodeLine{00739     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
+\DoxyCodeLine{00740 }
+\DoxyCodeLine{00741     mGeometries[\textcolor{stringliteral}{"{}landGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{00742 \}}
+\DoxyCodeLine{00743 }
+\DoxyCodeLine{00744 \textcolor{keywordtype}{void} BlendApp::BuildWavesGeometry()}
+\DoxyCodeLine{00745 \{}
+\DoxyCodeLine{00746     std::vector<std::uint16\_t> indices(3 * mWaves-\/>TriangleCount()); \textcolor{comment}{// 3 indices per face}}
+\DoxyCodeLine{00747     assert(mWaves-\/>VertexCount() < 0x0000ffff);}
+\DoxyCodeLine{00748 }
+\DoxyCodeLine{00749     \textcolor{comment}{// Iterate over each quad.}}
+\DoxyCodeLine{00750     \textcolor{keywordtype}{int} m = mWaves-\/>RowCount();}
+\DoxyCodeLine{00751     \textcolor{keywordtype}{int} n = mWaves-\/>ColumnCount();}
+\DoxyCodeLine{00752     \textcolor{keywordtype}{int} k = 0;}
+\DoxyCodeLine{00753     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < m -\/ 1; ++i)}
+\DoxyCodeLine{00754     \{}
+\DoxyCodeLine{00755         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < n -\/ 1; ++j)}
+\DoxyCodeLine{00756         \{}
+\DoxyCodeLine{00757             indices[k] = i*n + j;}
+\DoxyCodeLine{00758             indices[k + 1] = i*n + j + 1;}
+\DoxyCodeLine{00759             indices[k + 2] = (i + 1)*n + j;}
+\DoxyCodeLine{00760 }
+\DoxyCodeLine{00761             indices[k + 3] = (i + 1)*n + j;}
+\DoxyCodeLine{00762             indices[k + 4] = i*n + j + 1;}
+\DoxyCodeLine{00763             indices[k + 5] = (i + 1)*n + j + 1;}
+\DoxyCodeLine{00764 }
+\DoxyCodeLine{00765             k += 6; \textcolor{comment}{// next quad}}
+\DoxyCodeLine{00766         \}}
+\DoxyCodeLine{00767     \}}
 \DoxyCodeLine{00768 }
-\DoxyCodeLine{00769     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00770         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00769     UINT vbByteSize = mWaves-\/>VertexCount()*\textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00770     UINT ibByteSize = (UINT)indices.size()*\textcolor{keyword}{sizeof}(std::uint16\_t);}
 \DoxyCodeLine{00771 }
-\DoxyCodeLine{00772     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00773     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00774     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00775     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00776 }
-\DoxyCodeLine{00777     SubmeshGeometry submesh;}
-\DoxyCodeLine{00778     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00779     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00780     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00772     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00773     geo-\/>Name = \textcolor{stringliteral}{"{}waterGeo"{}};}
+\DoxyCodeLine{00774 }
+\DoxyCodeLine{00775     \textcolor{comment}{// Set dynamically.}}
+\DoxyCodeLine{00776     geo-\/>VertexBufferCPU = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00777     geo-\/>VertexBufferGPU = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00778 }
+\DoxyCodeLine{00779     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00780     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
 \DoxyCodeLine{00781 }
-\DoxyCodeLine{00782     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
-\DoxyCodeLine{00783 }
-\DoxyCodeLine{00784     mGeometries[\textcolor{stringliteral}{"{}waterGeo"{}}] = std::move(geo);}
-\DoxyCodeLine{00785 \}}
-\DoxyCodeLine{00786 }
-\DoxyCodeLine{00787 \textcolor{keywordtype}{void} BlendApp::BuildBoxGeometry()}
-\DoxyCodeLine{00788 \{}
-\DoxyCodeLine{00789     GeometryGenerator geoGen;}
-\DoxyCodeLine{00790     GeometryGenerator::MeshData box = geoGen.CreateBox(8.0f, 8.0f, 8.0f, 3);}
-\DoxyCodeLine{00791 }
-\DoxyCodeLine{00792     std::vector<Vertex> vertices(box.Vertices.size());}
-\DoxyCodeLine{00793     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < box.Vertices.size(); ++i)}
-\DoxyCodeLine{00794     \{}
-\DoxyCodeLine{00795         \textcolor{keyword}{auto}\& p = box.Vertices[i].Position;}
-\DoxyCodeLine{00796         vertices[i].Pos = p;}
-\DoxyCodeLine{00797         vertices[i].Normal = box.Vertices[i].Normal;}
-\DoxyCodeLine{00798         vertices[i].TexC = box.Vertices[i].TexC;}
-\DoxyCodeLine{00799     \}}
-\DoxyCodeLine{00800 }
-\DoxyCodeLine{00801     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00802 }
-\DoxyCodeLine{00803     std::vector<std::uint16\_t> indices = box.GetIndices16();}
-\DoxyCodeLine{00804     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00805 }
-\DoxyCodeLine{00806     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00807     geo-\/>Name = \textcolor{stringliteral}{"{}boxGeo"{}};}
-\DoxyCodeLine{00808 }
-\DoxyCodeLine{00809     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00810     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00811 }
-\DoxyCodeLine{00812     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00813     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00814 }
-\DoxyCodeLine{00815     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00816         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00817 }
-\DoxyCodeLine{00818     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00819         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00820 }
-\DoxyCodeLine{00821     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00822     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00823     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00824     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00825 }
-\DoxyCodeLine{00826     SubmeshGeometry submesh;}
-\DoxyCodeLine{00827     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00828     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00829     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00782     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00783         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00784 }
+\DoxyCodeLine{00785     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00786     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00787     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00788     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00789 }
+\DoxyCodeLine{00790     SubmeshGeometry submesh;}
+\DoxyCodeLine{00791     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00792     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00793     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00794 }
+\DoxyCodeLine{00795     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = submesh;}
+\DoxyCodeLine{00796 }
+\DoxyCodeLine{00797     mGeometries[\textcolor{stringliteral}{"{}waterGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{00798 \}}
+\DoxyCodeLine{00799 }
+\DoxyCodeLine{00800 \textcolor{keywordtype}{void} BlendApp::BuildBoxGeometry()}
+\DoxyCodeLine{00801 \{}
+\DoxyCodeLine{00802     GeometryGenerator geoGen;}
+\DoxyCodeLine{00803     GeometryGenerator::MeshData box = geoGen.CreateBox(8.0f, 8.0f, 8.0f, 3);}
+\DoxyCodeLine{00804 }
+\DoxyCodeLine{00805     std::vector<Vertex> vertices(box.Vertices.size());}
+\DoxyCodeLine{00806     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < box.Vertices.size(); ++i)}
+\DoxyCodeLine{00807     \{}
+\DoxyCodeLine{00808         \textcolor{keyword}{auto}\& p = box.Vertices[i].Position;}
+\DoxyCodeLine{00809         vertices[i].Pos = p;}
+\DoxyCodeLine{00810         vertices[i].Normal = box.Vertices[i].Normal;}
+\DoxyCodeLine{00811         vertices[i].TexC = box.Vertices[i].TexC;}
+\DoxyCodeLine{00812     \}}
+\DoxyCodeLine{00813 }
+\DoxyCodeLine{00814     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00815 }
+\DoxyCodeLine{00816     std::vector<std::uint16\_t> indices = box.GetIndices16();}
+\DoxyCodeLine{00817     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{00818 }
+\DoxyCodeLine{00819     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00820     geo-\/>Name = \textcolor{stringliteral}{"{}boxGeo"{}};}
+\DoxyCodeLine{00821 }
+\DoxyCodeLine{00822     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00823     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00824 }
+\DoxyCodeLine{00825     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00826     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00827 }
+\DoxyCodeLine{00828     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00829         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00830 }
-\DoxyCodeLine{00831     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}] = submesh;}
-\DoxyCodeLine{00832 }
-\DoxyCodeLine{00833     mGeometries[\textcolor{stringliteral}{"{}boxGeo"{}}] = std::move(geo);}
-\DoxyCodeLine{00834 \}}
-\DoxyCodeLine{00835 }
-\DoxyCodeLine{00836 \textcolor{keywordtype}{void} BlendApp::BuildPSOs()}
-\DoxyCodeLine{00837 \{}
-\DoxyCodeLine{00838     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00839 }
-\DoxyCodeLine{00840     \textcolor{comment}{//}}
-\DoxyCodeLine{00841     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00842     \textcolor{comment}{//}}
-\DoxyCodeLine{00843     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00844     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00845     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00846     opaquePsoDesc.VS = }
-\DoxyCodeLine{00847     \{ }
-\DoxyCodeLine{00848         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
-\DoxyCodeLine{00849         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00850     \};}
-\DoxyCodeLine{00851     opaquePsoDesc.PS = }
-\DoxyCodeLine{00852     \{ }
-\DoxyCodeLine{00853         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00854         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00855     \};}
-\DoxyCodeLine{00856     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00857     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00858     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00859     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00860     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00861     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00862     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00863     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00864     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00865     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00866     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00867 }
-\DoxyCodeLine{00868     \textcolor{comment}{//}}
-\DoxyCodeLine{00869     \textcolor{comment}{// PSO for transparent objects}}
-\DoxyCodeLine{00870     \textcolor{comment}{//}}
-\DoxyCodeLine{00871 }
-\DoxyCodeLine{00872     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC transparentPsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00873 }
-\DoxyCodeLine{00874     D3D12\_RENDER\_TARGET\_BLEND\_DESC transparencyBlendDesc;}
-\DoxyCodeLine{00875     transparencyBlendDesc.BlendEnable = \textcolor{keyword}{true};}
-\DoxyCodeLine{00876     transparencyBlendDesc.LogicOpEnable = \textcolor{keyword}{false};}
-\DoxyCodeLine{00877 }
-\DoxyCodeLine{00878     \textcolor{comment}{//step1}}
-\DoxyCodeLine{00879     \textcolor{comment}{//Multiplying: Suppose that we want to multiply a source pixel with its corresponding destination pixel. To do this, we set }}
-\DoxyCodeLine{00880     \textcolor{comment}{//source blend factor : D3D12\_BLEND\_ZERO,}}
-\DoxyCodeLine{00881     \textcolor{comment}{//destination blend factor : D3D12\_BLEND\_SRC\_COLOR,}}
-\DoxyCodeLine{00882     \textcolor{comment}{//the blend operator : D3D12\_BLEND\_OP\_ADD.}}
-\DoxyCodeLine{00883     \textcolor{comment}{//With this setup, the blending equation reduces to :}}
+\DoxyCodeLine{00831     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00832         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00833 }
+\DoxyCodeLine{00834     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00835     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00836     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00837     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00838 }
+\DoxyCodeLine{00839     SubmeshGeometry submesh;}
+\DoxyCodeLine{00840     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00841     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00842     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00843 }
+\DoxyCodeLine{00844     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}] = submesh;}
+\DoxyCodeLine{00845 }
+\DoxyCodeLine{00846     mGeometries[\textcolor{stringliteral}{"{}boxGeo"{}}] = std::move(geo);}
+\DoxyCodeLine{00847 \}}
+\DoxyCodeLine{00848 }
+\DoxyCodeLine{00849 \textcolor{keywordtype}{void} BlendApp::BuildPSOs()}
+\DoxyCodeLine{00850 \{}
+\DoxyCodeLine{00851     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{00852 }
+\DoxyCodeLine{00853     \textcolor{comment}{//}}
+\DoxyCodeLine{00854     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{00855     \textcolor{comment}{//}}
+\DoxyCodeLine{00856     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{00857     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{00858     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{00859     opaquePsoDesc.VS = }
+\DoxyCodeLine{00860     \{ }
+\DoxyCodeLine{00861         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{00862         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00863     \};}
+\DoxyCodeLine{00864     opaquePsoDesc.PS = }
+\DoxyCodeLine{00865     \{ }
+\DoxyCodeLine{00866         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{00867         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00868     \};}
+\DoxyCodeLine{00869     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00870     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00871     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00872     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00873     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00874     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00875     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
+\DoxyCodeLine{00876     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
+\DoxyCodeLine{00877     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
+\DoxyCodeLine{00878     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
+\DoxyCodeLine{00879     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{00880 }
+\DoxyCodeLine{00881     \textcolor{comment}{//}}
+\DoxyCodeLine{00882     \textcolor{comment}{// PSO for transparent objects}}
+\DoxyCodeLine{00883     \textcolor{comment}{//}}
 \DoxyCodeLine{00884 }
-\DoxyCodeLine{00885 }
-\DoxyCodeLine{00886     transparencyBlendDesc.SrcBlend = D3D12\_BLEND\_ZERO;}
-\DoxyCodeLine{00887     transparencyBlendDesc.DestBlend = D3D12\_BLEND\_SRC\_COLOR;}
-\DoxyCodeLine{00888     transparencyBlendDesc.BlendOp = D3D12\_BLEND\_OP\_ADD,}
-\DoxyCodeLine{00889 }
-\DoxyCodeLine{00890     transparencyBlendDesc.SrcBlendAlpha = D3D12\_BLEND\_ONE;  \textcolor{comment}{//default}}
-\DoxyCodeLine{00891     transparencyBlendDesc.DestBlendAlpha = D3D12\_BLEND\_ZERO; \textcolor{comment}{//default}}
-\DoxyCodeLine{00892     transparencyBlendDesc.BlendOpAlpha = D3D12\_BLEND\_OP\_ADD; \textcolor{comment}{//default}}
-\DoxyCodeLine{00893     transparencyBlendDesc.LogicOp = D3D12\_LOGIC\_OP\_NOOP;}
-\DoxyCodeLine{00894     transparencyBlendDesc.RenderTargetWriteMask = D3D12\_COLOR\_WRITE\_ENABLE\_ALL;}
-\DoxyCodeLine{00895     \textcolor{comment}{//transparencyBlendDesc.RenderTargetWriteMask = 0;}}
-\DoxyCodeLine{00896     \textcolor{comment}{//Direct3D supports rendering to up to eight render targets simultaneously.}}
-\DoxyCodeLine{00897     transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;}
-\DoxyCodeLine{00898     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&transparentPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}transparent"{}}])));}
-\DoxyCodeLine{00899 }
-\DoxyCodeLine{00900     \textcolor{comment}{//}}
-\DoxyCodeLine{00901     \textcolor{comment}{// PSO for alpha tested objects}}
-\DoxyCodeLine{00902     \textcolor{comment}{//}}
-\DoxyCodeLine{00903 }
-\DoxyCodeLine{00904     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC alphaTestedPsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00905     alphaTestedPsoDesc.PS = }
-\DoxyCodeLine{00906     \{ }
-\DoxyCodeLine{00907         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00908         mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00909     \};}
-\DoxyCodeLine{00910     alphaTestedPsoDesc.RasterizerState.CullMode = D3D12\_CULL\_MODE\_NONE;}
-\DoxyCodeLine{00911     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&alphaTestedPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}alphaTested"{}}])));}
-\DoxyCodeLine{00912 \}}
-\DoxyCodeLine{00913 }
-\DoxyCodeLine{00914 \textcolor{keywordtype}{void} BlendApp::BuildFrameResources()}
-\DoxyCodeLine{00915 \{}
-\DoxyCodeLine{00916     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{00917     \{}
-\DoxyCodeLine{00918         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{00919             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size(), mWaves-\/>VertexCount()));}
-\DoxyCodeLine{00920     \}}
-\DoxyCodeLine{00921 \}}
-\DoxyCodeLine{00922 }
-\DoxyCodeLine{00923 \textcolor{keywordtype}{void} BlendApp::BuildMaterials()}
-\DoxyCodeLine{00924 \{}
-\DoxyCodeLine{00925     \textcolor{keyword}{auto} grass = std::make\_unique<Material>();}
-\DoxyCodeLine{00926     grass-\/>Name = \textcolor{stringliteral}{"{}grass"{}};}
-\DoxyCodeLine{00927     grass-\/>MatCBIndex = 0;}
-\DoxyCodeLine{00928     grass-\/>DiffuseSrvHeapIndex = 0;}
-\DoxyCodeLine{00929     grass-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00930     grass-\/>FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);}
-\DoxyCodeLine{00931     grass-\/>Roughness = 0.125f;}
-\DoxyCodeLine{00932 }
-\DoxyCodeLine{00933     \textcolor{comment}{// This is not a good water material definition, but we do not have all the rendering}}
-\DoxyCodeLine{00934     \textcolor{comment}{// tools we need (transparency, environment reflection), so we fake it for now.}}
-\DoxyCodeLine{00935     \textcolor{keyword}{auto} water = std::make\_unique<Material>();}
-\DoxyCodeLine{00936     water-\/>Name = \textcolor{stringliteral}{"{}water"{}};}
-\DoxyCodeLine{00937     water-\/>MatCBIndex = 1;}
-\DoxyCodeLine{00938     water-\/>DiffuseSrvHeapIndex = 1;}
-\DoxyCodeLine{00939     water-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);}
-\DoxyCodeLine{00940     water-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
-\DoxyCodeLine{00941     water-\/>Roughness = 0.0f;}
-\DoxyCodeLine{00942 }
-\DoxyCodeLine{00943     \textcolor{keyword}{auto} wirefence = std::make\_unique<Material>();}
-\DoxyCodeLine{00944     wirefence-\/>Name = \textcolor{stringliteral}{"{}wirefence"{}};}
-\DoxyCodeLine{00945     wirefence-\/>MatCBIndex = 2;}
-\DoxyCodeLine{00946     wirefence-\/>DiffuseSrvHeapIndex = 2;}
-\DoxyCodeLine{00947     wirefence-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00948     wirefence-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
-\DoxyCodeLine{00949     wirefence-\/>Roughness = 0.25f;}
-\DoxyCodeLine{00950 }
-\DoxyCodeLine{00951     mMaterials[\textcolor{stringliteral}{"{}grass"{}}] = std::move(grass);}
-\DoxyCodeLine{00952     mMaterials[\textcolor{stringliteral}{"{}water"{}}] = std::move(water);}
-\DoxyCodeLine{00953     mMaterials[\textcolor{stringliteral}{"{}wirefence"{}}] = std::move(wirefence);}
-\DoxyCodeLine{00954 \}}
+\DoxyCodeLine{00885     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC transparentPsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{00886 }
+\DoxyCodeLine{00887     D3D12\_RENDER\_TARGET\_BLEND\_DESC transparencyBlendDesc;}
+\DoxyCodeLine{00888     transparencyBlendDesc.BlendEnable = \textcolor{keyword}{true};}
+\DoxyCodeLine{00889     transparencyBlendDesc.LogicOpEnable = \textcolor{keyword}{false};}
+\DoxyCodeLine{00890 }
+\DoxyCodeLine{00891     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00892     \textcolor{comment}{//Multiplying: Suppose that we want to multiply a source pixel with its corresponding destination pixel. To do this, we set }}
+\DoxyCodeLine{00893     \textcolor{comment}{//source blend factor : D3D12\_BLEND\_ZERO,}}
+\DoxyCodeLine{00894     \textcolor{comment}{//destination blend factor : D3D12\_BLEND\_SRC\_COLOR,}}
+\DoxyCodeLine{00895     \textcolor{comment}{//the blend operator : D3D12\_BLEND\_OP\_ADD.}}
+\DoxyCodeLine{00896     \textcolor{comment}{//With this setup, the blending equation reduces to :}}
+\DoxyCodeLine{00897 }
+\DoxyCodeLine{00898 }
+\DoxyCodeLine{00899     transparencyBlendDesc.SrcBlend = D3D12\_BLEND\_ZERO;}
+\DoxyCodeLine{00900     transparencyBlendDesc.DestBlend = D3D12\_BLEND\_SRC\_COLOR;}
+\DoxyCodeLine{00901     transparencyBlendDesc.BlendOp = D3D12\_BLEND\_OP\_ADD,}
+\DoxyCodeLine{00902 }
+\DoxyCodeLine{00903     transparencyBlendDesc.SrcBlendAlpha = D3D12\_BLEND\_ONE;  \textcolor{comment}{//default}}
+\DoxyCodeLine{00904     transparencyBlendDesc.DestBlendAlpha = D3D12\_BLEND\_ZERO; \textcolor{comment}{//default}}
+\DoxyCodeLine{00905     transparencyBlendDesc.BlendOpAlpha = D3D12\_BLEND\_OP\_ADD; \textcolor{comment}{//default}}
+\DoxyCodeLine{00906     transparencyBlendDesc.LogicOp = D3D12\_LOGIC\_OP\_NOOP;}
+\DoxyCodeLine{00907     transparencyBlendDesc.RenderTargetWriteMask = D3D12\_COLOR\_WRITE\_ENABLE\_ALL;}
+\DoxyCodeLine{00908     \textcolor{comment}{//transparencyBlendDesc.RenderTargetWriteMask = 0;}}
+\DoxyCodeLine{00909     \textcolor{comment}{//Direct3D supports rendering to up to eight render targets simultaneously.}}
+\DoxyCodeLine{00910     transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;}
+\DoxyCodeLine{00911     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&transparentPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}transparent"{}}])));}
+\DoxyCodeLine{00912 }
+\DoxyCodeLine{00913     \textcolor{comment}{//}}
+\DoxyCodeLine{00914     \textcolor{comment}{// PSO for alpha tested objects}}
+\DoxyCodeLine{00915     \textcolor{comment}{//}}
+\DoxyCodeLine{00916 }
+\DoxyCodeLine{00917     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC alphaTestedPsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{00918     alphaTestedPsoDesc.PS = }
+\DoxyCodeLine{00919     \{ }
+\DoxyCodeLine{00920         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{00921         mShaders[\textcolor{stringliteral}{"{}alphaTestedPS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00922     \};}
+\DoxyCodeLine{00923     alphaTestedPsoDesc.RasterizerState.CullMode = D3D12\_CULL\_MODE\_NONE;}
+\DoxyCodeLine{00924     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&alphaTestedPsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}alphaTested"{}}])));}
+\DoxyCodeLine{00925 \}}
+\DoxyCodeLine{00926 }
+\DoxyCodeLine{00927 \textcolor{keywordtype}{void} BlendApp::BuildFrameResources()}
+\DoxyCodeLine{00928 \{}
+\DoxyCodeLine{00929     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
+\DoxyCodeLine{00930     \{}
+\DoxyCodeLine{00931         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
+\DoxyCodeLine{00932             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size(), mWaves-\/>VertexCount()));}
+\DoxyCodeLine{00933     \}}
+\DoxyCodeLine{00934 \}}
+\DoxyCodeLine{00935 }
+\DoxyCodeLine{00936 \textcolor{keywordtype}{void} BlendApp::BuildMaterials()}
+\DoxyCodeLine{00937 \{}
+\DoxyCodeLine{00938     \textcolor{keyword}{auto} grass = std::make\_unique<Material>();}
+\DoxyCodeLine{00939     grass-\/>Name = \textcolor{stringliteral}{"{}grass"{}};}
+\DoxyCodeLine{00940     grass-\/>MatCBIndex = 0;}
+\DoxyCodeLine{00941     grass-\/>DiffuseSrvHeapIndex = 0;}
+\DoxyCodeLine{00942     grass-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{00943     grass-\/>FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);}
+\DoxyCodeLine{00944     grass-\/>Roughness = 0.125f;}
+\DoxyCodeLine{00945 }
+\DoxyCodeLine{00946     \textcolor{comment}{// This is not a good water material definition, but we do not have all the rendering}}
+\DoxyCodeLine{00947     \textcolor{comment}{// tools we need (transparency, environment reflection), so we fake it for now.}}
+\DoxyCodeLine{00948     \textcolor{keyword}{auto} water = std::make\_unique<Material>();}
+\DoxyCodeLine{00949     water-\/>Name = \textcolor{stringliteral}{"{}water"{}};}
+\DoxyCodeLine{00950     water-\/>MatCBIndex = 1;}
+\DoxyCodeLine{00951     water-\/>DiffuseSrvHeapIndex = 1;}
+\DoxyCodeLine{00952     water-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);}
+\DoxyCodeLine{00953     water-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{00954     water-\/>Roughness = 0.0f;}
 \DoxyCodeLine{00955 }
-\DoxyCodeLine{00956 \textcolor{keywordtype}{void} BlendApp::BuildRenderItems()}
-\DoxyCodeLine{00957 \{}
-\DoxyCodeLine{00958     \textcolor{keyword}{auto} wavesRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00959     wavesRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00960     XMStoreFloat4x4(\&wavesRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
-\DoxyCodeLine{00961     wavesRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{00962     wavesRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}water"{}}].get();}
-\DoxyCodeLine{00963     wavesRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}waterGeo"{}}].get();}
-\DoxyCodeLine{00964     wavesRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00965     wavesRitem-\/>IndexCount = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
-\DoxyCodeLine{00966     wavesRitem-\/>StartIndexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
-\DoxyCodeLine{00967     wavesRitem-\/>BaseVertexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00956     \textcolor{keyword}{auto} wirefence = std::make\_unique<Material>();}
+\DoxyCodeLine{00957     wirefence-\/>Name = \textcolor{stringliteral}{"{}wirefence"{}};}
+\DoxyCodeLine{00958     wirefence-\/>MatCBIndex = 2;}
+\DoxyCodeLine{00959     wirefence-\/>DiffuseSrvHeapIndex = 2;}
+\DoxyCodeLine{00960     wirefence-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{00961     wirefence-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{00962     wirefence-\/>Roughness = 0.25f;}
+\DoxyCodeLine{00963 }
+\DoxyCodeLine{00964     mMaterials[\textcolor{stringliteral}{"{}grass"{}}] = std::move(grass);}
+\DoxyCodeLine{00965     mMaterials[\textcolor{stringliteral}{"{}water"{}}] = std::move(water);}
+\DoxyCodeLine{00966     mMaterials[\textcolor{stringliteral}{"{}wirefence"{}}] = std::move(wirefence);}
+\DoxyCodeLine{00967 \}}
 \DoxyCodeLine{00968 }
-\DoxyCodeLine{00969     mWavesRitem = wavesRitem.get();}
-\DoxyCodeLine{00970 }
-\DoxyCodeLine{00971     mRitemLayer[(int)RenderLayer::Transparent].push\_back(wavesRitem.get());}
-\DoxyCodeLine{00972 }
-\DoxyCodeLine{00973     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00974     gridRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00975     XMStoreFloat4x4(\&gridRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
-\DoxyCodeLine{00976     gridRitem-\/>ObjCBIndex = 1;}
-\DoxyCodeLine{00977     gridRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}grass"{}}].get();}
-\DoxyCodeLine{00978     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}landGeo"{}}].get();}
-\DoxyCodeLine{00979     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00980     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
-\DoxyCodeLine{00981     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
-\DoxyCodeLine{00982     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00969 \textcolor{keywordtype}{void} BlendApp::BuildRenderItems()}
+\DoxyCodeLine{00970 \{}
+\DoxyCodeLine{00971     \textcolor{keyword}{auto} wavesRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{00972     wavesRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00973     XMStoreFloat4x4(\&wavesRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
+\DoxyCodeLine{00974     wavesRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{00975     wavesRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}water"{}}].get();}
+\DoxyCodeLine{00976     wavesRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}waterGeo"{}}].get();}
+\DoxyCodeLine{00977     wavesRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00978     wavesRitem-\/>IndexCount = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{00979     wavesRitem-\/>StartIndexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{00980     wavesRitem-\/>BaseVertexLocation = wavesRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00981 }
+\DoxyCodeLine{00982     mWavesRitem = wavesRitem.get();}
 \DoxyCodeLine{00983 }
-\DoxyCodeLine{00984     mRitemLayer[(int)RenderLayer::Opaque].push\_back(gridRitem.get());}
+\DoxyCodeLine{00984     mRitemLayer[(int)RenderLayer::Transparent].push\_back(wavesRitem.get());}
 \DoxyCodeLine{00985 }
-\DoxyCodeLine{00986     \textcolor{keyword}{auto} boxRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00987     XMStoreFloat4x4(\&boxRitem-\/>World, XMMatrixTranslation(3.0f, 2.0f, -\/9.0f));}
-\DoxyCodeLine{00988     boxRitem-\/>ObjCBIndex = 2;}
-\DoxyCodeLine{00989     boxRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}wirefence"{}}].get();}
-\DoxyCodeLine{00990     boxRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}boxGeo"{}}].get();}
-\DoxyCodeLine{00991     boxRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00992     boxRitem-\/>IndexCount = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].IndexCount;}
-\DoxyCodeLine{00993     boxRitem-\/>StartIndexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].StartIndexLocation;}
-\DoxyCodeLine{00994     boxRitem-\/>BaseVertexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].BaseVertexLocation;}
-\DoxyCodeLine{00995 }
-\DoxyCodeLine{00996     mRitemLayer[(int)RenderLayer::AlphaTested].push\_back(boxRitem.get());}
-\DoxyCodeLine{00997 }
-\DoxyCodeLine{00998     mAllRitems.push\_back(std::move(wavesRitem));}
-\DoxyCodeLine{00999     mAllRitems.push\_back(std::move(gridRitem));}
-\DoxyCodeLine{01000     mAllRitems.push\_back(std::move(boxRitem));}
-\DoxyCodeLine{01001 \}}
-\DoxyCodeLine{01002 }
-\DoxyCodeLine{01003 \textcolor{keywordtype}{void} BlendApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{01004 \{}
-\DoxyCodeLine{01005     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{01006     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
-\DoxyCodeLine{01007 }
-\DoxyCodeLine{01008     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{01009     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
+\DoxyCodeLine{00986     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{00987     gridRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00988     XMStoreFloat4x4(\&gridRitem-\/>TexTransform, XMMatrixScaling(5.0f, 5.0f, 1.0f));}
+\DoxyCodeLine{00989     gridRitem-\/>ObjCBIndex = 1;}
+\DoxyCodeLine{00990     gridRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}grass"{}}].get();}
+\DoxyCodeLine{00991     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}landGeo"{}}].get();}
+\DoxyCodeLine{00992     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00993     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{00994     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{00995     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00996 }
+\DoxyCodeLine{00997     mRitemLayer[(int)RenderLayer::Opaque].push\_back(gridRitem.get());}
+\DoxyCodeLine{00998 }
+\DoxyCodeLine{00999     \textcolor{keyword}{auto} boxRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{01000     XMStoreFloat4x4(\&boxRitem-\/>World, XMMatrixTranslation(3.0f, 2.0f, -\/9.0f));}
+\DoxyCodeLine{01001     boxRitem-\/>ObjCBIndex = 2;}
+\DoxyCodeLine{01002     boxRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}wirefence"{}}].get();}
+\DoxyCodeLine{01003     boxRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}boxGeo"{}}].get();}
+\DoxyCodeLine{01004     boxRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{01005     boxRitem-\/>IndexCount = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].IndexCount;}
+\DoxyCodeLine{01006     boxRitem-\/>StartIndexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].StartIndexLocation;}
+\DoxyCodeLine{01007     boxRitem-\/>BaseVertexLocation = boxRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}box"{}}].BaseVertexLocation;}
+\DoxyCodeLine{01008 }
+\DoxyCodeLine{01009     mRitemLayer[(int)RenderLayer::AlphaTested].push\_back(boxRitem.get());}
 \DoxyCodeLine{01010 }
-\DoxyCodeLine{01011     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{01012     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{01013     \{}
-\DoxyCodeLine{01014         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{01011     mAllRitems.push\_back(std::move(wavesRitem));}
+\DoxyCodeLine{01012     mAllRitems.push\_back(std::move(gridRitem));}
+\DoxyCodeLine{01013     mAllRitems.push\_back(std::move(boxRitem));}
+\DoxyCodeLine{01014 \}}
 \DoxyCodeLine{01015 }
-\DoxyCodeLine{01016         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{01017         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{01018         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{01019 }
-\DoxyCodeLine{01020         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{01021         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{01022 }
-\DoxyCodeLine{01023         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
-\DoxyCodeLine{01024         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
-\DoxyCodeLine{01025 }
-\DoxyCodeLine{01026         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
-\DoxyCodeLine{01027         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
-\DoxyCodeLine{01028         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
-\DoxyCodeLine{01029 }
-\DoxyCodeLine{01030         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{01031     \}}
-\DoxyCodeLine{01032 \}}
-\DoxyCodeLine{01033 }
-\DoxyCodeLine{01034 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> BlendApp::GetStaticSamplers()}
-\DoxyCodeLine{01035 \{}
-\DoxyCodeLine{01036     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
-\DoxyCodeLine{01037     \textcolor{comment}{// and keep them available as part of the root signature.  }}
+\DoxyCodeLine{01016 \textcolor{keywordtype}{void} BlendApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{01017 \{}
+\DoxyCodeLine{01018     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
+\DoxyCodeLine{01019     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
+\DoxyCodeLine{01020 }
+\DoxyCodeLine{01021     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
+\DoxyCodeLine{01022     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
+\DoxyCodeLine{01023 }
+\DoxyCodeLine{01024     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{01025     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{01026     \{}
+\DoxyCodeLine{01027         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{01028 }
+\DoxyCodeLine{01029         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{01030         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{01031         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{01032 }
+\DoxyCodeLine{01033         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{01034         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{01035 }
+\DoxyCodeLine{01036         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{01037         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
 \DoxyCodeLine{01038 }
-\DoxyCodeLine{01039     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
-\DoxyCodeLine{01040         0, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01041         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01042         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01043         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01044         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01045 }
-\DoxyCodeLine{01046     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
-\DoxyCodeLine{01047         1, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01048         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01049         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01050         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01051         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01052 }
-\DoxyCodeLine{01053     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
-\DoxyCodeLine{01054         2, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01055         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01056         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01057         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01058         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01059 }
-\DoxyCodeLine{01060     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
-\DoxyCodeLine{01061         3, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01062         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01063         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01064         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01065         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01066 }
-\DoxyCodeLine{01067     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
-\DoxyCodeLine{01068         4, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01069         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01070         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01071         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01072         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01073         0.0f,                             \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{01074         8);                               \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{01075 }
-\DoxyCodeLine{01076     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
-\DoxyCodeLine{01077         5, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{01078         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{01079         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{01080         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{01081         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{01082         0.0f,                              \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{01083         8);                                \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{01084 }
-\DoxyCodeLine{01085     \textcolor{keywordflow}{return} \{ }
-\DoxyCodeLine{01086         pointWrap, pointClamp,}
-\DoxyCodeLine{01087         linearWrap, linearClamp, }
-\DoxyCodeLine{01088         anisotropicWrap, anisotropicClamp \};}
-\DoxyCodeLine{01089 \}}
-\DoxyCodeLine{01090 }
-\DoxyCodeLine{01091 \textcolor{keywordtype}{float} BlendApp::GetHillsHeight(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
-\DoxyCodeLine{01092 \textcolor{keyword}{}\{}
-\DoxyCodeLine{01093     \textcolor{keywordflow}{return} 0.3f*(z*sinf(0.1f*x) + x*cosf(0.1f*z));}
-\DoxyCodeLine{01094 \}}
-\DoxyCodeLine{01095 }
-\DoxyCodeLine{01096 XMFLOAT3 BlendApp::GetHillsNormal(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
-\DoxyCodeLine{01097 \textcolor{keyword}{}\{}
-\DoxyCodeLine{01098     \textcolor{comment}{// n = (-\/df/dx, 1, -\/df/dz)}}
-\DoxyCodeLine{01099     XMFLOAT3 n(}
-\DoxyCodeLine{01100         -\/0.03f*z*cosf(0.1f*x) -\/ 0.3f*cosf(0.1f*z),}
-\DoxyCodeLine{01101         1.0f,}
-\DoxyCodeLine{01102         -\/0.3f*sinf(0.1f*x) + 0.03f*x*sinf(0.1f*z));}
+\DoxyCodeLine{01039         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
+\DoxyCodeLine{01040         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
+\DoxyCodeLine{01041         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
+\DoxyCodeLine{01042 }
+\DoxyCodeLine{01043         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{01044     \}}
+\DoxyCodeLine{01045 \}}
+\DoxyCodeLine{01046 }
+\DoxyCodeLine{01047 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> BlendApp::GetStaticSamplers()}
+\DoxyCodeLine{01048 \{}
+\DoxyCodeLine{01049     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
+\DoxyCodeLine{01050     \textcolor{comment}{// and keep them available as part of the root signature.  }}
+\DoxyCodeLine{01051 }
+\DoxyCodeLine{01052     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
+\DoxyCodeLine{01053         0, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01054         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01055         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01056         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01057         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01058 }
+\DoxyCodeLine{01059     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
+\DoxyCodeLine{01060         1, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01061         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01062         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01063         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01064         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01065 }
+\DoxyCodeLine{01066     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
+\DoxyCodeLine{01067         2, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01068         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01069         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01070         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01071         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01072 }
+\DoxyCodeLine{01073     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
+\DoxyCodeLine{01074         3, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01075         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01076         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01077         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01078         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01079 }
+\DoxyCodeLine{01080     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
+\DoxyCodeLine{01081         4, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01082         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01083         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01084         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01085         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01086         0.0f,                             \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{01087         8);                               \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{01088 }
+\DoxyCodeLine{01089     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
+\DoxyCodeLine{01090         5, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{01091         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{01092         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{01093         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{01094         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{01095         0.0f,                              \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{01096         8);                                \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{01097 }
+\DoxyCodeLine{01098     \textcolor{keywordflow}{return} \{ }
+\DoxyCodeLine{01099         pointWrap, pointClamp,}
+\DoxyCodeLine{01100         linearWrap, linearClamp, }
+\DoxyCodeLine{01101         anisotropicWrap, anisotropicClamp \};}
+\DoxyCodeLine{01102 \}}
 \DoxyCodeLine{01103 }
-\DoxyCodeLine{01104     XMVECTOR unitNormal = XMVector3Normalize(XMLoadFloat3(\&n));}
-\DoxyCodeLine{01105     XMStoreFloat3(\&n, unitNormal);}
-\DoxyCodeLine{01106 }
-\DoxyCodeLine{01107     \textcolor{keywordflow}{return} n;}
-\DoxyCodeLine{01108 \}}
+\DoxyCodeLine{01104 \textcolor{keywordtype}{float} BlendApp::GetHillsHeight(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
+\DoxyCodeLine{01105 \textcolor{keyword}{}\{}
+\DoxyCodeLine{01106     \textcolor{keywordflow}{return} 0.3f*(z*sinf(0.1f*x) + x*cosf(0.1f*z));}
+\DoxyCodeLine{01107 \}}
+\DoxyCodeLine{01108 }
+\DoxyCodeLine{01109 XMFLOAT3 BlendApp::GetHillsNormal(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} z)\textcolor{keyword}{const}}
+\DoxyCodeLine{01110 \textcolor{keyword}{}\{}
+\DoxyCodeLine{01111     \textcolor{comment}{// n = (-\/df/dx, 1, -\/df/dz)}}
+\DoxyCodeLine{01112     XMFLOAT3 n(}
+\DoxyCodeLine{01113         -\/0.03f*z*cosf(0.1f*x) -\/ 0.3f*cosf(0.1f*z),}
+\DoxyCodeLine{01114         1.0f,}
+\DoxyCodeLine{01115         -\/0.3f*sinf(0.1f*x) + 0.03f*x*sinf(0.1f*z));}
+\DoxyCodeLine{01116 }
+\DoxyCodeLine{01117     XMVECTOR unitNormal = XMVector3Normalize(XMLoadFloat3(\&n));}
+\DoxyCodeLine{01118     XMStoreFloat3(\&n, unitNormal);}
+\DoxyCodeLine{01119 }
+\DoxyCodeLine{01120     \textcolor{keywordflow}{return} n;}
+\DoxyCodeLine{01121 \}}
 
 \end{DoxyCode}

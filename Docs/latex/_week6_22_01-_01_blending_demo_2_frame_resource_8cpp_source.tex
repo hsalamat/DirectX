@@ -1,0 +1,26 @@
+\doxysection{Frame\+Resource.\+cpp}
+\label{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source}\index{Week6/2 -\/ BlendingDemo/FrameResource.cpp@{Week6/2 -\/ BlendingDemo/FrameResource.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00002 }
+\DoxyCodeLine{00003 FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount)}
+\DoxyCodeLine{00004 \{}
+\DoxyCodeLine{00005     ThrowIfFailed(device-\/>CreateCommandAllocator(}
+\DoxyCodeLine{00006         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{00007         IID\_PPV\_ARGS(CmdListAlloc.GetAddressOf())));}
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009   \textcolor{comment}{//  FrameCB = std::make\_unique<UploadBuffer<FrameConstants>>(device, 1, true);}}
+\DoxyCodeLine{00010     PassCB = std::make\_unique<UploadBuffer<PassConstants>>(device, passCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{00011     MaterialCB = std::make\_unique<UploadBuffer<MaterialConstants>>(device, materialCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{00012     ObjectCB = std::make\_unique<UploadBuffer<ObjectConstants>>(device, objectCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{00013 }
+\DoxyCodeLine{00014     WavesVB = std::make\_unique<UploadBuffer<Vertex>>(device, waveVertCount, \textcolor{keyword}{false});}
+\DoxyCodeLine{00015 \}}
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00017 FrameResource::\string~FrameResource()}
+\DoxyCodeLine{00018 \{}
+\DoxyCodeLine{00019 }
+\DoxyCodeLine{00020 \}}
+
+\end{DoxyCode}

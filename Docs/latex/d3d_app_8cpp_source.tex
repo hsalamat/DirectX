@@ -67,7 +67,6 @@
 \DoxyCodeLine{00063     \{}
 \DoxyCodeLine{00064         m4xMsaaState = value;}
 \DoxyCodeLine{00065 }
-\DoxyCodeLine{00066         \textcolor{comment}{// Recreate the swapchain and buffers with new multisample settings.}}
 \DoxyCodeLine{00067         CreateSwapChain();}
 \DoxyCodeLine{00068         OnResize();}
 \DoxyCodeLine{00069     \}}
@@ -148,17 +147,14 @@
 \DoxyCodeLine{00144     assert(mSwapChain);}
 \DoxyCodeLine{00145     assert(mDirectCmdListAlloc);}
 \DoxyCodeLine{00146 }
-\DoxyCodeLine{00147     \textcolor{comment}{// Flush before changing any resources.}}
 \DoxyCodeLine{00148     FlushCommandQueue();}
 \DoxyCodeLine{00149 }
 \DoxyCodeLine{00150     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
 \DoxyCodeLine{00151 }
-\DoxyCodeLine{00152     \textcolor{comment}{// Release the previous resources we will be recreating.}}
 \DoxyCodeLine{00153     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < SwapChainBufferCount; ++i)}
 \DoxyCodeLine{00154         mSwapChainBuffer[i].Reset();}
 \DoxyCodeLine{00155     mDepthStencilBuffer.Reset();}
 \DoxyCodeLine{00156     }
-\DoxyCodeLine{00157     \textcolor{comment}{// Resize the swap chain.}}
 \DoxyCodeLine{00158     ThrowIfFailed(mSwapChain-\/>ResizeBuffers(}
 \DoxyCodeLine{00159         SwapChainBufferCount, }
 \DoxyCodeLine{00160         mClientWidth, mClientHeight, }
@@ -175,7 +171,6 @@
 \DoxyCodeLine{00171         rtvHeapHandle.Offset(1, mRtvDescriptorSize);}
 \DoxyCodeLine{00172     \}}
 \DoxyCodeLine{00173 }
-\DoxyCodeLine{00174     \textcolor{comment}{// Create the depth/stencil buffer and view.}}
 \DoxyCodeLine{00175     D3D12\_RESOURCE\_DESC depthStencilDesc;}
 \DoxyCodeLine{00176     depthStencilDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
 \DoxyCodeLine{00177     depthStencilDesc.Alignment = 0;}
@@ -184,10 +179,6 @@
 \DoxyCodeLine{00180     depthStencilDesc.DepthOrArraySize = 1;}
 \DoxyCodeLine{00181     depthStencilDesc.MipLevels = 1;}
 \DoxyCodeLine{00182 }
-\DoxyCodeLine{00183     \textcolor{comment}{// the depth buffer.  Therefore, because we need to create two views to the same resource:}}
-\DoxyCodeLine{00184     \textcolor{comment}{//   1. SRV format: DXGI\_FORMAT\_R24\_UNORM\_X8\_TYPELESS}}
-\DoxyCodeLine{00185     \textcolor{comment}{//   2. DSV Format: DXGI\_FORMAT\_D24\_UNORM\_S8\_UINT}}
-\DoxyCodeLine{00186     \textcolor{comment}{// we need to create the depth buffer resource with a typeless format.  }}
 \DoxyCodeLine{00187     depthStencilDesc.Format = DXGI\_FORMAT\_R24G8\_TYPELESS;}
 \DoxyCodeLine{00188 }
 \DoxyCodeLine{00189     depthStencilDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
@@ -207,7 +198,6 @@
 \DoxyCodeLine{00203         \&optClear,}
 \DoxyCodeLine{00204         IID\_PPV\_ARGS(mDepthStencilBuffer.GetAddressOf())));}
 \DoxyCodeLine{00205 }
-\DoxyCodeLine{00206     \textcolor{comment}{// Create descriptor to mip level 0 of entire resource using the format of the resource.}}
 \DoxyCodeLine{00207     D3D12\_DEPTH\_STENCIL\_VIEW\_DESC dsvDesc;}
 \DoxyCodeLine{00208     dsvDesc.Flags = D3D12\_DSV\_FLAG\_NONE;}
 \DoxyCodeLine{00209     dsvDesc.ViewDimension = D3D12\_DSV\_DIMENSION\_TEXTURE2D;}
@@ -215,19 +205,15 @@
 \DoxyCodeLine{00211     dsvDesc.Texture2D.MipSlice = 0;}
 \DoxyCodeLine{00212     md3dDevice-\/>CreateDepthStencilView(mDepthStencilBuffer.Get(), \&dsvDesc, DepthStencilView());}
 \DoxyCodeLine{00213 }
-\DoxyCodeLine{00214     \textcolor{comment}{// Transition the resource from its initial state to be used as a depth buffer.}}
 \DoxyCodeLine{00215     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mDepthStencilBuffer.Get(),}
 \DoxyCodeLine{00216         D3D12\_RESOURCE\_STATE\_COMMON, D3D12\_RESOURCE\_STATE\_DEPTH\_WRITE));}
 \DoxyCodeLine{00217     }
-\DoxyCodeLine{00218     \textcolor{comment}{// Execute the resize commands.}}
 \DoxyCodeLine{00219     ThrowIfFailed(mCommandList-\/>Close());}
 \DoxyCodeLine{00220     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
 \DoxyCodeLine{00221     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
 \DoxyCodeLine{00222 }
-\DoxyCodeLine{00223     \textcolor{comment}{// Wait until resize is complete.}}
 \DoxyCodeLine{00224     FlushCommandQueue();}
 \DoxyCodeLine{00225 }
-\DoxyCodeLine{00226     \textcolor{comment}{// Update the viewport transform to cover the client area.}}
 \DoxyCodeLine{00227     mScreenViewport.TopLeftX = 0;}
 \DoxyCodeLine{00228     mScreenViewport.TopLeftY = 0;}
 \DoxyCodeLine{00229     mScreenViewport.Width    = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(mClientWidth);}
@@ -242,9 +228,6 @@
 \DoxyCodeLine{00238 \{}
 \DoxyCodeLine{00239     \textcolor{keywordflow}{switch}( msg )}
 \DoxyCodeLine{00240     \{}
-\DoxyCodeLine{00241     \textcolor{comment}{// WM\_ACTIVATE is sent when the window is activated or deactivated.  }}
-\DoxyCodeLine{00242     \textcolor{comment}{// We pause the game when the window is deactivated and unpause it }}
-\DoxyCodeLine{00243     \textcolor{comment}{// when it becomes active.  }}
 \DoxyCodeLine{00244     \textcolor{keywordflow}{case} WM\_ACTIVATE:}
 \DoxyCodeLine{00245         \textcolor{keywordflow}{if}( LOWORD(wParam) == WA\_INACTIVE )}
 \DoxyCodeLine{00246         \{}
@@ -258,9 +241,7 @@
 \DoxyCodeLine{00254         \}}
 \DoxyCodeLine{00255         \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{00256 }
-\DoxyCodeLine{00257     \textcolor{comment}{// WM\_SIZE is sent when the user resizes the window.  }}
 \DoxyCodeLine{00258     \textcolor{keywordflow}{case} WM\_SIZE:}
-\DoxyCodeLine{00259         \textcolor{comment}{// Save the new client area dimensions.}}
 \DoxyCodeLine{00260         mClientWidth  = LOWORD(lParam);}
 \DoxyCodeLine{00261         mClientHeight = HIWORD(lParam);}
 \DoxyCodeLine{00262         \textcolor{keywordflow}{if}( md3dDevice )}
@@ -298,14 +279,6 @@
 \DoxyCodeLine{00294                 \}}
 \DoxyCodeLine{00295                 \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( mResizing )}
 \DoxyCodeLine{00296                 \{}
-\DoxyCodeLine{00297                     \textcolor{comment}{// If user is dragging the resize bars, we do not resize }}
-\DoxyCodeLine{00298                     \textcolor{comment}{// the buffers here because as the user continuously }}
-\DoxyCodeLine{00299                     \textcolor{comment}{// drags the resize bars, a stream of WM\_SIZE messages are}}
-\DoxyCodeLine{00300                     \textcolor{comment}{// sent to the window, and it would be pointless (and slow)}}
-\DoxyCodeLine{00301                     \textcolor{comment}{// to resize for each WM\_SIZE message received from dragging}}
-\DoxyCodeLine{00302                     \textcolor{comment}{// the resize bars.  So instead, we reset after the user is }}
-\DoxyCodeLine{00303                     \textcolor{comment}{// done resizing the window and releases the resize bars, which }}
-\DoxyCodeLine{00304                     \textcolor{comment}{// sends a WM\_EXITSIZEMOVE message.}}
 \DoxyCodeLine{00305                 \}}
 \DoxyCodeLine{00306                 \textcolor{keywordflow}{else} \textcolor{comment}{// API call such as SetWindowPos or mSwapChain-\/>SetFullscreenState.}}
 \DoxyCodeLine{00307                 \{}
@@ -315,15 +288,12 @@
 \DoxyCodeLine{00311         \}}
 \DoxyCodeLine{00312         \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{00313 }
-\DoxyCodeLine{00314     \textcolor{comment}{// WM\_EXITSIZEMOVE is sent when the user grabs the resize bars.}}
 \DoxyCodeLine{00315     \textcolor{keywordflow}{case} WM\_ENTERSIZEMOVE:}
 \DoxyCodeLine{00316         mAppPaused = \textcolor{keyword}{true};}
 \DoxyCodeLine{00317         mResizing  = \textcolor{keyword}{true};}
 \DoxyCodeLine{00318         mTimer.Stop();}
 \DoxyCodeLine{00319         \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{00320 }
-\DoxyCodeLine{00321     \textcolor{comment}{// WM\_EXITSIZEMOVE is sent when the user releases the resize bars.}}
-\DoxyCodeLine{00322     \textcolor{comment}{// Here we reset everything based on the new window dimensions.}}
 \DoxyCodeLine{00323     \textcolor{keywordflow}{case} WM\_EXITSIZEMOVE:}
 \DoxyCodeLine{00324         mAppPaused = \textcolor{keyword}{false};}
 \DoxyCodeLine{00325         mResizing  = \textcolor{keyword}{false};}
@@ -331,18 +301,14 @@
 \DoxyCodeLine{00327         OnResize();}
 \DoxyCodeLine{00328         \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{00329  }
-\DoxyCodeLine{00330     \textcolor{comment}{// WM\_DESTROY is sent when the window is being destroyed.}}
 \DoxyCodeLine{00331     \textcolor{keywordflow}{case} WM\_DESTROY:}
 \DoxyCodeLine{00332         PostQuitMessage(0);}
 \DoxyCodeLine{00333         \textcolor{keywordflow}{return} 0;}
 \DoxyCodeLine{00334 }
-\DoxyCodeLine{00335     \textcolor{comment}{// The WM\_MENUCHAR message is sent when a menu is active and the user presses }}
-\DoxyCodeLine{00336     \textcolor{comment}{// a key that does not correspond to any mnemonic or accelerator key. }}
 \DoxyCodeLine{00337     \textcolor{keywordflow}{case} WM\_MENUCHAR:}
 \DoxyCodeLine{00338         \textcolor{comment}{// Don't beep when we alt-\/enter.}}
 \DoxyCodeLine{00339         \textcolor{keywordflow}{return} MAKELRESULT(0, MNC\_CLOSE);}
 \DoxyCodeLine{00340 }
-\DoxyCodeLine{00341     \textcolor{comment}{// Catch this message so to prevent the window from becoming too small.}}
 \DoxyCodeLine{00342     \textcolor{keywordflow}{case} WM\_GETMINMAXINFO:}
 \DoxyCodeLine{00343         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.x = 200;}
 \DoxyCodeLine{00344         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.y = 200; }
@@ -395,7 +361,6 @@
 \DoxyCodeLine{00391         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
 \DoxyCodeLine{00392     \}}
 \DoxyCodeLine{00393 }
-\DoxyCodeLine{00394     \textcolor{comment}{// Compute window rectangle dimensions based on requested client area dimensions.}}
 \DoxyCodeLine{00395     RECT R = \{ 0, 0, mClientWidth, mClientHeight \};}
 \DoxyCodeLine{00396     AdjustWindowRect(\&R, WS\_OVERLAPPEDWINDOW, \textcolor{keyword}{false});}
 \DoxyCodeLine{00397     \textcolor{keywordtype}{int} width  = R.right -\/ R.left;}
@@ -418,292 +383,272 @@
 \DoxyCodeLine{00414 \textcolor{keywordtype}{bool} D3DApp::InitDirect3D()}
 \DoxyCodeLine{00415 \{}
 \DoxyCodeLine{00416 \textcolor{preprocessor}{\#if defined(DEBUG) || defined(\_DEBUG) }}
-\DoxyCodeLine{00417     \textcolor{comment}{// Enable the D3D12 debug layer.}}
-\DoxyCodeLine{00418 \{}
-\DoxyCodeLine{00419     ComPtr<ID3D12Debug> debugController;}
-\DoxyCodeLine{00420     ThrowIfFailed(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController)));}
-\DoxyCodeLine{00421     debugController-\/>EnableDebugLayer();}
-\DoxyCodeLine{00422 \}}
-\DoxyCodeLine{00423 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00424 }
-\DoxyCodeLine{00425     ThrowIfFailed(CreateDXGIFactory1(IID\_PPV\_ARGS(\&mdxgiFactory)));}
-\DoxyCodeLine{00426 }
-\DoxyCodeLine{00427     \textcolor{comment}{//Hooman: I added this code to take advantage of your "{}stronger"{} GPU. }}
-\DoxyCodeLine{00428     \textcolor{comment}{//In the lab, seond graphics card NVDIA is much stronger, that would stop blinking!}}
-\DoxyCodeLine{00429     UINT i = 0;}
-\DoxyCodeLine{00430     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00431     std::vector<IDXGIAdapter*> adapterList;}
-\DoxyCodeLine{00432     \textcolor{keywordflow}{while} (mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00433     \{}
-\DoxyCodeLine{00434         adapterList.push\_back(adapter);}
-\DoxyCodeLine{00435         ++i;}
-\DoxyCodeLine{00436     \}}
-\DoxyCodeLine{00437     \textcolor{comment}{// Try to create hardware device.}}
-\DoxyCodeLine{00438     HRESULT hardwareResult = D3D12CreateDevice(}
-\DoxyCodeLine{00439         \textcolor{comment}{//nullptr,             // default adapter}}
-\DoxyCodeLine{00440         adapterList[1],          \textcolor{comment}{//NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter}}
-\DoxyCodeLine{00441         D3D\_FEATURE\_LEVEL\_12\_0,}
-\DoxyCodeLine{00442         IID\_PPV\_ARGS(\&md3dDevice));}
-\DoxyCodeLine{00443 }
-\DoxyCodeLine{00444 }
-\DoxyCodeLine{00445     \textcolor{comment}{// Fallback to WARP device.}}
-\DoxyCodeLine{00446     \textcolor{keywordflow}{if}(FAILED(hardwareResult))}
-\DoxyCodeLine{00447     \{}
-\DoxyCodeLine{00448         ComPtr<IDXGIAdapter> pWarpAdapter;}
-\DoxyCodeLine{00449         ThrowIfFailed(mdxgiFactory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&pWarpAdapter)));}
-\DoxyCodeLine{00450 }
-\DoxyCodeLine{00451         ThrowIfFailed(D3D12CreateDevice(}
-\DoxyCodeLine{00452             pWarpAdapter.Get(),}
-\DoxyCodeLine{00453             D3D\_FEATURE\_LEVEL\_12\_0,}
-\DoxyCodeLine{00454             IID\_PPV\_ARGS(\&md3dDevice)));}
-\DoxyCodeLine{00455     \}}
-\DoxyCodeLine{00456 }
-\DoxyCodeLine{00457     ThrowIfFailed(md3dDevice-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE,}
-\DoxyCodeLine{00458         IID\_PPV\_ARGS(\&mFence)));}
-\DoxyCodeLine{00459 }
-\DoxyCodeLine{00460     mRtvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
-\DoxyCodeLine{00461     mDsvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV);}
-\DoxyCodeLine{00462     mCbvSrvUavDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00463 }
-\DoxyCodeLine{00464     \textcolor{comment}{// Check 4X MSAA quality support for our back buffer format.}}
-\DoxyCodeLine{00465     \textcolor{comment}{// All Direct3D 11 capable devices support 4X MSAA for all render }}
-\DoxyCodeLine{00466     \textcolor{comment}{// target formats, so we only need to check quality support.}}
+\DoxyCodeLine{00419 \{}
+\DoxyCodeLine{00420     ComPtr<ID3D12Debug> debugController;}
+\DoxyCodeLine{00421     ThrowIfFailed(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController)));}
+\DoxyCodeLine{00422     debugController-\/>EnableDebugLayer();}
+\DoxyCodeLine{00423 \}}
+\DoxyCodeLine{00424 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00425 }
+\DoxyCodeLine{00434     ThrowIfFailed(CreateDXGIFactory1(IID\_PPV\_ARGS(\&mdxgiFactory)));}
+\DoxyCodeLine{00435 }
+\DoxyCodeLine{00436     UINT i = 0;}
+\DoxyCodeLine{00437     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00440     std::vector<IDXGIAdapter*> adapterList;}
+\DoxyCodeLine{00441     \textcolor{keywordflow}{while} (mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{00442     \{}
+\DoxyCodeLine{00443         adapterList.push\_back(adapter);}
+\DoxyCodeLine{00444         ++i;}
+\DoxyCodeLine{00445     \}}
+\DoxyCodeLine{00447     HRESULT hardwareResult = D3D12CreateDevice(}
+\DoxyCodeLine{00448         \textcolor{keyword}{nullptr},             \textcolor{comment}{// default adapter}}
+\DoxyCodeLine{00449         \textcolor{comment}{//adapterList[0],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter}}
+\DoxyCodeLine{00450         D3D\_FEATURE\_LEVEL\_12\_0,}
+\DoxyCodeLine{00451         IID\_PPV\_ARGS(\&md3dDevice));}
+\DoxyCodeLine{00452 }
+\DoxyCodeLine{00454     \textcolor{keywordflow}{if}(FAILED(hardwareResult))}
+\DoxyCodeLine{00455     \{}
+\DoxyCodeLine{00456         ComPtr<IDXGIAdapter> pWarpAdapter;}
+\DoxyCodeLine{00457         ThrowIfFailed(mdxgiFactory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&pWarpAdapter)));}
+\DoxyCodeLine{00458 }
+\DoxyCodeLine{00459         ThrowIfFailed(D3D12CreateDevice(}
+\DoxyCodeLine{00460             pWarpAdapter.Get(),}
+\DoxyCodeLine{00461             D3D\_FEATURE\_LEVEL\_12\_0,}
+\DoxyCodeLine{00462             IID\_PPV\_ARGS(\&md3dDevice)));}
+\DoxyCodeLine{00463     \}}
+\DoxyCodeLine{00464 }
+\DoxyCodeLine{00465     ThrowIfFailed(md3dDevice-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE,}
+\DoxyCodeLine{00466         IID\_PPV\_ARGS(\&mFence)));}
 \DoxyCodeLine{00467 }
-\DoxyCodeLine{00468     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
-\DoxyCodeLine{00469     msQualityLevels.Format = mBackBufferFormat;}
-\DoxyCodeLine{00470     msQualityLevels.SampleCount = 4;}
-\DoxyCodeLine{00471     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
-\DoxyCodeLine{00472     msQualityLevels.NumQualityLevels = 0;}
-\DoxyCodeLine{00473     ThrowIfFailed(md3dDevice-\/>CheckFeatureSupport(}
-\DoxyCodeLine{00474         D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS,}
-\DoxyCodeLine{00475         \&msQualityLevels,}
-\DoxyCodeLine{00476         \textcolor{keyword}{sizeof}(msQualityLevels)));}
-\DoxyCodeLine{00477 }
-\DoxyCodeLine{00478     m4xMsaaQuality = msQualityLevels.NumQualityLevels;}
-\DoxyCodeLine{00479     assert(m4xMsaaQuality > 0 \&\& \textcolor{stringliteral}{"{}Unexpected MSAA quality level."{}});}
-\DoxyCodeLine{00480     }
-\DoxyCodeLine{00481 \textcolor{preprocessor}{\#ifdef \_DEBUG}}
-\DoxyCodeLine{00482     LogAdapters();}
-\DoxyCodeLine{00483 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00484 }
-\DoxyCodeLine{00485     CreateCommandObjects();}
-\DoxyCodeLine{00486     CreateSwapChain();}
-\DoxyCodeLine{00487     CreateRtvAndDsvDescriptorHeaps();}
-\DoxyCodeLine{00488 }
-\DoxyCodeLine{00489     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00490 \}}
-\DoxyCodeLine{00491 }
+\DoxyCodeLine{00468     mRtvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
+\DoxyCodeLine{00469     mDsvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV);}
+\DoxyCodeLine{00470     mCbvSrvUavDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{00471 }
+\DoxyCodeLine{00475 }
+\DoxyCodeLine{00476     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
+\DoxyCodeLine{00477     msQualityLevels.Format = mBackBufferFormat;}
+\DoxyCodeLine{00478     msQualityLevels.SampleCount = 4;}
+\DoxyCodeLine{00479     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
+\DoxyCodeLine{00480     msQualityLevels.NumQualityLevels = 0;}
+\DoxyCodeLine{00481     ThrowIfFailed(md3dDevice-\/>CheckFeatureSupport(}
+\DoxyCodeLine{00482         D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS,}
+\DoxyCodeLine{00483         \&msQualityLevels,}
+\DoxyCodeLine{00484         \textcolor{keyword}{sizeof}(msQualityLevels)));}
+\DoxyCodeLine{00485 }
+\DoxyCodeLine{00486     m4xMsaaQuality = msQualityLevels.NumQualityLevels;}
+\DoxyCodeLine{00487     assert(m4xMsaaQuality > 0 \&\& \textcolor{stringliteral}{"{}Unexpected MSAA quality level."{}});}
+\DoxyCodeLine{00488     }
+\DoxyCodeLine{00489 \textcolor{preprocessor}{\#ifdef \_DEBUG}}
+\DoxyCodeLine{00490     LogAdapters();}
+\DoxyCodeLine{00491 \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{00492 }
-\DoxyCodeLine{00493 }
-\DoxyCodeLine{00494 \textcolor{keywordtype}{void} D3DApp::CreateCommandObjects()}
-\DoxyCodeLine{00495 \{}
-\DoxyCodeLine{00496     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
-\DoxyCodeLine{00497     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
-\DoxyCodeLine{00498     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
-\DoxyCodeLine{00499     ThrowIfFailed(md3dDevice-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&mCommandQueue)));}
+\DoxyCodeLine{00493     CreateCommandObjects();}
+\DoxyCodeLine{00494     CreateSwapChain();}
+\DoxyCodeLine{00495     CreateRtvAndDsvDescriptorHeaps();}
+\DoxyCodeLine{00496 }
+\DoxyCodeLine{00497     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00498 \}}
+\DoxyCodeLine{00499 }
 \DoxyCodeLine{00500 }
-\DoxyCodeLine{00501     ThrowIfFailed(md3dDevice-\/>CreateCommandAllocator(}
-\DoxyCodeLine{00502         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
-\DoxyCodeLine{00503         IID\_PPV\_ARGS(mDirectCmdListAlloc.GetAddressOf())));}
-\DoxyCodeLine{00504 }
-\DoxyCodeLine{00505     ThrowIfFailed(md3dDevice-\/>CreateCommandList(}
-\DoxyCodeLine{00506         0,}
-\DoxyCodeLine{00507         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
-\DoxyCodeLine{00508         mDirectCmdListAlloc.Get(), \textcolor{comment}{// Associated command allocator}}
-\DoxyCodeLine{00509         \textcolor{keyword}{nullptr},                   \textcolor{comment}{// Initial PipelineStateObject}}
-\DoxyCodeLine{00510         IID\_PPV\_ARGS(mCommandList.GetAddressOf())));}
-\DoxyCodeLine{00511 }
-\DoxyCodeLine{00512     \textcolor{comment}{// Start off in a closed state.  This is because the first time we refer }}
-\DoxyCodeLine{00513     \textcolor{comment}{// to the command list we will Reset it, and it needs to be closed before}}
-\DoxyCodeLine{00514     \textcolor{comment}{// calling Reset.}}
-\DoxyCodeLine{00515     mCommandList-\/>Close();}
-\DoxyCodeLine{00516 \}}
-\DoxyCodeLine{00517 }
-\DoxyCodeLine{00518 \textcolor{keywordtype}{void} D3DApp::CreateSwapChain()}
-\DoxyCodeLine{00519 \{}
-\DoxyCodeLine{00520     \textcolor{comment}{// Release the previous swapchain we will be recreating.}}
-\DoxyCodeLine{00521     mSwapChain.Reset();}
-\DoxyCodeLine{00522 }
-\DoxyCodeLine{00523     DXGI\_SWAP\_CHAIN\_DESC sd;}
-\DoxyCodeLine{00524     sd.BufferDesc.Width = mClientWidth;}
-\DoxyCodeLine{00525     sd.BufferDesc.Height = mClientHeight;}
-\DoxyCodeLine{00526     sd.BufferDesc.RefreshRate.Numerator = 60;}
-\DoxyCodeLine{00527     sd.BufferDesc.RefreshRate.Denominator = 1;}
-\DoxyCodeLine{00528     sd.BufferDesc.Format = mBackBufferFormat;}
-\DoxyCodeLine{00529     sd.BufferDesc.ScanlineOrdering = DXGI\_MODE\_SCANLINE\_ORDER\_UNSPECIFIED;}
-\DoxyCodeLine{00530     sd.BufferDesc.Scaling = DXGI\_MODE\_SCALING\_UNSPECIFIED;}
-\DoxyCodeLine{00531     sd.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00532     sd.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00533     sd.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
-\DoxyCodeLine{00534     sd.BufferCount = SwapChainBufferCount;}
-\DoxyCodeLine{00535     sd.OutputWindow = mhMainWnd;}
-\DoxyCodeLine{00536     sd.Windowed = \textcolor{keyword}{true};}
-\DoxyCodeLine{00537     sd.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
-\DoxyCodeLine{00538     sd.Flags = DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH;}
-\DoxyCodeLine{00539 }
-\DoxyCodeLine{00540     \textcolor{comment}{// Note: Swap chain uses queue to perform flush.}}
-\DoxyCodeLine{00541     ThrowIfFailed(mdxgiFactory-\/>CreateSwapChain(}
-\DoxyCodeLine{00542         mCommandQueue.Get(),}
-\DoxyCodeLine{00543         \&sd, }
-\DoxyCodeLine{00544         mSwapChain.GetAddressOf()));}
-\DoxyCodeLine{00545 \}}
-\DoxyCodeLine{00546 }
-\DoxyCodeLine{00547 \textcolor{keywordtype}{void} D3DApp::FlushCommandQueue()}
-\DoxyCodeLine{00548 \{}
-\DoxyCodeLine{00549     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00550     mCurrentFence++;}
-\DoxyCodeLine{00551 }
-\DoxyCodeLine{00552     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point.  Because we }}
-\DoxyCodeLine{00553     \textcolor{comment}{// are on the GPU timeline, the new fence point won't be set until the GPU finishes}}
-\DoxyCodeLine{00554     \textcolor{comment}{// processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00555     ThrowIfFailed(mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence));}
-\DoxyCodeLine{00556 }
-\DoxyCodeLine{00557     \textcolor{comment}{// Wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00558     \textcolor{keywordflow}{if}(mFence-\/>GetCompletedValue() < mCurrentFence)}
-\DoxyCodeLine{00559     \{}
-\DoxyCodeLine{00560         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00561 }
-\DoxyCodeLine{00562         \textcolor{comment}{// Fire event when GPU hits current fence.  }}
-\DoxyCodeLine{00563         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrentFence, eventHandle));}
+\DoxyCodeLine{00501 }
+\DoxyCodeLine{00502 \textcolor{keywordtype}{void} D3DApp::CreateCommandObjects()}
+\DoxyCodeLine{00503 \{}
+\DoxyCodeLine{00504     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
+\DoxyCodeLine{00505     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
+\DoxyCodeLine{00506     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
+\DoxyCodeLine{00507     ThrowIfFailed(md3dDevice-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&mCommandQueue)));}
+\DoxyCodeLine{00508 }
+\DoxyCodeLine{00509     ThrowIfFailed(md3dDevice-\/>CreateCommandAllocator(}
+\DoxyCodeLine{00510         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{00511         IID\_PPV\_ARGS(mDirectCmdListAlloc.GetAddressOf())));}
+\DoxyCodeLine{00512 }
+\DoxyCodeLine{00513     ThrowIfFailed(md3dDevice-\/>CreateCommandList(}
+\DoxyCodeLine{00514         0,}
+\DoxyCodeLine{00515         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{00516         mDirectCmdListAlloc.Get(), \textcolor{comment}{// Associated command allocator}}
+\DoxyCodeLine{00517         \textcolor{keyword}{nullptr},                   \textcolor{comment}{// Initial PipelineStateObject}}
+\DoxyCodeLine{00518         IID\_PPV\_ARGS(mCommandList.GetAddressOf())));}
+\DoxyCodeLine{00519 }
+\DoxyCodeLine{00523     mCommandList-\/>Close();}
+\DoxyCodeLine{00524 \}}
+\DoxyCodeLine{00525 }
+\DoxyCodeLine{00526 \textcolor{keywordtype}{void} D3DApp::CreateSwapChain()}
+\DoxyCodeLine{00527 \{}
+\DoxyCodeLine{00529     mSwapChain.Reset();}
+\DoxyCodeLine{00530 }
+\DoxyCodeLine{00531     DXGI\_SWAP\_CHAIN\_DESC sd;}
+\DoxyCodeLine{00532     sd.BufferDesc.Width = mClientWidth;}
+\DoxyCodeLine{00533     sd.BufferDesc.Height = mClientHeight;}
+\DoxyCodeLine{00534     sd.BufferDesc.RefreshRate.Numerator = 60;}
+\DoxyCodeLine{00535     sd.BufferDesc.RefreshRate.Denominator = 1;}
+\DoxyCodeLine{00536     sd.BufferDesc.Format = mBackBufferFormat;}
+\DoxyCodeLine{00537     sd.BufferDesc.ScanlineOrdering = DXGI\_MODE\_SCANLINE\_ORDER\_UNSPECIFIED;}
+\DoxyCodeLine{00538     sd.BufferDesc.Scaling = DXGI\_MODE\_SCALING\_UNSPECIFIED;}
+\DoxyCodeLine{00539     sd.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
+\DoxyCodeLine{00540     sd.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
+\DoxyCodeLine{00541     sd.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
+\DoxyCodeLine{00542     sd.BufferCount = SwapChainBufferCount;}
+\DoxyCodeLine{00543     sd.OutputWindow = mhMainWnd;}
+\DoxyCodeLine{00544     sd.Windowed = \textcolor{keyword}{true};}
+\DoxyCodeLine{00545     sd.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
+\DoxyCodeLine{00546     sd.Flags = DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH;}
+\DoxyCodeLine{00547 }
+\DoxyCodeLine{00548     \textcolor{comment}{// Note: Swap chain uses queue to perform flush.}}
+\DoxyCodeLine{00549     ThrowIfFailed(mdxgiFactory-\/>CreateSwapChain(}
+\DoxyCodeLine{00550         mCommandQueue.Get(),}
+\DoxyCodeLine{00551         \&sd, }
+\DoxyCodeLine{00552         mSwapChain.GetAddressOf()));}
+\DoxyCodeLine{00553 \}}
+\DoxyCodeLine{00554 }
+\DoxyCodeLine{00555 \textcolor{keywordtype}{void} D3DApp::FlushCommandQueue()}
+\DoxyCodeLine{00556 \{}
+\DoxyCodeLine{00558     mCurrentFence++;}
+\DoxyCodeLine{00559 }
+\DoxyCodeLine{00563     ThrowIfFailed(mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence));}
 \DoxyCodeLine{00564 }
-\DoxyCodeLine{00565         \textcolor{comment}{// Wait until the GPU hits current fence event is fired.}}
-\DoxyCodeLine{00566         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00567         CloseHandle(eventHandle);}
-\DoxyCodeLine{00568     \}}
-\DoxyCodeLine{00569 \}}
-\DoxyCodeLine{00570 }
-\DoxyCodeLine{00571 }
+\DoxyCodeLine{00566     \textcolor{keywordflow}{if}(mFence-\/>GetCompletedValue() < mCurrentFence)}
+\DoxyCodeLine{00567     \{}
+\DoxyCodeLine{00568         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{00569 }
+\DoxyCodeLine{00571         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrentFence, eventHandle));}
 \DoxyCodeLine{00572 }
-\DoxyCodeLine{00573 ID3D12Resource* D3DApp::CurrentBackBuffer()\textcolor{keyword}{const}}
-\DoxyCodeLine{00574 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00575     \textcolor{keywordflow}{return} mSwapChainBuffer[mCurrBackBuffer].Get();}
-\DoxyCodeLine{00576 \}}
-\DoxyCodeLine{00577 }
-\DoxyCodeLine{00578 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::CurrentBackBufferView()\textcolor{keyword}{const}}
-\DoxyCodeLine{00579 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00580     \textcolor{keywordflow}{return} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(}
-\DoxyCodeLine{00581         mRtvHeap-\/>GetCPUDescriptorHandleForHeapStart(),}
-\DoxyCodeLine{00582         mCurrBackBuffer,}
-\DoxyCodeLine{00583         mRtvDescriptorSize);}
+\DoxyCodeLine{00574         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{00575         CloseHandle(eventHandle);}
+\DoxyCodeLine{00576     \}}
+\DoxyCodeLine{00577 \}}
+\DoxyCodeLine{00578 }
+\DoxyCodeLine{00579 }
+\DoxyCodeLine{00580 }
+\DoxyCodeLine{00581 ID3D12Resource* D3DApp::CurrentBackBuffer()\textcolor{keyword}{const}}
+\DoxyCodeLine{00582 \textcolor{keyword}{}\{}
+\DoxyCodeLine{00583     \textcolor{keywordflow}{return} mSwapChainBuffer[mCurrBackBuffer].Get();}
 \DoxyCodeLine{00584 \}}
 \DoxyCodeLine{00585 }
-\DoxyCodeLine{00586 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::DepthStencilView()\textcolor{keyword}{const}}
+\DoxyCodeLine{00586 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::CurrentBackBufferView()\textcolor{keyword}{const}}
 \DoxyCodeLine{00587 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00588     \textcolor{keywordflow}{return} mDsvHeap-\/>GetCPUDescriptorHandleForHeapStart();}
-\DoxyCodeLine{00589 \}}
-\DoxyCodeLine{00590 }
-\DoxyCodeLine{00591 \textcolor{keywordtype}{void} D3DApp::CalculateFrameStats()}
-\DoxyCodeLine{00592 \{}
-\DoxyCodeLine{00593     \textcolor{comment}{// Code computes the average frames per second, and also the }}
-\DoxyCodeLine{00594     \textcolor{comment}{// average time it takes to render one frame.  These stats }}
-\DoxyCodeLine{00595     \textcolor{comment}{// are appended to the window caption bar.}}
-\DoxyCodeLine{00596     }
-\DoxyCodeLine{00597     \textcolor{keyword}{static} \textcolor{keywordtype}{int} frameCnt = 0;}
-\DoxyCodeLine{00598     \textcolor{keyword}{static} \textcolor{keywordtype}{float} timeElapsed = 0.0f;}
-\DoxyCodeLine{00599 }
-\DoxyCodeLine{00600     frameCnt++;}
-\DoxyCodeLine{00601 }
-\DoxyCodeLine{00602     \textcolor{comment}{// Compute averages over one second period.}}
-\DoxyCodeLine{00603     \textcolor{keywordflow}{if}( (mTimer.TotalTime() -\/ timeElapsed) >= 1.0f )}
-\DoxyCodeLine{00604     \{}
-\DoxyCodeLine{00605         \textcolor{keywordtype}{float} fps = (float)frameCnt; \textcolor{comment}{// fps = frameCnt / 1}}
-\DoxyCodeLine{00606         \textcolor{keywordtype}{float} mspf = 1000.0f / fps;}
+\DoxyCodeLine{00588     \textcolor{keywordflow}{return} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(}
+\DoxyCodeLine{00589         mRtvHeap-\/>GetCPUDescriptorHandleForHeapStart(),}
+\DoxyCodeLine{00590         mCurrBackBuffer,}
+\DoxyCodeLine{00591         mRtvDescriptorSize);}
+\DoxyCodeLine{00592 \}}
+\DoxyCodeLine{00593 }
+\DoxyCodeLine{00594 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::DepthStencilView()\textcolor{keyword}{const}}
+\DoxyCodeLine{00595 \textcolor{keyword}{}\{}
+\DoxyCodeLine{00596     \textcolor{keywordflow}{return} mDsvHeap-\/>GetCPUDescriptorHandleForHeapStart();}
+\DoxyCodeLine{00597 \}}
+\DoxyCodeLine{00598 }
+\DoxyCodeLine{00599 \textcolor{keywordtype}{void} D3DApp::CalculateFrameStats()}
+\DoxyCodeLine{00600 \{}
+\DoxyCodeLine{00601     \textcolor{comment}{// Code computes the average frames per second, and also the }}
+\DoxyCodeLine{00602     \textcolor{comment}{// average time it takes to render one frame.  These stats }}
+\DoxyCodeLine{00603     \textcolor{comment}{// are appended to the window caption bar.}}
+\DoxyCodeLine{00604     }
+\DoxyCodeLine{00605     \textcolor{keyword}{static} \textcolor{keywordtype}{int} frameCnt = 0;}
+\DoxyCodeLine{00606     \textcolor{keyword}{static} \textcolor{keywordtype}{float} timeElapsed = 0.0f;}
 \DoxyCodeLine{00607 }
-\DoxyCodeLine{00608         wstring fpsStr = to\_wstring(fps);}
-\DoxyCodeLine{00609         wstring mspfStr = to\_wstring(mspf);}
-\DoxyCodeLine{00610 }
-\DoxyCodeLine{00611         wstring windowText = mMainWndCaption +}
-\DoxyCodeLine{00612             L\textcolor{stringliteral}{"{}    fps: "{}} + fpsStr +}
-\DoxyCodeLine{00613             L\textcolor{stringliteral}{"{}   mspf: "{}} + mspfStr;}
-\DoxyCodeLine{00614 }
-\DoxyCodeLine{00615         SetWindowText(mhMainWnd, windowText.c\_str());}
-\DoxyCodeLine{00616         }
-\DoxyCodeLine{00617         \textcolor{comment}{// Reset for next average.}}
-\DoxyCodeLine{00618         frameCnt = 0;}
-\DoxyCodeLine{00619         timeElapsed += 1.0f;}
-\DoxyCodeLine{00620     \}}
-\DoxyCodeLine{00621 \}}
+\DoxyCodeLine{00608     frameCnt++;}
+\DoxyCodeLine{00609 }
+\DoxyCodeLine{00610     \textcolor{comment}{// Compute averages over one second period.}}
+\DoxyCodeLine{00611     \textcolor{keywordflow}{if}( (mTimer.TotalTime() -\/ timeElapsed) >= 1.0f )}
+\DoxyCodeLine{00612     \{}
+\DoxyCodeLine{00613         \textcolor{keywordtype}{float} fps = (float)frameCnt; \textcolor{comment}{// fps = frameCnt / 1}}
+\DoxyCodeLine{00614         \textcolor{keywordtype}{float} mspf = 1000.0f / fps;}
+\DoxyCodeLine{00615 }
+\DoxyCodeLine{00616         wstring fpsStr = to\_wstring(fps);}
+\DoxyCodeLine{00617         wstring mspfStr = to\_wstring(mspf);}
+\DoxyCodeLine{00618 }
+\DoxyCodeLine{00619         wstring windowText = mMainWndCaption +}
+\DoxyCodeLine{00620             L\textcolor{stringliteral}{"{}    fps: "{}} + fpsStr +}
+\DoxyCodeLine{00621             L\textcolor{stringliteral}{"{}   mspf: "{}} + mspfStr;}
 \DoxyCodeLine{00622 }
-\DoxyCodeLine{00623 \textcolor{keywordtype}{void} D3DApp::LogAdapters()}
-\DoxyCodeLine{00624 \{}
-\DoxyCodeLine{00625     UINT i = 0;}
-\DoxyCodeLine{00626     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00627     std::vector<IDXGIAdapter*> adapterList;}
-\DoxyCodeLine{00628     \textcolor{keywordflow}{while}(mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00629     \{}
-\DoxyCodeLine{00630         DXGI\_ADAPTER\_DESC desc;}
-\DoxyCodeLine{00631         adapter-\/>GetDesc(\&desc);}
-\DoxyCodeLine{00632 }
-\DoxyCodeLine{00633         std::wstring text = L\textcolor{stringliteral}{"{}***Adapter: "{}};}
-\DoxyCodeLine{00634         text += desc.Description;}
-\DoxyCodeLine{00635         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00636 }
-\DoxyCodeLine{00637         OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00638 }
-\DoxyCodeLine{00639         adapterList.push\_back(adapter);}
-\DoxyCodeLine{00640         }
-\DoxyCodeLine{00641         ++i;}
-\DoxyCodeLine{00642     \}}
-\DoxyCodeLine{00643 }
-\DoxyCodeLine{00644     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < adapterList.size(); ++i)}
-\DoxyCodeLine{00645     \{}
-\DoxyCodeLine{00646         LogAdapterOutputs(adapterList[i]);}
-\DoxyCodeLine{00647         ReleaseCom(adapterList[i]);}
-\DoxyCodeLine{00648     \}}
-\DoxyCodeLine{00649 \}}
-\DoxyCodeLine{00650 }
-\DoxyCodeLine{00651 \textcolor{keywordtype}{void} D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)}
-\DoxyCodeLine{00652 \{}
-\DoxyCodeLine{00653     UINT i = 0;}
-\DoxyCodeLine{00654     IDXGIOutput* output = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00655     \textcolor{keywordflow}{while}(adapter-\/>EnumOutputs(i, \&output) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00656     \{}
-\DoxyCodeLine{00657         DXGI\_OUTPUT\_DESC desc;}
-\DoxyCodeLine{00658         output-\/>GetDesc(\&desc);}
-\DoxyCodeLine{00659         }
-\DoxyCodeLine{00660         std::wstring text = L\textcolor{stringliteral}{"{}***Output: "{}};}
-\DoxyCodeLine{00661         text += desc.DeviceName;}
-\DoxyCodeLine{00662         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00663         OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00664 }
-\DoxyCodeLine{00665         LogOutputDisplayModes(output, mBackBufferFormat);}
-\DoxyCodeLine{00666 }
-\DoxyCodeLine{00667         ReleaseCom(output);}
-\DoxyCodeLine{00668 }
-\DoxyCodeLine{00669         ++i;}
-\DoxyCodeLine{00670     \}}
-\DoxyCodeLine{00671 \}}
-\DoxyCodeLine{00672 }
-\DoxyCodeLine{00673 \textcolor{keywordtype}{void} D3DApp::LogOutputDisplayModes(IDXGIOutput* output, DXGI\_FORMAT format)}
-\DoxyCodeLine{00674 \{}
-\DoxyCodeLine{00675     UINT count = 0;}
-\DoxyCodeLine{00676     UINT flags = 0;}
-\DoxyCodeLine{00677 }
-\DoxyCodeLine{00678     \textcolor{comment}{// Call with nullptr to get list count.}}
-\DoxyCodeLine{00679     output-\/>GetDisplayModeList(format, flags, \&count, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00680 }
-\DoxyCodeLine{00681     std::vector<DXGI\_MODE\_DESC> modeList(count);}
-\DoxyCodeLine{00682     output-\/>GetDisplayModeList(format, flags, \&count, \&modeList[0]);}
+\DoxyCodeLine{00623         SetWindowText(mhMainWnd, windowText.c\_str());}
+\DoxyCodeLine{00624         }
+\DoxyCodeLine{00625         \textcolor{comment}{// Reset for next average.}}
+\DoxyCodeLine{00626         frameCnt = 0;}
+\DoxyCodeLine{00627         timeElapsed += 1.0f;}
+\DoxyCodeLine{00628     \}}
+\DoxyCodeLine{00629 \}}
+\DoxyCodeLine{00630 }
+\DoxyCodeLine{00636 \textcolor{keywordtype}{void} D3DApp::LogAdapters()}
+\DoxyCodeLine{00637 \{}
+\DoxyCodeLine{00638     UINT i = 0;}
+\DoxyCodeLine{00639     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00640     std::vector<IDXGIAdapter*> adapterList;}
+\DoxyCodeLine{00641     \textcolor{keywordflow}{while}(mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{00642     \{}
+\DoxyCodeLine{00643         DXGI\_ADAPTER\_DESC desc;}
+\DoxyCodeLine{00644         adapter-\/>GetDesc(\&desc);}
+\DoxyCodeLine{00645 }
+\DoxyCodeLine{00646         std::wstring text = L\textcolor{stringliteral}{"{}***Adapter: "{}};}
+\DoxyCodeLine{00647         text += desc.Description;}
+\DoxyCodeLine{00648         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00649 }
+\DoxyCodeLine{00650         OutputDebugString(text.c\_str());}
+\DoxyCodeLine{00651 }
+\DoxyCodeLine{00652         adapterList.push\_back(adapter);}
+\DoxyCodeLine{00653         }
+\DoxyCodeLine{00654         ++i;}
+\DoxyCodeLine{00655     \}}
+\DoxyCodeLine{00656 }
+\DoxyCodeLine{00657     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < adapterList.size(); ++i)}
+\DoxyCodeLine{00658     \{}
+\DoxyCodeLine{00659         LogAdapterOutputs(adapterList[i]);}
+\DoxyCodeLine{00660         ReleaseCom(adapterList[i]);}
+\DoxyCodeLine{00661     \}}
+\DoxyCodeLine{00662 \}}
+\DoxyCodeLine{00663 }
+\DoxyCodeLine{00669 \textcolor{keywordtype}{void} D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)}
+\DoxyCodeLine{00670 \{}
+\DoxyCodeLine{00671     UINT i = 0;}
+\DoxyCodeLine{00672     IDXGIOutput* output = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00673     \textcolor{keywordflow}{while}(adapter-\/>EnumOutputs(i, \&output) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{00674     \{}
+\DoxyCodeLine{00676         DXGI\_OUTPUT\_DESC desc;}
+\DoxyCodeLine{00677         output-\/>GetDesc(\&desc);}
+\DoxyCodeLine{00678         }
+\DoxyCodeLine{00679         std::wstring text = L\textcolor{stringliteral}{"{}***Output: "{}};}
+\DoxyCodeLine{00680         text += desc.DeviceName;}
+\DoxyCodeLine{00681         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00682         OutputDebugString(text.c\_str());}
 \DoxyCodeLine{00683 }
-\DoxyCodeLine{00684     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& x : modeList)}
-\DoxyCodeLine{00685     \{}
-\DoxyCodeLine{00686         UINT n = x.RefreshRate.Numerator;}
-\DoxyCodeLine{00687         UINT d = x.RefreshRate.Denominator;}
-\DoxyCodeLine{00688         std::wstring text =}
-\DoxyCodeLine{00689             L\textcolor{stringliteral}{"{}Width = "{}} + std::to\_wstring(x.Width) + L\textcolor{stringliteral}{"{} "{}} +}
-\DoxyCodeLine{00690             L\textcolor{stringliteral}{"{}Height = "{}} + std::to\_wstring(x.Height) + L\textcolor{stringliteral}{"{} "{}} +}
-\DoxyCodeLine{00691             L\textcolor{stringliteral}{"{}Refresh = "{}} + std::to\_wstring(n) + L\textcolor{stringliteral}{"{}/"{}} + std::to\_wstring(d) +}
-\DoxyCodeLine{00692             L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00693 }
-\DoxyCodeLine{00694         ::OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00695     \}}
-\DoxyCodeLine{00696 \}}
+\DoxyCodeLine{00684         LogOutputDisplayModes(output, mBackBufferFormat);}
+\DoxyCodeLine{00685 }
+\DoxyCodeLine{00686         ReleaseCom(output);}
+\DoxyCodeLine{00687 }
+\DoxyCodeLine{00688         ++i;}
+\DoxyCodeLine{00689     \}}
+\DoxyCodeLine{00690 \}}
+\DoxyCodeLine{00691 }
+\DoxyCodeLine{00692 \textcolor{comment}{//we can get a list of all supported display modes an output supports in that format with the following code}}
+\DoxyCodeLine{00693 \textcolor{keywordtype}{void} D3DApp::LogOutputDisplayModes(IDXGIOutput* output, DXGI\_FORMAT format)}
+\DoxyCodeLine{00694 \{}
+\DoxyCodeLine{00695     UINT count = 0;}
+\DoxyCodeLine{00696     UINT flags = 0;}
 \DoxyCodeLine{00697 }
-\DoxyCodeLine{00698 }
-\DoxyCodeLine{00699 }
+\DoxyCodeLine{00699     output-\/>GetDisplayModeList(format, flags, \&count, \textcolor{keyword}{nullptr});}
 \DoxyCodeLine{00700 }
-\DoxyCodeLine{00701 }
-\DoxyCodeLine{00702 }
+\DoxyCodeLine{00701     std::vector<DXGI\_MODE\_DESC> modeList(count);}
+\DoxyCodeLine{00702     output-\/>GetDisplayModeList(format, flags, \&count, \&modeList[0]);}
 \DoxyCodeLine{00703 }
+\DoxyCodeLine{00704     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& x : modeList)}
+\DoxyCodeLine{00705     \{}
+\DoxyCodeLine{00706         UINT n = x.RefreshRate.Numerator;}
+\DoxyCodeLine{00707         UINT d = x.RefreshRate.Denominator;}
+\DoxyCodeLine{00708         std::wstring text =}
+\DoxyCodeLine{00709             L\textcolor{stringliteral}{"{}Width = "{}} + std::to\_wstring(x.Width) + L\textcolor{stringliteral}{"{} "{}} +}
+\DoxyCodeLine{00710             L\textcolor{stringliteral}{"{}Height = "{}} + std::to\_wstring(x.Height) + L\textcolor{stringliteral}{"{} "{}} +}
+\DoxyCodeLine{00711             L\textcolor{stringliteral}{"{}Refresh = "{}} + std::to\_wstring(n) + L\textcolor{stringliteral}{"{}/"{}} + std::to\_wstring(d) +}
+\DoxyCodeLine{00712             L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00713 }
+\DoxyCodeLine{00714         ::OutputDebugString(text.c\_str());}
+\DoxyCodeLine{00715     \}}
+\DoxyCodeLine{00716 \}}
+\DoxyCodeLine{00717 }
+\DoxyCodeLine{00718 }
+\DoxyCodeLine{00719 }
+\DoxyCodeLine{00720 }
+\DoxyCodeLine{00721 }
+\DoxyCodeLine{00722 }
+\DoxyCodeLine{00723 }
 
 \end{DoxyCode}

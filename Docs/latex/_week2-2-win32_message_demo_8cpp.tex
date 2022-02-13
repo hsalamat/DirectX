@@ -1,0 +1,59 @@
+\doxysection{Week2/\+Win32\+Examples/\+Week2-\/2-\/win32\+Message\+Demo.cpp File Reference}
+\label{_week2-2-win32_message_demo_8cpp}\index{Week2/Win32Examples/Week2-\/2-\/win32MessageDemo.cpp@{Week2/Win32Examples/Week2-\/2-\/win32MessageDemo.cpp}}
+
+
+Illustrates the minimal amount of the Win32 code needed for Direct3D programming.  
+
+
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int WINAPI \textbf{ Win\+Main} (HINSTANCE h\+Instance, HINSTANCE h\+Prev\+Instance, PSTR sz\+Cmd\+Line, int i\+Cmd\+Show)
+\begin{DoxyCompactList}\small\item\em {\texttt{ https\+://docs.\+microsoft.\+com/en-\/us/windows/win32/learnwin32/winmain--the-\/application-\/entry-\/point}} \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Illustrates the minimal amount of the Win32 code needed for Direct3D programming. 
+
+Windows is about two things\+: windows (register window class, create an instance) and messages. \begin{DoxyNote}{Note}
+\+: Even when we close the window, the program is still running Because Def\+Window\+Proc has no idea if you are closign a window or closing the whole application 
+\end{DoxyNote}
+\begin{DoxyAttention}{Attention}
+\+: Program requires Empty Project! 
+\end{DoxyAttention}
+\begin{DoxyNote}{Note}
+\+: Go to Properties -\/-\/\texorpdfstring{$>$}{>} Linker -\/-\/\texorpdfstring{$>$}{>} System -\/-\/\texorpdfstring{$>$}{>} Change the subsystem to \char`\"{}\+Windows\char`\"{}
+\end{DoxyNote}
+\begin{DoxyAuthor}{Author}
+Hooman Salamat 
+\end{DoxyAuthor}
+\begin{DoxyRefDesc}{Bug}
+\item[\textbf{ Bug}]No known bugs. \end{DoxyRefDesc}
+
+
+Definition in file \textbf{ Week2-\/2-\/win32\+Message\+Demo.\+cpp}.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{_week2-2-win32_message_demo_8cpp_aad7900b674de058446ff8791973fafca}} 
+\index{Week2-\/2-\/win32MessageDemo.cpp@{Week2-\/2-\/win32MessageDemo.cpp}!WinMain@{WinMain}}
+\index{WinMain@{WinMain}!Week2-\/2-\/win32MessageDemo.cpp@{Week2-\/2-\/win32MessageDemo.cpp}}
+\doxysubsubsection{WinMain()}
+{\footnotesize\ttfamily int WINAPI Win\+Main (\begin{DoxyParamCaption}\item[{HINSTANCE}]{h\+Instance,  }\item[{HINSTANCE}]{h\+Prev\+Instance,  }\item[{PSTR}]{sz\+Cmd\+Line,  }\item[{int}]{i\+Cmd\+Show }\end{DoxyParamCaption})}
+
+
+
+{\texttt{ https\+://docs.\+microsoft.\+com/en-\/us/windows/win32/learnwin32/winmain--the-\/application-\/entry-\/point}} 
+
+extra memory slots
+
+extra memory slots
+
+spcifies the windows menu. We have no menu.
+
+Loop until we get a WM\+\_\+\+QUIT message. The function Get\+Message will only return 0 (false) when a WM\+\_\+\+QUIT message is received, which effectively exits the loop. The function returns -\/1 if there is an error. Also, note that Get\+Message puts the application thread to sleep until there is a message. {\texttt{ https\+://docs.\+microsoft.\+com/en-\/us/windows/win32/winmsg/wm-\/quit}}
+
+Definition at line \textbf{ 18} of file \textbf{ Week2-\/2-\/win32\+Message\+Demo.\+cpp}.
+

@@ -171,5 +171,6 @@ var hierarchy =
     [ "Vertex", "struct_vertex.html", null ],
     [ "VPosData", "struct_v_pos_data.html", null ],
     [ "Waves", "class_waves.html", null ],
-    [ "Win32Application", "class_win32_application.html", null ]
+    [ "Win32Application", "class_win32_application.html", null ],
+    [ "WindowsMessageMap", "class_windows_message_map.html", null ]
 ];

@@ -1,0 +1,22 @@
+\doxysection{Frame\+Resource.\+cpp}
+\label{_week4_2_week4_2_frame_resource_8cpp_source}\index{Week4/Week4/FrameResource.cpp@{Week4/Week4/FrameResource.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00002 }
+\DoxyCodeLine{00003 FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount)}
+\DoxyCodeLine{00004 \{}
+\DoxyCodeLine{00005     ThrowIfFailed(device-\/>CreateCommandAllocator(}
+\DoxyCodeLine{00006         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{00007         IID\_PPV\_ARGS(CmdListAlloc.GetAddressOf())));}
+\DoxyCodeLine{00008 }
+\DoxyCodeLine{00009     PassCB = std::make\_unique<UploadBuffer<PassConstants>>(device, passCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{00010     ObjectCB = std::make\_unique<UploadBuffer<ObjectConstants>>(device, objectCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{00011 \}}
+\DoxyCodeLine{00012 }
+\DoxyCodeLine{00013 FrameResource::\string~FrameResource()}
+\DoxyCodeLine{00014 \{}
+\DoxyCodeLine{00015 }
+\DoxyCodeLine{00016 \}}
+
+\end{DoxyCode}

@@ -1,0 +1,219 @@
+\doxysection{Windows\+Message\+Map.\+cpp}
+\label{_windows_message_map_8cpp_source}\index{Week2/Win32Examples/WindowsMessageMap.cpp@{Week2/Win32Examples/WindowsMessageMap.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}WindowsMessageMap.h"{}}}
+\DoxyCodeLine{00002 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include <sstream>}}
+\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include <iomanip>}}
+\DoxyCodeLine{00005 }
+\DoxyCodeLine{00006 \textcolor{comment}{// secret messages}}
+\DoxyCodeLine{00007 \textcolor{preprocessor}{\#define WM\_UAHDESTROYWINDOW 0x0090}}
+\DoxyCodeLine{00008 \textcolor{preprocessor}{\#define WM\_UAHDRAWMENU 0x0091}}
+\DoxyCodeLine{00009 \textcolor{preprocessor}{\#define WM\_UAHDRAWMENUITEM 0x0092}}
+\DoxyCodeLine{00010 \textcolor{preprocessor}{\#define WM\_UAHINITMENU 0x0093}}
+\DoxyCodeLine{00011 \textcolor{preprocessor}{\#define WM\_UAHMEASUREMENUITEM 0x0094}}
+\DoxyCodeLine{00012 \textcolor{preprocessor}{\#define WM\_UAHNCPAINTMENUPOPUP 0x0095}}
+\DoxyCodeLine{00013 }
+\DoxyCodeLine{00014 \textcolor{preprocessor}{\#define REGISTER\_MESSAGE(msg)\{msg,\#msg\}}}
+\DoxyCodeLine{00015 }
+\DoxyCodeLine{00016 WindowsMessageMap::WindowsMessageMap() noexcept}
+\DoxyCodeLine{00017     :}
+\DoxyCodeLine{00018     map(\{}
+\DoxyCodeLine{00019         REGISTER\_MESSAGE(WM\_CREATE),}
+\DoxyCodeLine{00020         REGISTER\_MESSAGE(WM\_DESTROY),}
+\DoxyCodeLine{00021         REGISTER\_MESSAGE(WM\_MOVE),}
+\DoxyCodeLine{00022         REGISTER\_MESSAGE(WM\_SIZE),}
+\DoxyCodeLine{00023         REGISTER\_MESSAGE(WM\_ACTIVATE),}
+\DoxyCodeLine{00024         REGISTER\_MESSAGE(WM\_SETFOCUS),}
+\DoxyCodeLine{00025         REGISTER\_MESSAGE(WM\_KILLFOCUS),}
+\DoxyCodeLine{00026         REGISTER\_MESSAGE(WM\_ENABLE),}
+\DoxyCodeLine{00027         REGISTER\_MESSAGE(WM\_SETREDRAW),}
+\DoxyCodeLine{00028         REGISTER\_MESSAGE(WM\_SETTEXT),}
+\DoxyCodeLine{00029         REGISTER\_MESSAGE(WM\_GETTEXT),}
+\DoxyCodeLine{00030         REGISTER\_MESSAGE(WM\_GETTEXTLENGTH),}
+\DoxyCodeLine{00031         REGISTER\_MESSAGE(WM\_PAINT),}
+\DoxyCodeLine{00032         REGISTER\_MESSAGE(WM\_CLOSE),}
+\DoxyCodeLine{00033         REGISTER\_MESSAGE(WM\_QUERYENDSESSION),}
+\DoxyCodeLine{00034         REGISTER\_MESSAGE(WM\_QUIT),}
+\DoxyCodeLine{00035         REGISTER\_MESSAGE(WM\_QUERYOPEN),}
+\DoxyCodeLine{00036         REGISTER\_MESSAGE(WM\_ERASEBKGND),}
+\DoxyCodeLine{00037         REGISTER\_MESSAGE(WM\_SYSCOLORCHANGE),}
+\DoxyCodeLine{00038         REGISTER\_MESSAGE(WM\_ENDSESSION),}
+\DoxyCodeLine{00039         REGISTER\_MESSAGE(WM\_SHOWWINDOW),}
+\DoxyCodeLine{00040         REGISTER\_MESSAGE(WM\_CTLCOLORMSGBOX),}
+\DoxyCodeLine{00041         REGISTER\_MESSAGE(WM\_CTLCOLOREDIT),}
+\DoxyCodeLine{00042         REGISTER\_MESSAGE(WM\_CTLCOLORLISTBOX),}
+\DoxyCodeLine{00043         REGISTER\_MESSAGE(WM\_CTLCOLORBTN),}
+\DoxyCodeLine{00044         REGISTER\_MESSAGE(WM\_CTLCOLORDLG),}
+\DoxyCodeLine{00045         REGISTER\_MESSAGE(WM\_CTLCOLORSCROLLBAR),}
+\DoxyCodeLine{00046         REGISTER\_MESSAGE(WM\_CTLCOLORSTATIC),}
+\DoxyCodeLine{00047         REGISTER\_MESSAGE(WM\_WININICHANGE),}
+\DoxyCodeLine{00048         REGISTER\_MESSAGE(WM\_SETTINGCHANGE),}
+\DoxyCodeLine{00049         REGISTER\_MESSAGE(WM\_DEVMODECHANGE),}
+\DoxyCodeLine{00050         REGISTER\_MESSAGE(WM\_ACTIVATEAPP),}
+\DoxyCodeLine{00051         REGISTER\_MESSAGE(WM\_FONTCHANGE),}
+\DoxyCodeLine{00052         REGISTER\_MESSAGE(WM\_TIMECHANGE),}
+\DoxyCodeLine{00053         REGISTER\_MESSAGE(WM\_CANCELMODE),}
+\DoxyCodeLine{00054         REGISTER\_MESSAGE(WM\_SETCURSOR),}
+\DoxyCodeLine{00055         REGISTER\_MESSAGE(WM\_MOUSEACTIVATE),}
+\DoxyCodeLine{00056         REGISTER\_MESSAGE(WM\_CHILDACTIVATE),}
+\DoxyCodeLine{00057         REGISTER\_MESSAGE(WM\_QUEUESYNC),}
+\DoxyCodeLine{00058         REGISTER\_MESSAGE(WM\_GETMINMAXINFO),}
+\DoxyCodeLine{00059         REGISTER\_MESSAGE(WM\_ICONERASEBKGND),}
+\DoxyCodeLine{00060         REGISTER\_MESSAGE(WM\_NEXTDLGCTL),}
+\DoxyCodeLine{00061         REGISTER\_MESSAGE(WM\_SPOOLERSTATUS),}
+\DoxyCodeLine{00062         REGISTER\_MESSAGE(WM\_DRAWITEM),}
+\DoxyCodeLine{00063         REGISTER\_MESSAGE(WM\_MEASUREITEM),}
+\DoxyCodeLine{00064         REGISTER\_MESSAGE(WM\_DELETEITEM),}
+\DoxyCodeLine{00065         REGISTER\_MESSAGE(WM\_VKEYTOITEM),}
+\DoxyCodeLine{00066         REGISTER\_MESSAGE(WM\_CHARTOITEM),}
+\DoxyCodeLine{00067         REGISTER\_MESSAGE(WM\_SETFONT),}
+\DoxyCodeLine{00068         REGISTER\_MESSAGE(WM\_GETFONT),}
+\DoxyCodeLine{00069         REGISTER\_MESSAGE(WM\_QUERYDRAGICON),}
+\DoxyCodeLine{00070         REGISTER\_MESSAGE(WM\_COMPAREITEM),}
+\DoxyCodeLine{00071         REGISTER\_MESSAGE(WM\_COMPACTING),}
+\DoxyCodeLine{00072         REGISTER\_MESSAGE(WM\_NCCREATE),}
+\DoxyCodeLine{00073         REGISTER\_MESSAGE(WM\_NCDESTROY),}
+\DoxyCodeLine{00074         REGISTER\_MESSAGE(WM\_NCCALCSIZE),}
+\DoxyCodeLine{00075         REGISTER\_MESSAGE(WM\_NCHITTEST),}
+\DoxyCodeLine{00076         REGISTER\_MESSAGE(WM\_NCPAINT),}
+\DoxyCodeLine{00077         REGISTER\_MESSAGE(WM\_NCACTIVATE),}
+\DoxyCodeLine{00078         REGISTER\_MESSAGE(WM\_GETDLGCODE),}
+\DoxyCodeLine{00079         REGISTER\_MESSAGE(WM\_NCMOUSEMOVE),}
+\DoxyCodeLine{00080         REGISTER\_MESSAGE(WM\_NCLBUTTONDOWN),}
+\DoxyCodeLine{00081         REGISTER\_MESSAGE(WM\_NCLBUTTONUP),}
+\DoxyCodeLine{00082         REGISTER\_MESSAGE(WM\_NCLBUTTONDBLCLK),}
+\DoxyCodeLine{00083         REGISTER\_MESSAGE(WM\_NCRBUTTONDOWN),}
+\DoxyCodeLine{00084         REGISTER\_MESSAGE(WM\_NCRBUTTONUP),}
+\DoxyCodeLine{00085         REGISTER\_MESSAGE(WM\_NCRBUTTONDBLCLK),}
+\DoxyCodeLine{00086         REGISTER\_MESSAGE(WM\_NCMBUTTONDOWN),}
+\DoxyCodeLine{00087         REGISTER\_MESSAGE(WM\_NCMBUTTONUP),}
+\DoxyCodeLine{00088         REGISTER\_MESSAGE(WM\_NCMBUTTONDBLCLK),}
+\DoxyCodeLine{00089         REGISTER\_MESSAGE(WM\_KEYDOWN),}
+\DoxyCodeLine{00090         REGISTER\_MESSAGE(WM\_KEYUP),}
+\DoxyCodeLine{00091         REGISTER\_MESSAGE(WM\_CHAR),}
+\DoxyCodeLine{00092         REGISTER\_MESSAGE(WM\_DEADCHAR),}
+\DoxyCodeLine{00093         REGISTER\_MESSAGE(WM\_SYSKEYDOWN),}
+\DoxyCodeLine{00094         REGISTER\_MESSAGE(WM\_SYSKEYUP),}
+\DoxyCodeLine{00095         REGISTER\_MESSAGE(WM\_SYSCHAR),}
+\DoxyCodeLine{00096         REGISTER\_MESSAGE(WM\_SYSDEADCHAR),}
+\DoxyCodeLine{00097         REGISTER\_MESSAGE(WM\_KEYLAST),}
+\DoxyCodeLine{00098         REGISTER\_MESSAGE(WM\_INITDIALOG),}
+\DoxyCodeLine{00099         REGISTER\_MESSAGE(WM\_COMMAND),}
+\DoxyCodeLine{00100         REGISTER\_MESSAGE(WM\_SYSCOMMAND),}
+\DoxyCodeLine{00101         REGISTER\_MESSAGE(WM\_TIMER),}
+\DoxyCodeLine{00102         REGISTER\_MESSAGE(WM\_HSCROLL),}
+\DoxyCodeLine{00103         REGISTER\_MESSAGE(WM\_VSCROLL),}
+\DoxyCodeLine{00104         REGISTER\_MESSAGE(WM\_INITMENU),}
+\DoxyCodeLine{00105         REGISTER\_MESSAGE(WM\_INITMENUPOPUP),}
+\DoxyCodeLine{00106         REGISTER\_MESSAGE(WM\_MENUSELECT),}
+\DoxyCodeLine{00107         REGISTER\_MESSAGE(WM\_MENUCHAR),}
+\DoxyCodeLine{00108         REGISTER\_MESSAGE(WM\_ENTERIDLE),}
+\DoxyCodeLine{00109         REGISTER\_MESSAGE(WM\_MOUSEWHEEL),}
+\DoxyCodeLine{00110         REGISTER\_MESSAGE(WM\_MOUSEMOVE),}
+\DoxyCodeLine{00111         REGISTER\_MESSAGE(WM\_LBUTTONDOWN),}
+\DoxyCodeLine{00112         REGISTER\_MESSAGE(WM\_LBUTTONUP),}
+\DoxyCodeLine{00113         REGISTER\_MESSAGE(WM\_LBUTTONDBLCLK),}
+\DoxyCodeLine{00114         REGISTER\_MESSAGE(WM\_RBUTTONDOWN),}
+\DoxyCodeLine{00115         REGISTER\_MESSAGE(WM\_RBUTTONUP),}
+\DoxyCodeLine{00116         REGISTER\_MESSAGE(WM\_RBUTTONDBLCLK),}
+\DoxyCodeLine{00117         REGISTER\_MESSAGE(WM\_MBUTTONDOWN),}
+\DoxyCodeLine{00118         REGISTER\_MESSAGE(WM\_MBUTTONUP),}
+\DoxyCodeLine{00119         REGISTER\_MESSAGE(WM\_MBUTTONDBLCLK),}
+\DoxyCodeLine{00120         REGISTER\_MESSAGE(WM\_PARENTNOTIFY),}
+\DoxyCodeLine{00121         REGISTER\_MESSAGE(WM\_MDICREATE),}
+\DoxyCodeLine{00122         REGISTER\_MESSAGE(WM\_MDIDESTROY),}
+\DoxyCodeLine{00123         REGISTER\_MESSAGE(WM\_MDIACTIVATE),}
+\DoxyCodeLine{00124         REGISTER\_MESSAGE(WM\_MDIRESTORE),}
+\DoxyCodeLine{00125         REGISTER\_MESSAGE(WM\_MDINEXT),}
+\DoxyCodeLine{00126         REGISTER\_MESSAGE(WM\_MDIMAXIMIZE),}
+\DoxyCodeLine{00127         REGISTER\_MESSAGE(WM\_MDITILE),}
+\DoxyCodeLine{00128         REGISTER\_MESSAGE(WM\_MDICASCADE),}
+\DoxyCodeLine{00129         REGISTER\_MESSAGE(WM\_MDIICONARRANGE),}
+\DoxyCodeLine{00130         REGISTER\_MESSAGE(WM\_MDIGETACTIVE),}
+\DoxyCodeLine{00131         REGISTER\_MESSAGE(WM\_MDISETMENU),}
+\DoxyCodeLine{00132         REGISTER\_MESSAGE(WM\_CUT),}
+\DoxyCodeLine{00133         REGISTER\_MESSAGE(WM\_COPYDATA),}
+\DoxyCodeLine{00134         REGISTER\_MESSAGE(WM\_COPY),}
+\DoxyCodeLine{00135         REGISTER\_MESSAGE(WM\_PASTE),}
+\DoxyCodeLine{00136         REGISTER\_MESSAGE(WM\_CLEAR),}
+\DoxyCodeLine{00137         REGISTER\_MESSAGE(WM\_UNDO),}
+\DoxyCodeLine{00138         REGISTER\_MESSAGE(WM\_RENDERFORMAT),}
+\DoxyCodeLine{00139         REGISTER\_MESSAGE(WM\_RENDERALLFORMATS),}
+\DoxyCodeLine{00140         REGISTER\_MESSAGE(WM\_DESTROYCLIPBOARD),}
+\DoxyCodeLine{00141         REGISTER\_MESSAGE(WM\_DRAWCLIPBOARD),}
+\DoxyCodeLine{00142         REGISTER\_MESSAGE(WM\_PAINTCLIPBOARD),}
+\DoxyCodeLine{00143         REGISTER\_MESSAGE(WM\_VSCROLLCLIPBOARD),}
+\DoxyCodeLine{00144         REGISTER\_MESSAGE(WM\_SIZECLIPBOARD),}
+\DoxyCodeLine{00145         REGISTER\_MESSAGE(WM\_ASKCBFORMATNAME),}
+\DoxyCodeLine{00146         REGISTER\_MESSAGE(WM\_CHANGECBCHAIN),}
+\DoxyCodeLine{00147         REGISTER\_MESSAGE(WM\_HSCROLLCLIPBOARD),}
+\DoxyCodeLine{00148         REGISTER\_MESSAGE(WM\_QUERYNEWPALETTE),}
+\DoxyCodeLine{00149         REGISTER\_MESSAGE(WM\_PALETTEISCHANGING),}
+\DoxyCodeLine{00150         REGISTER\_MESSAGE(WM\_PALETTECHANGED),}
+\DoxyCodeLine{00151         REGISTER\_MESSAGE(WM\_DROPFILES),}
+\DoxyCodeLine{00152         REGISTER\_MESSAGE(WM\_POWER),}
+\DoxyCodeLine{00153         REGISTER\_MESSAGE(WM\_WINDOWPOSCHANGED),}
+\DoxyCodeLine{00154         REGISTER\_MESSAGE(WM\_WINDOWPOSCHANGING),}
+\DoxyCodeLine{00155         REGISTER\_MESSAGE(WM\_HELP),}
+\DoxyCodeLine{00156         REGISTER\_MESSAGE(WM\_NOTIFY),}
+\DoxyCodeLine{00157         REGISTER\_MESSAGE(WM\_CONTEXTMENU),}
+\DoxyCodeLine{00158         REGISTER\_MESSAGE(WM\_TCARD),}
+\DoxyCodeLine{00159         REGISTER\_MESSAGE(WM\_MDIREFRESHMENU),}
+\DoxyCodeLine{00160         REGISTER\_MESSAGE(WM\_MOVING),}
+\DoxyCodeLine{00161         REGISTER\_MESSAGE(WM\_STYLECHANGED),}
+\DoxyCodeLine{00162         REGISTER\_MESSAGE(WM\_STYLECHANGING),}
+\DoxyCodeLine{00163         REGISTER\_MESSAGE(WM\_SIZING),}
+\DoxyCodeLine{00164         REGISTER\_MESSAGE(WM\_SETHOTKEY),}
+\DoxyCodeLine{00165         REGISTER\_MESSAGE(WM\_PRINT),}
+\DoxyCodeLine{00166         REGISTER\_MESSAGE(WM\_PRINTCLIENT),}
+\DoxyCodeLine{00167         REGISTER\_MESSAGE(WM\_POWERBROADCAST),}
+\DoxyCodeLine{00168         REGISTER\_MESSAGE(WM\_HOTKEY),}
+\DoxyCodeLine{00169         REGISTER\_MESSAGE(WM\_GETICON),}
+\DoxyCodeLine{00170         REGISTER\_MESSAGE(WM\_EXITMENULOOP),}
+\DoxyCodeLine{00171         REGISTER\_MESSAGE(WM\_ENTERMENULOOP),}
+\DoxyCodeLine{00172         REGISTER\_MESSAGE(WM\_DISPLAYCHANGE),}
+\DoxyCodeLine{00173         REGISTER\_MESSAGE(WM\_STYLECHANGED),}
+\DoxyCodeLine{00174         REGISTER\_MESSAGE(WM\_STYLECHANGING),}
+\DoxyCodeLine{00175         REGISTER\_MESSAGE(WM\_GETICON),}
+\DoxyCodeLine{00176         REGISTER\_MESSAGE(WM\_SETICON),}
+\DoxyCodeLine{00177         REGISTER\_MESSAGE(WM\_SIZING),}
+\DoxyCodeLine{00178         REGISTER\_MESSAGE(WM\_MOVING),}
+\DoxyCodeLine{00179         REGISTER\_MESSAGE(WM\_CAPTURECHANGED),}
+\DoxyCodeLine{00180         REGISTER\_MESSAGE(WM\_DEVICECHANGE),}
+\DoxyCodeLine{00181         REGISTER\_MESSAGE(WM\_PRINT),}
+\DoxyCodeLine{00182         REGISTER\_MESSAGE(WM\_PRINTCLIENT),}
+\DoxyCodeLine{00183         REGISTER\_MESSAGE(WM\_IME\_SETCONTEXT),}
+\DoxyCodeLine{00184         REGISTER\_MESSAGE(WM\_IME\_NOTIFY),}
+\DoxyCodeLine{00185         REGISTER\_MESSAGE(WM\_NCMOUSELEAVE),}
+\DoxyCodeLine{00186         REGISTER\_MESSAGE(WM\_EXITSIZEMOVE),}
+\DoxyCodeLine{00187         REGISTER\_MESSAGE(WM\_UAHDESTROYWINDOW),}
+\DoxyCodeLine{00188         REGISTER\_MESSAGE(WM\_DWMNCRENDERINGCHANGED),}
+\DoxyCodeLine{00189         REGISTER\_MESSAGE(WM\_ENTERSIZEMOVE),}
+\DoxyCodeLine{00190         \})}
+\DoxyCodeLine{00191 \{\}}
+\DoxyCodeLine{00192 }
+\DoxyCodeLine{00193 std::string WindowsMessageMap::operator()(DWORD msg, LPARAM lp, WPARAM wp) \textcolor{keyword}{const} \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{00194 \{}
+\DoxyCodeLine{00195     \textcolor{keyword}{constexpr} \textcolor{keywordtype}{int} firstColWidth = 25;}
+\DoxyCodeLine{00196     \textcolor{keyword}{const} \textcolor{keyword}{auto} i = map.find(msg);}
+\DoxyCodeLine{00197 }
+\DoxyCodeLine{00198     std::ostringstream oss;}
+\DoxyCodeLine{00199     \textcolor{keywordflow}{if} (i != map.end())}
+\DoxyCodeLine{00200     \{}
+\DoxyCodeLine{00201         oss << std::left << std::setw(firstColWidth) << i-\/>second << std::right;}
+\DoxyCodeLine{00202     \}}
+\DoxyCodeLine{00203     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00204     \{}
+\DoxyCodeLine{00205         std::ostringstream padss;}
+\DoxyCodeLine{00206         padss << \textcolor{stringliteral}{"{}Unknown message: 0x"{}} << std::hex << msg;}
+\DoxyCodeLine{00207         oss << std::left << std::setw(firstColWidth) << padss.str() << std::right;}
+\DoxyCodeLine{00208     \}}
+\DoxyCodeLine{00209     oss << \textcolor{stringliteral}{"{}   LP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << lp;}
+\DoxyCodeLine{00210     oss << \textcolor{stringliteral}{"{}   WP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << wp << std::endl;}
+\DoxyCodeLine{00211 }
+\DoxyCodeLine{00212     \textcolor{keywordflow}{return} oss.str();}
+\DoxyCodeLine{00213 \}}
+
+\end{DoxyCode}

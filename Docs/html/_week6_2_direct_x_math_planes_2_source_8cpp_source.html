@@ -143,65 +143,66 @@ $(document).ready(function(){initNavTree('_week6_2_direct_x_math_planes_2_source
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    XMVECTOR p = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    XMVECTOR v = XMVectorSet(3.0f, 5.0f, 2.0f, 1.0f);</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">float</span> x = XMVectorGetX(XMPlaneDotCoord(p, v));</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordflow">if</span> (x &lt;= 0.001f &amp;&amp; x &gt;= 0.001f) <span class="comment">// if x approximately equals 0.0f</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        cout &lt;&lt; <span class="stringliteral">&quot; v is coplanar to the plane.&quot;</span> &lt;&lt; endl;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordflow">if</span> (x &gt; 0)</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        cout &lt;&lt; <span class="stringliteral">&quot;v is in positive half-space.&quot;</span> &lt;&lt; endl;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordflow">if</span> (x &lt; 0) </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        cout &lt;&lt; <span class="stringliteral">&quot;v is in negative half-space.&quot;</span> &lt;&lt; endl;</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">//This returns the dot product of the plane normal vector and the given 3D vector which is (5.0f, 5.0f, 5.0f, 5.0f), </span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="comment">//it means the shortest distance to the plane equals to p.v = 5 where p is the normal and v is a point. </span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    XMVECTOR d =  XMPlaneDotNormal(p, v);</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    cout &lt;&lt; <span class="stringliteral">&quot;The shortest distance to the plane: &quot;</span> &lt;&lt; d &lt;&lt; endl;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="comment">//It is useful to think of plane as a 4D vector, which we denote as (n, d) = (a, b, c, d). </span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="comment">//𝑛.(𝑝−𝑝0) = 𝑛.𝑝 – 𝑛𝑝0 = 𝑛.𝑝 + 𝑑 =0  where d = −n · p0</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">//to construct a plane from a point and normal, you could use:</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="comment">//XMVECTOR XMPlaneFromPointNormal( XMVECTOR Point, XMVECTOR Normal);</span></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    cout &lt;&lt; <span class="stringliteral">&quot;Construct a plane vector (n,d) from Point-Normal: &quot;</span> &lt;&lt; XMPlaneFromPointNormal(v, p) &lt;&lt; endl; <span class="comment">//(0.0f, 1.0f, 0.0f, -5.0f)</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="comment">//compute a plane given three points on the plane :</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="comment">//XMVECTOR XMPlaneFromPoints(XMVECTOR Point1, XMVECTOR Point2, XMVECTOR Point3);</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="comment">//Calculates the dot product between an input plane and a 3D vector.</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">float</span> x = XMVectorGetX(XMPlaneDotCoord(p, v));</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">if</span> (x &lt;= 0.001f &amp;&amp; x &gt;= 0.001f) <span class="comment">// if x approximately equals 0.0f</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        cout &lt;&lt; <span class="stringliteral">&quot; v is coplanar to the plane.&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordflow">if</span> (x &gt; 0)</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        cout &lt;&lt; <span class="stringliteral">&quot;v is in positive half-space.&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">if</span> (x &lt; 0) </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        cout &lt;&lt; <span class="stringliteral">&quot;v is in negative half-space.&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="comment">//This returns the dot product of the plane normal vector and the given 3D vector which is (5.0f, 5.0f, 5.0f, 5.0f), </span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="comment">//it means the shortest distance to the plane equals to p.v = 5 where p is the normal and v is a point. </span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    XMVECTOR d =  XMPlaneDotNormal(p, v);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    cout &lt;&lt; <span class="stringliteral">&quot;The shortest distance to the plane: &quot;</span> &lt;&lt; d &lt;&lt; endl;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="comment">//It is useful to think of plane as a 4D vector, which we denote as (n, d) = (a, b, c, d). </span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">//𝑛.(𝑝−𝑝0) = 𝑛.𝑝 – 𝑛𝑝0 = 𝑛.𝑝 + 𝑑 =0  where d = −n · p0</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="comment">//to construct a plane from a point and normal, you could use:</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="comment">//XMVECTOR XMPlaneFromPointNormal( XMVECTOR Point, XMVECTOR Normal);</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    cout &lt;&lt; <span class="stringliteral">&quot;Construct a plane vector (n,d) from Point-Normal: &quot;</span> &lt;&lt; XMPlaneFromPointNormal(v, p) &lt;&lt; endl; <span class="comment">//(0.0f, 1.0f, 0.0f, -5.0f)</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="comment">//compute a plane given three points on the plane :</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="comment">//XMVECTOR XMPlaneFromPoints(XMVECTOR Point1, XMVECTOR Point2, XMVECTOR Point3);</span></div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    XMVECTOR p0 = XMVectorSet(5.0f, 1.0f, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 5.0f, 1.0f);</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    XMVECTOR p2 = XMVectorSet(5.0f, 1.0f, 5.0f, 1.0f);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    cout &lt;&lt; <span class="stringliteral">&quot;Construct a plane vector (n,d) from three points: &quot;</span> &lt;&lt; XMPlaneFromPoints(p0, p1, p2) &lt;&lt; endl; <span class="comment">//(0, 1, 0, -1)</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    XMVECTOR p0 = XMVectorSet(5.0f, 1.0f, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    XMVECTOR p1 = XMVectorSet(0.0f, 1.0f, 5.0f, 1.0f);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    XMVECTOR p2 = XMVectorSet(5.0f, 1.0f, 5.0f, 1.0f);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    cout &lt;&lt; <span class="stringliteral">&quot;Construct a plane vector (n,d) from three points: &quot;</span> &lt;&lt; XMPlaneFromPoints(p0, p1, p2) &lt;&lt; endl; <span class="comment">//(0, 1, 0, -1)</span></div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">//Sometimes we might have a plane and would like to normalize the normal vector.At first thought, </span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="comment">//it would seem that we could just normalize the normal vector as we would any other vector.</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">//But recall that the d component also depends on the normal vector : d = −n · p0.Therefore, </span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">//if we normalize the normal vector, we must also recalculate d.</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="comment">//We can use the following DirectX Math function to normalize a plane’s normal vector :</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="comment">//XMVECTOR XMPlaneNormalize(XMVECTOR P);</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    cout &lt;&lt; <span class="stringliteral">&quot;To normalize a plane’s normal vector :&quot;</span> &lt;&lt; XMPlaneNormalize(p) &lt;&lt; endl; <span class="comment">//(0, 1, 0, 0)</span></div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="comment">//The set of intersection points found by shooting a ray through each of the object’s vertices with the plane</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="comment">//defines the projected geometry of the shadow. For a vertex p, its shadow projection is given by:</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="comment">//XMVECTOR XMPlaneIntersectLine(</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="comment">//  XMVECTOR P, =&gt; the plane coefficients (A, B, C, D)</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="comment">//  XMVECTOR LinePoint1, =&gt; the first point on the line</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="comment">//  XMVECTOR LinePoint2); =&gt; the second point on the line</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    XMVECTOR LinePoint1 = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    XMVECTOR LinePoint2 = XMVectorSet(0.0f, -5.0f, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    cout &lt;&lt; <span class="stringliteral">&quot;The intersection of the ray r(t) with the shadow plane (n, d) gives s: &quot;</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        &lt;&lt; XMPlaneIntersectLine(XMPlaneFromPointNormal(v, p), LinePoint1, LinePoint2) &lt;&lt; endl;</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="comment">//Builds a transformation matrix that flattens geometry into a plane.</span></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); <span class="comment">// xz plane</span></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    XMVECTOR lightPosition = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    XMMATRIX S = XMMatrixShadow(shadowPlane, lightPosition);</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    cout &lt;&lt; <span class="stringliteral">&quot;The transformation matrix that flattens geometry into a plane given a light position: &quot;</span> &lt;&lt; endl &lt;&lt; S &lt;&lt; endl;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    system(<span class="stringliteral">&quot;pause&quot;</span>);</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>}</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="comment">//Sometimes we might have a plane and would like to normalize the normal vector.At first thought, </span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">//it would seem that we could just normalize the normal vector as we would any other vector.</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">//But recall that the d component also depends on the normal vector : d = −n · p0.Therefore, </span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="comment">//if we normalize the normal vector, we must also recalculate d.</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="comment">//We can use the following DirectX Math function to normalize a plane’s normal vector :</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="comment">//XMVECTOR XMPlaneNormalize(XMVECTOR P);</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    cout &lt;&lt; <span class="stringliteral">&quot;To normalize a plane’s normal vector :&quot;</span> &lt;&lt; XMPlaneNormalize(p) &lt;&lt; endl; <span class="comment">//(0, 1, 0, 0)</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="comment">//The set of intersection points found by shooting a ray through each of the object’s vertices with the plane</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="comment">//defines the projected geometry of the shadow. For a vertex p, its shadow projection is given by:</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="comment">//XMVECTOR XMPlaneIntersectLine(</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="comment">//  XMVECTOR P, =&gt; the plane coefficients (A, B, C, D)</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="comment">//  XMVECTOR LinePoint1, =&gt; the first point on the line</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="comment">//  XMVECTOR LinePoint2); =&gt; the second point on the line</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    XMVECTOR LinePoint1 = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    XMVECTOR LinePoint2 = XMVectorSet(0.0f, -5.0f, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    cout &lt;&lt; <span class="stringliteral">&quot;The intersection of the ray r(t) with the shadow plane (n, d) gives s: &quot;</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        &lt;&lt; XMPlaneIntersectLine(XMPlaneFromPointNormal(v, p), LinePoint1, LinePoint2) &lt;&lt; endl;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="comment">//Builds a transformation matrix that flattens geometry into a plane.</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); <span class="comment">// xz plane</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    XMVECTOR lightPosition = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    XMMATRIX S = XMMatrixShadow(shadowPlane, lightPosition);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    cout &lt;&lt; <span class="stringliteral">&quot;The transformation matrix that flattens geometry into a plane given a light position: &quot;</span> &lt;&lt; endl &lt;&lt; S &lt;&lt; endl;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    system(<span class="stringliteral">&quot;pause&quot;</span>);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>}</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
 <div class="ttc" id="a_week3_2_week3-3-console-performancecounter_2_source_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="_week3_2_week3-3-console-performancecounter_2_source_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> <a href="_week3_2_week3-3-console-performancecounter_2_source_8cpp_source.html#l00005">Source.cpp:5</a></div></div>
 <div class="ttc" id="a_week6_2_direct_x_math_planes_2_source_8cpp_html_ae78fc3f791d5bdba6ceebac9374f5e23"><div class="ttname"><a href="_week6_2_direct_x_math_planes_2_source_8cpp.html#ae78fc3f791d5bdba6ceebac9374f5e23">operator&lt;&lt;</a></div><div class="ttdeci">ostream &amp;XM_CALLCONV operator&lt;&lt;(ostream &amp;os, FXMVECTOR v)</div><div class="ttdef"><b>Definition:</b> <a href="_week6_2_direct_x_math_planes_2_source_8cpp_source.html#l00015">Source.cpp:15</a></div></div>
 <div class="ttc" id="anamespace_direct_x_html"><div class="ttname"><a href="namespace_direct_x.html">DirectX</a></div><div class="ttdef"><b>Definition:</b> <a href="_d_d_s_texture_loader_8h_source.html#l00047">DDSTextureLoader.h:48</a></div></div>

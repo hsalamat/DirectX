@@ -1,0 +1,64 @@
+\doxysection{Week2-\/2-\/win32\+Message\+Demo.cpp}
+\label{_week2-2-win32_message_demo_8cpp_source}\index{Week2/Win32Examples/Week2-\/2-\/win32MessageDemo.cpp@{Week2/Win32Examples/Week2-\/2-\/win32MessageDemo.cpp}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00018 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
+\DoxyCodeLine{00019 }
+\DoxyCodeLine{00020 \{}
+\DoxyCodeLine{00021     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00022     \textcolor{comment}{//while (true);}}
+\DoxyCodeLine{00023 }
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025     \textcolor{comment}{//register window class}}
+\DoxyCodeLine{00026     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/ns-\/winuser-\/wndclassexa}}
+\DoxyCodeLine{00027     \textcolor{keyword}{const} \textcolor{keyword}{auto} pClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
+\DoxyCodeLine{00028     WNDCLASSEX wc = \{ 0 \};}
+\DoxyCodeLine{00029     wc.cbSize = \textcolor{keyword}{sizeof}(wc);}
+\DoxyCodeLine{00030     wc.style = CS\_OWNDC; \textcolor{comment}{//own its Device Context}}
+\DoxyCodeLine{00031     wc.lpfnWndProc = DefWindowProc;}
+\DoxyCodeLine{00032     wc.cbClsExtra = 0;   }
+\DoxyCodeLine{00033     wc.cbWndExtra = 0;    }
+\DoxyCodeLine{00034     wc.hInstance = hInstance;}
+\DoxyCodeLine{00035     wc.hIcon = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00036     wc.hCursor = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00037     wc.hbrBackground = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00038     wc.lpszMenuName = \textcolor{keyword}{nullptr}; }
+\DoxyCodeLine{00039     \textcolor{comment}{//wc.lpszClassName = L"{}BasicWndClass"{};}}
+\DoxyCodeLine{00040     wc.lpszClassName = pClassName;}
+\DoxyCodeLine{00041     RegisterClassEx(\&wc);}
+\DoxyCodeLine{00042 }
+\DoxyCodeLine{00043     \textcolor{comment}{//create window}}
+\DoxyCodeLine{00044     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/nf-\/winuser-\/createwindowexa}}
+\DoxyCodeLine{00045     HWND hWnd = CreateWindowEx(}
+\DoxyCodeLine{00046         0,}
+\DoxyCodeLine{00047         pClassName,}
+\DoxyCodeLine{00048         L\textcolor{stringliteral}{"{}My First Window"{}},}
+\DoxyCodeLine{00049         WS\_CAPTION | WS\_MINIMIZEBOX | WS\_SYSMENU,}
+\DoxyCodeLine{00050         200, 200, 640, 480,}
+\DoxyCodeLine{00051         \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, hInstance, \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{00052     );}
+\DoxyCodeLine{00053     ShowWindow(hWnd, SW\_SHOW);}
+\DoxyCodeLine{00054     \textcolor{comment}{//while (true);}}
+\DoxyCodeLine{00055     MSG msg = \{ 0 \};}
+\DoxyCodeLine{00063     BOOL bRet = 1;}
+\DoxyCodeLine{00064     \textcolor{keywordflow}{while} ((bRet = GetMessage(\&msg, 0, 0, 0)) != 0)}
+\DoxyCodeLine{00065     \{}
+\DoxyCodeLine{00066         TranslateMessage(\&msg);}
+\DoxyCodeLine{00067         DispatchMessage(\&msg);}
+\DoxyCodeLine{00068     \}}
+\DoxyCodeLine{00069 }
+\DoxyCodeLine{00070     \textcolor{keywordflow}{if} (bRet == -\/1)}
+\DoxyCodeLine{00071     \{}
+\DoxyCodeLine{00072         MessageBox(0, L\textcolor{stringliteral}{"{}GetMessage FAILED"{}}, L\textcolor{stringliteral}{"{}Error"{}}, MB\_OK);}
+\DoxyCodeLine{00073         \textcolor{keywordflow}{return} bRet;}
+\DoxyCodeLine{00074     \}}
+\DoxyCodeLine{00075     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00076     \{}
+\DoxyCodeLine{00077         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00078     \}}
+\DoxyCodeLine{00079 \}}
+
+\end{DoxyCode}

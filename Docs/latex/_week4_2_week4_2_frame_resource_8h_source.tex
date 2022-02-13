@@ -1,0 +1,71 @@
+\doxysection{Frame\+Resource.\+h}
+\label{_week4_2_week4_2_frame_resource_8h_source}\index{Week4/Week4/FrameResource.h@{Week4/Week4/FrameResource.h}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{00002 }
+\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00006 }
+\DoxyCodeLine{00007 \textcolor{keyword}{struct }ObjectConstants}
+\DoxyCodeLine{00008 \{}
+\DoxyCodeLine{00009     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00010 \};}
+\DoxyCodeLine{00011 }
+\DoxyCodeLine{00012 \textcolor{keyword}{struct }PassConstants}
+\DoxyCodeLine{00013 \{}
+\DoxyCodeLine{00014     DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();}
+\DoxyCodeLine{00015     DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00016     DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00017     DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00018     DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00019     DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00020     DirectX::XMFLOAT3 EyePosW = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00021     \textcolor{keywordtype}{float} cbPerObjectPad1 = 0.0f;}
+\DoxyCodeLine{00022     DirectX::XMFLOAT2 RenderTargetSize = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{00023     DirectX::XMFLOAT2 InvRenderTargetSize = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{00024     \textcolor{keywordtype}{float} NearZ = 0.0f;}
+\DoxyCodeLine{00025     \textcolor{keywordtype}{float} FarZ = 0.0f;}
+\DoxyCodeLine{00026     \textcolor{keywordtype}{float} TotalTime = 0.0f;}
+\DoxyCodeLine{00027     \textcolor{keywordtype}{float} DeltaTime = 0.0f;}
+\DoxyCodeLine{00028 \};}
+\DoxyCodeLine{00029 }
+\DoxyCodeLine{00030 \textcolor{keyword}{struct }Vertex}
+\DoxyCodeLine{00031 \{}
+\DoxyCodeLine{00032     DirectX::XMFLOAT3 Pos;}
+\DoxyCodeLine{00033     DirectX::XMFLOAT4 Color;}
+\DoxyCodeLine{00034 \};}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036 \textcolor{comment}{// Step2: we usually use a circular array of three frame resource elements.The idea is that for frame n, the CPU will}}
+\DoxyCodeLine{00037 \textcolor{comment}{//cycle through the frame resource array to get the next available(i.e., not in use by GPU)}}
+\DoxyCodeLine{00038 \textcolor{comment}{//frame resource.The CPU will then do any resource updates, and build and submit}}
+\DoxyCodeLine{00039 \textcolor{comment}{//command lists for frame n while the GPU works on previous frames.}}
+\DoxyCodeLine{00040 }
+\DoxyCodeLine{00041 \textcolor{comment}{//Stores the resources needed for the CPU to build the command lists  for a frame. Because the CPU only needs to modify constant buffers in this demo, the frame}}
+\DoxyCodeLine{00042 \textcolor{comment}{//resource class only contains constant buffers.}}
+\DoxyCodeLine{00043 }
+\DoxyCodeLine{00044 \textcolor{keyword}{struct }FrameResource}
+\DoxyCodeLine{00045 \{}
+\DoxyCodeLine{00046 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00047     }
+\DoxyCodeLine{00048     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);}
+\DoxyCodeLine{00049     FrameResource(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00050     FrameResource\& operator=(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00051     \string~FrameResource();}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
+\DoxyCodeLine{00054     \textcolor{comment}{// So each frame needs their own allocator.}}
+\DoxyCodeLine{00055     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
+\DoxyCodeLine{00058     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
+\DoxyCodeLine{00059     std::unique\_ptr<UploadBuffer<PassConstants>> PassCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00060     std::unique\_ptr<UploadBuffer<ObjectConstants>> ObjectCB = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00061 }
+\DoxyCodeLine{00062     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
+\DoxyCodeLine{00063     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
+\DoxyCodeLine{00064     UINT64 Fence = 0;}
+\DoxyCodeLine{00065 \};}
+
+\end{DoxyCode}

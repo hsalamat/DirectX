@@ -47,6 +47,7 @@ int main()
 
 	XMVECTOR p = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR v = XMVectorSet(3.0f, 5.0f, 2.0f, 1.0f);
+	//Calculates the dot product between an input plane and a 3D vector.
 	float x = XMVectorGetX(XMPlaneDotCoord(p, v));
 	if (x <= 0.001f && x >= 0.001f) // if x approximately equals 0.0f
 		cout << " v is coplanar to the plane." << endl;

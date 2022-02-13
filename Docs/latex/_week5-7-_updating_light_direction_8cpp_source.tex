@@ -2,822 +2,811 @@
 \label{_week5-7-_updating_light_direction_8cpp_source}\index{Week5/LitSkull/Week5-\/7-\/UpdatingLightDirection.cpp@{Week5/LitSkull/Week5-\/7-\/UpdatingLightDirection.cpp}}
 \textbf{ Go to the documentation of this file.}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// LitCarApp.cpp Car + Grid are lit using 2 PSOs with updating light direction}}
-\DoxyCodeLine{00003 \textcolor{comment}{//The demo uses one directional light to represent the sun, and allows the user to rotate the sun}}
-\DoxyCodeLine{00004 \textcolor{comment}{//position using the left, right, up, and down arrow keys.}}
-\DoxyCodeLine{00005 \textcolor{comment}{//So every frame, we need to}}
-\DoxyCodeLine{00006 \textcolor{comment}{//calculate the new light direction from the sun, and set it to the per -\/ pass constant buffer.}}
-\DoxyCodeLine{00007 \textcolor{comment}{//We track the sun position in spherical coordinates(ρ, θ, ϕ), but the radius ρ does not}}
-\DoxyCodeLine{00008 \textcolor{comment}{//matter, because we assume the sun is infinitely far away.In particular, we just use ρ = 1 so}}
-\DoxyCodeLine{00009 \textcolor{comment}{//that it lies on the unit sphere and interpret(1, θ, ϕ) as the direction towards the sun.The}}
-\DoxyCodeLine{00010 \textcolor{comment}{//direction of the light is just the negative of the direction towards the sun.}}
-\DoxyCodeLine{00011 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00018 }
-\DoxyCodeLine{00019 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00020 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00021 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00024 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
-\DoxyCodeLine{00029 \textcolor{comment}{// vary from app-\/to-\/app.}}
-\DoxyCodeLine{00030 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00031 \{}
-\DoxyCodeLine{00032     RenderItem() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00001 }
+\DoxyCodeLine{00021 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{00022 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{00023 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{00024 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{00025 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{00028 \textcolor{keyword}{using namespace }DirectX;}
+\DoxyCodeLine{00029 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{00030 }
+\DoxyCodeLine{00031 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{00032 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
 \DoxyCodeLine{00033 }
-\DoxyCodeLine{00034     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00035     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00036     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00037     XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00038 }
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00041     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00042     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
-\DoxyCodeLine{00043     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00044     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00045 }
-\DoxyCodeLine{00046     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00047     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     Material* Mat = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00050     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00051 }
-\DoxyCodeLine{00052     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00053     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00056     UINT IndexCount = 0;}
-\DoxyCodeLine{00057     UINT StartIndexLocation = 0;}
-\DoxyCodeLine{00058     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
-\DoxyCodeLine{00059 \};}
-\DoxyCodeLine{00060 }
-\DoxyCodeLine{00061 \textcolor{keyword}{enum class} RenderLayer : int}
-\DoxyCodeLine{00062 \{}
-\DoxyCodeLine{00063     Opaque = 0,}
-\DoxyCodeLine{00064     Transparent,}
-\DoxyCodeLine{00065     AlphaTested,}
-\DoxyCodeLine{00066     Count}
+\DoxyCodeLine{00034 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
+\DoxyCodeLine{00035 }
+\DoxyCodeLine{00036 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{00037 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{00038 \textcolor{keyword}{struct }RenderItem}
+\DoxyCodeLine{00039 \{}
+\DoxyCodeLine{00040     RenderItem() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00041 }
+\DoxyCodeLine{00042     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{00043     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{00044     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{00045     XMFLOAT4X4 World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00046 }
+\DoxyCodeLine{00047 }
+\DoxyCodeLine{00048     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{00049     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{00050     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{00051     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{00052     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
+\DoxyCodeLine{00053 }
+\DoxyCodeLine{00054     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{00055     UINT ObjCBIndex = -\/1;}
+\DoxyCodeLine{00056 }
+\DoxyCodeLine{00057     Material* Mat = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00059 }
+\DoxyCodeLine{00060     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{00061     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00062 }
+\DoxyCodeLine{00063     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{00064     UINT IndexCount = 0;}
+\DoxyCodeLine{00065     UINT StartIndexLocation = 0;}
+\DoxyCodeLine{00066     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
 \DoxyCodeLine{00067 \};}
 \DoxyCodeLine{00068 }
-\DoxyCodeLine{00069 \textcolor{keyword}{class }CarApp : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00069 \textcolor{keyword}{enum class} RenderLayer : int}
 \DoxyCodeLine{00070 \{}
-\DoxyCodeLine{00071 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00072     CarApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00073     CarApp(\textcolor{keyword}{const} CarApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00074     CarApp\& operator=(\textcolor{keyword}{const} CarApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00075     \string~CarApp();}
+\DoxyCodeLine{00071     Opaque = 0,}
+\DoxyCodeLine{00072     Transparent,}
+\DoxyCodeLine{00073     AlphaTested,}
+\DoxyCodeLine{00074     Count}
+\DoxyCodeLine{00075 \};}
 \DoxyCodeLine{00076 }
-\DoxyCodeLine{00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00080     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00081     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00082     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00083 }
-\DoxyCodeLine{00084     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00085     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00086     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00087 }
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00090     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00091     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00093 }
-\DoxyCodeLine{00094     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00095     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00096     \textcolor{keywordtype}{void} BuildShapeGeometry();}
-\DoxyCodeLine{00097     \textcolor{keywordtype}{void} BuildCarGeometry();}
-\DoxyCodeLine{00098     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00099     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00100     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{00077 \textcolor{keyword}{class }CarApp : \textcolor{keyword}{public} D3DApp}
+\DoxyCodeLine{00078 \{}
+\DoxyCodeLine{00079 \textcolor{keyword}{public}:}
+\DoxyCodeLine{00080     CarApp(HINSTANCE hInstance);}
+\DoxyCodeLine{00081     CarApp(\textcolor{keyword}{const} CarApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00082     CarApp\& operator=(\textcolor{keyword}{const} CarApp\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{00083     \string~CarApp();}
+\DoxyCodeLine{00084 }
+\DoxyCodeLine{00085     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00086 }
+\DoxyCodeLine{00087 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00088     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{00089     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00090     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{00091 }
+\DoxyCodeLine{00092     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00093     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00094     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{00095 }
+\DoxyCodeLine{00096     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00097     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00098     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00099     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
+\DoxyCodeLine{00100     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
 \DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00103     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
-\DoxyCodeLine{00104  }
-\DoxyCodeLine{00105 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00108     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00109     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00114     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{00115     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00116 }
-\DoxyCodeLine{00117     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{00102     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{00103     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{00104     \textcolor{keywordtype}{void} BuildShapeGeometry();}
+\DoxyCodeLine{00105     \textcolor{keywordtype}{void} BuildCarGeometry();}
+\DoxyCodeLine{00106     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{00107     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{00108     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{00109 }
+\DoxyCodeLine{00110     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{00111     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{00112  }
+\DoxyCodeLine{00113 \textcolor{keyword}{private}:}
+\DoxyCodeLine{00114 }
+\DoxyCodeLine{00115     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{00116     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00117     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
 \DoxyCodeLine{00118 }
-\DoxyCodeLine{00119     \textcolor{comment}{//ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;}}
-\DoxyCodeLine{00120     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00121  }
-\DoxyCodeLine{00122     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00123     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{00119     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00120 }
+\DoxyCodeLine{00121     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{00122     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{00123     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
 \DoxyCodeLine{00124 }
-\DoxyCodeLine{00125     \textcolor{comment}{//  Render items divided by PSO.}}
-\DoxyCodeLine{00126     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
-\DoxyCodeLine{00127 }
-\DoxyCodeLine{00128 }
-\DoxyCodeLine{00129     PassConstants mMainPassCB;}
-\DoxyCodeLine{00130     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00131 }
-\DoxyCodeLine{00132     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00133     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00134     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
+\DoxyCodeLine{00125     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{00126 }
+\DoxyCodeLine{00127     \textcolor{comment}{//ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;}}
+\DoxyCodeLine{00128     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{00129  }
+\DoxyCodeLine{00130     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{00131     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{00132 }
+\DoxyCodeLine{00133     \textcolor{comment}{//  Render items divided by PSO.}}
+\DoxyCodeLine{00134     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
 \DoxyCodeLine{00135 }
-\DoxyCodeLine{00136     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
-\DoxyCodeLine{00137     \textcolor{keywordtype}{float} mPhi = 0.4f*XM\_PI;}
-\DoxyCodeLine{00138     \textcolor{keywordtype}{float} mRadius = 15.0f;}
+\DoxyCodeLine{00136 }
+\DoxyCodeLine{00137     PassConstants mMainPassCB;}
+\DoxyCodeLine{00138     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
 \DoxyCodeLine{00139 }
-\DoxyCodeLine{00140     \textcolor{comment}{//step1}}
-\DoxyCodeLine{00141     \textcolor{keywordtype}{float} mSunTheta = 1.25f * XM\_PI;}
-\DoxyCodeLine{00142     \textcolor{keywordtype}{float} mSunPhi = XM\_PIDIV4;}
+\DoxyCodeLine{00140     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{00141     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
+\DoxyCodeLine{00142     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
 \DoxyCodeLine{00143 }
-\DoxyCodeLine{00144     POINT mLastMousePos;}
-\DoxyCodeLine{00145 \};}
-\DoxyCodeLine{00146 }
-\DoxyCodeLine{00147 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00148     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00149 \{}
-\DoxyCodeLine{00150     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00151 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00152     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00153 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00144     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
+\DoxyCodeLine{00145     \textcolor{keywordtype}{float} mPhi = 0.4f*XM\_PI;}
+\DoxyCodeLine{00146     \textcolor{keywordtype}{float} mRadius = 15.0f;}
+\DoxyCodeLine{00147 }
+\DoxyCodeLine{00148     \textcolor{comment}{//step1}}
+\DoxyCodeLine{00149     \textcolor{keywordtype}{float} mSunTheta = 1.25f * XM\_PI;}
+\DoxyCodeLine{00150     \textcolor{keywordtype}{float} mSunPhi = XM\_PIDIV4;}
+\DoxyCodeLine{00151 }
+\DoxyCodeLine{00152     POINT mLastMousePos;}
+\DoxyCodeLine{00153 \};}
 \DoxyCodeLine{00154 }
-\DoxyCodeLine{00155     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00156     \{}
-\DoxyCodeLine{00157         CarApp theApp(hInstance);}
-\DoxyCodeLine{00158         \textcolor{keywordflow}{if}(!theApp.Initialize())}
-\DoxyCodeLine{00159             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00160 }
-\DoxyCodeLine{00161         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00162     \}}
-\DoxyCodeLine{00163     \textcolor{keywordflow}{catch}(DxException\& e)}
+\DoxyCodeLine{00155 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{00156     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{00157 \{}
+\DoxyCodeLine{00158     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{00159 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{00160     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{00161 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00162 }
+\DoxyCodeLine{00163     \textcolor{keywordflow}{try}}
 \DoxyCodeLine{00164     \{}
-\DoxyCodeLine{00165         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00166         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00167     \}}
-\DoxyCodeLine{00168 \}}
-\DoxyCodeLine{00169 }
-\DoxyCodeLine{00170 CarApp::CarApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00171     : D3DApp(hInstance)}
-\DoxyCodeLine{00172 \{}
-\DoxyCodeLine{00173 \}}
-\DoxyCodeLine{00174 }
-\DoxyCodeLine{00175 CarApp::\string~CarApp()}
-\DoxyCodeLine{00176 \{}
-\DoxyCodeLine{00177     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00178         FlushCommandQueue();}
-\DoxyCodeLine{00179 \}}
-\DoxyCodeLine{00180 }
-\DoxyCodeLine{00181 \textcolor{keywordtype}{bool} CarApp::Initialize()}
-\DoxyCodeLine{00182 \{}
-\DoxyCodeLine{00183     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
-\DoxyCodeLine{00184         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00185 }
-\DoxyCodeLine{00186     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00187     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00165         CarApp theApp(hInstance);}
+\DoxyCodeLine{00166         \textcolor{keywordflow}{if}(!theApp.Initialize())}
+\DoxyCodeLine{00167             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00168 }
+\DoxyCodeLine{00169         \textcolor{keywordflow}{return} theApp.Run();}
+\DoxyCodeLine{00170     \}}
+\DoxyCodeLine{00171     \textcolor{keywordflow}{catch}(DxException\& e)}
+\DoxyCodeLine{00172     \{}
+\DoxyCodeLine{00173         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{00174         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00175     \}}
+\DoxyCodeLine{00176 \}}
+\DoxyCodeLine{00177 }
+\DoxyCodeLine{00178 CarApp::CarApp(HINSTANCE hInstance)}
+\DoxyCodeLine{00179     : D3DApp(hInstance)}
+\DoxyCodeLine{00180 \{}
+\DoxyCodeLine{00181 \}}
+\DoxyCodeLine{00182 }
+\DoxyCodeLine{00183 CarApp::\string~CarApp()}
+\DoxyCodeLine{00184 \{}
+\DoxyCodeLine{00185     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00186         FlushCommandQueue();}
+\DoxyCodeLine{00187 \}}
 \DoxyCodeLine{00188 }
-\DoxyCodeLine{00189 }
-\DoxyCodeLine{00190     BuildRootSignature();}
-\DoxyCodeLine{00191     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00192     BuildShapeGeometry();}
-\DoxyCodeLine{00193     BuildCarGeometry();}
-\DoxyCodeLine{00194     BuildMaterials();}
-\DoxyCodeLine{00195     BuildRenderItems();}
-\DoxyCodeLine{00196     BuildFrameResources();}
-\DoxyCodeLine{00197     BuildPSOs();}
-\DoxyCodeLine{00198 }
-\DoxyCodeLine{00199     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00200     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00201     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00202     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00203 }
-\DoxyCodeLine{00204     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00205     FlushCommandQueue();}
+\DoxyCodeLine{00189 \textcolor{keywordtype}{bool} CarApp::Initialize()}
+\DoxyCodeLine{00190 \{}
+\DoxyCodeLine{00191     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
+\DoxyCodeLine{00192         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{00193 }
+\DoxyCodeLine{00194     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{00195     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{00196 }
+\DoxyCodeLine{00197 }
+\DoxyCodeLine{00198     BuildRootSignature();}
+\DoxyCodeLine{00199     BuildShadersAndInputLayout();}
+\DoxyCodeLine{00200     BuildShapeGeometry();}
+\DoxyCodeLine{00201     BuildCarGeometry();}
+\DoxyCodeLine{00202     BuildMaterials();}
+\DoxyCodeLine{00203     BuildRenderItems();}
+\DoxyCodeLine{00204     BuildFrameResources();}
+\DoxyCodeLine{00205     BuildPSOs();}
 \DoxyCodeLine{00206 }
-\DoxyCodeLine{00207     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00208 \}}
-\DoxyCodeLine{00209  }
-\DoxyCodeLine{00210 \textcolor{keywordtype}{void} CarApp::OnResize()}
-\DoxyCodeLine{00211 \{}
-\DoxyCodeLine{00212     D3DApp::OnResize();}
-\DoxyCodeLine{00213 }
-\DoxyCodeLine{00214     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00215     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00216     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00217 \}}
-\DoxyCodeLine{00218 }
-\DoxyCodeLine{00219 \textcolor{keywordtype}{void} CarApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00220 \{}
-\DoxyCodeLine{00221     OnKeyboardInput(gt);}
-\DoxyCodeLine{00222     UpdateCamera(gt);}
-\DoxyCodeLine{00223 }
-\DoxyCodeLine{00224     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00225     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00226     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00227 }
-\DoxyCodeLine{00228     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
-\DoxyCodeLine{00229     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00230     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00231     \{}
-\DoxyCodeLine{00232         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00233         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00234         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00235         CloseHandle(eventHandle);}
-\DoxyCodeLine{00236     \}}
-\DoxyCodeLine{00237 }
-\DoxyCodeLine{00238 }
-\DoxyCodeLine{00239     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00240     UpdateMaterialCBs(gt);}
-\DoxyCodeLine{00241     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00242 \}}
-\DoxyCodeLine{00243 }
-\DoxyCodeLine{00244 \textcolor{keywordtype}{void} CarApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00245 \{}
-\DoxyCodeLine{00246     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00247 }
-\DoxyCodeLine{00248     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00249     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00250     ThrowIfFailed(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00207     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{00208     ThrowIfFailed(mCommandList-\/>Close());}
+\DoxyCodeLine{00209     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00210     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00211 }
+\DoxyCodeLine{00212     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{00213     FlushCommandQueue();}
+\DoxyCodeLine{00214 }
+\DoxyCodeLine{00215     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{00216 \}}
+\DoxyCodeLine{00217  }
+\DoxyCodeLine{00218 \textcolor{keywordtype}{void} CarApp::OnResize()}
+\DoxyCodeLine{00219 \{}
+\DoxyCodeLine{00220     D3DApp::OnResize();}
+\DoxyCodeLine{00221 }
+\DoxyCodeLine{00222     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{00223     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
+\DoxyCodeLine{00224     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{00225 \}}
+\DoxyCodeLine{00226 }
+\DoxyCodeLine{00227 \textcolor{keywordtype}{void} CarApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00228 \{}
+\DoxyCodeLine{00229     OnKeyboardInput(gt);}
+\DoxyCodeLine{00230     UpdateCamera(gt);}
+\DoxyCodeLine{00231 }
+\DoxyCodeLine{00232     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{00233     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
+\DoxyCodeLine{00234     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{00235 }
+\DoxyCodeLine{00236     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{00237     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{00238     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
+\DoxyCodeLine{00239     \{}
+\DoxyCodeLine{00240         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{00241         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
+\DoxyCodeLine{00242         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{00243         CloseHandle(eventHandle);}
+\DoxyCodeLine{00244     \}}
+\DoxyCodeLine{00245 }
+\DoxyCodeLine{00246 }
+\DoxyCodeLine{00247     UpdateObjectCBs(gt);}
+\DoxyCodeLine{00248     UpdateMaterialCBs(gt);}
+\DoxyCodeLine{00249     UpdateMainPassCB(gt);}
+\DoxyCodeLine{00250 \}}
 \DoxyCodeLine{00251 }
-\DoxyCodeLine{00252     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00253     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00254     \textcolor{comment}{//ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSO.Get()));}}
+\DoxyCodeLine{00252 \textcolor{keywordtype}{void} CarApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00253 \{}
+\DoxyCodeLine{00254     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
 \DoxyCodeLine{00255 }
-\DoxyCodeLine{00256     \textcolor{keywordflow}{if} (mIsWireframe)}
-\DoxyCodeLine{00257     \{}
-\DoxyCodeLine{00258         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
-\DoxyCodeLine{00259     \}}
-\DoxyCodeLine{00260     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00261     \{}
-\DoxyCodeLine{00262         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00263     \}}
-\DoxyCodeLine{00264 }
-\DoxyCodeLine{00265     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00266     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00267 }
-\DoxyCodeLine{00268     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00269     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00270         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00271 }
-\DoxyCodeLine{00272     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00273     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::Black, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00274     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00256     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{00257     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{00258     ThrowIfFailed(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{00259 }
+\DoxyCodeLine{00260     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{00261     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{00262     \textcolor{comment}{//ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSO.Get()));}}
+\DoxyCodeLine{00263 }
+\DoxyCodeLine{00264     \textcolor{keywordflow}{if} (mIsWireframe)}
+\DoxyCodeLine{00265     \{}
+\DoxyCodeLine{00266         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
+\DoxyCodeLine{00267     \}}
+\DoxyCodeLine{00268     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00269     \{}
+\DoxyCodeLine{00270         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{00271     \}}
+\DoxyCodeLine{00272 }
+\DoxyCodeLine{00273     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
+\DoxyCodeLine{00274     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
 \DoxyCodeLine{00275 }
-\DoxyCodeLine{00276     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00277     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00278 }
-\DoxyCodeLine{00279     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00280 }
-\DoxyCodeLine{00281     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00282     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{00276     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00277     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00278         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{00279 }
+\DoxyCodeLine{00280     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{00281     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::Black, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00282     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
 \DoxyCodeLine{00283 }
-\DoxyCodeLine{00284 }
-\DoxyCodeLine{00285     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
+\DoxyCodeLine{00284     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{00285     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
 \DoxyCodeLine{00286 }
-\DoxyCodeLine{00287     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get());}
-\DoxyCodeLine{00288     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
-\DoxyCodeLine{00289 }
-\DoxyCodeLine{00290     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00291     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00292         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00293 }
-\DoxyCodeLine{00294     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00295     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00296 }
-\DoxyCodeLine{00297     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00298     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00299     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00300 }
-\DoxyCodeLine{00301     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00302     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00303     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
+\DoxyCodeLine{00287     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{00288 }
+\DoxyCodeLine{00289     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
+\DoxyCodeLine{00290     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{00291 }
+\DoxyCodeLine{00292 }
+\DoxyCodeLine{00293     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
+\DoxyCodeLine{00294 }
+\DoxyCodeLine{00295     mCommandList-\/>SetPipelineState(mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get());}
+\DoxyCodeLine{00296     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Transparent]);}
+\DoxyCodeLine{00297 }
+\DoxyCodeLine{00298     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{00299     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
+\DoxyCodeLine{00300         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{00301 }
+\DoxyCodeLine{00302     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{00303     ThrowIfFailed(mCommandList-\/>Close());}
 \DoxyCodeLine{00304 }
-\DoxyCodeLine{00305     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00306     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00307 }
-\DoxyCodeLine{00308     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
-\DoxyCodeLine{00309     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
-\DoxyCodeLine{00310     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00311     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00312 \}}
-\DoxyCodeLine{00313 }
-\DoxyCodeLine{00314 \textcolor{keywordtype}{void} CarApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00315 \{}
-\DoxyCodeLine{00316     mLastMousePos.x = x;}
-\DoxyCodeLine{00317     mLastMousePos.y = y;}
-\DoxyCodeLine{00318 }
-\DoxyCodeLine{00319     SetCapture(mhMainWnd);}
+\DoxyCodeLine{00305     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{00306     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
+\DoxyCodeLine{00307     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{00308 }
+\DoxyCodeLine{00309     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{00310     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
+\DoxyCodeLine{00311     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
+\DoxyCodeLine{00312 }
+\DoxyCodeLine{00313     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{00314     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
+\DoxyCodeLine{00315 }
+\DoxyCodeLine{00316     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{00317     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{00318     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{00319     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
 \DoxyCodeLine{00320 \}}
 \DoxyCodeLine{00321 }
-\DoxyCodeLine{00322 \textcolor{keywordtype}{void} CarApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00322 \textcolor{keywordtype}{void} CarApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
 \DoxyCodeLine{00323 \{}
-\DoxyCodeLine{00324     ReleaseCapture();}
-\DoxyCodeLine{00325 \}}
+\DoxyCodeLine{00324     mLastMousePos.x = x;}
+\DoxyCodeLine{00325     mLastMousePos.y = y;}
 \DoxyCodeLine{00326 }
-\DoxyCodeLine{00327 \textcolor{keywordtype}{void} CarApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00328 \{}
-\DoxyCodeLine{00329     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00330     \{}
-\DoxyCodeLine{00331         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00332         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00333         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{00327     SetCapture(mhMainWnd);}
+\DoxyCodeLine{00328 \}}
+\DoxyCodeLine{00329 }
+\DoxyCodeLine{00330 \textcolor{keywordtype}{void} CarApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00331 \{}
+\DoxyCodeLine{00332     ReleaseCapture();}
+\DoxyCodeLine{00333 \}}
 \DoxyCodeLine{00334 }
-\DoxyCodeLine{00335         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00336         mTheta += dx;}
-\DoxyCodeLine{00337         mPhi += dy;}
-\DoxyCodeLine{00338 }
-\DoxyCodeLine{00339         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00340         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00341     \}}
-\DoxyCodeLine{00342     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
-\DoxyCodeLine{00343     \{}
-\DoxyCodeLine{00344         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00345         \textcolor{keywordtype}{float} dx = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00346         \textcolor{keywordtype}{float} dy = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
-\DoxyCodeLine{00347 }
-\DoxyCodeLine{00348         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00349         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00350 }
-\DoxyCodeLine{00351         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00352         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00353     \}}
-\DoxyCodeLine{00354 }
-\DoxyCodeLine{00355     mLastMousePos.x = x;}
-\DoxyCodeLine{00356     mLastMousePos.y = y;}
-\DoxyCodeLine{00357 \}}
-\DoxyCodeLine{00358  }
-\DoxyCodeLine{00359 \textcolor{keywordtype}{void} CarApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00360 \{}
-\DoxyCodeLine{00361     \textcolor{keywordflow}{if} (GetAsyncKeyState(\textcolor{charliteral}{'1'}) \& 0x8000)}
-\DoxyCodeLine{00362         mIsWireframe = \textcolor{keyword}{true};}
-\DoxyCodeLine{00363     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00364         mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00365 }
-\DoxyCodeLine{00366     \textcolor{comment}{//step2}}
-\DoxyCodeLine{00367     \textcolor{keyword}{const} \textcolor{keywordtype}{float} dt = gt.DeltaTime();}
-\DoxyCodeLine{00368 }
-\DoxyCodeLine{00369     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_LEFT) \& 0x8000)}
-\DoxyCodeLine{00370         mSunTheta -\/= 1.0f * dt;}
-\DoxyCodeLine{00371 }
-\DoxyCodeLine{00372     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_RIGHT) \& 0x8000)}
-\DoxyCodeLine{00373         mSunTheta += 1.0f * dt;}
-\DoxyCodeLine{00374 }
-\DoxyCodeLine{00375     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_UP) \& 0x8000)}
-\DoxyCodeLine{00376         mSunPhi -\/= 1.0f * dt;}
-\DoxyCodeLine{00377 }
-\DoxyCodeLine{00378     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_DOWN) \& 0x8000)}
-\DoxyCodeLine{00379         mSunPhi += 1.0f * dt;}
-\DoxyCodeLine{00380 }
-\DoxyCodeLine{00381     mSunPhi = MathHelper::Clamp(mSunPhi, 0.1f, XM\_PIDIV2);}
-\DoxyCodeLine{00382 \}}
-\DoxyCodeLine{00383  }
-\DoxyCodeLine{00384 \textcolor{keywordtype}{void} CarApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00385 \{}
-\DoxyCodeLine{00386     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00387     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
-\DoxyCodeLine{00388     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
-\DoxyCodeLine{00389     mEyePos.y = mRadius*cosf(mPhi);}
-\DoxyCodeLine{00390 }
-\DoxyCodeLine{00391     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00392     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00393     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00394     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00395 }
-\DoxyCodeLine{00396     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00397     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00398 \}}
-\DoxyCodeLine{00399 }
-\DoxyCodeLine{00400 }
-\DoxyCodeLine{00401 }
-\DoxyCodeLine{00402 \textcolor{keywordtype}{void} CarApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00403 \{}
-\DoxyCodeLine{00404     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00405     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00406     \{}
-\DoxyCodeLine{00407         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00408         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00409         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00410         \{}
-\DoxyCodeLine{00411             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00412 }
-\DoxyCodeLine{00413             ObjectConstants objConstants;}
-\DoxyCodeLine{00414             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00415 }
-\DoxyCodeLine{00416             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00417 }
-\DoxyCodeLine{00418             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00419             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00420         \}}
-\DoxyCodeLine{00421     \}}
-\DoxyCodeLine{00422 \}}
+\DoxyCodeLine{00335 \textcolor{keywordtype}{void} CarApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{00336 \{}
+\DoxyCodeLine{00337     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{00338     \{}
+\DoxyCodeLine{00339         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{00340         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{00341         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{00342 }
+\DoxyCodeLine{00343         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{00344         mTheta += dx;}
+\DoxyCodeLine{00345         mPhi += dy;}
+\DoxyCodeLine{00346 }
+\DoxyCodeLine{00347         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{00348         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
+\DoxyCodeLine{00349     \}}
+\DoxyCodeLine{00350     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{00351     \{}
+\DoxyCodeLine{00352         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{00353         \textcolor{keywordtype}{float} dx = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{00354         \textcolor{keywordtype}{float} dy = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{00355 }
+\DoxyCodeLine{00356         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{00357         mRadius += dx -\/ dy;}
+\DoxyCodeLine{00358 }
+\DoxyCodeLine{00359         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{00360         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{00361     \}}
+\DoxyCodeLine{00362 }
+\DoxyCodeLine{00363     mLastMousePos.x = x;}
+\DoxyCodeLine{00364     mLastMousePos.y = y;}
+\DoxyCodeLine{00365 \}}
+\DoxyCodeLine{00366  }
+\DoxyCodeLine{00367 \textcolor{keywordtype}{void} CarApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00368 \{}
+\DoxyCodeLine{00369     \textcolor{keywordflow}{if} (GetAsyncKeyState(\textcolor{charliteral}{'1'}) \& 0x8000)}
+\DoxyCodeLine{00370         mIsWireframe = \textcolor{keyword}{true};}
+\DoxyCodeLine{00371     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00372         mIsWireframe = \textcolor{keyword}{false};}
+\DoxyCodeLine{00373 }
+\DoxyCodeLine{00374     \textcolor{comment}{//step2}}
+\DoxyCodeLine{00375     \textcolor{keyword}{const} \textcolor{keywordtype}{float} dt = gt.DeltaTime();}
+\DoxyCodeLine{00376 }
+\DoxyCodeLine{00377     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_LEFT) \& 0x8000)}
+\DoxyCodeLine{00378         mSunTheta -\/= 1.0f * dt;}
+\DoxyCodeLine{00379 }
+\DoxyCodeLine{00380     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_RIGHT) \& 0x8000)}
+\DoxyCodeLine{00381         mSunTheta += 1.0f * dt;}
+\DoxyCodeLine{00382 }
+\DoxyCodeLine{00383     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_UP) \& 0x8000)}
+\DoxyCodeLine{00384         mSunPhi -\/= 1.0f * dt;}
+\DoxyCodeLine{00385 }
+\DoxyCodeLine{00386     \textcolor{keywordflow}{if} (GetAsyncKeyState(VK\_DOWN) \& 0x8000)}
+\DoxyCodeLine{00387         mSunPhi += 1.0f * dt;}
+\DoxyCodeLine{00388 }
+\DoxyCodeLine{00389     mSunPhi = MathHelper::Clamp(mSunPhi, 0.1f, XM\_PIDIV2);}
+\DoxyCodeLine{00390 \}}
+\DoxyCodeLine{00391  }
+\DoxyCodeLine{00392 \textcolor{keywordtype}{void} CarApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00393 \{}
+\DoxyCodeLine{00394     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{00395     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
+\DoxyCodeLine{00396     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
+\DoxyCodeLine{00397     mEyePos.y = mRadius*cosf(mPhi);}
+\DoxyCodeLine{00398 }
+\DoxyCodeLine{00399     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{00400     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{00401     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{00402     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{00403 }
+\DoxyCodeLine{00404     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{00405     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{00406 \}}
+\DoxyCodeLine{00407 }
+\DoxyCodeLine{00408 }
+\DoxyCodeLine{00409 }
+\DoxyCodeLine{00410 \textcolor{keywordtype}{void} CarApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00411 \{}
+\DoxyCodeLine{00412     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
+\DoxyCodeLine{00413     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{00414     \{}
+\DoxyCodeLine{00415         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{00416         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{00417         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00418         \{}
+\DoxyCodeLine{00419             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{00420 }
+\DoxyCodeLine{00421             ObjectConstants objConstants;}
+\DoxyCodeLine{00422             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
 \DoxyCodeLine{00423 }
-\DoxyCodeLine{00424 \textcolor{keywordtype}{void} CarApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00425 \{}
-\DoxyCodeLine{00426     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
-\DoxyCodeLine{00427     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{00428     \{}
-\DoxyCodeLine{00429         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{00430         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{00431         Material* mat = e.second.get();}
-\DoxyCodeLine{00432         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00433         \{}
-\DoxyCodeLine{00434             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
-\DoxyCodeLine{00435 }
-\DoxyCodeLine{00436             MaterialConstants matConstants;}
-\DoxyCodeLine{00437             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
-\DoxyCodeLine{00438             matConstants.FresnelR0 = mat-\/>FresnelR0;}
-\DoxyCodeLine{00439             matConstants.Roughness = mat-\/>Roughness;}
-\DoxyCodeLine{00440             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
-\DoxyCodeLine{00441 }
-\DoxyCodeLine{00442             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
+\DoxyCodeLine{00424             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{00425 }
+\DoxyCodeLine{00426             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00427             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00428         \}}
+\DoxyCodeLine{00429     \}}
+\DoxyCodeLine{00430 \}}
+\DoxyCodeLine{00431 }
+\DoxyCodeLine{00432 \textcolor{keywordtype}{void} CarApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00433 \{}
+\DoxyCodeLine{00434     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
+\DoxyCodeLine{00435     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{00436     \{}
+\DoxyCodeLine{00437         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{00438         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{00439         Material* mat = e.second.get();}
+\DoxyCodeLine{00440         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{00441         \{}
+\DoxyCodeLine{00442             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
 \DoxyCodeLine{00443 }
-\DoxyCodeLine{00444             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00445             mat-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00446         \}}
-\DoxyCodeLine{00447     \}}
-\DoxyCodeLine{00448 \}}
+\DoxyCodeLine{00444             MaterialConstants matConstants;}
+\DoxyCodeLine{00445             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
+\DoxyCodeLine{00446             matConstants.FresnelR0 = mat-\/>FresnelR0;}
+\DoxyCodeLine{00447             matConstants.Roughness = mat-\/>Roughness;}
+\DoxyCodeLine{00448             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
 \DoxyCodeLine{00449 }
-\DoxyCodeLine{00450 \textcolor{keywordtype}{void} CarApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00451 \{}
-\DoxyCodeLine{00452     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00453     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00454 }
-\DoxyCodeLine{00455     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00456     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00457     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00458     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00459 }
-\DoxyCodeLine{00460     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00461     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00462     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00463     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00464     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00465     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00466     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00467     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00468     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00469     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00470     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00471     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00472     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00473 }
-\DoxyCodeLine{00474     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
-\DoxyCodeLine{00475 }
-\DoxyCodeLine{00476 }
-\DoxyCodeLine{00477     \textcolor{comment}{//step3}}
-\DoxyCodeLine{00478     \textcolor{comment}{//mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}}
-\DoxyCodeLine{00479     \textcolor{comment}{//mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}}
-\DoxyCodeLine{00480     \textcolor{comment}{//mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}}
-\DoxyCodeLine{00481     \textcolor{comment}{//mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}}
-\DoxyCodeLine{00482     \textcolor{comment}{//mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}}
-\DoxyCodeLine{00483     \textcolor{comment}{//mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}}
+\DoxyCodeLine{00450             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
+\DoxyCodeLine{00451 }
+\DoxyCodeLine{00452             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{00453             mat-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{00454         \}}
+\DoxyCodeLine{00455     \}}
+\DoxyCodeLine{00456 \}}
+\DoxyCodeLine{00457 }
+\DoxyCodeLine{00458 \textcolor{keywordtype}{void} CarApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
+\DoxyCodeLine{00459 \{}
+\DoxyCodeLine{00460     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{00461     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{00462 }
+\DoxyCodeLine{00463     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{00464     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{00465     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{00466     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{00467 }
+\DoxyCodeLine{00468     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
+\DoxyCodeLine{00469     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
+\DoxyCodeLine{00470     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
+\DoxyCodeLine{00471     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{00472     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{00473     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{00474     mMainPassCB.EyePosW = mEyePos;}
+\DoxyCodeLine{00475     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
+\DoxyCodeLine{00476     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
+\DoxyCodeLine{00477     mMainPassCB.NearZ = 1.0f;}
+\DoxyCodeLine{00478     mMainPassCB.FarZ = 1000.0f;}
+\DoxyCodeLine{00479     mMainPassCB.TotalTime = gt.TotalTime();}
+\DoxyCodeLine{00480     mMainPassCB.DeltaTime = gt.DeltaTime();}
+\DoxyCodeLine{00481 }
+\DoxyCodeLine{00482     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{00483 }
 \DoxyCodeLine{00484 }
-\DoxyCodeLine{00485     XMVECTOR lightDir = -\/MathHelper::SphericalToCartesian(1.0f, mSunTheta, mSunPhi);}
-\DoxyCodeLine{00486     XMStoreFloat3(\&mMainPassCB.Lights[0].Direction, lightDir);}
-\DoxyCodeLine{00487 }
-\DoxyCodeLine{00488     mMainPassCB.Lights[0].Strength = \{ 1.0f, 1.0f, 0.9f \};}
-\DoxyCodeLine{00489 }
-\DoxyCodeLine{00490 }
-\DoxyCodeLine{00491     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00492     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00493 \}}
-\DoxyCodeLine{00494 }
-\DoxyCodeLine{00495 \textcolor{keywordtype}{void} CarApp::BuildRootSignature()}
-\DoxyCodeLine{00496 \{}
-\DoxyCodeLine{00497     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00498     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
-\DoxyCodeLine{00499 }
-\DoxyCodeLine{00500     \textcolor{comment}{// Create root CBV.}}
-\DoxyCodeLine{00501     slotRootParameter[0].InitAsConstantBufferView(0);}
-\DoxyCodeLine{00502     slotRootParameter[1].InitAsConstantBufferView(1);}
-\DoxyCodeLine{00503     slotRootParameter[2].InitAsConstantBufferView(2);}
-\DoxyCodeLine{00504 }
-\DoxyCodeLine{00505     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00506     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00485     \textcolor{comment}{//step3}}
+\DoxyCodeLine{00486     \textcolor{comment}{//mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}}
+\DoxyCodeLine{00487     \textcolor{comment}{//mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}}
+\DoxyCodeLine{00488     \textcolor{comment}{//mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}}
+\DoxyCodeLine{00489     \textcolor{comment}{//mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}}
+\DoxyCodeLine{00490     \textcolor{comment}{//mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}}
+\DoxyCodeLine{00491     \textcolor{comment}{//mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}}
+\DoxyCodeLine{00492 }
+\DoxyCodeLine{00493     XMVECTOR lightDir = -\/MathHelper::SphericalToCartesian(1.0f, mSunTheta, mSunPhi);}
+\DoxyCodeLine{00494     XMStoreFloat3(\&mMainPassCB.Lights[0].Direction, lightDir);}
+\DoxyCodeLine{00495 }
+\DoxyCodeLine{00496     mMainPassCB.Lights[0].Strength = \{ 1.0f, 1.0f, 0.9f \};}
+\DoxyCodeLine{00497 }
+\DoxyCodeLine{00498 }
+\DoxyCodeLine{00499     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
+\DoxyCodeLine{00500     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{00501 \}}
+\DoxyCodeLine{00502 }
+\DoxyCodeLine{00503 \textcolor{keywordtype}{void} CarApp::BuildRootSignature()}
+\DoxyCodeLine{00504 \{}
+\DoxyCodeLine{00505     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{00506     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
 \DoxyCodeLine{00507 }
-\DoxyCodeLine{00508     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00509     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00510     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00511     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00512         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00513 }
-\DoxyCodeLine{00514     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00515     \{}
-\DoxyCodeLine{00516         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00517     \}}
-\DoxyCodeLine{00518     ThrowIfFailed(hr);}
-\DoxyCodeLine{00519 }
-\DoxyCodeLine{00520     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00521         0,}
-\DoxyCodeLine{00522         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00523         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00524         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00525 \}}
-\DoxyCodeLine{00526 }
-\DoxyCodeLine{00527 \textcolor{keywordtype}{void} CarApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00528 \{}
-\DoxyCodeLine{00529     \textcolor{comment}{//step4}}
-\DoxyCodeLine{00530     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS\_DirectLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
-\DoxyCodeLine{00531     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS\_DirectLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
-\DoxyCodeLine{00532     }
-\DoxyCodeLine{00533     mInputLayout =}
-\DoxyCodeLine{00534     \{}
-\DoxyCodeLine{00535         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00536         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00537     \};}
-\DoxyCodeLine{00538 \}}
-\DoxyCodeLine{00539 }
-\DoxyCodeLine{00540 \textcolor{keywordtype}{void} CarApp::BuildShapeGeometry()}
-\DoxyCodeLine{00541 \{}
-\DoxyCodeLine{00542     GeometryGenerator geoGen;}
-\DoxyCodeLine{00543     GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);}
-\DoxyCodeLine{00544 }
-\DoxyCodeLine{00545     \textcolor{comment}{//}}
-\DoxyCodeLine{00546     \textcolor{comment}{// We are concatenating all the geometry into one big vertex/index buffer.  So}}
-\DoxyCodeLine{00547     \textcolor{comment}{// define the regions in the buffer each submesh covers.}}
-\DoxyCodeLine{00548     \textcolor{comment}{//}}
-\DoxyCodeLine{00549 }
-\DoxyCodeLine{00550     \textcolor{comment}{// Cache the vertex offsets to each object in the concatenated vertex buffer.}}
-\DoxyCodeLine{00551     UINT gridVertexOffset = 0;}
+\DoxyCodeLine{00508     \textcolor{comment}{// Create root CBV.}}
+\DoxyCodeLine{00509     slotRootParameter[0].InitAsConstantBufferView(0);}
+\DoxyCodeLine{00510     slotRootParameter[1].InitAsConstantBufferView(1);}
+\DoxyCodeLine{00511     slotRootParameter[2].InitAsConstantBufferView(2);}
+\DoxyCodeLine{00512 }
+\DoxyCodeLine{00513     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{00514     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{00515 }
+\DoxyCodeLine{00516     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{00517     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00518     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00519     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{00520         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{00521 }
+\DoxyCodeLine{00522     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00523     \{}
+\DoxyCodeLine{00524         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{00525     \}}
+\DoxyCodeLine{00526     ThrowIfFailed(hr);}
+\DoxyCodeLine{00527 }
+\DoxyCodeLine{00528     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
+\DoxyCodeLine{00529         0,}
+\DoxyCodeLine{00530         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{00531         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{00532         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{00533 \}}
+\DoxyCodeLine{00534 }
+\DoxyCodeLine{00535 \textcolor{keywordtype}{void} CarApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{00536 \{}
+\DoxyCodeLine{00537     \textcolor{comment}{//step4}}
+\DoxyCodeLine{00538     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS\_DirectLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{00539     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS\_DirectLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{00540     }
+\DoxyCodeLine{00541     mInputLayout =}
+\DoxyCodeLine{00542     \{}
+\DoxyCodeLine{00543         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00544         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{00545     \};}
+\DoxyCodeLine{00546 \}}
+\DoxyCodeLine{00547 }
+\DoxyCodeLine{00548 \textcolor{keywordtype}{void} CarApp::BuildShapeGeometry()}
+\DoxyCodeLine{00549 \{}
+\DoxyCodeLine{00550     GeometryGenerator geoGen;}
+\DoxyCodeLine{00551     GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);}
 \DoxyCodeLine{00552 }
-\DoxyCodeLine{00553 }
-\DoxyCodeLine{00554     \textcolor{comment}{// Cache the starting index for each object in the concatenated index buffer.}}
-\DoxyCodeLine{00555     UINT gridIndexOffset = 0;}
-\DoxyCodeLine{00556 }
+\DoxyCodeLine{00553     \textcolor{comment}{//}}
+\DoxyCodeLine{00554     \textcolor{comment}{// We are concatenating all the geometry into one big vertex/index buffer.  So}}
+\DoxyCodeLine{00555     \textcolor{comment}{// define the regions in the buffer each submesh covers.}}
+\DoxyCodeLine{00556     \textcolor{comment}{//}}
 \DoxyCodeLine{00557 }
-\DoxyCodeLine{00558     SubmeshGeometry gridSubmesh;}
-\DoxyCodeLine{00559     gridSubmesh.IndexCount = (UINT)grid.Indices32.size();}
-\DoxyCodeLine{00560     gridSubmesh.StartIndexLocation = gridIndexOffset;}
-\DoxyCodeLine{00561     gridSubmesh.BaseVertexLocation = gridVertexOffset;}
-\DoxyCodeLine{00562 }
-\DoxyCodeLine{00563     \textcolor{comment}{//}}
-\DoxyCodeLine{00564     \textcolor{comment}{// Extract the vertex elements we are interested in and pack the}}
-\DoxyCodeLine{00565     \textcolor{comment}{// vertices of all the meshes into one vertex buffer.}}
-\DoxyCodeLine{00566     \textcolor{comment}{//}}
-\DoxyCodeLine{00567 }
-\DoxyCodeLine{00568     \textcolor{keyword}{auto} totalVertexCount =grid.Vertices.size();}
-\DoxyCodeLine{00569 }
-\DoxyCodeLine{00570     std::vector<Vertex> vertices(totalVertexCount);}
-\DoxyCodeLine{00571 }
-\DoxyCodeLine{00572     UINT k = 0;}
-\DoxyCodeLine{00573 }
-\DoxyCodeLine{00574     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < grid.Vertices.size(); ++i, ++k)}
-\DoxyCodeLine{00575     \{}
-\DoxyCodeLine{00576         vertices[k].Pos = grid.Vertices[i].Position;}
-\DoxyCodeLine{00577         vertices[k].Normal = grid.Vertices[i].Normal;}
-\DoxyCodeLine{00578     \}}
+\DoxyCodeLine{00558     \textcolor{comment}{// Cache the vertex offsets to each object in the concatenated vertex buffer.}}
+\DoxyCodeLine{00559     UINT gridVertexOffset = 0;}
+\DoxyCodeLine{00560 }
+\DoxyCodeLine{00561 }
+\DoxyCodeLine{00562     \textcolor{comment}{// Cache the starting index for each object in the concatenated index buffer.}}
+\DoxyCodeLine{00563     UINT gridIndexOffset = 0;}
+\DoxyCodeLine{00564 }
+\DoxyCodeLine{00565 }
+\DoxyCodeLine{00566     SubmeshGeometry gridSubmesh;}
+\DoxyCodeLine{00567     gridSubmesh.IndexCount = (UINT)grid.Indices32.size();}
+\DoxyCodeLine{00568     gridSubmesh.StartIndexLocation = gridIndexOffset;}
+\DoxyCodeLine{00569     gridSubmesh.BaseVertexLocation = gridVertexOffset;}
+\DoxyCodeLine{00570 }
+\DoxyCodeLine{00571     \textcolor{comment}{//}}
+\DoxyCodeLine{00572     \textcolor{comment}{// Extract the vertex elements we are interested in and pack the}}
+\DoxyCodeLine{00573     \textcolor{comment}{// vertices of all the meshes into one vertex buffer.}}
+\DoxyCodeLine{00574     \textcolor{comment}{//}}
+\DoxyCodeLine{00575 }
+\DoxyCodeLine{00576     \textcolor{keyword}{auto} totalVertexCount =grid.Vertices.size();}
+\DoxyCodeLine{00577 }
+\DoxyCodeLine{00578     std::vector<Vertex> vertices(totalVertexCount);}
 \DoxyCodeLine{00579 }
-\DoxyCodeLine{00580 }
+\DoxyCodeLine{00580     UINT k = 0;}
 \DoxyCodeLine{00581 }
-\DoxyCodeLine{00582     std::vector<std::uint16\_t> indices;}
-\DoxyCodeLine{00583     indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));}
-\DoxyCodeLine{00584 }
-\DoxyCodeLine{00585     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00586     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{00582     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < grid.Vertices.size(); ++i, ++k)}
+\DoxyCodeLine{00583     \{}
+\DoxyCodeLine{00584         vertices[k].Pos = grid.Vertices[i].Position;}
+\DoxyCodeLine{00585         vertices[k].Normal = grid.Vertices[i].Normal;}
+\DoxyCodeLine{00586     \}}
 \DoxyCodeLine{00587 }
-\DoxyCodeLine{00588     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00589     geo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
-\DoxyCodeLine{00590 }
-\DoxyCodeLine{00591     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00592     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00593 }
-\DoxyCodeLine{00594     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00595     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00596 }
-\DoxyCodeLine{00597     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00598         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00599 }
-\DoxyCodeLine{00600     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00601         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00602 }
-\DoxyCodeLine{00603     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00604     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00605     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00606     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00588 }
+\DoxyCodeLine{00589 }
+\DoxyCodeLine{00590     std::vector<std::uint16\_t> indices;}
+\DoxyCodeLine{00591     indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));}
+\DoxyCodeLine{00592 }
+\DoxyCodeLine{00593     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00594     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{00595 }
+\DoxyCodeLine{00596     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00597     geo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
+\DoxyCodeLine{00598 }
+\DoxyCodeLine{00599     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00600     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00601 }
+\DoxyCodeLine{00602     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00603     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00604 }
+\DoxyCodeLine{00605     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00606         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00607 }
-\DoxyCodeLine{00608     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = gridSubmesh;}
-\DoxyCodeLine{00609 }
-\DoxyCodeLine{00610     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00611 \}}
-\DoxyCodeLine{00612 }
-\DoxyCodeLine{00613 \textcolor{keywordtype}{void} CarApp::BuildCarGeometry()}
-\DoxyCodeLine{00614 \{}
-\DoxyCodeLine{00615     std::ifstream fin(\textcolor{stringliteral}{"{}Models/car.txt"{}});}
-\DoxyCodeLine{00616 }
-\DoxyCodeLine{00617     \textcolor{keywordflow}{if}(!fin)}
-\DoxyCodeLine{00618     \{}
-\DoxyCodeLine{00619         MessageBox(0, L\textcolor{stringliteral}{"{}Models/car.txt not found."{}}, 0, 0);}
-\DoxyCodeLine{00620         \textcolor{keywordflow}{return};}
-\DoxyCodeLine{00621     \}}
-\DoxyCodeLine{00622 }
-\DoxyCodeLine{00623     UINT vcount = 0;}
-\DoxyCodeLine{00624     UINT tcount = 0;}
-\DoxyCodeLine{00625     std::string ignore;}
-\DoxyCodeLine{00626 }
-\DoxyCodeLine{00627     fin >> ignore >> vcount;}
-\DoxyCodeLine{00628     fin >> ignore >> tcount;}
-\DoxyCodeLine{00629     fin >> ignore >> ignore >> ignore >> ignore;}
+\DoxyCodeLine{00608     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00609         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00610 }
+\DoxyCodeLine{00611     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00612     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00613     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{00614     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00615 }
+\DoxyCodeLine{00616     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = gridSubmesh;}
+\DoxyCodeLine{00617 }
+\DoxyCodeLine{00618     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{00619 \}}
+\DoxyCodeLine{00620 }
+\DoxyCodeLine{00621 \textcolor{keywordtype}{void} CarApp::BuildCarGeometry()}
+\DoxyCodeLine{00622 \{}
+\DoxyCodeLine{00623     std::ifstream fin(\textcolor{stringliteral}{"{}Models/car.txt"{}});}
+\DoxyCodeLine{00624 }
+\DoxyCodeLine{00625     \textcolor{keywordflow}{if}(!fin)}
+\DoxyCodeLine{00626     \{}
+\DoxyCodeLine{00627         MessageBox(0, L\textcolor{stringliteral}{"{}Models/car.txt not found."{}}, 0, 0);}
+\DoxyCodeLine{00628         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00629     \}}
 \DoxyCodeLine{00630 }
-\DoxyCodeLine{00631     std::vector<Vertex> vertices(vcount);}
-\DoxyCodeLine{00632     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
-\DoxyCodeLine{00633     \{}
-\DoxyCodeLine{00634         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
-\DoxyCodeLine{00635         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
-\DoxyCodeLine{00636     \}}
-\DoxyCodeLine{00637 }
-\DoxyCodeLine{00638     fin >> ignore;}
-\DoxyCodeLine{00639     fin >> ignore;}
-\DoxyCodeLine{00640     fin >> ignore;}
-\DoxyCodeLine{00641 }
-\DoxyCodeLine{00642     std::vector<std::int32\_t> indices(3 * tcount);}
-\DoxyCodeLine{00643     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
-\DoxyCodeLine{00644     \{}
-\DoxyCodeLine{00645         fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];}
-\DoxyCodeLine{00646     \}}
-\DoxyCodeLine{00647 }
-\DoxyCodeLine{00648     fin.close();}
+\DoxyCodeLine{00631     UINT vcount = 0;}
+\DoxyCodeLine{00632     UINT tcount = 0;}
+\DoxyCodeLine{00633     std::string ignore;}
+\DoxyCodeLine{00634 }
+\DoxyCodeLine{00635     fin >> ignore >> vcount;}
+\DoxyCodeLine{00636     fin >> ignore >> tcount;}
+\DoxyCodeLine{00637     fin >> ignore >> ignore >> ignore >> ignore;}
+\DoxyCodeLine{00638 }
+\DoxyCodeLine{00639     std::vector<Vertex> vertices(vcount);}
+\DoxyCodeLine{00640     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
+\DoxyCodeLine{00641     \{}
+\DoxyCodeLine{00642         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
+\DoxyCodeLine{00643         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
+\DoxyCodeLine{00644     \}}
+\DoxyCodeLine{00645 }
+\DoxyCodeLine{00646     fin >> ignore;}
+\DoxyCodeLine{00647     fin >> ignore;}
+\DoxyCodeLine{00648     fin >> ignore;}
 \DoxyCodeLine{00649 }
-\DoxyCodeLine{00650     \textcolor{comment}{//}}
-\DoxyCodeLine{00651     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
-\DoxyCodeLine{00652     \textcolor{comment}{//}}
-\DoxyCodeLine{00653 }
-\DoxyCodeLine{00654     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00650     std::vector<std::int32\_t> indices(3 * tcount);}
+\DoxyCodeLine{00651     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
+\DoxyCodeLine{00652     \{}
+\DoxyCodeLine{00653         fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];}
+\DoxyCodeLine{00654     \}}
 \DoxyCodeLine{00655 }
-\DoxyCodeLine{00656     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
+\DoxyCodeLine{00656     fin.close();}
 \DoxyCodeLine{00657 }
-\DoxyCodeLine{00658     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00659     geo-\/>Name = \textcolor{stringliteral}{"{}carGeo"{}};}
-\DoxyCodeLine{00660 }
-\DoxyCodeLine{00661     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00662     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00658     \textcolor{comment}{//}}
+\DoxyCodeLine{00659     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
+\DoxyCodeLine{00660     \textcolor{comment}{//}}
+\DoxyCodeLine{00661 }
+\DoxyCodeLine{00662     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
 \DoxyCodeLine{00663 }
-\DoxyCodeLine{00664     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00665     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00666 }
-\DoxyCodeLine{00667     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00668         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00669 }
-\DoxyCodeLine{00670     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00671         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00672 }
-\DoxyCodeLine{00673     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00674     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00675     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
-\DoxyCodeLine{00676     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00664     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
+\DoxyCodeLine{00665 }
+\DoxyCodeLine{00666     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{00667     geo-\/>Name = \textcolor{stringliteral}{"{}carGeo"{}};}
+\DoxyCodeLine{00668 }
+\DoxyCodeLine{00669     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{00670     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{00671 }
+\DoxyCodeLine{00672     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{00673     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{00674 }
+\DoxyCodeLine{00675     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00676         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
 \DoxyCodeLine{00677 }
-\DoxyCodeLine{00678     SubmeshGeometry submesh;}
-\DoxyCodeLine{00679     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00680     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00681     submesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00682 }
-\DoxyCodeLine{00683     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}] = submesh;}
-\DoxyCodeLine{00684 }
-\DoxyCodeLine{00685     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00686 \}}
-\DoxyCodeLine{00687 }
-\DoxyCodeLine{00688 \textcolor{keywordtype}{void} CarApp::BuildPSOs()}
-\DoxyCodeLine{00689 \{}
-\DoxyCodeLine{00690     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00691 }
-\DoxyCodeLine{00692     \textcolor{comment}{//}}
-\DoxyCodeLine{00693     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00694     \textcolor{comment}{//}}
-\DoxyCodeLine{00695     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00696     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00697     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00698     opaquePsoDesc.VS = }
-\DoxyCodeLine{00699     \{ }
-\DoxyCodeLine{00700         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
-\DoxyCodeLine{00701         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00702     \};}
-\DoxyCodeLine{00703     opaquePsoDesc.PS = }
-\DoxyCodeLine{00704     \{ }
-\DoxyCodeLine{00705         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00706         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00707     \};}
-\DoxyCodeLine{00708     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00709     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00710     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00711     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00712     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00713     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00714     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00715     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00716     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00717     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00718     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00719 }
-\DoxyCodeLine{00720     \textcolor{comment}{//}}
-\DoxyCodeLine{00721     \textcolor{comment}{// PSO for opaque wireframe objects.}}
-\DoxyCodeLine{00722     \textcolor{comment}{//}}
-\DoxyCodeLine{00723 }
-\DoxyCodeLine{00724     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00725     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
-\DoxyCodeLine{00726     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{00678     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
+\DoxyCodeLine{00679         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{00680 }
+\DoxyCodeLine{00681     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
+\DoxyCodeLine{00682     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{00683     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
+\DoxyCodeLine{00684     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{00685 }
+\DoxyCodeLine{00686     SubmeshGeometry submesh;}
+\DoxyCodeLine{00687     submesh.IndexCount = (UINT)indices.size();}
+\DoxyCodeLine{00688     submesh.StartIndexLocation = 0;}
+\DoxyCodeLine{00689     submesh.BaseVertexLocation = 0;}
+\DoxyCodeLine{00690 }
+\DoxyCodeLine{00691     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}] = submesh;}
+\DoxyCodeLine{00692 }
+\DoxyCodeLine{00693     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{00694 \}}
+\DoxyCodeLine{00695 }
+\DoxyCodeLine{00696 \textcolor{keywordtype}{void} CarApp::BuildPSOs()}
+\DoxyCodeLine{00697 \{}
+\DoxyCodeLine{00698     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{00699 }
+\DoxyCodeLine{00700     \textcolor{comment}{//}}
+\DoxyCodeLine{00701     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{00702     \textcolor{comment}{//}}
+\DoxyCodeLine{00703     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{00704     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{00705     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{00706     opaquePsoDesc.VS = }
+\DoxyCodeLine{00707     \{ }
+\DoxyCodeLine{00708         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{00709         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00710     \};}
+\DoxyCodeLine{00711     opaquePsoDesc.PS = }
+\DoxyCodeLine{00712     \{ }
+\DoxyCodeLine{00713         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{00714         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{00715     \};}
+\DoxyCodeLine{00716     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00717     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00718     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{00719     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{00720     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{00721     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{00722     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
+\DoxyCodeLine{00723     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
+\DoxyCodeLine{00724     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
+\DoxyCodeLine{00725     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
+\DoxyCodeLine{00726     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
 \DoxyCodeLine{00727 }
-\DoxyCodeLine{00728 \}}
-\DoxyCodeLine{00729 }
-\DoxyCodeLine{00730 \textcolor{keywordtype}{void} CarApp::BuildFrameResources()}
-\DoxyCodeLine{00731 \{}
-\DoxyCodeLine{00732     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{00733     \{}
-\DoxyCodeLine{00734         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{00735             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
-\DoxyCodeLine{00736     \}}
-\DoxyCodeLine{00737 \}}
-\DoxyCodeLine{00738 }
-\DoxyCodeLine{00739 \textcolor{keywordtype}{void} CarApp::BuildMaterials()}
-\DoxyCodeLine{00740 \{}
-\DoxyCodeLine{00741 }
-\DoxyCodeLine{00742     \textcolor{keyword}{auto} carMat = std::make\_unique<Material>();}
-\DoxyCodeLine{00743     carMat-\/>Name = \textcolor{stringliteral}{"{}carMat"{}};}
-\DoxyCodeLine{00744     carMat-\/>MatCBIndex = 0;}
-\DoxyCodeLine{00745     carMat-\/>DiffuseAlbedo = XMFLOAT4(212.0f / 255.0f, 175.0f / 255.0f, 55.0 / 255.0f, 1.0);   \textcolor{comment}{//rgb(212,175,55) metalic gold}}
-\DoxyCodeLine{00746     carMat-\/>FresnelR0 = XMFLOAT3(1.0f, 0.71f, 0.29f);  \textcolor{comment}{//Gold Fresnel}}
-\DoxyCodeLine{00747     carMat-\/>Roughness = 0.0f;}
-\DoxyCodeLine{00748     }
-\DoxyCodeLine{00749     mMaterials[\textcolor{stringliteral}{"{}carMat"{}}] = std::move(carMat);}
-\DoxyCodeLine{00750 }
-\DoxyCodeLine{00751     \textcolor{keyword}{auto} tile0 = std::make\_unique<Material>();}
-\DoxyCodeLine{00752     tile0-\/>Name = \textcolor{stringliteral}{"{}tile0"{}};}
-\DoxyCodeLine{00753     tile0-\/>MatCBIndex = 1;}
-\DoxyCodeLine{00754     tile0-\/>DiffuseAlbedo = XMFLOAT4(Colors::BlanchedAlmond);}
-\DoxyCodeLine{00755     tile0-\/>FresnelR0 = XMFLOAT3(0.02f, 0.02f, 0.02f);}
-\DoxyCodeLine{00756     tile0-\/>Roughness = 0.2f;}
-\DoxyCodeLine{00757     mMaterials[\textcolor{stringliteral}{"{}tile0"{}}] = std::move(tile0);}
-\DoxyCodeLine{00758 \}}
-\DoxyCodeLine{00759 }
-\DoxyCodeLine{00760 \textcolor{keywordtype}{void} CarApp::BuildRenderItems()}
-\DoxyCodeLine{00761 \{}
-\DoxyCodeLine{00762 }
-\DoxyCodeLine{00763     \textcolor{keyword}{auto} carRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00764     XMStoreFloat4x4(\&carRitem-\/>World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));}
-\DoxyCodeLine{00765 }
-\DoxyCodeLine{00766     carRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{00767     carRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}carMat"{}}].get();}
-\DoxyCodeLine{00768     carRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}carGeo"{}}].get();}
-\DoxyCodeLine{00769     carRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00770     carRitem-\/>IndexCount = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].IndexCount;}
-\DoxyCodeLine{00771     carRitem-\/>StartIndexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].StartIndexLocation;}
-\DoxyCodeLine{00772     carRitem-\/>BaseVertexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].BaseVertexLocation;}
-\DoxyCodeLine{00773     mRitemLayer[(int)RenderLayer::Opaque].push\_back(carRitem.get());}
-\DoxyCodeLine{00774 }
-\DoxyCodeLine{00775     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00776     gridRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00777     XMStoreFloat4x4(\&gridRitem-\/>World, XMMatrixScaling(8.0f, 8.0f, 1.0f));}
-\DoxyCodeLine{00778     gridRitem-\/>ObjCBIndex = 1;}
-\DoxyCodeLine{00779     gridRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}tile0"{}}].get();}
-\DoxyCodeLine{00780     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
-\DoxyCodeLine{00781     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00782     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
-\DoxyCodeLine{00783     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
-\DoxyCodeLine{00784     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
-\DoxyCodeLine{00785     mRitemLayer[(int)RenderLayer::Transparent].push\_back(gridRitem.get());}
-\DoxyCodeLine{00786 }
-\DoxyCodeLine{00787     mAllRitems.push\_back(std::move(carRitem));}
-\DoxyCodeLine{00788     mAllRitems.push\_back(std::move(gridRitem));}
-\DoxyCodeLine{00789 }
-\DoxyCodeLine{00790 \}}
-\DoxyCodeLine{00791 }
-\DoxyCodeLine{00792 \textcolor{keywordtype}{void} CarApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{00793 \{}
-\DoxyCodeLine{00794     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00795     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
-\DoxyCodeLine{00796  }
-\DoxyCodeLine{00797     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{00798     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
+\DoxyCodeLine{00728     \textcolor{comment}{//}}
+\DoxyCodeLine{00729     \textcolor{comment}{// PSO for opaque wireframe objects.}}
+\DoxyCodeLine{00730     \textcolor{comment}{//}}
+\DoxyCodeLine{00731 }
+\DoxyCodeLine{00732     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{00733     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{00734     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{00735 }
+\DoxyCodeLine{00736 \}}
+\DoxyCodeLine{00737 }
+\DoxyCodeLine{00738 \textcolor{keywordtype}{void} CarApp::BuildFrameResources()}
+\DoxyCodeLine{00739 \{}
+\DoxyCodeLine{00740     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
+\DoxyCodeLine{00741     \{}
+\DoxyCodeLine{00742         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
+\DoxyCodeLine{00743             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
+\DoxyCodeLine{00744     \}}
+\DoxyCodeLine{00745 \}}
+\DoxyCodeLine{00746 }
+\DoxyCodeLine{00747 \textcolor{keywordtype}{void} CarApp::BuildMaterials()}
+\DoxyCodeLine{00748 \{}
+\DoxyCodeLine{00749 }
+\DoxyCodeLine{00750     \textcolor{keyword}{auto} carMat = std::make\_unique<Material>();}
+\DoxyCodeLine{00751     carMat-\/>Name = \textcolor{stringliteral}{"{}carMat"{}};}
+\DoxyCodeLine{00752     carMat-\/>MatCBIndex = 0;}
+\DoxyCodeLine{00753     carMat-\/>DiffuseAlbedo = XMFLOAT4(212.0f / 255.0f, 175.0f / 255.0f, 55.0 / 255.0f, 1.0);   \textcolor{comment}{//rgb(212,175,55) metalic gold}}
+\DoxyCodeLine{00754     carMat-\/>FresnelR0 = XMFLOAT3(1.0f, 0.71f, 0.29f);  \textcolor{comment}{//Gold Fresnel}}
+\DoxyCodeLine{00755     carMat-\/>Roughness = 0.0f;}
+\DoxyCodeLine{00756     }
+\DoxyCodeLine{00757     mMaterials[\textcolor{stringliteral}{"{}carMat"{}}] = std::move(carMat);}
+\DoxyCodeLine{00758 }
+\DoxyCodeLine{00759     \textcolor{keyword}{auto} tile0 = std::make\_unique<Material>();}
+\DoxyCodeLine{00760     tile0-\/>Name = \textcolor{stringliteral}{"{}tile0"{}};}
+\DoxyCodeLine{00761     tile0-\/>MatCBIndex = 1;}
+\DoxyCodeLine{00762     tile0-\/>DiffuseAlbedo = XMFLOAT4(Colors::BlanchedAlmond);}
+\DoxyCodeLine{00763     tile0-\/>FresnelR0 = XMFLOAT3(0.02f, 0.02f, 0.02f);}
+\DoxyCodeLine{00764     tile0-\/>Roughness = 0.2f;}
+\DoxyCodeLine{00765     mMaterials[\textcolor{stringliteral}{"{}tile0"{}}] = std::move(tile0);}
+\DoxyCodeLine{00766 \}}
+\DoxyCodeLine{00767 }
+\DoxyCodeLine{00768 \textcolor{keywordtype}{void} CarApp::BuildRenderItems()}
+\DoxyCodeLine{00769 \{}
+\DoxyCodeLine{00770 }
+\DoxyCodeLine{00771     \textcolor{keyword}{auto} carRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{00772     XMStoreFloat4x4(\&carRitem-\/>World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));}
+\DoxyCodeLine{00773 }
+\DoxyCodeLine{00774     carRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{00775     carRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}carMat"{}}].get();}
+\DoxyCodeLine{00776     carRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}carGeo"{}}].get();}
+\DoxyCodeLine{00777     carRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00778     carRitem-\/>IndexCount = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].IndexCount;}
+\DoxyCodeLine{00779     carRitem-\/>StartIndexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].StartIndexLocation;}
+\DoxyCodeLine{00780     carRitem-\/>BaseVertexLocation = carRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}car"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00781     mRitemLayer[(int)RenderLayer::Opaque].push\_back(carRitem.get());}
+\DoxyCodeLine{00782 }
+\DoxyCodeLine{00783     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{00784     gridRitem-\/>World = MathHelper::Identity4x4();}
+\DoxyCodeLine{00785     XMStoreFloat4x4(\&gridRitem-\/>World, XMMatrixScaling(8.0f, 8.0f, 1.0f));}
+\DoxyCodeLine{00786     gridRitem-\/>ObjCBIndex = 1;}
+\DoxyCodeLine{00787     gridRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}tile0"{}}].get();}
+\DoxyCodeLine{00788     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
+\DoxyCodeLine{00789     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{00790     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;}
+\DoxyCodeLine{00791     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation;}
+\DoxyCodeLine{00792     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation;}
+\DoxyCodeLine{00793     mRitemLayer[(int)RenderLayer::Transparent].push\_back(gridRitem.get());}
+\DoxyCodeLine{00794 }
+\DoxyCodeLine{00795     mAllRitems.push\_back(std::move(carRitem));}
+\DoxyCodeLine{00796     mAllRitems.push\_back(std::move(gridRitem));}
+\DoxyCodeLine{00797 }
+\DoxyCodeLine{00798 \}}
 \DoxyCodeLine{00799 }
-\DoxyCodeLine{00800     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{00801     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{00802     \{}
-\DoxyCodeLine{00803         \textcolor{keyword}{auto} ri = ritems[i];}
-\DoxyCodeLine{00804 }
-\DoxyCodeLine{00805         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{00806         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{00807         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{00808 }
-\DoxyCodeLine{00809         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
-\DoxyCodeLine{00810         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
-\DoxyCodeLine{00811 }
-\DoxyCodeLine{00812         cmdList-\/>SetGraphicsRootConstantBufferView(0, objCBAddress);}
-\DoxyCodeLine{00813         cmdList-\/>SetGraphicsRootConstantBufferView(1, matCBAddress);}
-\DoxyCodeLine{00814 }
-\DoxyCodeLine{00815         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{00816     \}}
-\DoxyCodeLine{00817 \}}
+\DoxyCodeLine{00800 \textcolor{keywordtype}{void} CarApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{00801 \{}
+\DoxyCodeLine{00802     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
+\DoxyCodeLine{00803     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
+\DoxyCodeLine{00804  }
+\DoxyCodeLine{00805     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
+\DoxyCodeLine{00806     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
+\DoxyCodeLine{00807 }
+\DoxyCodeLine{00808     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{00809     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{00810     \{}
+\DoxyCodeLine{00811         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{00812 }
+\DoxyCodeLine{00813         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{00814         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{00815         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{00816 }
+\DoxyCodeLine{00817         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{00818         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{00819 }
+\DoxyCodeLine{00820         cmdList-\/>SetGraphicsRootConstantBufferView(0, objCBAddress);}
+\DoxyCodeLine{00821         cmdList-\/>SetGraphicsRootConstantBufferView(1, matCBAddress);}
+\DoxyCodeLine{00822 }
+\DoxyCodeLine{00823         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{00824     \}}
+\DoxyCodeLine{00825 \}}
 
 \end{DoxyCode}
