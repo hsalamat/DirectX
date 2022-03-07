@@ -1,7 +1,15 @@
-//***************************************************************************************
-// Pyramid subdividing in CPU without Geometry Shader. Look at Default.hlsl.
-//We have removed the texture in the pixel shader
-//***************************************************************************************
+/** @file Week7-5-PyramidSubdividingUsingCPU.cpp
+ *  @brief Pyramid using Subdividing in CPU Demo
+ *   Pyramid subdividing in CPU without Geometry Shader. Look at Default.hlsl.
+ *   We have removed the texture in the pixel shader
+ *
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

@@ -1,6 +1,13 @@
-//***************************************************************************************
-// TreeBillboardsApp.cpp 
-//***************************************************************************************
+/** @file Week7-2-TreeBillboardsApp.cpp
+ *  @brief Tree Billboarding Demo
+ *   Adding Billboarding to our previous Hills, Mountain, Crate, and Wave Demo
+ * 
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

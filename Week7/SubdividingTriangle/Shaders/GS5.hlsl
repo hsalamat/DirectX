@@ -75,3 +75,37 @@ void GS(triangle VertexOut gin[3], inout TriangleStream<GeoOut> triStream)
     Subdivide(gin, v);
     OutputSubdivision(v, triStream);
 }
+
+
+//[maxvertexcount(32)]
+//void GS(triangle VertexOut gin[3], inout TriangleStream<GeoOut> stream)
+//{
+//    float distance;
+//    ComputeDistance(gin[0], distance);
+//    [branch]
+//    if (distance < 15.0f)
+//    {
+//        VertexOut v[6];
+//        Subdivide(gin, v);
+//        OutputSubdivision(v, stream);
+//    }
+//    else if (distance > 15.0f && distance < 30.0f)
+//    {
+//        // here i want to get double tessellation
+//        VertexOut v[6];
+//        Subdivide(gin, v);
+//        OutputSubdivision(v, stream);
+//    }
+//    else if (distance > 30.0f)
+//    {
+//        GeoOut v[3];
+//        for (int i = 0; i < 3; ++i)
+//        {
+//            v.PosW = mul(float4(gin.PosL, 1.0f), gWorld).xyz;
+//            v.NormalW = mul(gin.NormalL, (float3x3)gWorldInvTranspose);
+//            v.PosH = mul(float4(gin.PosL, 1.0f), gWorldViewProj);
+//            v.Tex = mul(gin.Tex, (float3x3)gWorldInvTranspose);
+//            stream.Append(v);
+//        }
+//    }
+//}

@@ -1,19 +1,26 @@
-//***************************************************************************************
-// Triangle subdividing inputs a triangle, subdivides it and outputs the four subdivided
-//triangles. The  geometry shader illustrates the Append and RestartStrip methods.
-//      1
-//      *
-//     /  \
-//    /    \
-//   m0*–-—*m1
-//  /  \   /  \
-// /    \ /    \ 
-// *–—*–—*–—*–—*
-// 0     m2    2
-// We can draw the subdivision in two strips:
-// Strip 1: bottom three triangles
-// Strip 2: top triangle
-//***************************************************************************************
+/** @file Week7-1-TriangleSubdividing.cpp
+ *  @brief Subdividing Triangle Demo
+ *   Triangle subdividing inputs a triangle, subdivides it and outputs the four subdivided
+ *   triangles. The  geometry shader illustrates the Append and RestartStrip methods.
+ *        1
+ *        *
+ *       /  \
+ *      /    \
+ *     m0*–-—*m1
+ *    /  \   /  \
+ *   /    \ /    \
+ *   *–—*–—*–—*–—*
+ *   0     m2    2
+ *   We can draw the subdivision in two strips:
+ *   Strip 1: bottom three triangles
+ *   Strip 2: top triangle
+ *
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

@@ -1,13 +1,19 @@
-//***************************************************************************************
-// FlagBillboardsApp.cpp
-//When objects are far away, a billboarding technique is used for efficiency.That is,
-//instead of rendering the geometry for a fully 3D object, a quad with a picture of a 3D object is
-//painted on it. From a distance, you cannot tell that a billboard is being
-//used.However, the trick is to make sure that the billboard always faces the camera
-//Assuming the y-axis is up and the xz-plane is the ground plane, the  billboards
-//will generally be aligned with the y - axis and just face the camera in the xz - plane.
-//Note that we are only using TreeSprile.hlsl for all shaders including GS!
-//***************************************************************************************
+/** @file Week7-0-FlagBillboardsApp.cpp
+ *  @brief Flag Billboarding Demo
+ *   When objects are far away, a billboarding technique is used for efficiency.That is,
+ *   instead of rendering the geometry for a fully 3D object, a quad with a picture of a 3D object is
+ *   painted on it. From a distance, you cannot tell that a billboard is being
+ *   used.However, the trick is to make sure that the billboard always faces the camera
+ *   Assuming the y-axis is up and the xz-plane is the ground plane, the  billboards
+ *   will generally be aligned with the y - axis and just face the camera in the xz - plane.
+ *   Note that we are only using TreeSprile.hlsl for all shaders including GS!
+ *
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
@@ -40,7 +46,7 @@ struct RenderItem
 
 	// Dirty flag indicating the object data has changed and we need to update the constant buffer.
 	// Because we have an object cbuffer for each FrameResource, we have to apply the
-	// update to each FrameResource.  Thus, when we modify obect data we should set 
+	// update to each FrameResource.  Therefore, when we modify obect data we should set 
 	// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
 	int NumFramesDirty = gNumFrameResources;
 

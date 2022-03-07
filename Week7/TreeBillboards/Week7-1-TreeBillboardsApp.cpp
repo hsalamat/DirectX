@@ -1,8 +1,15 @@
-//***************************************************************************************
-// TreeBillboardsApp.cpp 
-//In the pixel shader (TreeSprite), we grab the alpha component of the texture. If it is a small value close to 0, which indicates that the pixel is completely transparent, then we clip the pixel from further processing.
-//This helps us to get rid of the black background!
-//***************************************************************************************
+/** @file Week7-1-TreeBillboardsApp.cpp
+ *  @brief Tree Billboarding Demo
+ *   In the pixel shader (TreeSprite), we grab the alpha component of the texture. If it is a small value close to 0, which indicates that the pixel is completely transparent, then we clip the pixel from further processing.
+ *   This helps us to get rid of the black background!
+ *
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"

@@ -1,14 +1,20 @@
-//***************************************************************************************
-//We determine the color in the pixel shader using SV_PrimitiveID
-//If a geometry shader is no present, the primitive ID parameter can be added to
-//the parameter list of the pixelshader:
-//float4 PS(VertexOut pin, uint primID : SV_PrimitiveID) : SV_Target
-//***************************************************************************************
+/** @file Week7-3-SV_PrimitiveID.cpp
+ *  @brief Using SV_PrimitiveID Demo
+ *   We determine the color in the pixel shader using SV_PrimitiveID
+ *   If a geometry shader is no present, the primitive ID parameter can be added to
+ *   the parameter list of the pixelshader:
+ *   float4 PS(VertexOut pin, uint primID : SV_PrimitiveID) : SV_Target
+ *
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
-
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;

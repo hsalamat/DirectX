@@ -1,9 +1,17 @@
-//***************************************************************************************
-//A triangle adjacency, contains adjacency data for triangles, so that adjacent triangles can be accessed.
-//The Geometry Shader stage has access to 6 vertices and attributes, which forms 4 triangles.
-//3 vertices form the triangle which is currently rendered.The other 3 vertices are forming 
-//the neighbor(adjacent) triangles, in combination with the 3 side edges of the currently rendered triangle.
-//***************************************************************************************
+/** @file Week7-0-TriangleWithAdjacency.cpp
+ *  @brief Triangle With Adjacency Demo
+ *   A triangle adjacency, contains adjacency data for triangles, so that adjacent triangles can be accessed.
+ *   The Geometry Shader stage has access to 6 vertices and attributes, which forms 4 triangles.
+ *   3 vertices form the triangle which is currently rendered.The other 3 vertices are forming
+ *   the neighbor(adjacent) triangles, in combination with the 3 side edges of the currently rendered triangle.
+ *   
+ *   Controls:
+ *   Hold the left mouse button down and move the mouse to rotate.
+ *   Hold the right mouse button down and move the mouse to zoom in and out.
+ *
+ *  @author Hooman Salamat
+ */
+
 
 #include "../../Common/d3dApp.h"
 #include "../../Common/MathHelper.h"
