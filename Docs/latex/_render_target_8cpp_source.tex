@@ -1,110 +1,110 @@
-\doxysection{Render\+Target.\+cpp}
+\hypertarget{_render_target_8cpp_source}{}\doxysection{Render\+Target.\+cpp}
 \label{_render_target_8cpp_source}\index{Week8/SobelFilter/RenderTarget.cpp@{Week8/SobelFilter/RenderTarget.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_render_target_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// RenderTarget.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}RenderTarget.h"{}}}
-\DoxyCodeLine{00006  }
-\DoxyCodeLine{00007 RenderTarget::RenderTarget(ID3D12Device* device, }
-\DoxyCodeLine{00008                            UINT width, UINT height,}
-\DoxyCodeLine{00009                            DXGI\_FORMAT format)}
-\DoxyCodeLine{00010 \{}
-\DoxyCodeLine{00011     md3dDevice = device;}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013     mWidth = width;}
-\DoxyCodeLine{00014     mHeight = height;}
-\DoxyCodeLine{00015     mFormat = format;}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017     BuildResource();}
-\DoxyCodeLine{00018 \}}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 ID3D12Resource*  RenderTarget::Resource()}
-\DoxyCodeLine{00021 \{}
-\DoxyCodeLine{00022     \textcolor{keywordflow}{return} mOffscreenTex.Get();}
-\DoxyCodeLine{00023 \}}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025 CD3DX12\_GPU\_DESCRIPTOR\_HANDLE RenderTarget::Srv()}
-\DoxyCodeLine{00026 \{}
-\DoxyCodeLine{00027     \textcolor{keywordflow}{return} mhGpuSrv;}
-\DoxyCodeLine{00028 \}}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00030 CD3DX12\_CPU\_DESCRIPTOR\_HANDLE RenderTarget::Rtv()}
-\DoxyCodeLine{00031 \{}
-\DoxyCodeLine{00032     \textcolor{keywordflow}{return} mhCpuRtv;}
-\DoxyCodeLine{00033 \}}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035 \textcolor{keywordtype}{void} RenderTarget::BuildDescriptors(CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{00036                                     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{00037                                     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv)}
-\DoxyCodeLine{00038 \{}
-\DoxyCodeLine{00039     \textcolor{comment}{// Save references to the descriptors. }}
-\DoxyCodeLine{00040     mhCpuSrv = hCpuSrv;}
-\DoxyCodeLine{00041     mhGpuSrv = hGpuSrv;}
-\DoxyCodeLine{00042     mhCpuRtv = hCpuRtv;}
-\DoxyCodeLine{00043 }
-\DoxyCodeLine{00044     BuildDescriptors();}
-\DoxyCodeLine{00045 \}}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047 \textcolor{keywordtype}{void} RenderTarget::OnResize(UINT newWidth, UINT newHeight)}
-\DoxyCodeLine{00048 \{}
-\DoxyCodeLine{00049     \textcolor{keywordflow}{if}((mWidth != newWidth) || (mHeight != newHeight))}
-\DoxyCodeLine{00050     \{}
-\DoxyCodeLine{00051         mWidth = newWidth;}
-\DoxyCodeLine{00052         mHeight = newHeight;}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054         BuildResource();}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056         \textcolor{comment}{// New resource, so we need new descriptors to that resource.}}
-\DoxyCodeLine{00057         BuildDescriptors();}
-\DoxyCodeLine{00058     \}}
-\DoxyCodeLine{00059 \}}
-\DoxyCodeLine{00060  }
-\DoxyCodeLine{00061 \textcolor{keywordtype}{void} RenderTarget::BuildDescriptors()}
-\DoxyCodeLine{00062 \{}
-\DoxyCodeLine{00063     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00064     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00065     srvDesc.Format = mFormat;}
-\DoxyCodeLine{00066     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00067     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00068     srvDesc.Texture2D.MipLevels = 1;}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070     md3dDevice-\/>CreateShaderResourceView(mOffscreenTex.Get(), \&srvDesc, mhCpuSrv);}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072     md3dDevice-\/>CreateRenderTargetView(mOffscreenTex.Get(), \textcolor{keyword}{nullptr}, mhCpuRtv);}
-\DoxyCodeLine{00073 \}}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075 \textcolor{keywordtype}{void} RenderTarget::BuildResource()}
-\DoxyCodeLine{00076 \{}
-\DoxyCodeLine{00077     \textcolor{comment}{// Note, compressed formats cannot be used for UAV.  We get error like:}}
-\DoxyCodeLine{00078     \textcolor{comment}{// ERROR: ID3D11Device::CreateTexture2D: The format (0x4d, BC3\_UNORM) }}
-\DoxyCodeLine{00079     \textcolor{comment}{// cannot be bound as an UnorderedAccessView, or cast to a format that}}
-\DoxyCodeLine{00080     \textcolor{comment}{// could be bound as an UnorderedAccessView.  Therefore this format }}
-\DoxyCodeLine{00081     \textcolor{comment}{// does not support D3D11\_BIND\_UNORDERED\_ACCESS.}}
-\DoxyCodeLine{00082 }
-\DoxyCodeLine{00083     D3D12\_RESOURCE\_DESC texDesc;}
-\DoxyCodeLine{00084     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
-\DoxyCodeLine{00085     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00086     texDesc.Alignment = 0;}
-\DoxyCodeLine{00087     texDesc.Width = mWidth;}
-\DoxyCodeLine{00088     texDesc.Height = mHeight;}
-\DoxyCodeLine{00089     texDesc.DepthOrArraySize = 1;}
-\DoxyCodeLine{00090     texDesc.MipLevels = 1;}
-\DoxyCodeLine{00091     texDesc.Format = mFormat;}
-\DoxyCodeLine{00092     texDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{00093     texDesc.SampleDesc.Quality = 0;}
-\DoxyCodeLine{00094     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
-\DoxyCodeLine{00095     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_RENDER\_TARGET;}
-\DoxyCodeLine{00096 }
-\DoxyCodeLine{00097     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00098         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00099         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00100         \&texDesc,}
-\DoxyCodeLine{00101         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00102         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00103         IID\_PPV\_ARGS(\&mOffscreenTex)));}
-\DoxyCodeLine{00104 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00002}00002 \textcolor{comment}{// RenderTarget.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_render_target_8h}{RenderTarget.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00006}00006  }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00007}\mbox{\hyperlink{class_render_target_acc2664e7797eb2aed4b0c7e1cd497780}{00007}} \mbox{\hyperlink{class_render_target_acc2664e7797eb2aed4b0c7e1cd497780}{RenderTarget::RenderTarget}}(ID3D12Device* device, }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00008}00008                            UINT width, UINT height,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00009}00009                            DXGI\_FORMAT format)}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00010}00010 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00011}00011     md3dDevice = device;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00013}00013     mWidth = width;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00014}00014     mHeight = height;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00015}00015     mFormat = format;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00017}00017     BuildResource();}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00018}00018 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00020}\mbox{\hyperlink{class_render_target_a2a9aee46c25939f0ee97ee7ff2884630}{00020}} ID3D12Resource*  \mbox{\hyperlink{class_render_target_a2a9aee46c25939f0ee97ee7ff2884630}{RenderTarget::Resource}}()}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00021}00021 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00022}00022     \textcolor{keywordflow}{return} mOffscreenTex.Get();}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00023}00023 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00025}\mbox{\hyperlink{class_render_target_a6b6ac7a698a34d4a135334650a41b496}{00025}} CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_a6b6ac7a698a34d4a135334650a41b496}{RenderTarget::Srv}}()}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00026}00026 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00027}00027     \textcolor{keywordflow}{return} mhGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00028}00028 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00030}\mbox{\hyperlink{class_render_target_aedd29290ceed32de5916748bf54ff189}{00030}} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_render_target_aedd29290ceed32de5916748bf54ff189}{RenderTarget::Rtv}}()}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00032}00032     \textcolor{keywordflow}{return} mhCpuRtv;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00033}00033 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00035}\mbox{\hyperlink{class_render_target_a0d4630b23c8e73fbc1c19b99d871b05c}{00035}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_a0d4630b23c8e73fbc1c19b99d871b05c}{RenderTarget::BuildDescriptors}}(CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00036}00036                                     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00037}00037                                     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv)}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00038}00038 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00039}00039     \textcolor{comment}{// Save references to the descriptors. }}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00040}00040     mhCpuSrv = hCpuSrv;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00041}00041     mhGpuSrv = hGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00042}00042     mhCpuRtv = hCpuRtv;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00044}00044     \mbox{\hyperlink{class_render_target_a0d4630b23c8e73fbc1c19b99d871b05c}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00045}00045 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00047}\mbox{\hyperlink{class_render_target_a46093d4b82e22cab5d0c8fc1b352b492}{00047}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_render_target_a46093d4b82e22cab5d0c8fc1b352b492}{RenderTarget::OnResize}}(UINT newWidth, UINT newHeight)}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00048}00048 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00049}00049     \textcolor{keywordflow}{if}((mWidth != newWidth) || (mHeight != newHeight))}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00050}00050     \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00051}00051         mWidth = newWidth;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00052}00052         mHeight = newHeight;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00054}00054         BuildResource();}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00056}00056         \textcolor{comment}{// New resource, so we need new descriptors to that resource.}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00057}00057         \mbox{\hyperlink{class_render_target_a0d4630b23c8e73fbc1c19b99d871b05c}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00058}00058     \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00059}00059 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00060}00060  }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00061}00061 \textcolor{keywordtype}{void} RenderTarget::BuildDescriptors()}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00062}00062 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00063}00063     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00064}00064     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00065}00065     srvDesc.Format = mFormat;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00066}00066     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00067}00067     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00068}00068     srvDesc.Texture2D.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00070}00070     md3dDevice-\/>CreateShaderResourceView(mOffscreenTex.Get(), \&srvDesc, mhCpuSrv);}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00072}00072     md3dDevice-\/>CreateRenderTargetView(mOffscreenTex.Get(), \textcolor{keyword}{nullptr}, mhCpuRtv);}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00073}00073 \}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00075}00075 \textcolor{keywordtype}{void} RenderTarget::BuildResource()}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00076}00076 \{}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00077}00077     \textcolor{comment}{// Note, compressed formats cannot be used for UAV.  We get error like:}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00078}00078     \textcolor{comment}{// ERROR: ID3D11Device::CreateTexture2D: The format (0x4d, BC3\_UNORM) }}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00079}00079     \textcolor{comment}{// cannot be bound as an UnorderedAccessView, or cast to a format that}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00080}00080     \textcolor{comment}{// could be bound as an UnorderedAccessView.  Therefore this format }}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00081}00081     \textcolor{comment}{// does not support D3D11\_BIND\_UNORDERED\_ACCESS.}}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00083}00083     D3D12\_RESOURCE\_DESC texDesc;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00084}00084     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00085}00085     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00086}00086     texDesc.Alignment = 0;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00087}00087     texDesc.Width = mWidth;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00088}00088     texDesc.Height = mHeight;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00089}00089     texDesc.DepthOrArraySize = 1;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00090}00090     texDesc.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00091}00091     texDesc.Format = mFormat;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00092}00092     texDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00093}00093     texDesc.SampleDesc.Quality = 0;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00094}00094     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00095}00095     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_RENDER\_TARGET;}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00097}00097     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00098}00098         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00099}00099         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00100}00100         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00101}00101         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00102}00102         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00103}00103         IID\_PPV\_ARGS(\&mOffscreenTex)));}
+\DoxyCodeLine{\Hypertarget{_render_target_8cpp_source_l00104}00104 \}}
 
 \end{DoxyCode}

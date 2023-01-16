@@ -1,31 +1,8 @@
 var class_d3_d12_hello_triangle =
 [
-    [ "Vertex", "struct_d3_d12_hello_triangle_1_1_vertex.html", "struct_d3_d12_hello_triangle_1_1_vertex" ],
     [ "D3D12HelloTriangle", "class_d3_d12_hello_triangle.html#a7bf7a1e046b07f0f20e09d4a21b8aed2", null ],
-    [ "LoadAssets", "class_d3_d12_hello_triangle.html#aaca579ec6045c49aa30019a6408ae1c2", null ],
-    [ "LoadPipeline", "class_d3_d12_hello_triangle.html#a91875b2e5ed9a94ab9cc9ac53e2f4a11", null ],
     [ "OnDestroy", "class_d3_d12_hello_triangle.html#afb45c54cf891fe445dd68cd5a0ff2279", null ],
     [ "OnInit", "class_d3_d12_hello_triangle.html#a40a55ac057936e87303dd695b2cc1b83", null ],
     [ "OnRender", "class_d3_d12_hello_triangle.html#a6b2b27d814ddaba2d6c6e931ab924266", null ],
-    [ "OnUpdate", "class_d3_d12_hello_triangle.html#a0721e655f00f1e76b30fcc1d2bf73b2f", null ],
-    [ "PopulateCommandList", "class_d3_d12_hello_triangle.html#ad6e34e0c088d89d821c9d86dbe6d182a", null ],
-    [ "WaitForPreviousFrame", "class_d3_d12_hello_triangle.html#abff6cd2ee06718369e8ccaa9e7b98d28", null ],
-    [ "m_commandAllocator", "class_d3_d12_hello_triangle.html#a32df147243489bea52f1a8d1fc70b9f2", null ],
-    [ "m_commandList", "class_d3_d12_hello_triangle.html#a9e709fb46f1d15be9de82302a31b8308", null ],
-    [ "m_commandQueue", "class_d3_d12_hello_triangle.html#a6bea98d175cbb914e652f6e410429e07", null ],
-    [ "m_device", "class_d3_d12_hello_triangle.html#ab5fbfa6ae47b9352f997986bcfc4c3c2", null ],
-    [ "m_fence", "class_d3_d12_hello_triangle.html#ac6fd5407a886b769f117983f2d73a941", null ],
-    [ "m_fenceEvent", "class_d3_d12_hello_triangle.html#ad0efe26aa9a79d1eba712fe5729af70e", null ],
-    [ "m_fenceValue", "class_d3_d12_hello_triangle.html#a11fa4f794392ea120293a0a7fed06a29", null ],
-    [ "m_frameIndex", "class_d3_d12_hello_triangle.html#a333417e6ca5903330d18c03f1bfd2735", null ],
-    [ "m_pipelineState", "class_d3_d12_hello_triangle.html#a4e7df0b7a3b247eccbb9f2f4cbd61b1b", null ],
-    [ "m_renderTargets", "class_d3_d12_hello_triangle.html#abd9ca10c6eabf143bf5647b5236b9a07", null ],
-    [ "m_rootSignature", "class_d3_d12_hello_triangle.html#aea13d8f62f209d25a0802d8ae27535aa", null ],
-    [ "m_rtvDescriptorSize", "class_d3_d12_hello_triangle.html#a14888b9dbd29d74caeb895046b4e8103", null ],
-    [ "m_rtvHeap", "class_d3_d12_hello_triangle.html#a447f6b5b9388773cc10d5a2f8571988e", null ],
-    [ "m_scissorRect", "class_d3_d12_hello_triangle.html#a018211385ab7d11e0ce5dd150327e9de", null ],
-    [ "m_swapChain", "class_d3_d12_hello_triangle.html#a6ad23ac32f4d0409dae13391503ed849", null ],
-    [ "m_vertexBuffer", "class_d3_d12_hello_triangle.html#a7c77a6cb1f54c6708e7ba961fd7723e1", null ],
-    [ "m_vertexBufferView", "class_d3_d12_hello_triangle.html#af7c902483a8cde8a0f7c6ee62a149654", null ],
-    [ "m_viewport", "class_d3_d12_hello_triangle.html#a76d0eeed4464cdd438cd3d639fc82218", null ]
+    [ "OnUpdate", "class_d3_d12_hello_triangle.html#a0721e655f00f1e76b30fcc1d2bf73b2f", null ]
 ];

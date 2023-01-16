@@ -1,108 +1,108 @@
-\doxysection{Week2-\/0-\/1-\/myfirstwin32.cpp}
+\hypertarget{_week2-0-1-myfirstwin32_8cpp_source}{}\doxysection{Week2-\/0-\/1-\/myfirstwin32.cpp}
 \label{_week2-0-1-myfirstwin32_8cpp_source}\index{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/1-\/myfirstwin32.cpp@{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/1-\/myfirstwin32.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <windows.h>}}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00020 HWND ghMainWnd = 0;}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00025 \textcolor{keywordtype}{bool} InitWindowsApp(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show);}
-\DoxyCodeLine{00026 }
-\DoxyCodeLine{00028 \textcolor{keywordtype}{int} Run();}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00031 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00035 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
-\DoxyCodeLine{00036     PSTR pCmdLine, \textcolor{keywordtype}{int} nShowCmd)}
-\DoxyCodeLine{00037 \{}
-\DoxyCodeLine{00039     \textcolor{keywordflow}{if} (!InitWindowsApp(hInstance, nShowCmd))}
-\DoxyCodeLine{00040         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00041 }
-\DoxyCodeLine{00046     \textcolor{keywordflow}{return} Run();}
-\DoxyCodeLine{00047 \}}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00052 \textcolor{keywordtype}{bool} InitWindowsApp(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show)}
-\DoxyCodeLine{00053 \{}
-\DoxyCodeLine{00056     WNDCLASS wc;}
-\DoxyCodeLine{00057     wc.style = CS\_HREDRAW | CS\_VREDRAW;   }
-\DoxyCodeLine{00058     wc.lpfnWndProc = WndProc; }
-\DoxyCodeLine{00059     wc.cbClsExtra = 0;   }
-\DoxyCodeLine{00060     wc.cbWndExtra = 0;    }
-\DoxyCodeLine{00061     wc.hInstance = instanceHandle;}
-\DoxyCodeLine{00062     wc.hIcon = LoadIcon(0, IDI\_APPLICATION);  }
-\DoxyCodeLine{00063     wc.hCursor = LoadCursor(0, IDC\_ARROW);  }
-\DoxyCodeLine{00064     wc.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH); }
-\DoxyCodeLine{00065     wc.lpszMenuName = 0; }
-\DoxyCodeLine{00066     wc.lpszClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
-\DoxyCodeLine{00067     }
-\DoxyCodeLine{00070     \textcolor{keywordflow}{if} (!RegisterClass(\&wc))}
-\DoxyCodeLine{00071     \{}
-\DoxyCodeLine{00072         MessageBox(0, L\textcolor{stringliteral}{"{}RegisterClass FAILED"{}}, 0, 0);}
-\DoxyCodeLine{00073         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00074     \}}
-\DoxyCodeLine{00083     ghMainWnd = CreateWindow(}
-\DoxyCodeLine{00084         L\textcolor{stringliteral}{"{}BasicWndClass"{}}, }
-\DoxyCodeLine{00085         L\textcolor{stringliteral}{"{}Win32Basic"{}}, }
-\DoxyCodeLine{00086         WS\_OVERLAPPEDWINDOW, }
-\DoxyCodeLine{00087         CW\_USEDEFAULT, }
-\DoxyCodeLine{00088         CW\_USEDEFAULT, }
-\DoxyCodeLine{00089         CW\_USEDEFAULT, }
-\DoxyCodeLine{00090         CW\_USEDEFAULT, }
-\DoxyCodeLine{00091         0, }
-\DoxyCodeLine{00092         0, }
-\DoxyCodeLine{00093         instanceHandle, }
-\DoxyCodeLine{00094         0); }
-\DoxyCodeLine{00095     \textcolor{keywordflow}{if} (ghMainWnd == 0)}
-\DoxyCodeLine{00096     \{}
-\DoxyCodeLine{00097         MessageBox(0, L\textcolor{stringliteral}{"{}CreateWindow FAILED"{}}, 0, 0);}
-\DoxyCodeLine{00098         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00099     \}}
-\DoxyCodeLine{00100 }
-\DoxyCodeLine{00107     ShowWindow(ghMainWnd, show);}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109     UpdateWindow(ghMainWnd);}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00112 \}}
-\DoxyCodeLine{00113 }
-\DoxyCodeLine{00139 }
-\DoxyCodeLine{00140 }
-\DoxyCodeLine{00141 \textcolor{keywordtype}{int} Run()}
-\DoxyCodeLine{00142 \{}
-\DoxyCodeLine{00143     MSG msg = \{ 0 \};}
-\DoxyCodeLine{00144     \textcolor{keywordflow}{while} (msg.message != WM\_QUIT)}
-\DoxyCodeLine{00145     \{}
-\DoxyCodeLine{00147         \textcolor{keywordflow}{if} (PeekMessage(\&msg, 0, 0, 0, PM\_REMOVE))}
-\DoxyCodeLine{00148         \{}
-\DoxyCodeLine{00149             TranslateMessage(\&msg);}
-\DoxyCodeLine{00150             DispatchMessage(\&msg);}
-\DoxyCodeLine{00151         \}}
-\DoxyCodeLine{00153         \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00154         \{}
-\DoxyCodeLine{00155         \}}
-\DoxyCodeLine{00156     \}}
-\DoxyCodeLine{00157     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{int})msg.wParam;}
-\DoxyCodeLine{00158 \}}
-\DoxyCodeLine{00159 }
-\DoxyCodeLine{00161 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{00162 \{}
-\DoxyCodeLine{00165     \textcolor{keywordflow}{switch} (msg)}
-\DoxyCodeLine{00166     \{}
-\DoxyCodeLine{00168     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
-\DoxyCodeLine{00169         MessageBox(0, L\textcolor{stringliteral}{"{}Hello, World"{}}, L\textcolor{stringliteral}{"{}Hello"{}}, MB\_OK);}
-\DoxyCodeLine{00170         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00171 }
-\DoxyCodeLine{00173     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
-\DoxyCodeLine{00174         \textcolor{keywordflow}{if} (wParam == VK\_ESCAPE)}
-\DoxyCodeLine{00175             DestroyWindow(ghMainWnd);}
-\DoxyCodeLine{00176         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00177         }
-\DoxyCodeLine{00179     \textcolor{keywordflow}{case} WM\_DESTROY:}
-\DoxyCodeLine{00180         PostQuitMessage(0);}
-\DoxyCodeLine{00181         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00182     \}}
-\DoxyCodeLine{00186     \textcolor{keywordflow}{return} DefWindowProc(hWnd, msg, wParam, lParam);}
-\DoxyCodeLine{00187 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00020}\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{00020}} HWND \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00025}00025 \textcolor{keywordtype}{bool} \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab8486c7144b04977e4ed8b5b7daa21b6}{InitWindowsApp}}(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00028}00028 \textcolor{keywordtype}{int} \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_aac704aea738c1edc384a97e51d60662b}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00031}00031 LRESULT CALLBACK \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{WndProc}}(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00035}\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a693c206d5a0fb9775a3c249176a9e089}{00035}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a693c206d5a0fb9775a3c249176a9e089}{WinMain}}(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00036}00036     PSTR pCmdLine, \textcolor{keywordtype}{int} nShowCmd)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00037}00037 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00039}00039     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab8486c7144b04977e4ed8b5b7daa21b6}{InitWindowsApp}}(hInstance, nShowCmd))}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00040}00040         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00041}00041 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00046}00046     \textcolor{keywordflow}{return} \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_aac704aea738c1edc384a97e51d60662b}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00047}00047 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00052}\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab8486c7144b04977e4ed8b5b7daa21b6}{00052}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab8486c7144b04977e4ed8b5b7daa21b6}{InitWindowsApp}}(HINSTANCE instanceHandle, \textcolor{keywordtype}{int} show)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00053}00053 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00056}00056     WNDCLASS wc;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00057}00057     wc.style = CS\_HREDRAW | CS\_VREDRAW;   }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00058}00058     wc.lpfnWndProc = \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{WndProc}}; }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00059}00059     wc.cbClsExtra = 0;   }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00060}00060     wc.cbWndExtra = 0;    }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00061}00061     wc.hInstance = instanceHandle;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00062}00062     wc.hIcon = LoadIcon(0, IDI\_APPLICATION);  }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00063}00063     wc.hCursor = LoadCursor(0, IDC\_ARROW);  }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00064}00064     wc.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH); }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00065}00065     wc.lpszMenuName = 0; }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00066}00066     wc.lpszClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00067}00067     }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00070}00070     \textcolor{keywordflow}{if} (!RegisterClass(\&wc))}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00071}00071     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00072}00072         MessageBox(0, L\textcolor{stringliteral}{"{}RegisterClass FAILED"{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00073}00073         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00074}00074     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00083}00083     \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}} = CreateWindow(}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00084}00084         L\textcolor{stringliteral}{"{}BasicWndClass"{}}, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00085}00085         L\textcolor{stringliteral}{"{}Win32Basic"{}}, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00086}00086         WS\_OVERLAPPEDWINDOW, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00087}00087         CW\_USEDEFAULT, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00088}00088         CW\_USEDEFAULT, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00089}00089         CW\_USEDEFAULT, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00090}00090         CW\_USEDEFAULT, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00091}00091         0, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00092}00092         0, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00093}00093         instanceHandle, }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00094}00094         0); }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00095}00095     \textcolor{keywordflow}{if} (\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}} == 0)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00096}00096     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00097}00097         MessageBox(0, L\textcolor{stringliteral}{"{}CreateWindow FAILED"{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00098}00098         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00099}00099     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00107}00107     ShowWindow(\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}}, show);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00109}00109     UpdateWindow(\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00111}00111     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00112}00112 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00113}00113 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00139}00139 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00141}\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_aac704aea738c1edc384a97e51d60662b}{00141}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_aac704aea738c1edc384a97e51d60662b}{Run}}()}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00142}00142 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00143}00143     MSG msg = \{ 0 \};}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00144}00144     \textcolor{keywordflow}{while} (msg.message != WM\_QUIT)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00145}00145     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00147}00147         \textcolor{keywordflow}{if} (PeekMessage(\&msg, 0, 0, 0, PM\_REMOVE))}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00148}00148         \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00149}00149             TranslateMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00150}00150             DispatchMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00151}00151         \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00153}00153         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00154}00154         \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00155}00155         \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00156}00156     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00157}00157     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{int})msg.wParam;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00158}00158 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00159}00159 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00161}\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{00161}} LRESULT CALLBACK \mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{WndProc}}(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00162}00162 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00165}00165     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00166}00166     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00168}00168     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00169}00169         MessageBox(0, L\textcolor{stringliteral}{"{}Hello, World"{}}, L\textcolor{stringliteral}{"{}Hello"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00170}00170         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00173}00173     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00174}00174         \textcolor{keywordflow}{if} (wParam == VK\_ESCAPE)}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00175}00175             DestroyWindow(\mbox{\hyperlink{_week2-0-1-myfirstwin32_8cpp_ab83be9929c1aaf9638ea2f4bff0dbe99}{ghMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00176}00176         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00177}00177         }
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00179}00179     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00180}00180         PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00181}00181         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00182}00182     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00186}00186     \textcolor{keywordflow}{return} DefWindowProc(hWnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-0-1-myfirstwin32_8cpp_source_l00187}00187 \}}
 
 \end{DoxyCode}

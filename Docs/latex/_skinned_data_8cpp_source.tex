@@ -1,186 +1,186 @@
-\doxysection{Skinned\+Data.\+cpp}
+\hypertarget{_skinned_data_8cpp_source}{}\doxysection{Skinned\+Data.\+cpp}
 \label{_skinned_data_8cpp_source}\index{Week15/SkinnedMesh/SkinnedData.cpp@{Week15/SkinnedMesh/SkinnedData.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_skinned_data_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}SkinnedData.h"{}}}
-\DoxyCodeLine{00002 }
-\DoxyCodeLine{00003 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 Keyframe::Keyframe()}
-\DoxyCodeLine{00006     : TimePos(0.0f),}
-\DoxyCodeLine{00007     Translation(0.0f, 0.0f, 0.0f),}
-\DoxyCodeLine{00008     Scale(1.0f, 1.0f, 1.0f),}
-\DoxyCodeLine{00009     RotationQuat(0.0f, 0.0f, 0.0f, 1.0f)}
-\DoxyCodeLine{00010 \{}
-\DoxyCodeLine{00011 \}}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013 Keyframe::\string~Keyframe()}
-\DoxyCodeLine{00014 \{}
-\DoxyCodeLine{00015 \}}
-\DoxyCodeLine{00016  }
-\DoxyCodeLine{00017 \textcolor{keywordtype}{float} BoneAnimation::GetStartTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00018 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00019     \textcolor{comment}{// Keyframes are sorted by time, so first keyframe gives start time.}}
-\DoxyCodeLine{00020     \textcolor{keywordflow}{return} Keyframes.front().TimePos;}
-\DoxyCodeLine{00021 \}}
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 \textcolor{keywordtype}{float} BoneAnimation::GetEndTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00024 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00025     \textcolor{comment}{// Keyframes are sorted by time, so last keyframe gives end time.}}
-\DoxyCodeLine{00026     \textcolor{keywordtype}{float} f = Keyframes.back().TimePos;}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028     \textcolor{keywordflow}{return} f;}
-\DoxyCodeLine{00029 \}}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031 \textcolor{keywordtype}{void} BoneAnimation::Interpolate(\textcolor{keywordtype}{float} t, XMFLOAT4X4\& M)\textcolor{keyword}{const}}
-\DoxyCodeLine{00032 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00033     \textcolor{keywordflow}{if}( t <= Keyframes.front().TimePos )}
-\DoxyCodeLine{00034     \{}
-\DoxyCodeLine{00035         XMVECTOR S = XMLoadFloat3(\&Keyframes.front().Scale);}
-\DoxyCodeLine{00036         XMVECTOR P = XMLoadFloat3(\&Keyframes.front().Translation);}
-\DoxyCodeLine{00037         XMVECTOR Q = XMLoadFloat4(\&Keyframes.front().RotationQuat);}
-\DoxyCodeLine{00038 }
-\DoxyCodeLine{00039         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00040         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{00041     \}}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( t >= Keyframes.back().TimePos )}
-\DoxyCodeLine{00043     \{}
-\DoxyCodeLine{00044         XMVECTOR S = XMLoadFloat3(\&Keyframes.back().Scale);}
-\DoxyCodeLine{00045         XMVECTOR P = XMLoadFloat3(\&Keyframes.back().Translation);}
-\DoxyCodeLine{00046         XMVECTOR Q = XMLoadFloat4(\&Keyframes.back().RotationQuat);}
-\DoxyCodeLine{00047 }
-\DoxyCodeLine{00048         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00049         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{00050     \}}
-\DoxyCodeLine{00051     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00052     \{}
-\DoxyCodeLine{00053         \textcolor{keywordflow}{for}(UINT i = 0; i < Keyframes.size()-\/1; ++i)}
-\DoxyCodeLine{00054         \{}
-\DoxyCodeLine{00055             \textcolor{keywordflow}{if}( t >= Keyframes[i].TimePos \&\& t <= Keyframes[i+1].TimePos )}
-\DoxyCodeLine{00056             \{}
-\DoxyCodeLine{00057                 \textcolor{keywordtype}{float} lerpPercent = (t -\/ Keyframes[i].TimePos) / (Keyframes[i+1].TimePos -\/ Keyframes[i].TimePos);}
-\DoxyCodeLine{00058 }
-\DoxyCodeLine{00059                 XMVECTOR s0 = XMLoadFloat3(\&Keyframes[i].Scale);}
-\DoxyCodeLine{00060                 XMVECTOR s1 = XMLoadFloat3(\&Keyframes[i+1].Scale);}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062                 XMVECTOR p0 = XMLoadFloat3(\&Keyframes[i].Translation);}
-\DoxyCodeLine{00063                 XMVECTOR p1 = XMLoadFloat3(\&Keyframes[i+1].Translation);}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065                 XMVECTOR q0 = XMLoadFloat4(\&Keyframes[i].RotationQuat);}
-\DoxyCodeLine{00066                 XMVECTOR q1 = XMLoadFloat4(\&Keyframes[i+1].RotationQuat);}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068                 XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);}
-\DoxyCodeLine{00069                 XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);}
-\DoxyCodeLine{00070                 XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072                 XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00073                 XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075                 \textcolor{keywordflow}{break};}
-\DoxyCodeLine{00076             \}}
-\DoxyCodeLine{00077         \}}
-\DoxyCodeLine{00078     \}}
-\DoxyCodeLine{00079 \}}
-\DoxyCodeLine{00080 }
-\DoxyCodeLine{00081 \textcolor{keywordtype}{float} AnimationClip::GetClipStartTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00082 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00083     \textcolor{comment}{// Find smallest start time over all bones in this clip.}}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{float} t = MathHelper::Infinity;}
-\DoxyCodeLine{00085     \textcolor{keywordflow}{for}(UINT i = 0; i < BoneAnimations.size(); ++i)}
-\DoxyCodeLine{00086     \{}
-\DoxyCodeLine{00087         t = MathHelper::Min(t, BoneAnimations[i].GetStartTime());}
-\DoxyCodeLine{00088     \}}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090     \textcolor{keywordflow}{return} t;}
-\DoxyCodeLine{00091 \}}
-\DoxyCodeLine{00092 }
-\DoxyCodeLine{00093 \textcolor{keywordtype}{float} AnimationClip::GetClipEndTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00094 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00095     \textcolor{comment}{// Find largest end time over all bones in this clip.}}
-\DoxyCodeLine{00096     \textcolor{keywordtype}{float} t = 0.0f;}
-\DoxyCodeLine{00097     \textcolor{keywordflow}{for}(UINT i = 0; i < BoneAnimations.size(); ++i)}
-\DoxyCodeLine{00098     \{}
-\DoxyCodeLine{00099         t = MathHelper::Max(t, BoneAnimations[i].GetEndTime());}
-\DoxyCodeLine{00100     \}}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     \textcolor{keywordflow}{return} t;}
-\DoxyCodeLine{00103 \}}
-\DoxyCodeLine{00104 }
-\DoxyCodeLine{00105 \textcolor{keywordtype}{void} AnimationClip::Interpolate(\textcolor{keywordtype}{float} t, std::vector<XMFLOAT4X4>\& boneTransforms)\textcolor{keyword}{const}}
-\DoxyCodeLine{00106 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00107     \textcolor{keywordflow}{for}(UINT i = 0; i < BoneAnimations.size(); ++i)}
-\DoxyCodeLine{00108     \{}
-\DoxyCodeLine{00109         BoneAnimations[i].Interpolate(t, boneTransforms[i]);}
-\DoxyCodeLine{00110     \}}
-\DoxyCodeLine{00111 \}}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113 \textcolor{keywordtype}{float} SkinnedData::GetClipStartTime(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const}}
-\DoxyCodeLine{00114 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00115     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
-\DoxyCodeLine{00116     \textcolor{keywordflow}{return} clip-\/>second.GetClipStartTime();}
-\DoxyCodeLine{00117 \}}
-\DoxyCodeLine{00118 }
-\DoxyCodeLine{00119 \textcolor{keywordtype}{float} SkinnedData::GetClipEndTime(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const}}
-\DoxyCodeLine{00120 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00121     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
-\DoxyCodeLine{00122     \textcolor{keywordflow}{return} clip-\/>second.GetClipEndTime();}
-\DoxyCodeLine{00123 \}}
-\DoxyCodeLine{00124 }
-\DoxyCodeLine{00125 UINT SkinnedData::BoneCount()\textcolor{keyword}{const}}
-\DoxyCodeLine{00126 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00127     \textcolor{keywordflow}{return} mBoneHierarchy.size();}
-\DoxyCodeLine{00128 \}}
-\DoxyCodeLine{00129 }
-\DoxyCodeLine{00130 \textcolor{keywordtype}{void} SkinnedData::Set(std::vector<int>\& boneHierarchy, }
-\DoxyCodeLine{00131                       std::vector<XMFLOAT4X4>\& boneOffsets,}
-\DoxyCodeLine{00132                       std::unordered\_map<std::string, AnimationClip>\& animations)}
-\DoxyCodeLine{00133 \{}
-\DoxyCodeLine{00134     mBoneHierarchy = boneHierarchy;}
-\DoxyCodeLine{00135     mBoneOffsets   = boneOffsets;}
-\DoxyCodeLine{00136     mAnimations    = animations;}
-\DoxyCodeLine{00137 \}}
-\DoxyCodeLine{00138  }
-\DoxyCodeLine{00139 \textcolor{keywordtype}{void} SkinnedData::GetFinalTransforms(\textcolor{keyword}{const} std::string\& clipName, \textcolor{keywordtype}{float} timePos,  std::vector<XMFLOAT4X4>\& finalTransforms)\textcolor{keyword}{const}}
-\DoxyCodeLine{00140 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00141     UINT numBones = mBoneOffsets.size();}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     std::vector<XMFLOAT4X4> toParentTransforms(numBones);}
-\DoxyCodeLine{00144 }
-\DoxyCodeLine{00145     \textcolor{comment}{// Interpolate all the bones of this clip at the given time instance.}}
-\DoxyCodeLine{00146     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
-\DoxyCodeLine{00147     clip-\/>second.Interpolate(timePos, toParentTransforms);}
-\DoxyCodeLine{00148 }
-\DoxyCodeLine{00149     \textcolor{comment}{//}}
-\DoxyCodeLine{00150     \textcolor{comment}{// Traverse the hierarchy and transform all the bones to the root space.}}
-\DoxyCodeLine{00151     \textcolor{comment}{//}}
-\DoxyCodeLine{00152 }
-\DoxyCodeLine{00153     std::vector<XMFLOAT4X4> toRootTransforms(numBones);}
-\DoxyCodeLine{00154 }
-\DoxyCodeLine{00155     \textcolor{comment}{// The root bone has index 0.  The root bone has no parent, so its toRootTransform}}
-\DoxyCodeLine{00156     \textcolor{comment}{// is just its local bone transform.}}
-\DoxyCodeLine{00157     toRootTransforms[0] = toParentTransforms[0];}
-\DoxyCodeLine{00158 }
-\DoxyCodeLine{00159     \textcolor{comment}{// Now find the toRootTransform of the children.}}
-\DoxyCodeLine{00160     \textcolor{keywordflow}{for}(UINT i = 1; i < numBones; ++i)}
-\DoxyCodeLine{00161     \{}
-\DoxyCodeLine{00162         XMMATRIX toParent = XMLoadFloat4x4(\&toParentTransforms[i]);}
-\DoxyCodeLine{00163 }
-\DoxyCodeLine{00164         \textcolor{keywordtype}{int} parentIndex = mBoneHierarchy[i];}
-\DoxyCodeLine{00165         XMMATRIX parentToRoot = XMLoadFloat4x4(\&toRootTransforms[parentIndex]);}
-\DoxyCodeLine{00166 }
-\DoxyCodeLine{00167         XMMATRIX toRoot = XMMatrixMultiply(toParent, parentToRoot);}
-\DoxyCodeLine{00168 }
-\DoxyCodeLine{00169         XMStoreFloat4x4(\&toRootTransforms[i], toRoot);}
-\DoxyCodeLine{00170     \}}
-\DoxyCodeLine{00171 }
-\DoxyCodeLine{00172     \textcolor{comment}{// Premultiply by the bone offset transform to get the final transform.}}
-\DoxyCodeLine{00173     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
-\DoxyCodeLine{00174     \{}
-\DoxyCodeLine{00175         XMMATRIX offset = XMLoadFloat4x4(\&mBoneOffsets[i]);}
-\DoxyCodeLine{00176         XMMATRIX toRoot = XMLoadFloat4x4(\&toRootTransforms[i]);}
-\DoxyCodeLine{00177         XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);}
-\DoxyCodeLine{00178         XMStoreFloat4x4(\&finalTransforms[i], XMMatrixTranspose(finalTransform));}
-\DoxyCodeLine{00179     \}}
-\DoxyCodeLine{00180 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_skinned_data_8h}{SkinnedData.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00003}00003 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00005}00005 \mbox{\hyperlink{struct_keyframe_ac9546775756767dc481259b8bea2fc9b}{Keyframe::Keyframe}}()}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00006}00006     : TimePos(0.0f),}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00007}00007     Translation(0.0f, 0.0f, 0.0f),}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00008}00008     Scale(1.0f, 1.0f, 1.0f),}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00009}00009     RotationQuat(0.0f, 0.0f, 0.0f, 1.0f)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00010}00010 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00011}00011 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00013}00013 \mbox{\hyperlink{struct_keyframe_a24445f11306b884c02cdaa26ff8b7fbc}{Keyframe::\string~Keyframe}}()}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00014}00014 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00015}00015 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00016}00016  }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00017}00017 \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a8f43e68c209680d9535bc7b271422ef2}{BoneAnimation::GetStartTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00018}00018 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00019}00019     \textcolor{comment}{// Keyframes are sorted by time, so first keyframe gives start time.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00020}00020     \textcolor{keywordflow}{return} \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().TimePos;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00021}00021 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00022}00022 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00023}00023 \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a5fa4fa3799bc996c82b8766b8a25e2bd}{BoneAnimation::GetEndTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00024}00024 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00025}00025     \textcolor{comment}{// Keyframes are sorted by time, so last keyframe gives end time.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00026}00026     \textcolor{keywordtype}{float} f = \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().TimePos;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00028}00028     \textcolor{keywordflow}{return} f;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00029}00029 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00031}00031 \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_bone_animation_a7693e2077a4a30877ed1c22e81272199}{BoneAnimation::Interpolate}}(\textcolor{keywordtype}{float} t, XMFLOAT4X4\& M)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00032}00032 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00033}00033     \textcolor{keywordflow}{if}( t <= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().TimePos )}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00034}00034     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00035}00035         XMVECTOR S = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().Scale);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00036}00036         XMVECTOR P = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().Translation);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00037}00037         XMVECTOR Q = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.front().RotationQuat);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00039}00039         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00040}00040         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00041}00041     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00042}00042     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( t >= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().TimePos )}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00043}00043     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00044}00044         XMVECTOR S = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().Scale);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00045}00045         XMVECTOR P = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().Translation);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00046}00046         XMVECTOR Q = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.back().RotationQuat);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00048}00048         XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00049}00049         XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00050}00050     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00051}00051     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00052}00052     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00053}00053         \textcolor{keywordflow}{for}(UINT i = 0; i < \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.size()-\/1; ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00054}00054         \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00055}00055             \textcolor{keywordflow}{if}( t >= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos \&\& t <= \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].TimePos )}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00056}00056             \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00057}00057                 \textcolor{keywordtype}{float} lerpPercent = (t -\/ \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos) / (\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].TimePos -\/ \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00059}00059                 XMVECTOR s0 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Scale);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00060}00060                 XMVECTOR s1 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].Scale);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00062}00062                 XMVECTOR p0 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Translation);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00063}00063                 XMVECTOR p1 = XMLoadFloat3(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].Translation);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00065}00065                 XMVECTOR q0 = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].RotationQuat);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00066}00066                 XMVECTOR q1 = XMLoadFloat4(\&\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i+1].RotationQuat);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00068}00068                 XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00069}00069                 XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00070}00070                 XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00072}00072                 XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00073}00073                 XMStoreFloat4x4(\&M, XMMatrixAffineTransformation(S, zero, Q, P));}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00075}00075                 \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00076}00076             \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00077}00077         \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00078}00078     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00079}00079 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00081}\mbox{\hyperlink{struct_animation_clip_aafa7add8250d7dfb911555a20db72773}{00081}} \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_animation_clip_aafa7add8250d7dfb911555a20db72773}{AnimationClip::GetClipStartTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00082}00082 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00083}00083     \textcolor{comment}{// Find smallest start time over all bones in this clip.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00084}00084     \textcolor{keywordtype}{float} t = \mbox{\hyperlink{class_math_helper_afc6585db4fa6c09d5c16f898e6883175}{MathHelper::Infinity}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00085}00085     \textcolor{keywordflow}{for}(UINT i = 0; i < \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00086}00086     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00087}00087         t = \mbox{\hyperlink{class_math_helper_a5609539d1b530660438b48c74af2e1f4}{MathHelper::Min}}(t, \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}[i].GetStartTime());}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00088}00088     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00090}00090     \textcolor{keywordflow}{return} t;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00091}00091 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00092}00092 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00093}\mbox{\hyperlink{struct_animation_clip_a4037dec2ddce4903197c30cada77d660}{00093}} \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_animation_clip_a4037dec2ddce4903197c30cada77d660}{AnimationClip::GetClipEndTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00094}00094 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00095}00095     \textcolor{comment}{// Find largest end time over all bones in this clip.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00096}00096     \textcolor{keywordtype}{float} t = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00097}00097     \textcolor{keywordflow}{for}(UINT i = 0; i < \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00098}00098     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00099}00099         t = \mbox{\hyperlink{class_math_helper_a0c33d72533f7bb85d56ab384e6867771}{MathHelper::Max}}(t, \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}[i].GetEndTime());}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00100}00100     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00102}00102     \textcolor{keywordflow}{return} t;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00103}00103 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00104}00104 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00105}\mbox{\hyperlink{struct_animation_clip_a99c701eadc60064b0c495dd2e5f5c8d7}{00105}} \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_animation_clip_a99c701eadc60064b0c495dd2e5f5c8d7}{AnimationClip::Interpolate}}(\textcolor{keywordtype}{float} t, std::vector<XMFLOAT4X4>\& boneTransforms)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00106}00106 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00107}00107     \textcolor{keywordflow}{for}(UINT i = 0; i < \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00108}00108     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00109}00109         \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}[i].Interpolate(t, boneTransforms[i]);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00110}00110     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00111}00111 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00113}\mbox{\hyperlink{class_skinned_data_aff2e1811bc77e2616767fd7035645df6}{00113}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_skinned_data_aff2e1811bc77e2616767fd7035645df6}{SkinnedData::GetClipStartTime}}(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00114}00114 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00115}00115     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00116}00116     \textcolor{keywordflow}{return} clip-\/>second.GetClipStartTime();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00117}00117 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00119}\mbox{\hyperlink{class_skinned_data_a4cdf1e2114eb1847b5c591a29ee1618e}{00119}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_skinned_data_a4cdf1e2114eb1847b5c591a29ee1618e}{SkinnedData::GetClipEndTime}}(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00120}00120 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00121}00121     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00122}00122     \textcolor{keywordflow}{return} clip-\/>second.GetClipEndTime();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00123}00123 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00124}00124 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00125}\mbox{\hyperlink{class_skinned_data_ad409154fea38f0c8e3a20d6171c71d99}{00125}} UINT \mbox{\hyperlink{class_skinned_data_ad409154fea38f0c8e3a20d6171c71d99}{SkinnedData::BoneCount}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00126}00126 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00127}00127     \textcolor{keywordflow}{return} mBoneHierarchy.size();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00128}00128 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00130}\mbox{\hyperlink{class_skinned_data_a74d3a5029f01d49049135382d5f28045}{00130}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_skinned_data_a74d3a5029f01d49049135382d5f28045}{SkinnedData::Set}}(std::vector<int>\& boneHierarchy, }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00131}00131                       std::vector<XMFLOAT4X4>\& boneOffsets,}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00132}00132                       std::unordered\_map<std::string, AnimationClip>\& animations)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00133}00133 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00134}00134     mBoneHierarchy = boneHierarchy;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00135}00135     mBoneOffsets   = boneOffsets;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00136}00136     mAnimations    = animations;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00137}00137 \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00138}00138  }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00139}\mbox{\hyperlink{class_skinned_data_aa64c311a31db347043a14c1c2f83835c}{00139}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_skinned_data_aa64c311a31db347043a14c1c2f83835c}{SkinnedData::GetFinalTransforms}}(\textcolor{keyword}{const} std::string\& clipName, \textcolor{keywordtype}{float} timePos,  std::vector<XMFLOAT4X4>\& finalTransforms)\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00140}00140 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00141}00141     UINT numBones = mBoneOffsets.size();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00143}00143     std::vector<XMFLOAT4X4> toParentTransforms(numBones);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00144}00144 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00145}00145     \textcolor{comment}{// Interpolate all the bones of this clip at the given time instance.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00146}00146     \textcolor{keyword}{auto} clip = mAnimations.find(clipName);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00147}00147     clip-\/>second.Interpolate(timePos, toParentTransforms);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00148}00148 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00149}00149     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00150}00150     \textcolor{comment}{// Traverse the hierarchy and transform all the bones to the root space.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00151}00151     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00152}00152 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00153}00153     std::vector<XMFLOAT4X4> toRootTransforms(numBones);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00154}00154 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00155}00155     \textcolor{comment}{// The root bone has index 0.  The root bone has no parent, so its toRootTransform}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00156}00156     \textcolor{comment}{// is just its local bone transform.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00157}00157     toRootTransforms[0] = toParentTransforms[0];}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00158}00158 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00159}00159     \textcolor{comment}{// Now find the toRootTransform of the children.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00160}00160     \textcolor{keywordflow}{for}(UINT i = 1; i < numBones; ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00161}00161     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00162}00162         XMMATRIX toParent = XMLoadFloat4x4(\&toParentTransforms[i]);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00163}00163 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00164}00164         \textcolor{keywordtype}{int} parentIndex = mBoneHierarchy[i];}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00165}00165         XMMATRIX parentToRoot = XMLoadFloat4x4(\&toRootTransforms[parentIndex]);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00167}00167         XMMATRIX toRoot = XMMatrixMultiply(toParent, parentToRoot);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00169}00169         XMStoreFloat4x4(\&toRootTransforms[i], toRoot);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00170}00170     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00172}00172     \textcolor{comment}{// Premultiply by the bone offset transform to get the final transform.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00173}00173     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00174}00174     \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00175}00175         XMMATRIX offset = XMLoadFloat4x4(\&mBoneOffsets[i]);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00176}00176         XMMATRIX toRoot = XMLoadFloat4x4(\&toRootTransforms[i]);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00177}00177         XMMATRIX finalTransform = XMMatrixMultiply(offset, toRoot);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00178}00178         XMStoreFloat4x4(\&finalTransforms[i], XMMatrixTranspose(finalTransform));}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00179}00179     \}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8cpp_source_l00180}00180 \}}
 
 \end{DoxyCode}

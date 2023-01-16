@@ -1,62 +1,62 @@
-\doxysection{com-\/demo.cpp}
+\hypertarget{com-demo_8cpp_source}{}\doxysection{com-\/demo.cpp}
 \label{com-demo_8cpp_source}\index{Week2/Week2-\/8-\/Console-\/COM-\/Demo/com-\/demo.cpp@{Week2/Week2-\/8-\/Console-\/COM-\/Demo/com-\/demo.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{com-demo_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include <Windows.h>}}
-\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include <Wininet.h>}}
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include <ShlObj\_core.h>}}
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{00016 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{00017 \textcolor{keywordtype}{int} main()}
-\DoxyCodeLine{00018 \{}
-\DoxyCodeLine{00020     HRESULT hr;}
-\DoxyCodeLine{00021     \textcolor{comment}{/*hr = CoInitializeEx(0, COINIT\_MULTITHREADED);}}
-\DoxyCodeLine{00022 \textcolor{comment}{    if (FAILED(hr))}}
-\DoxyCodeLine{00023 \textcolor{comment}{    \{}}
-\DoxyCodeLine{00024 \textcolor{comment}{        cout << "{}Failed to initialize COM library. Error code = 0x"{}}}
-\DoxyCodeLine{00025 \textcolor{comment}{            << hex << hr << endl;}}
-\DoxyCodeLine{00026 \textcolor{comment}{        return hr;}}
-\DoxyCodeLine{00027 \textcolor{comment}{    \}*/}}
-\DoxyCodeLine{00028     \textcolor{comment}{//this is the simplified version of above...}}
-\DoxyCodeLine{00029     CoInitialize(\textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031     IActiveDesktop* pDesktop = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00032     WCHAR wszWallpaper[MAX\_PATH];}
-\DoxyCodeLine{00034     hr = CoCreateInstance(}
-\DoxyCodeLine{00035         CLSID\_ActiveDesktop,  \textcolor{comment}{//underlying COM object that we want to create}}
-\DoxyCodeLine{00036         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00037         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
-\DoxyCodeLine{00038         \_\_uuidof(IActiveDesktop),}
-\DoxyCodeLine{00039         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pDesktop)  \textcolor{comment}{//this pointer will be filled}}
-\DoxyCodeLine{00040     );}
-\DoxyCodeLine{00041     pDesktop-\/>GetWallpaper(wszWallpaper, MAX\_PATH, 0);}
-\DoxyCodeLine{00042     pDesktop-\/>Release();}
-\DoxyCodeLine{00043     std::wcout << wszWallpaper;}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045 }
-\DoxyCodeLine{00046 \textcolor{preprocessor}{\#pragma region Add this section below CoUninitialize}}
-\DoxyCodeLine{00048     IShellLink* pLink = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00049     hr = CoCreateInstance(}
-\DoxyCodeLine{00050         CLSID\_ShellLink,  \textcolor{comment}{//underlying COM object that we want to create}}
-\DoxyCodeLine{00051         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00052         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
-\DoxyCodeLine{00053         \_\_uuidof(IShellLink),}
-\DoxyCodeLine{00054         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pLink)  \textcolor{comment}{//this pointer will be filled}}
-\DoxyCodeLine{00055     );}
-\DoxyCodeLine{00056     pLink-\/>SetPath(wszWallpaper);}
-\DoxyCodeLine{00057     IPersistFile* pPersist = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00058     pLink-\/>QueryInterface(\_\_uuidof(IPersistFile), \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>} (\&pPersist));}
-\DoxyCodeLine{00060     pPersist-\/>Save(L\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)wallpaper.lnk"{}}, FALSE);}
-\DoxyCodeLine{00061     pPersist-\/>Release();}
-\DoxyCodeLine{00062     pLink-\/>Release();}
-\DoxyCodeLine{00063 \textcolor{preprocessor}{\#pragma endregion}}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     CoUninitialize();}
-\DoxyCodeLine{00066 }
-\DoxyCodeLine{00067     std::cin.get();}
-\DoxyCodeLine{00068     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00069 \}}
-\DoxyCodeLine{00070 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include <Windows.h>}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include <Wininet.h>}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#include <ShlObj\_core.h>}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00016}00016 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00017}\mbox{\hyperlink{com-demo_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00017}} \textcolor{keywordtype}{int} \mbox{\hyperlink{com-demo_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00018}00018 \{}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00020}00020     HRESULT hr;}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00021}00021     \textcolor{comment}{/*hr = CoInitializeEx(0, COINIT\_MULTITHREADED);}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00022}00022 \textcolor{comment}{    if (FAILED(hr))}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00023}00023 \textcolor{comment}{    \{}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00024}00024 \textcolor{comment}{        cout << "{}Failed to initialize COM library. Error code = 0x"{}}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00025}00025 \textcolor{comment}{            << hex << hr << endl;}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00026}00026 \textcolor{comment}{        return hr;}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00027}00027 \textcolor{comment}{    \}*/}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00028}00028     \textcolor{comment}{//this is the simplified version of above...}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00029}00029     CoInitialize(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00031}00031     IActiveDesktop* pDesktop = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00032}00032     WCHAR wszWallpaper[MAX\_PATH];}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00034}00034     hr = CoCreateInstance(}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00035}00035         CLSID\_ActiveDesktop,  \textcolor{comment}{//underlying COM object that we want to create}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00036}00036         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00037}00037         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00038}00038         \_\_uuidof(IActiveDesktop),}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00039}00039         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pDesktop)  \textcolor{comment}{//this pointer will be filled}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00040}00040     );}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00041}00041     pDesktop-\/>GetWallpaper(wszWallpaper, MAX\_PATH, 0);}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00042}00042     pDesktop-\/>Release();}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00043}00043     std::wcout << wszWallpaper;}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00046}00046 \textcolor{preprocessor}{\#pragma region Add this section below CoUninitialize}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00048}00048     IShellLink* pLink = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00049}00049     hr = CoCreateInstance(}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00050}00050         CLSID\_ShellLink,  \textcolor{comment}{//underlying COM object that we want to create}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00051}00051         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00052}00052         CLSCTX\_INPROC\_SERVER,   \textcolor{comment}{//context of the object -\/-\/> process context}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00053}00053         \_\_uuidof(IShellLink),}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00054}00054         \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&pLink)  \textcolor{comment}{//this pointer will be filled}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00055}00055     );}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00056}00056     pLink-\/>SetPath(wszWallpaper);}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00057}00057     IPersistFile* pPersist = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00058}00058     pLink-\/>QueryInterface(\_\_uuidof(IPersistFile), \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>} (\&pPersist));}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00060}00060     pPersist-\/>Save(L\textcolor{stringliteral}{"{}c:\(\backslash\)\(\backslash\)wallpaper.lnk"{}}, FALSE);}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00061}00061     pPersist-\/>Release();}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00062}00062     pLink-\/>Release();}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00063}00063 \textcolor{preprocessor}{\#pragma endregion}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00065}00065     CoUninitialize();}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00067}00067     std::cin.get();}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00068}00068     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00069}00069 \}}
+\DoxyCodeLine{\Hypertarget{com-demo_8cpp_source_l00070}00070 }
 
 \end{DoxyCode}

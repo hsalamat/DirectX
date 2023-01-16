@@ -1,418 +1,418 @@
-\doxysection{Week8-\/3-\/\+Particle\+Add\+CSApp.cpp}
+\hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source}{}\doxysection{Week8-\/3-\/\+Particle\+Add\+CSApp.cpp}
 \label{_week8-3-_particle_add_c_s_app_8cpp_source}\index{Week8/VecAdd/Week8-\/3-\/ParticleAddCSApp.cpp@{Week8/VecAdd/Week8-\/3-\/ParticleAddCSApp.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week8-3-_particle_add_c_s_app_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// particleAddCSApp.cpp }}
-\DoxyCodeLine{00004 \textcolor{comment}{}\textcolor{comment}{// It will increment the counter when append is called and decrement the counter when consume is called.}}
-\DoxyCodeLine{00005 \textcolor{comment}{//So, in this program, I have 256 particles. Every particle is a structure of 36 bytes. I have two UAVs associated to the append and consume structures.}}
-\DoxyCodeLine{00006 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00007 }
-\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00012 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 }
-\DoxyCodeLine{00019 \textcolor{keyword}{struct }Particle}
-\DoxyCodeLine{00020 \{}
-\DoxyCodeLine{00021     XMFLOAT3 Position;}
-\DoxyCodeLine{00022     XMFLOAT3 Velocity;}
-\DoxyCodeLine{00023     XMFLOAT3 Acceleration;}
-\DoxyCodeLine{00024 \};}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026 \textcolor{keyword}{class }ParticleAddCSApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00027 \{}
-\DoxyCodeLine{00028 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00029     ParticleAddCSApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00030     ParticleAddCSApp(\textcolor{keyword}{const} ParticleAddCSApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00031     ParticleAddCSApp\& operator=(\textcolor{keyword}{const} ParticleAddCSApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00032     \string~ParticleAddCSApp();}
-\DoxyCodeLine{00033 }
-\DoxyCodeLine{00034     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00037     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00038     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00039     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041     \textcolor{keywordtype}{void} DoComputeWork();}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043     \textcolor{keywordtype}{void} BuildBuffers();}
-\DoxyCodeLine{00044     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00045     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00046     \textcolor{keywordtype}{void} BuildDescriptors();}
-\DoxyCodeLine{00047     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00048     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00051 }
-\DoxyCodeLine{00052     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054     ComPtr<ID3D12DescriptorHeap> mUavHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00057     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00058 }
-\DoxyCodeLine{00059     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00060 }
-\DoxyCodeLine{00061     \textcolor{keyword}{const} \textcolor{keywordtype}{int} NumDataElements = 16 * 16;}
-\DoxyCodeLine{00062 }
-\DoxyCodeLine{00063     ComPtr<ID3D12Resource> mInputBufferA = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00064     ComPtr<ID3D12Resource> mInputUploadBufferA = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00065     ComPtr<ID3D12Resource> mOutputBuffer = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00066     ComPtr<ID3D12Resource> mReadBackBuffer = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     UINT mCbvSrvUavDescriptorSize = 0;}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070 \};}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00073     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00074 \{}
-\DoxyCodeLine{00075     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00076 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00077     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00078 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00081     \{}
-\DoxyCodeLine{00082         ParticleAddCSApp theApp(hInstance);}
-\DoxyCodeLine{00083         \textcolor{keywordflow}{if} (!theApp.Initialize())}
-\DoxyCodeLine{00084             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00085 }
-\DoxyCodeLine{00086         \textcolor{comment}{// return theApp.Run();}}
-\DoxyCodeLine{00087         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00088     \}}
-\DoxyCodeLine{00089     \textcolor{keywordflow}{catch} (DxException \& e)}
-\DoxyCodeLine{00090     \{}
-\DoxyCodeLine{00091         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00092         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00093     \}}
-\DoxyCodeLine{00094 \}}
-\DoxyCodeLine{00095 }
-\DoxyCodeLine{00096 ParticleAddCSApp::ParticleAddCSApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00097     : D3DApp(hInstance)}
-\DoxyCodeLine{00098 \{}
-\DoxyCodeLine{00099 \}}
-\DoxyCodeLine{00100 }
-\DoxyCodeLine{00101 ParticleAddCSApp::\string~ParticleAddCSApp()}
-\DoxyCodeLine{00102 \{}
-\DoxyCodeLine{00103     \textcolor{keywordflow}{if} (md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00104         FlushCommandQueue();}
-\DoxyCodeLine{00105 \}}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107 \textcolor{keywordtype}{bool} ParticleAddCSApp::Initialize()}
-\DoxyCodeLine{00108 \{}
-\DoxyCodeLine{00109     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
-\DoxyCodeLine{00110         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00113     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00114 }
-\DoxyCodeLine{00115     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
-\DoxyCodeLine{00116 \textcolor{comment}{// so we have to query this information.}}
-\DoxyCodeLine{00117     mCbvSrvUavDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00118 }
-\DoxyCodeLine{00119 }
-\DoxyCodeLine{00120     BuildBuffers();}
-\DoxyCodeLine{00121     BuildRootSignature();}
-\DoxyCodeLine{00122     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00123     BuildDescriptorHeaps();}
-\DoxyCodeLine{00124     BuildDescriptors();}
-\DoxyCodeLine{00125     BuildPSOs();}
-\DoxyCodeLine{00126 }
-\DoxyCodeLine{00127     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00128     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00129     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00130     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00131 }
-\DoxyCodeLine{00132     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00133     FlushCommandQueue();}
-\DoxyCodeLine{00134 }
-\DoxyCodeLine{00135     DoComputeWork();}
-\DoxyCodeLine{00136 }
-\DoxyCodeLine{00137     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00138 \}}
-\DoxyCodeLine{00139 }
-\DoxyCodeLine{00140 \textcolor{keywordtype}{void} ParticleAddCSApp::OnResize()}
-\DoxyCodeLine{00141 \{}
-\DoxyCodeLine{00142 \}}
-\DoxyCodeLine{00143 }
-\DoxyCodeLine{00144 \textcolor{keywordtype}{void} ParticleAddCSApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00145 \{}
-\DoxyCodeLine{00146 \}}
-\DoxyCodeLine{00147 }
-\DoxyCodeLine{00148 \textcolor{keywordtype}{void} ParticleAddCSApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00149 \{}
-\DoxyCodeLine{00150 \}}
-\DoxyCodeLine{00151 }
-\DoxyCodeLine{00152 }
-\DoxyCodeLine{00153 \textcolor{keywordtype}{void} ParticleAddCSApp::DoComputeWork()}
-\DoxyCodeLine{00154 \{}
-\DoxyCodeLine{00155     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00156     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00157     ThrowIfFailed(mDirectCmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00158 }
-\DoxyCodeLine{00159     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00160     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00161     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}particleAdd"{}}].Get()));}
-\DoxyCodeLine{00162 }
-\DoxyCodeLine{00163     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mUavHeap.Get() \};}
-\DoxyCodeLine{00164     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00165 }
-\DoxyCodeLine{00166 }
-\DoxyCodeLine{00167     mCommandList-\/>SetComputeRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00168 }
-\DoxyCodeLine{00169     \textcolor{comment}{//mCommandList-\/>SetComputeRootUnorderedAccessView(0, mInputBufferA-\/>GetGPUVirtualAddress());}}
-\DoxyCodeLine{00170     \textcolor{comment}{//mCommandList-\/>SetComputeRootUnorderedAccessView(1, mOutputBuffer-\/>GetGPUVirtualAddress());}}
-\DoxyCodeLine{00171 }
-\DoxyCodeLine{00172     \textcolor{keywordtype}{int} passUavIndex = 0;}
-\DoxyCodeLine{00173     \textcolor{keyword}{auto} passUavHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mUavHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00174 }
-\DoxyCodeLine{00175     mCommandList-\/>SetComputeRootDescriptorTable(0, passUavHandle);  \textcolor{comment}{//mInputBufferA-\/>GetGPUVirtualAddress()}}
-\DoxyCodeLine{00176     passUavHandle.Offset(passUavIndex, mCbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00177     mCommandList-\/>SetComputeRootDescriptorTable(1, passUavHandle); \textcolor{comment}{//mOutputBuffer-\/>GetGPUVirtualAddress()}}
-\DoxyCodeLine{00178 }
-\DoxyCodeLine{00179     mCommandList-\/>Dispatch(1, 1, 1);}
-\DoxyCodeLine{00180 }
-\DoxyCodeLine{00181     \textcolor{comment}{// Schedule to copy the data to the default buffer to the readback buffer.}}
-\DoxyCodeLine{00182 }
-\DoxyCodeLine{00183     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_SOURCE: The resource is used as the source in a copy operation. }}
-\DoxyCodeLine{00184     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_DEST: The resource is used as the destination in a copy operation.}}
-\DoxyCodeLine{00185 }
-\DoxyCodeLine{00186     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mOutputBuffer.Get(),}
-\DoxyCodeLine{00187         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS, D3D12\_RESOURCE\_STATE\_COPY\_SOURCE));}
-\DoxyCodeLine{00188 }
-\DoxyCodeLine{00189     \textcolor{comment}{//We need to read the data back from the GPU after computer shader does its calculation}}
-\DoxyCodeLine{00190     \textcolor{comment}{//mCommandList-\/>CopyResource(Destination: CPUData, Source: GPUData);}}
-\DoxyCodeLine{00191     mCommandList-\/>CopyResource(mReadBackBuffer.Get(), mOutputBuffer.Get());}
-\DoxyCodeLine{00192 }
-\DoxyCodeLine{00193     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mOutputBuffer.Get(),}
-\DoxyCodeLine{00194         D3D12\_RESOURCE\_STATE\_COPY\_SOURCE, D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS));}
-\DoxyCodeLine{00195 }
-\DoxyCodeLine{00196 }
-\DoxyCodeLine{00197     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00198     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00199 }
-\DoxyCodeLine{00200     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00201     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00202     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00203 }
-\DoxyCodeLine{00204     \textcolor{comment}{// Wait for the work to finish.}}
-\DoxyCodeLine{00205     \textcolor{comment}{//FlushCommandQueue();}}
-\DoxyCodeLine{00206 }
-\DoxyCodeLine{00207     \textcolor{comment}{// Map the data so we can read it on CPU.}}
-\DoxyCodeLine{00208     Particle* mappedData = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00209     CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
-\DoxyCodeLine{00210     ThrowIfFailed(mReadBackBuffer-\/>Map(0, \textcolor{keyword}{nullptr}, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&mappedData)));}
-\DoxyCodeLine{00211 }
-\DoxyCodeLine{00212     std::ofstream fout(\textcolor{stringliteral}{"{}results.txt"{}});}
-\DoxyCodeLine{00213 }
-\DoxyCodeLine{00214     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < NumDataElements; ++i)}
-\DoxyCodeLine{00215     \{}
-\DoxyCodeLine{00216         fout << \textcolor{stringliteral}{"{}("{}} << mappedData[i].Acceleration.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Acceleration.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Acceleration.z <<}
-\DoxyCodeLine{00217             \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Position.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Position.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Position.z <<}
-\DoxyCodeLine{00218             \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Velocity.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Velocity.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].Velocity.z << \textcolor{stringliteral}{"{})"{}} << std::endl;}
-\DoxyCodeLine{00219     \}}
-\DoxyCodeLine{00220 }
-\DoxyCodeLine{00221     mReadBackBuffer-\/>Unmap(0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00222 \}}
-\DoxyCodeLine{00223 }
-\DoxyCodeLine{00224 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildBuffers()}
-\DoxyCodeLine{00225 \{}
-\DoxyCodeLine{00226     \textcolor{comment}{// Generate some data.}}
-\DoxyCodeLine{00227     std::vector<Particle> dataA(NumDataElements);}
-\DoxyCodeLine{00228     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < NumDataElements; ++i)}
-\DoxyCodeLine{00229     \{}
-\DoxyCodeLine{00230         dataA[i].Acceleration = XMFLOAT3(1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00231         dataA[i].Position = XMFLOAT3((\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i);}
-\DoxyCodeLine{00232         dataA[i].Velocity = XMFLOAT3(10.0f, 10.0f, 0);}
-\DoxyCodeLine{00233     \}}
-\DoxyCodeLine{00234 }
-\DoxyCodeLine{00235     UINT64 byteSize = dataA.size() * \textcolor{keyword}{sizeof}(Particle);}
-\DoxyCodeLine{00236 }
-\DoxyCodeLine{00237 }
-\DoxyCodeLine{00238     \textcolor{comment}{// Create the actual input buffer resource.}}
-\DoxyCodeLine{00239     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00240         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00241         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00242         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize, D3D12\_RESOURCE\_FLAG\_ALLOW\_UNORDERED\_ACCESS),}
-\DoxyCodeLine{00243         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS,}
-\DoxyCodeLine{00244         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00245         IID\_PPV\_ARGS(\&mInputBufferA)));}
-\DoxyCodeLine{00246 }
-\DoxyCodeLine{00247     \textcolor{comment}{// In order to copy CPU memory data into our default buffer, we need to create}}
-\DoxyCodeLine{00248     \textcolor{comment}{// an intermediate upload heap. }}
-\DoxyCodeLine{00249     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00250         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
-\DoxyCodeLine{00251         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00252         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize),}
-\DoxyCodeLine{00253         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00254         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00255         IID\_PPV\_ARGS(mInputUploadBufferA.GetAddressOf())));}
-\DoxyCodeLine{00256 }
-\DoxyCodeLine{00257 }
-\DoxyCodeLine{00258     \textcolor{comment}{// Describe the data we want to copy into the default buffer.}}
-\DoxyCodeLine{00259     D3D12\_SUBRESOURCE\_DATA subResourceData = \{\};}
-\DoxyCodeLine{00260     subResourceData.pData = dataA.data();}
-\DoxyCodeLine{00261     subResourceData.RowPitch = byteSize;}
-\DoxyCodeLine{00262     subResourceData.SlicePitch = subResourceData.RowPitch;}
-\DoxyCodeLine{00263 }
-\DoxyCodeLine{00264     \textcolor{comment}{// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources}}
-\DoxyCodeLine{00265     \textcolor{comment}{// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,}}
-\DoxyCodeLine{00266     \textcolor{comment}{// the intermediate upload heap data will be copied to mBuffer.}}
-\DoxyCodeLine{00267     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mInputBufferA.Get(),}
-\DoxyCodeLine{00268         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS, D3D12\_RESOURCE\_STATE\_COPY\_DEST));}
-\DoxyCodeLine{00269 }
-\DoxyCodeLine{00270     UpdateSubresources(mCommandList.Get(), mInputBufferA.Get(), mInputUploadBufferA.Get(), 0, 0, 1, \&subResourceData);}
-\DoxyCodeLine{00271 }
-\DoxyCodeLine{00272 }
-\DoxyCodeLine{00273     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mInputBufferA.Get(),}
-\DoxyCodeLine{00274         D3D12\_RESOURCE\_STATE\_COPY\_DEST, D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS));}
-\DoxyCodeLine{00275 }
-\DoxyCodeLine{00276 }
-\DoxyCodeLine{00277     \textcolor{comment}{// Create the buffer that will be a UAV.}}
-\DoxyCodeLine{00278     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00279         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00280         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00281         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize, D3D12\_RESOURCE\_FLAG\_ALLOW\_UNORDERED\_ACCESS),}
-\DoxyCodeLine{00282         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS,}
-\DoxyCodeLine{00283         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00284         IID\_PPV\_ARGS(\&mOutputBuffer)));}
-\DoxyCodeLine{00285 }
-\DoxyCodeLine{00286     \textcolor{comment}{//Specifies a heap used for reading back. This heap type has CPU access optimized for reading data back from the GPU, }}
-\DoxyCodeLine{00287     \textcolor{comment}{//but does not experience the maximum amount of bandwidth for the GPU. This heap type is best for GPU-\/write-\/once, }}
-\DoxyCodeLine{00288     \textcolor{comment}{//CPU-\/readable data. The CPU cache behavior is write-\/back, which is conducive for multiple sub-\/cache-\/line CPU reads.}}
-\DoxyCodeLine{00289     \textcolor{comment}{//Resources in this heap must be created with D3D12\_RESOURCE\_STATE\_COPY\_DEST, and cannot be changed away from this}}
-\DoxyCodeLine{00290     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00291         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_READBACK),}
-\DoxyCodeLine{00292         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00293         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize),}
-\DoxyCodeLine{00294         D3D12\_RESOURCE\_STATE\_COPY\_DEST,}
-\DoxyCodeLine{00295         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00296         IID\_PPV\_ARGS(\&mReadBackBuffer)));}
-\DoxyCodeLine{00297 \}}
-\DoxyCodeLine{00298 }
-\DoxyCodeLine{00299 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildRootSignature()}
-\DoxyCodeLine{00300 \{}
-\DoxyCodeLine{00301 }
-\DoxyCodeLine{00302 }
-\DoxyCodeLine{00303     CD3DX12\_DESCRIPTOR\_RANGE uavTable0;}
-\DoxyCodeLine{00304     uavTable0.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_UAV, 1, 0);}
-\DoxyCodeLine{00305 }
-\DoxyCodeLine{00306     CD3DX12\_DESCRIPTOR\_RANGE uavTable1;}
-\DoxyCodeLine{00307     uavTable1.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_UAV, 1, 1);}
-\DoxyCodeLine{00308 }
-\DoxyCodeLine{00309     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00310     CD3DX12\_ROOT\_PARAMETER slotRootParameter[2];}
-\DoxyCodeLine{00311 }
-\DoxyCodeLine{00312     \textcolor{comment}{// Create root CBVs.}}
-\DoxyCodeLine{00313     slotRootParameter[0].InitAsDescriptorTable(1, \&uavTable0);}
-\DoxyCodeLine{00314     slotRootParameter[1].InitAsDescriptorTable(1, \&uavTable1);}
-\DoxyCodeLine{00315 }
-\DoxyCodeLine{00316 }
-\DoxyCodeLine{00317     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00318     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(2, slotRootParameter,}
-\DoxyCodeLine{00319         0, \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00320         D3D12\_ROOT\_SIGNATURE\_FLAG\_NONE);}
-\DoxyCodeLine{00321 }
-\DoxyCodeLine{00322     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00323     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00324     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00325 }
-\DoxyCodeLine{00326 }
-\DoxyCodeLine{00327     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00328         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00329 }
-\DoxyCodeLine{00330     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00331     \{}
-\DoxyCodeLine{00332         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00333     \}}
-\DoxyCodeLine{00334     ThrowIfFailed(hr);}
-\DoxyCodeLine{00335 }
-\DoxyCodeLine{00336     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00337         0,}
-\DoxyCodeLine{00338         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00339         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00340         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00341 \}}
-\DoxyCodeLine{00342 }
-\DoxyCodeLine{00343 }
-\DoxyCodeLine{00344 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00345 \{}
-\DoxyCodeLine{00346     mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)ParticleAdd.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}CS"{}}, \textcolor{stringliteral}{"{}cs\_5\_1"{}});}
-\DoxyCodeLine{00347 \}}
-\DoxyCodeLine{00348 }
-\DoxyCodeLine{00349 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildPSOs()}
-\DoxyCodeLine{00350 \{}
-\DoxyCodeLine{00351     D3D12\_COMPUTE\_PIPELINE\_STATE\_DESC computePsoDesc = \{\};}
-\DoxyCodeLine{00352     computePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00353     computePsoDesc.CS =}
-\DoxyCodeLine{00354     \{}
-\DoxyCodeLine{00355         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00356         mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00357     \};}
-\DoxyCodeLine{00358     computePsoDesc.Flags = D3D12\_PIPELINE\_STATE\_FLAG\_NONE;}
-\DoxyCodeLine{00359     ThrowIfFailed(md3dDevice-\/>CreateComputePipelineState(\&computePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}particleAdd"{}}])));}
-\DoxyCodeLine{00360 \}}
-\DoxyCodeLine{00361 }
-\DoxyCodeLine{00362 }
-\DoxyCodeLine{00363 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildDescriptorHeaps()}
-\DoxyCodeLine{00364 }
-\DoxyCodeLine{00365 \{}
-\DoxyCodeLine{00366 }
-\DoxyCodeLine{00367     D3D12\_DESCRIPTOR\_HEAP\_DESC uavHeapDesc;}
-\DoxyCodeLine{00368 }
-\DoxyCodeLine{00369     uavHeapDesc.NumDescriptors = 2;}
-\DoxyCodeLine{00370 }
-\DoxyCodeLine{00371     uavHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00372 }
-\DoxyCodeLine{00373     uavHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00374 }
-\DoxyCodeLine{00375     uavHeapDesc.NodeMask = 0;}
-\DoxyCodeLine{00376 }
-\DoxyCodeLine{00377     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&uavHeapDesc, IID\_PPV\_ARGS(\&mUavHeap)));}
-\DoxyCodeLine{00378 }
-\DoxyCodeLine{00379 \}}
-\DoxyCodeLine{00380 }
-\DoxyCodeLine{00381 }
-\DoxyCodeLine{00382 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildDescriptors()}
-\DoxyCodeLine{00383 \{}
-\DoxyCodeLine{00384 }
-\DoxyCodeLine{00385     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mUavHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00386 }
-\DoxyCodeLine{00387 }
-\DoxyCodeLine{00388     D3D12\_UNORDERED\_ACCESS\_VIEW\_DESC uavDesc = \{\};}
-\DoxyCodeLine{00389     uavDesc.Format = DXGI\_FORMAT\_UNKNOWN;}
-\DoxyCodeLine{00390     uavDesc.ViewDimension = D3D12\_UAV\_DIMENSION\_BUFFER;}
-\DoxyCodeLine{00391     uavDesc.Buffer.FirstElement = 0;  \textcolor{comment}{//The zero-\/based index of the first element to be accessed.}}
-\DoxyCodeLine{00392     uavDesc.Buffer.NumElements = 256;  \textcolor{comment}{//Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.}}
-\DoxyCodeLine{00393     uavDesc.Buffer.StructureByteStride = 36;  \textcolor{comment}{//The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer}}
-\DoxyCodeLine{00394     uavDesc.Buffer.CounterOffsetInBytes = 4096; \textcolor{comment}{//CounterOffsetInBytes must be a multiple of 4096}}
-\DoxyCodeLine{00395     uavDesc.Buffer.Flags = D3D12\_BUFFER\_UAV\_FLAG\_NONE;}
-\DoxyCodeLine{00396 }
-\DoxyCodeLine{00397 }
-\DoxyCodeLine{00398     md3dDevice-\/>CreateUnorderedAccessView(mInputBufferA.Get(), mInputBufferA.Get(), \&uavDesc, hDescriptor);}
-\DoxyCodeLine{00399 }
-\DoxyCodeLine{00400 }
-\DoxyCodeLine{00401     \textcolor{comment}{//D3D12\_UNORDERED\_ACCESS\_VIEW\_DESC uavDesc1 = \{\};}}
-\DoxyCodeLine{00402     \textcolor{comment}{//uavDesc1.Format = DXGI\_FORMAT\_UNKNOWN;}}
-\DoxyCodeLine{00403     \textcolor{comment}{//uavDesc1.ViewDimension = D3D12\_UAV\_DIMENSION\_BUFFER;}}
-\DoxyCodeLine{00404     \textcolor{comment}{//uavDesc1.Buffer.FirstElement = 0;  //The zero-\/based index of the first element to be accessed.}}
-\DoxyCodeLine{00405     \textcolor{comment}{//uavDesc1.Buffer.NumElements = 1;  //Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.}}
-\DoxyCodeLine{00406     \textcolor{comment}{//uavDesc1.Buffer.StructureByteStride = 36;  //The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer}}
-\DoxyCodeLine{00407     \textcolor{comment}{//uavDesc1.Buffer.CounterOffsetInBytes = 4096; //CounterOffsetInBytes must be a multiple of 4096}}
-\DoxyCodeLine{00408     \textcolor{comment}{//uavDesc1.Buffer.Flags = D3D12\_BUFFER\_UAV\_FLAG\_NONE;}}
-\DoxyCodeLine{00409     md3dDevice-\/>CreateUnorderedAccessView(mOutputBuffer.Get(), mOutputBuffer.Get(), \&uavDesc, hDescriptor.Offset(1, mCbvSrvUavDescriptorSize));}
-\DoxyCodeLine{00410 }
-\DoxyCodeLine{00411 \}}
-\DoxyCodeLine{00412 }
-\DoxyCodeLine{00413 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00002}00002 \textcolor{comment}{// particleAddCSApp.cpp }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00004}00004 \textcolor{comment}{}\textcolor{comment}{// It will increment the counter when append is called and decrement the counter when consume is called.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00005}00005 \textcolor{comment}{//So, in this program, I have 256 particles. Every particle is a structure of 36 bytes. I have two UAVs associated to the append and consume structures.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00006}00006 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00011}00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00012}00012 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00013}00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00019}00019 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_particle}{Particle}}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00020}00020 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00021}00021     XMFLOAT3 \mbox{\hyperlink{struct_particle_a60197474313237fcda7b761919153725}{Position}};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00022}00022     XMFLOAT3 \mbox{\hyperlink{struct_particle_ac1c1cb0b0f17d484b3327e5e0b274888}{Velocity}};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00023}00023     XMFLOAT3 \mbox{\hyperlink{struct_particle_a687a580e7e31e0d117168596f3718d12}{Acceleration}};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00024}00024 \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00026}00026 \textcolor{keyword}{class }\mbox{\hyperlink{class_particle_add_c_s_app}{ParticleAddCSApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00027}00027 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00028}00028 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00029}\mbox{\hyperlink{class_particle_add_c_s_app_a69aa1b26a997c19e8cb4d6b40afd1bc3}{00029}}     \mbox{\hyperlink{class_particle_add_c_s_app_a69aa1b26a997c19e8cb4d6b40afd1bc3}{ParticleAddCSApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00030}\mbox{\hyperlink{class_particle_add_c_s_app_a39a762c81301f6abb0472975693f8ea6}{00030}}     \mbox{\hyperlink{class_particle_add_c_s_app_a39a762c81301f6abb0472975693f8ea6}{ParticleAddCSApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_particle_add_c_s_app}{ParticleAddCSApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00031}\mbox{\hyperlink{class_particle_add_c_s_app_a665819a7ec01262538907ebd518858b2}{00031}}     \mbox{\hyperlink{class_particle_add_c_s_app}{ParticleAddCSApp}}\& \mbox{\hyperlink{class_particle_add_c_s_app_a665819a7ec01262538907ebd518858b2}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_particle_add_c_s_app}{ParticleAddCSApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00032}\mbox{\hyperlink{class_particle_add_c_s_app_aabb406537b359a1e13f1ea0071a418b7}{00032}}     \mbox{\hyperlink{class_particle_add_c_s_app_aabb406537b359a1e13f1ea0071a418b7}{\string~ParticleAddCSApp}}();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00034}\mbox{\hyperlink{class_particle_add_c_s_app_a613201541bfcb43acdee8036c062ba8b}{00034}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_particle_add_c_s_app_a613201541bfcb43acdee8036c062ba8b}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00036}00036 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00037}00037     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00038}00038     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00039}00039     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00041}00041     \textcolor{keywordtype}{void} DoComputeWork();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00043}00043     \textcolor{keywordtype}{void} BuildBuffers();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00044}00044     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00045}00045     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00046}00046     \textcolor{keywordtype}{void} BuildDescriptors();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00047}00047     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00048}00048     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00050}00050 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00052}00052     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00054}00054     ComPtr<ID3D12DescriptorHeap> mUavHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00056}00056     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00057}00057     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00059}00059     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00061}00061     \textcolor{keyword}{const} \textcolor{keywordtype}{int} NumDataElements = 16 * 16;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00062}00062 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00063}00063     ComPtr<ID3D12Resource> mInputBufferA = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00064}00064     ComPtr<ID3D12Resource> mInputUploadBufferA = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00065}00065     ComPtr<ID3D12Resource> mOutputBuffer = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00066}00066     ComPtr<ID3D12Resource> mReadBackBuffer = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00068}00068     UINT mCbvSrvUavDescriptorSize = 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00070}00070 \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00072}\mbox{\hyperlink{_week8-3-_particle_add_c_s_app_8cpp_aabcda87589d774901aa87061b8fd0176}{00072}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week8-3-_particle_add_c_s_app_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00073}00073     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00074}00074 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00075}00075     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00076}00076 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00077}00077     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00078}00078 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00080}00080     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00081}00081     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00082}00082         \mbox{\hyperlink{class_particle_add_c_s_app}{ParticleAddCSApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00083}00083         \textcolor{keywordflow}{if} (!theApp.\mbox{\hyperlink{class_particle_add_c_s_app_a8328fb1c97d62fd161e8513813b905e0}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00084}00084             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00085}00085 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00086}00086         \textcolor{comment}{// return theApp.Run();}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00087}00087         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00088}00088     \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00089}00089     \textcolor{keywordflow}{catch} (\mbox{\hyperlink{class_dx_exception}{DxException}} \& e)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00090}00090     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00091}00091         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00092}00092         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00093}00093     \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00094}00094 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00095}00095 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00096}00096 \mbox{\hyperlink{class_particle_add_c_s_app_a69aa1b26a997c19e8cb4d6b40afd1bc3}{ParticleAddCSApp::ParticleAddCSApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00097}00097     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00098}00098 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00099}00099 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00101}00101 \mbox{\hyperlink{class_particle_add_c_s_app_aabb406537b359a1e13f1ea0071a418b7}{ParticleAddCSApp::\string~ParticleAddCSApp}}()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00102}00102 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00103}00103     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00104}00104         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00105}00105 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00107}00107 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_particle_add_c_s_app_a8328fb1c97d62fd161e8513813b905e0}{ParticleAddCSApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00108}00108 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00109}00109     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00110}00110         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00112}00112     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00113}00113     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00115}00115     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00116}00116 \textcolor{comment}{// so we have to query this information.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00117}00117     mCbvSrvUavDescriptorSize = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00119}00119 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00120}00120     BuildBuffers();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00121}00121     BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00122}00122     BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00123}00123     BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00124}00124     BuildDescriptors();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00125}00125     BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00127}00127     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00128}00128     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00129}00129     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00130}00130     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00131}00131 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00132}00132     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00133}00133     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00135}00135     DoComputeWork();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00136}00136 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00137}00137     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00138}00138 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00139}00139 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00140}00140 \textcolor{keywordtype}{void} ParticleAddCSApp::OnResize()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00141}00141 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00142}00142 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00143}00143 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00144}00144 \textcolor{keywordtype}{void} ParticleAddCSApp::Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00145}00145 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00146}00146 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00147}00147 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00148}00148 \textcolor{keywordtype}{void} ParticleAddCSApp::Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00149}00149 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00150}00150 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00151}00151 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00152}00152 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00153}00153 \textcolor{keywordtype}{void} ParticleAddCSApp::DoComputeWork()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00154}00154 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00155}00155     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00156}00156     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00157}00157     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00158}00158 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00159}00159     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00160}00160     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00161}00161     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), mPSOs[\textcolor{stringliteral}{"{}particleAdd"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00162}00162 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00163}00163     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mUavHeap.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00164}00164     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00165}00165 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00167}00167     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00169}00169     \textcolor{comment}{//mCommandList-\/>SetComputeRootUnorderedAccessView(0, mInputBufferA-\/>GetGPUVirtualAddress());}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00170}00170     \textcolor{comment}{//mCommandList-\/>SetComputeRootUnorderedAccessView(1, mOutputBuffer-\/>GetGPUVirtualAddress());}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00172}00172     \textcolor{keywordtype}{int} passUavIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00173}00173     \textcolor{keyword}{auto} passUavHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mUavHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00174}00174 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00175}00175     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootDescriptorTable(0, passUavHandle);  \textcolor{comment}{//mInputBufferA-\/>GetGPUVirtualAddress()}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00176}00176     passUavHandle.Offset(passUavIndex, mCbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00177}00177     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetComputeRootDescriptorTable(1, passUavHandle); \textcolor{comment}{//mOutputBuffer-\/>GetGPUVirtualAddress()}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00178}00178 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00179}00179     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Dispatch(1, 1, 1);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00180}00180 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00181}00181     \textcolor{comment}{// Schedule to copy the data to the default buffer to the readback buffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00183}00183     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_SOURCE: The resource is used as the source in a copy operation. }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00184}00184     \textcolor{comment}{//D3D12\_RESOURCE\_STATE\_COPY\_DEST: The resource is used as the destination in a copy operation.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00185}00185 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00186}00186     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mOutputBuffer.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00187}00187         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS, D3D12\_RESOURCE\_STATE\_COPY\_SOURCE));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00188}00188 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00189}00189     \textcolor{comment}{//We need to read the data back from the GPU after computer shader does its calculation}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00190}00190     \textcolor{comment}{//mCommandList-\/>CopyResource(Destination: CPUData, Source: GPUData);}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00191}00191     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>CopyResource(mReadBackBuffer.Get(), mOutputBuffer.Get());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00192}00192 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00193}00193     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mOutputBuffer.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00194}00194         D3D12\_RESOURCE\_STATE\_COPY\_SOURCE, D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00195}00195 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00196}00196 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00197}00197     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00198}00198     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00200}00200     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00201}00201     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00202}00202     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00203}00203 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00204}00204     \textcolor{comment}{// Wait for the work to finish.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00205}00205     \textcolor{comment}{//FlushCommandQueue();}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00207}00207     \textcolor{comment}{// Map the data so we can read it on CPU.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00208}00208     \mbox{\hyperlink{struct_particle}{Particle}}* mappedData = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00209}00209     CD3DX12\_RANGE readRange(0, 0);        \textcolor{comment}{// We do not intend to read from this resource on the CPU.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00210}00210     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(mReadBackBuffer-\/>Map(0, \textcolor{keyword}{nullptr}, \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{void}**\textcolor{keyword}{>}(\&mappedData)));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00211}00211 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00212}00212     std::ofstream fout(\textcolor{stringliteral}{"{}results.txt"{}});}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00213}00213 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00214}00214     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < NumDataElements; ++i)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00215}00215     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00216}00216         fout << \textcolor{stringliteral}{"{}("{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a687a580e7e31e0d117168596f3718d12}{Acceleration}}.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a687a580e7e31e0d117168596f3718d12}{Acceleration}}.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a687a580e7e31e0d117168596f3718d12}{Acceleration}}.z <<}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00217}00217             \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a60197474313237fcda7b761919153725}{Position}}.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a60197474313237fcda7b761919153725}{Position}}.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_a60197474313237fcda7b761919153725}{Position}}.z <<}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00218}00218             \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_ac1c1cb0b0f17d484b3327e5e0b274888}{Velocity}}.x << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_ac1c1cb0b0f17d484b3327e5e0b274888}{Velocity}}.y << \textcolor{stringliteral}{"{}, "{}} << mappedData[i].\mbox{\hyperlink{struct_particle_ac1c1cb0b0f17d484b3327e5e0b274888}{Velocity}}.z << \textcolor{stringliteral}{"{})"{}} << std::endl;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00219}00219     \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00220}00220 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00221}00221     mReadBackBuffer-\/>Unmap(0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00222}00222 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00223}00223 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00224}00224 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildBuffers()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00225}00225 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00226}00226     \textcolor{comment}{// Generate some data.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00227}00227     std::vector<Particle> dataA(NumDataElements);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00228}00228     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < NumDataElements; ++i)}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00229}00229     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00230}00230         dataA[i].Acceleration = XMFLOAT3(1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00231}00231         dataA[i].Position = XMFLOAT3((\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i, (\textcolor{keywordtype}{float})i);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00232}00232         dataA[i].Velocity = XMFLOAT3(10.0f, 10.0f, 0);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00233}00233     \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00235}00235     UINT64 byteSize = dataA.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_particle}{Particle}});}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00236}00236 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00237}00237 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00238}00238     \textcolor{comment}{// Create the actual input buffer resource.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00239}00239     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00240}00240         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00241}00241         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00242}00242         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize, D3D12\_RESOURCE\_FLAG\_ALLOW\_UNORDERED\_ACCESS),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00243}00243         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00244}00244         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00245}00245         IID\_PPV\_ARGS(\&mInputBufferA)));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00246}00246 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00247}00247     \textcolor{comment}{// In order to copy CPU memory data into our default buffer, we need to create}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00248}00248     \textcolor{comment}{// an intermediate upload heap. }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00249}00249     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00250}00250         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00251}00251         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00252}00252         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00253}00253         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00254}00254         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00255}00255         IID\_PPV\_ARGS(mInputUploadBufferA.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00256}00256 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00257}00257 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00258}00258     \textcolor{comment}{// Describe the data we want to copy into the default buffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00259}00259     D3D12\_SUBRESOURCE\_DATA subResourceData = \{\};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00260}00260     subResourceData.pData = dataA.data();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00261}00261     subResourceData.RowPitch = byteSize;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00262}00262     subResourceData.SlicePitch = subResourceData.RowPitch;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00263}00263 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00264}00264     \textcolor{comment}{// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00265}00265     \textcolor{comment}{// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00266}00266     \textcolor{comment}{// the intermediate upload heap data will be copied to mBuffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00267}00267     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mInputBufferA.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00268}00268         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS, D3D12\_RESOURCE\_STATE\_COPY\_DEST));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00269}00269 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00270}00270     UpdateSubresources(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), mInputBufferA.Get(), mInputUploadBufferA.Get(), 0, 0, 1, \&subResourceData);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00272}00272 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00273}00273     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mInputBufferA.Get(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00274}00274         D3D12\_RESOURCE\_STATE\_COPY\_DEST, D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00275}00275 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00276}00276 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00277}00277     \textcolor{comment}{// Create the buffer that will be a UAV.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00278}00278     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00279}00279         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00280}00280         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00281}00281         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize, D3D12\_RESOURCE\_FLAG\_ALLOW\_UNORDERED\_ACCESS),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00282}00282         D3D12\_RESOURCE\_STATE\_UNORDERED\_ACCESS,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00283}00283         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00284}00284         IID\_PPV\_ARGS(\&mOutputBuffer)));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00285}00285 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00286}00286     \textcolor{comment}{//Specifies a heap used for reading back. This heap type has CPU access optimized for reading data back from the GPU, }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00287}00287     \textcolor{comment}{//but does not experience the maximum amount of bandwidth for the GPU. This heap type is best for GPU-\/write-\/once, }}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00288}00288     \textcolor{comment}{//CPU-\/readable data. The CPU cache behavior is write-\/back, which is conducive for multiple sub-\/cache-\/line CPU reads.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00289}00289     \textcolor{comment}{//Resources in this heap must be created with D3D12\_RESOURCE\_STATE\_COPY\_DEST, and cannot be changed away from this}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00290}00290     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00291}00291         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_READBACK),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00292}00292         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00293}00293         \&CD3DX12\_RESOURCE\_DESC::Buffer(byteSize),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00294}00294         D3D12\_RESOURCE\_STATE\_COPY\_DEST,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00295}00295         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00296}00296         IID\_PPV\_ARGS(\&mReadBackBuffer)));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00297}00297 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00298}00298 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00299}00299 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildRootSignature()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00300}00300 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00301}00301 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00302}00302 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00303}00303     CD3DX12\_DESCRIPTOR\_RANGE uavTable0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00304}00304     uavTable0.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_UAV, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00305}00305 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00306}00306     CD3DX12\_DESCRIPTOR\_RANGE uavTable1;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00307}00307     uavTable1.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_UAV, 1, 1);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00308}00308 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00309}00309     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00310}00310     CD3DX12\_ROOT\_PARAMETER slotRootParameter[2];}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00311}00311 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00312}00312     \textcolor{comment}{// Create root CBVs.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00313}00313     slotRootParameter[0].InitAsDescriptorTable(1, \&uavTable0);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00314}00314     slotRootParameter[1].InitAsDescriptorTable(1, \&uavTable1);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00315}00315 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00316}00316 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00317}00317     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00318}00318     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(2, slotRootParameter,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00319}00319         0, \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00320}00320         D3D12\_ROOT\_SIGNATURE\_FLAG\_NONE);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00321}00321 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00322}00322     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00323}00323     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00324}00324     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00325}00325 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00326}00326 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00327}00327     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00328}00328         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00329}00329 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00330}00330     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00331}00331     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00332}00332         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00333}00333     \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00334}00334     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00335}00335 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00336}00336     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00337}00337         0,}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00338}00338         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00339}00339         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00340}00340         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00341}00341 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00342}00342 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00343}00343 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00344}00344 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00345}00345 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00346}00346     mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)ParticleAdd.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}CS"{}}, \textcolor{stringliteral}{"{}cs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00347}00347 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00348}00348 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00349}00349 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildPSOs()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00350}00350 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00351}00351     D3D12\_COMPUTE\_PIPELINE\_STATE\_DESC computePsoDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00352}00352     computePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00353}00353     computePsoDesc.CS =}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00354}00354     \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00355}00355         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00356}00356         mShaders[\textcolor{stringliteral}{"{}particleAddCS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00357}00357     \};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00358}00358     computePsoDesc.Flags = D3D12\_PIPELINE\_STATE\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00359}00359     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateComputePipelineState(\&computePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}particleAdd"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00360}00360 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00361}00361 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00362}00362 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00363}00363 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildDescriptorHeaps()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00364}00364 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00365}00365 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00366}00366 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00367}00367     D3D12\_DESCRIPTOR\_HEAP\_DESC uavHeapDesc;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00368}00368 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00369}00369     uavHeapDesc.NumDescriptors = 2;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00370}00370 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00371}00371     uavHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00372}00372 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00373}00373     uavHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00374}00374 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00375}00375     uavHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00376}00376 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00377}00377     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(\&uavHeapDesc, IID\_PPV\_ARGS(\&mUavHeap)));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00378}00378 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00379}00379 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00380}00380 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00381}00381 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00382}00382 \textcolor{keywordtype}{void} ParticleAddCSApp::BuildDescriptors()}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00383}00383 \{}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00384}00384 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00385}00385     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mUavHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00386}00386 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00387}00387 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00388}00388     D3D12\_UNORDERED\_ACCESS\_VIEW\_DESC uavDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00389}00389     uavDesc.Format = DXGI\_FORMAT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00390}00390     uavDesc.ViewDimension = D3D12\_UAV\_DIMENSION\_BUFFER;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00391}00391     uavDesc.Buffer.FirstElement = 0;  \textcolor{comment}{//The zero-\/based index of the first element to be accessed.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00392}00392     uavDesc.Buffer.NumElements = 256;  \textcolor{comment}{//Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00393}00393     uavDesc.Buffer.StructureByteStride = 36;  \textcolor{comment}{//The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00394}00394     uavDesc.Buffer.CounterOffsetInBytes = 4096; \textcolor{comment}{//CounterOffsetInBytes must be a multiple of 4096}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00395}00395     uavDesc.Buffer.Flags = D3D12\_BUFFER\_UAV\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00396}00396 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00397}00397 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00398}00398     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateUnorderedAccessView(mInputBufferA.Get(), mInputBufferA.Get(), \&uavDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00399}00399 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00400}00400 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00401}00401     \textcolor{comment}{//D3D12\_UNORDERED\_ACCESS\_VIEW\_DESC uavDesc1 = \{\};}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00402}00402     \textcolor{comment}{//uavDesc1.Format = DXGI\_FORMAT\_UNKNOWN;}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00403}00403     \textcolor{comment}{//uavDesc1.ViewDimension = D3D12\_UAV\_DIMENSION\_BUFFER;}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00404}00404     \textcolor{comment}{//uavDesc1.Buffer.FirstElement = 0;  //The zero-\/based index of the first element to be accessed.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00405}00405     \textcolor{comment}{//uavDesc1.Buffer.NumElements = 1;  //Count! The number of elements in the resource. For structured buffers, this is the number of structures in the buffer.}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00406}00406     \textcolor{comment}{//uavDesc1.Buffer.StructureByteStride = 36;  //The size of each element in the buffer structure (in bytes) when the buffer represents a structured buffer}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00407}00407     \textcolor{comment}{//uavDesc1.Buffer.CounterOffsetInBytes = 4096; //CounterOffsetInBytes must be a multiple of 4096}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00408}00408     \textcolor{comment}{//uavDesc1.Buffer.Flags = D3D12\_BUFFER\_UAV\_FLAG\_NONE;}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00409}00409     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateUnorderedAccessView(mOutputBuffer.Get(), mOutputBuffer.Get(), \&uavDesc, hDescriptor.Offset(1, mCbvSrvUavDescriptorSize));}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00410}00410 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00411}00411 \}}
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00412}00412 }
+\DoxyCodeLine{\Hypertarget{_week8-3-_particle_add_c_s_app_8cpp_source_l00413}00413 }
 
 \end{DoxyCode}

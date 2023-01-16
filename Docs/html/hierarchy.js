@@ -1,6 +1,8 @@
 var hierarchy =
 [
+    [ "A", "class_a.html", null ],
     [ "AnimationClip", "struct_animation_clip.html", null ],
+    [ "B", "class_b.html", null ],
     [ "BlurFilter", "class_blur_filter.html", null ],
     [ "BoneAnimation", "struct_bone_animation.html", null ],
     [ "Camera", "class_camera.html", null ],
@@ -141,6 +143,7 @@ var hierarchy =
     [ "MathHelper", "class_math_helper.html", null ],
     [ "GeometryGenerator::MeshData", "struct_geometry_generator_1_1_mesh_data.html", null ],
     [ "MeshGeometry", "struct_mesh_geometry.html", null ],
+    [ "mystruct", "structmystruct.html", null ],
     [ "ObjectConstant2", "struct_object_constant2.html", null ],
     [ "ObjectConstants", "struct_object_constants.html", null ],
     [ "Particle", "struct_particle.html", null ],
@@ -165,7 +168,6 @@ var hierarchy =
     [ "Texture", "struct_texture.html", null ],
     [ "UploadBuffer< T >", "class_upload_buffer.html", null ],
     [ "VColorData", "struct_v_color_data.html", null ],
-    [ "D3D12HelloTriangle::Vertex", "struct_d3_d12_hello_triangle_1_1_vertex.html", null ],
     [ "GeometryGenerator::Vertex", "struct_geometry_generator_1_1_vertex.html", null ],
     [ "M3DLoader::Vertex", "struct_m3_d_loader_1_1_vertex.html", null ],
     [ "Vertex", "struct_vertex.html", null ],

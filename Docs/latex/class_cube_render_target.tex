@@ -1,4 +1,4 @@
-\doxysection{Cube\+Render\+Target Class Reference}
+\hypertarget{class_cube_render_target}{}\doxysection{Cube\+Render\+Target Class Reference}
 \label{class_cube_render_target}\index{CubeRenderTarget@{CubeRenderTarget}}
 
 
@@ -7,289 +7,136 @@
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\textbf{ Cube\+Render\+Target} (ID3\+D12\+Device $\ast$device, UINT width, UINT height, DXGI\+\_\+\+FORMAT format)
+\mbox{\hyperlink{class_cube_render_target_a89fd14841b5afba1dbaf334d2e6c31cc}{Cube\+Render\+Target}} (ID3\+D12\+Device $\ast$device, UINT width, UINT height, DXGI\+\_\+\+FORMAT format)
 \item 
-\textbf{ Cube\+Render\+Target} (const \textbf{ Cube\+Render\+Target} \&rhs)=delete
+\mbox{\hyperlink{class_cube_render_target_a32d550f1ef8455a19537f5125ec7ed5d}{Cube\+Render\+Target}} (const \mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \&rhs)=delete
 \item 
-\textbf{ Cube\+Render\+Target} \& \textbf{ operator=} (const \textbf{ Cube\+Render\+Target} \&rhs)=delete
+\mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \& \mbox{\hyperlink{class_cube_render_target_a92713cf29f8d687af2d6851957544aa7}{operator=}} (const \mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \&rhs)=delete
 \item 
-\textbf{ $\sim$\+Cube\+Render\+Target} ()=default
+\mbox{\hyperlink{class_cube_render_target_a7b1fae22fac45c0fdac9cec3fb7a7414}{$\sim$\+Cube\+Render\+Target}} ()=default
 \item 
-ID3\+D12\+Resource $\ast$ \textbf{ Resource} ()
+ID3\+D12\+Resource $\ast$ \mbox{\hyperlink{class_cube_render_target_a5178d9eb108da4910523f27be3a93fe6}{Resource}} ()
 \item 
-CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \textbf{ Srv} ()
+CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_cube_render_target_aecd783987213cec71deaef1ac71332dd}{Srv}} ()
 \item 
-CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \textbf{ Rtv} (int face\+Index)
+CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \mbox{\hyperlink{class_cube_render_target_a3e1c8157a193c64f3b65f9f95c84835e}{Rtv}} (int face\+Index)
 \item 
-D3\+D12\+\_\+\+VIEWPORT \textbf{ Viewport} () const
+D3\+D12\+\_\+\+VIEWPORT \mbox{\hyperlink{class_cube_render_target_a757b86aff6daa4e640df58797086c05e}{Viewport}} () const
 \item 
-D3\+D12\+\_\+\+RECT \textbf{ Scissor\+Rect} () const
+D3\+D12\+\_\+\+RECT \mbox{\hyperlink{class_cube_render_target_ae3bd0d777a5f4ed9254cc77df78c56d0}{Scissor\+Rect}} () const
 \item 
-void \textbf{ Build\+Descriptors} (CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Cpu\+Srv, CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Gpu\+Srv, CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Cpu\+Rtv[6])
+void \mbox{\hyperlink{class_cube_render_target_a9ea3f323bf88615d2b2041e59fade963}{Build\+Descriptors}} (CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Cpu\+Srv, CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Gpu\+Srv, CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE h\+Cpu\+Rtv\mbox{[}6\mbox{]})
 \item 
-void \textbf{ On\+Resize} (UINT new\+Width, UINT new\+Height)
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-void \textbf{ Build\+Descriptors} ()
-\item 
-void \textbf{ Build\+Resource} ()
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Attributes}
-\begin{DoxyCompactItemize}
-\item 
-ID3\+D12\+Device $\ast$ \textbf{ md3d\+Device} = nullptr
-\item 
-D3\+D12\+\_\+\+VIEWPORT \textbf{ m\+Viewport}
-\item 
-D3\+D12\+\_\+\+RECT \textbf{ m\+Scissor\+Rect}
-\item 
-UINT \textbf{ m\+Width} = 0
-\item 
-UINT \textbf{ m\+Height} = 0
-\item 
-DXGI\+\_\+\+FORMAT \textbf{ m\+Format} = DXGI\+\_\+\+FORMAT\+\_\+\+R8\+G8\+B8\+A8\+\_\+\+UNORM
-\item 
-CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \textbf{ mh\+Cpu\+Srv}
-\item 
-CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \textbf{ mh\+Gpu\+Srv}
-\item 
-CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE \textbf{ mh\+Cpu\+Rtv} [6]
-\item 
-Microsoft\+::\+WRL\+::\+Com\+Ptr$<$ ID3\+D12\+Resource $>$ \textbf{ m\+Cube\+Map} = nullptr
+void \mbox{\hyperlink{class_cube_render_target_ace8453a7e9f218942b827a4ce9aa200c}{On\+Resize}} (UINT new\+Width, UINT new\+Height)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 
 
-Definition at line \textbf{ 20} of file \textbf{ Cube\+Render\+Target.\+h}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8h_source_l00020}{20}} of file \mbox{\hyperlink{_cube_render_target_8h_source}{Cube\+Render\+Target.\+h}}.
 
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\mbox{\label{class_cube_render_target_a89fd14841b5afba1dbaf334d2e6c31cc}} 
+\mbox{\Hypertarget{class_cube_render_target_a89fd14841b5afba1dbaf334d2e6c31cc}\label{class_cube_render_target_a89fd14841b5afba1dbaf334d2e6c31cc}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!CubeRenderTarget@{CubeRenderTarget}}
 \index{CubeRenderTarget@{CubeRenderTarget}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{CubeRenderTarget()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+\doxysubsubsection{\texorpdfstring{CubeRenderTarget()}{CubeRenderTarget()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily Cube\+Render\+Target\+::\+Cube\+Render\+Target (\begin{DoxyParamCaption}\item[{ID3\+D12\+Device $\ast$}]{device,  }\item[{UINT}]{width,  }\item[{UINT}]{height,  }\item[{DXGI\+\_\+\+FORMAT}]{format }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 10} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00010}{10}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_a32d550f1ef8455a19537f5125ec7ed5d}} 
+\mbox{\Hypertarget{class_cube_render_target_a32d550f1ef8455a19537f5125ec7ed5d}\label{class_cube_render_target_a32d550f1ef8455a19537f5125ec7ed5d}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!CubeRenderTarget@{CubeRenderTarget}}
 \index{CubeRenderTarget@{CubeRenderTarget}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{CubeRenderTarget()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily Cube\+Render\+Target\+::\+Cube\+Render\+Target (\begin{DoxyParamCaption}\item[{const \textbf{ Cube\+Render\+Target} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+\doxysubsubsection{\texorpdfstring{CubeRenderTarget()}{CubeRenderTarget()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Cube\+Render\+Target\+::\+Cube\+Render\+Target (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 
-\mbox{\label{class_cube_render_target_a7b1fae22fac45c0fdac9cec3fb7a7414}} 
+\mbox{\Hypertarget{class_cube_render_target_a7b1fae22fac45c0fdac9cec3fb7a7414}\label{class_cube_render_target_a7b1fae22fac45c0fdac9cec3fb7a7414}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!````~CubeRenderTarget@{$\sim$CubeRenderTarget}}
 \index{````~CubeRenderTarget@{$\sim$CubeRenderTarget}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{$\sim$CubeRenderTarget()}
+\doxysubsubsection{\texorpdfstring{$\sim$CubeRenderTarget()}{~CubeRenderTarget()}}
 {\footnotesize\ttfamily Cube\+Render\+Target\+::$\sim$\+Cube\+Render\+Target (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
 
 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\label{class_cube_render_target_a56ae30ce1b4614a5768f01c478edf56f}} 
+\mbox{\Hypertarget{class_cube_render_target_a9ea3f323bf88615d2b2041e59fade963}\label{class_cube_render_target_a9ea3f323bf88615d2b2041e59fade963}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!BuildDescriptors@{BuildDescriptors}}
 \index{BuildDescriptors@{BuildDescriptors}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{BuildDescriptors()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily void Cube\+Render\+Target\+::\+Build\+Descriptors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+\doxysubsubsection{\texorpdfstring{BuildDescriptors()}{BuildDescriptors()}}
+{\footnotesize\ttfamily void Cube\+Render\+Target\+::\+Build\+Descriptors (\begin{DoxyParamCaption}\item[{CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Cpu\+Srv,  }\item[{CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Gpu\+Srv,  }\item[{CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Cpu\+Rtv\mbox{[}6\mbox{]} }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 81} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00052}{52}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_a9ea3f323bf88615d2b2041e59fade963}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!BuildDescriptors@{BuildDescriptors}}
-\index{BuildDescriptors@{BuildDescriptors}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{BuildDescriptors()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily void Cube\+Render\+Target\+::\+Build\+Descriptors (\begin{DoxyParamCaption}\item[{CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Cpu\+Srv,  }\item[{CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Gpu\+Srv,  }\item[{CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE}]{h\+Cpu\+Rtv[6] }\end{DoxyParamCaption})}
-
-
-
-Definition at line \textbf{ 52} of file \textbf{ Cube\+Render\+Target.\+cpp}.
-
-\mbox{\label{class_cube_render_target_a68a987f88e065800f2fbc6b96c6fa84f}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!BuildResource@{BuildResource}}
-\index{BuildResource@{BuildResource}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{BuildResource()}
-{\footnotesize\ttfamily void Cube\+Render\+Target\+::\+Build\+Resource (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 116} of file \textbf{ Cube\+Render\+Target.\+cpp}.
-
-\mbox{\label{class_cube_render_target_ace8453a7e9f218942b827a4ce9aa200c}} 
+\mbox{\Hypertarget{class_cube_render_target_ace8453a7e9f218942b827a4ce9aa200c}\label{class_cube_render_target_ace8453a7e9f218942b827a4ce9aa200c}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!OnResize@{OnResize}}
 \index{OnResize@{OnResize}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{OnResize()}
+\doxysubsubsection{\texorpdfstring{OnResize()}{OnResize()}}
 {\footnotesize\ttfamily void Cube\+Render\+Target\+::\+On\+Resize (\begin{DoxyParamCaption}\item[{UINT}]{new\+Width,  }\item[{UINT}]{new\+Height }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 67} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00067}{67}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_a92713cf29f8d687af2d6851957544aa7}} 
+\mbox{\Hypertarget{class_cube_render_target_a92713cf29f8d687af2d6851957544aa7}\label{class_cube_render_target_a92713cf29f8d687af2d6851957544aa7}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!operator=@{operator=}}
 \index{operator=@{operator=}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{operator=()}
-{\footnotesize\ttfamily \textbf{ Cube\+Render\+Target} \& Cube\+Render\+Target\+::operator= (\begin{DoxyParamCaption}\item[{const \textbf{ Cube\+Render\+Target} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \& Cube\+Render\+Target\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_cube_render_target}{Cube\+Render\+Target}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 
-\mbox{\label{class_cube_render_target_a5178d9eb108da4910523f27be3a93fe6}} 
+\mbox{\Hypertarget{class_cube_render_target_a5178d9eb108da4910523f27be3a93fe6}\label{class_cube_render_target_a5178d9eb108da4910523f27be3a93fe6}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!Resource@{Resource}}
 \index{Resource@{Resource}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{Resource()}
+\doxysubsubsection{\texorpdfstring{Resource()}{Resource()}}
 {\footnotesize\ttfamily ID3\+D12\+Resource $\ast$ Cube\+Render\+Target\+::\+Resource (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 27} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00027}{27}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_a3e1c8157a193c64f3b65f9f95c84835e}} 
+\mbox{\Hypertarget{class_cube_render_target_a3e1c8157a193c64f3b65f9f95c84835e}\label{class_cube_render_target_a3e1c8157a193c64f3b65f9f95c84835e}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!Rtv@{Rtv}}
 \index{Rtv@{Rtv}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{Rtv()}
+\doxysubsubsection{\texorpdfstring{Rtv()}{Rtv()}}
 {\footnotesize\ttfamily CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Cube\+Render\+Target\+::\+Rtv (\begin{DoxyParamCaption}\item[{int}]{face\+Index }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 37} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00037}{37}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_ae3bd0d777a5f4ed9254cc77df78c56d0}} 
+\mbox{\Hypertarget{class_cube_render_target_ae3bd0d777a5f4ed9254cc77df78c56d0}\label{class_cube_render_target_ae3bd0d777a5f4ed9254cc77df78c56d0}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!ScissorRect@{ScissorRect}}
 \index{ScissorRect@{ScissorRect}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{ScissorRect()}
+\doxysubsubsection{\texorpdfstring{ScissorRect()}{ScissorRect()}}
 {\footnotesize\ttfamily D3\+D12\+\_\+\+RECT Cube\+Render\+Target\+::\+Scissor\+Rect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
 
 
 
-Definition at line \textbf{ 47} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00047}{47}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_aecd783987213cec71deaef1ac71332dd}} 
+\mbox{\Hypertarget{class_cube_render_target_aecd783987213cec71deaef1ac71332dd}\label{class_cube_render_target_aecd783987213cec71deaef1ac71332dd}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!Srv@{Srv}}
 \index{Srv@{Srv}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{Srv()}
+\doxysubsubsection{\texorpdfstring{Srv()}{Srv()}}
 {\footnotesize\ttfamily CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Cube\+Render\+Target\+::\+Srv (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 32} of file \textbf{ Cube\+Render\+Target.\+cpp}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00032}{32}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 
-\mbox{\label{class_cube_render_target_a757b86aff6daa4e640df58797086c05e}} 
+\mbox{\Hypertarget{class_cube_render_target_a757b86aff6daa4e640df58797086c05e}\label{class_cube_render_target_a757b86aff6daa4e640df58797086c05e}} 
 \index{CubeRenderTarget@{CubeRenderTarget}!Viewport@{Viewport}}
 \index{Viewport@{Viewport}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{Viewport()}
+\doxysubsubsection{\texorpdfstring{Viewport()}{Viewport()}}
 {\footnotesize\ttfamily D3\+D12\+\_\+\+VIEWPORT Cube\+Render\+Target\+::\+Viewport (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
 
 
 
-Definition at line \textbf{ 42} of file \textbf{ Cube\+Render\+Target.\+cpp}.
-
-
-
-\doxysubsection{Member Data Documentation}
-\mbox{\label{class_cube_render_target_a610c01abd036595a994e521a55e7ccff}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mCubeMap@{mCubeMap}}
-\index{mCubeMap@{mCubeMap}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mCubeMap}
-{\footnotesize\ttfamily Microsoft\+::\+WRL\+::\+Com\+Ptr$<$ID3\+D12\+Resource$>$ Cube\+Render\+Target\+::m\+Cube\+Map = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 64} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_aca9886a46993d599228614a7e68c9203}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!md3dDevice@{md3dDevice}}
-\index{md3dDevice@{md3dDevice}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{md3dDevice}
-{\footnotesize\ttfamily ID3\+D12\+Device$\ast$ Cube\+Render\+Target\+::md3d\+Device = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 51} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a07c6bfa007eb8deb772e4103f06f0032}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mFormat@{mFormat}}
-\index{mFormat@{mFormat}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mFormat}
-{\footnotesize\ttfamily DXGI\+\_\+\+FORMAT Cube\+Render\+Target\+::m\+Format = DXGI\+\_\+\+FORMAT\+\_\+\+R8\+G8\+B8\+A8\+\_\+\+UNORM\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 58} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a963c941a7db1d3d2cbe5f332ec9314a6}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mhCpuRtv@{mhCpuRtv}}
-\index{mhCpuRtv@{mhCpuRtv}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mhCpuRtv}
-{\footnotesize\ttfamily CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Cube\+Render\+Target\+::mh\+Cpu\+Rtv[6]\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 62} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a8938101cbccb71075bf5e699c043d85e}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mhCpuSrv@{mhCpuSrv}}
-\index{mhCpuSrv@{mhCpuSrv}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mhCpuSrv}
-{\footnotesize\ttfamily CD3\+DX12\+\_\+\+CPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Cube\+Render\+Target\+::mh\+Cpu\+Srv\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 60} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a129febdee9511677756df4eb72f1c0d9}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mHeight@{mHeight}}
-\index{mHeight@{mHeight}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mHeight}
-{\footnotesize\ttfamily UINT Cube\+Render\+Target\+::m\+Height = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 57} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_ace62d99c4f738efee8dc6e492d369b47}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mhGpuSrv@{mhGpuSrv}}
-\index{mhGpuSrv@{mhGpuSrv}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mhGpuSrv}
-{\footnotesize\ttfamily CD3\+DX12\+\_\+\+GPU\+\_\+\+DESCRIPTOR\+\_\+\+HANDLE Cube\+Render\+Target\+::mh\+Gpu\+Srv\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 61} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_adc097311061bb493b5117602ee072b70}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mScissorRect@{mScissorRect}}
-\index{mScissorRect@{mScissorRect}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mScissorRect}
-{\footnotesize\ttfamily D3\+D12\+\_\+\+RECT Cube\+Render\+Target\+::m\+Scissor\+Rect\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 54} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a6af2c2e3f5f4815f4cbd3535c0900fdf}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mViewport@{mViewport}}
-\index{mViewport@{mViewport}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mViewport}
-{\footnotesize\ttfamily D3\+D12\+\_\+\+VIEWPORT Cube\+Render\+Target\+::m\+Viewport\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 53} of file \textbf{ Cube\+Render\+Target.\+h}.
-
-\mbox{\label{class_cube_render_target_a8deb8dcedae8de446688de29faf978f3}} 
-\index{CubeRenderTarget@{CubeRenderTarget}!mWidth@{mWidth}}
-\index{mWidth@{mWidth}!CubeRenderTarget@{CubeRenderTarget}}
-\doxysubsubsection{mWidth}
-{\footnotesize\ttfamily UINT Cube\+Render\+Target\+::m\+Width = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 56} of file \textbf{ Cube\+Render\+Target.\+h}.
+Definition at line \mbox{\hyperlink{_cube_render_target_8cpp_source_l00042}{42}} of file \mbox{\hyperlink{_cube_render_target_8cpp_source}{Cube\+Render\+Target.\+cpp}}.
 

@@ -1,134 +1,134 @@
-\doxysection{week2-\/0-\/\+Initialize\+D3D.cpp}
+\hypertarget{week2-0-_initialize_d3_d_8cpp_source}{}\doxysection{week2-\/0-\/\+Initialize\+D3D.cpp}
 \label{week2-0-_initialize_d3_d_8cpp_source}\index{Week2/Week2-\/2-\/InitializeDirect3D/week2-\/0-\/InitializeD3D.cpp@{Week2/Week2-\/2-\/InitializeDirect3D/week2-\/0-\/InitializeD3D.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{week2-0-_initialize_d3_d_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00002 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include <DirectXColors.h>}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{keyword}{class }InitDirect3DApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00008 \{}
-\DoxyCodeLine{00009 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00010     InitDirect3DApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00011     \string~InitDirect3DApp();}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00016     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00017     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00018     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \};}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 }
-\DoxyCodeLine{00024 \textcolor{preprocessor}{\#pragma region step1}}
-\DoxyCodeLine{00025 \textcolor{comment}{//WinMain -\/-\/> every win32 application needs a WinMain() function, like console application needs main()}}
-\DoxyCodeLine{00026 \textcolor{comment}{//HINSTANCE, PSTR.. are part of <Windows.h>}}
-\DoxyCodeLine{00027 \textcolor{comment}{//Windows is about Windows (window class that you register and instance of the class) and Messages}}
-\DoxyCodeLine{00028 \textcolor{comment}{//cmdLine receives the parameter that somebody passes}}
-\DoxyCodeLine{00029 \textcolor{preprocessor}{\#pragma endregion}}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031 }
-\DoxyCodeLine{00032 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00033     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00034 \{}
-\DoxyCodeLine{00035     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00036 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00037     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00038 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00041     \{}
-\DoxyCodeLine{00042         InitDirect3DApp theApp(hInstance);}
-\DoxyCodeLine{00043         \textcolor{keywordflow}{if} (!theApp.Initialize())}
-\DoxyCodeLine{00044             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00045 }
-\DoxyCodeLine{00046         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00047     \}}
-\DoxyCodeLine{00048     \textcolor{keywordflow}{catch} (DxException\& e)}
-\DoxyCodeLine{00049     \{}
-\DoxyCodeLine{00050         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00051         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00052     \}}
-\DoxyCodeLine{00053 \}}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00056     : D3DApp(hInstance)}
-\DoxyCodeLine{00057 \{}
-\DoxyCodeLine{00058 \}}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060 InitDirect3DApp::\string~InitDirect3DApp()}
-\DoxyCodeLine{00061 \{}
-\DoxyCodeLine{00062 \}}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064 \textcolor{keywordtype}{bool} InitDirect3DApp::Initialize()}
-\DoxyCodeLine{00065 \{}
-\DoxyCodeLine{00066     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
-\DoxyCodeLine{00067         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00068 }
-\DoxyCodeLine{00069     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00070 \}}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072 \textcolor{keywordtype}{void} InitDirect3DApp::OnResize()}
-\DoxyCodeLine{00073 \{}
-\DoxyCodeLine{00074     D3DApp::OnResize();}
-\DoxyCodeLine{00075 \}}
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077 \textcolor{keywordtype}{void} InitDirect3DApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00078 \{}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080 \}}
-\DoxyCodeLine{00081 }
-\DoxyCodeLine{00082 }
-\DoxyCodeLine{00083 }
-\DoxyCodeLine{00084 \textcolor{keywordtype}{void} InitDirect3DApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00085 \{}
-\DoxyCodeLine{00086     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00087     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00088     ThrowIfFailed(mDirectCmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00091     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00092     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00093 }
-\DoxyCodeLine{00094     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00095     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00096         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00097 }
-\DoxyCodeLine{00098     \textcolor{comment}{// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.}}
-\DoxyCodeLine{00099     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00100     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00103     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00104     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00105 }
-\DoxyCodeLine{00106     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00107     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00110     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00111         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00114     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00117     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00118     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00119 }
-\DoxyCodeLine{00120     \textcolor{comment}{// swap the back and front buffers}}
-\DoxyCodeLine{00121     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00122     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
-\DoxyCodeLine{00125     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
-\DoxyCodeLine{00126     \textcolor{comment}{// so we do not have to wait per frame.}}
-\DoxyCodeLine{00127     FlushCommandQueue();}
-\DoxyCodeLine{00128 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00002}00002 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00003}00003 \textcolor{preprocessor}{\#include <DirectXColors.h>}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00005}00005 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00007}\mbox{\hyperlink{class_init_direct3_d_app}{00007}} \textcolor{keyword}{class }\mbox{\hyperlink{class_init_direct3_d_app}{InitDirect3DApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00008}00008 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00009}00009 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00010}00010     \mbox{\hyperlink{class_init_direct3_d_app_a45930087dbbebdb8344d580f0978413b}{InitDirect3DApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00011}00011     \mbox{\hyperlink{class_init_direct3_d_app_abab6bc6aee1ee5a5edc3e5be9927a647}{\string~InitDirect3DApp}}();}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00013}00013     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_init_direct3_d_app_a24b6021ed89f084d0c4c8f02ec247039}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00015}00015 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00016}00016     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00017}00017     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00018}00018     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00020}00020 \};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00022}00022 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00024}00024 \textcolor{preprocessor}{\#pragma region step1}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00025}00025 \textcolor{comment}{//WinMain -\/-\/> every win32 application needs a WinMain() function, like console application needs main()}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00026}00026 \textcolor{comment}{//HINSTANCE, PSTR.. are part of <Windows.h>}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00027}00027 \textcolor{comment}{//Windows is about Windows (window class that you register and instance of the class) and Messages}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00028}00028 \textcolor{comment}{//cmdLine receives the parameter that somebody passes}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00029}00029 \textcolor{preprocessor}{\#pragma endregion}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00032}\mbox{\hyperlink{week2-0-_initialize_d3_d_8cpp_aabcda87589d774901aa87061b8fd0176}{00032}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{week2-0-_initialize_d3_d_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00033}00033     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00034}00034 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00035}00035     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00036}00036 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00037}00037     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00038}00038 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00040}00040     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00041}00041     \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00042}00042         \mbox{\hyperlink{class_init_direct3_d_app}{InitDirect3DApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00043}00043         \textcolor{keywordflow}{if} (!theApp.\mbox{\hyperlink{class_init_direct3_d_app_a24b6021ed89f084d0c4c8f02ec247039}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00044}00044             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00046}00046         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00047}00047     \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00048}00048     \textcolor{keywordflow}{catch} (\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00049}00049     \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00050}00050         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00051}00051         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00052}00052     \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00053}00053 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00055}\mbox{\hyperlink{class_init_direct3_d_app_a45930087dbbebdb8344d580f0978413b}{00055}} \mbox{\hyperlink{class_init_direct3_d_app_a45930087dbbebdb8344d580f0978413b}{InitDirect3DApp::InitDirect3DApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00056}00056     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00057}00057 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00058}00058 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00060}\mbox{\hyperlink{class_init_direct3_d_app_abab6bc6aee1ee5a5edc3e5be9927a647}{00060}} \mbox{\hyperlink{class_init_direct3_d_app_abab6bc6aee1ee5a5edc3e5be9927a647}{InitDirect3DApp::\string~InitDirect3DApp}}()}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00061}00061 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00062}00062 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00064}\mbox{\hyperlink{class_init_direct3_d_app_a24b6021ed89f084d0c4c8f02ec247039}{00064}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_init_direct3_d_app_a24b6021ed89f084d0c4c8f02ec247039}{InitDirect3DApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00065}00065 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00066}00066     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00067}00067         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00069}00069     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00070}00070 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00072}00072 \textcolor{keywordtype}{void} InitDirect3DApp::OnResize()}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00073}00073 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00074}00074     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00075}00075 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00077}00077 \textcolor{keywordtype}{void} InitDirect3DApp::Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00078}00078 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00080}00080 \}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00081}00081 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00083}00083 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00084}00084 \textcolor{keywordtype}{void} InitDirect3DApp::Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00085}00085 \{}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00086}00086     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00087}00087     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00088}00088     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00090}00090     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00091}00091     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00092}00092     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00093}00093 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00094}00094     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00095}00095     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00096}00096         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00098}00098     \textcolor{comment}{// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00099}00099     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00100}00100     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00102}00102     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00103}00103     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00104}00104     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00106}00106     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00107}00107     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00109}00109     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00110}00110     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00111}00111         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00113}00113     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00114}00114     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00116}00116     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00117}00117     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00118}00118     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00119}00119 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00120}00120     \textcolor{comment}{// swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00121}00121     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00122}00122     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00124}00124     \textcolor{comment}{// Wait until frame commands are complete.  This waiting is inefficient and is}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00125}00125     \textcolor{comment}{// done for simplicity.  Later we will show how to organize our rendering code}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00126}00126     \textcolor{comment}{// so we do not have to wait per frame.}}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00127}00127     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{week2-0-_initialize_d3_d_8cpp_source_l00128}00128 \}}
 
 \end{DoxyCode}

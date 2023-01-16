@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "DirectX", "index.html", [
+  [ "GAME3111", "index.html", [
     [ "MainPage", "index.html", null ],
     [ "Bug List", "bug.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -84,26 +84,13 @@ var NAVTREEINDEX =
 "_week6-8-_tex_waveswith_fog_and_blending_8cpp.html#aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9",
 "_week7-1-_tree_billboards_app_8cpp.html#aa63ede3e7371d4bc358f651428d23159a3d971943089a3388c01fb297a32d9ba7",
 "_week7-6-_pyramid_subdividing_using_g_s_8cpp_source.html",
-"class_blend_app.html#a337a7aff1d6602f192185230fb6d92f4",
-"class_blur_filter.html",
-"class_camera_and_dynamic_indexing_app.html#a8ae60eb09cbf3b94a87b43f01a3b7705",
-"class_crate_app.html#a01f3ad6c043caaca05fc70b7f9cb983e",
-"class_crate_app.html#ae09398d36ed63cfc0d2741d76dd1231a",
-"class_d_x_app.html#a2757c034c4cbb81b2448a6f2a788c11e",
-"class_gpu_waves.html#a8fd56fdcb898818bdcec48294f71ce5a",
-"class_lit_columns_app.html#a1b1018ff5719e84b84a568d03c848026",
-"class_picking_app.html#a7ae460efeb34ae3fc18a33da766739bd",
-"class_shapes_app.html#a0e58080351e7a4f93677f5795f1e271f",
-"class_shapes_app.html#ade90fc914a239bbb93daa0d34eefdd23",
-"class_sobel_app.html#a243af2b6434a9a6d2277de8e337a9c49",
-"class_stencil_app.html#a26e2a8b51f0919d3a51d87bd4eff9c95",
-"class_tex_waves_app.html#a05afd2bffc54fb585b24fc42aee20658",
-"class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee",
-"class_upload_buffer.html#aa6d59b50f752d27d3d13cc40fe34db85",
-"d3d_app_8cpp_source.html",
-"struct_d_d_s___p_i_x_e_l_f_o_r_m_a_t.html#aa7af0012c64480e8eeafa25d7892c310",
-"struct_mesh_geometry.html",
-"week2-3-logadapters_8cpp_source.html"
+"class_camera_app.html#a3dfbef9a3ae5cb44a2578488d243f355",
+"class_dx_exception.html#a031a5ff549f043decbe96093e73dac27",
+"class_shapes_app.html#a848dbf65b387b3dbf0e6d0e186627046",
+"class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108",
+"functions.html",
+"struct_frame_resource.html#a847d99ad6c492fd988ab52623e56aed5",
+"struct_render_item.html#ac918a361cff15517f08352a0da8f5a98"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

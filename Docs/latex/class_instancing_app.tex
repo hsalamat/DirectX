@@ -1,4 +1,4 @@
-\doxysection{Instancing\+App Class Reference}
+\hypertarget{class_instancing_app}{}\doxysection{Instancing\+App Class Reference}
 \label{class_instancing_app}\index{InstancingApp@{InstancingApp}}
 Inheritance diagram for Instancing\+App\+:\begin{figure}[H]
 \begin{center}
@@ -9,101 +9,15 @@ Inheritance diagram for Instancing\+App\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\textbf{ Instancing\+App} (HINSTANCE h\+Instance)
+\mbox{\hyperlink{class_instancing_app_a860c0b0f362ec1f3cfb7ed15465bfa6b}{Instancing\+App}} (HINSTANCE h\+Instance)
 \item 
-\textbf{ Instancing\+App} (const \textbf{ Instancing\+App} \&rhs)=delete
+\mbox{\hyperlink{class_instancing_app_a66c60448cb0a8fa3809b7443c0dd102c}{Instancing\+App}} (const \mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \&rhs)=delete
 \item 
-\textbf{ Instancing\+App} \& \textbf{ operator=} (const \textbf{ Instancing\+App} \&rhs)=delete
+\mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \& \mbox{\hyperlink{class_instancing_app_a592cb3b5db964bcded3da4a873bdcf30}{operator=}} (const \mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \&rhs)=delete
 \item 
-\textbf{ $\sim$\+Instancing\+App} ()
+\mbox{\hyperlink{class_instancing_app_abc930d5569efb946d8cb6ab4c077b87b}{$\sim$\+Instancing\+App}} ()
 \item 
-virtual bool \textbf{ Initialize} () override
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-virtual void \textbf{ On\+Resize} () override
-\item 
-virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
-\item 
-virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
-\item 
-virtual void \textbf{ On\+Mouse\+Down} (WPARAM btn\+State, int x, int y) override
-\item 
-virtual void \textbf{ On\+Mouse\+Up} (WPARAM btn\+State, int x, int y) override
-\item 
-virtual void \textbf{ On\+Mouse\+Move} (WPARAM btn\+State, int x, int y) override
-\item 
-void \textbf{ On\+Keyboard\+Input} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Animate\+Materials} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Instance\+Data} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Material\+Buffer} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Main\+Pass\+CB} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Load\+Textures} ()
-\item 
-void \textbf{ Build\+Root\+Signature} ()
-\item 
-void \textbf{ Build\+Descriptor\+Heaps} ()
-\item 
-void \textbf{ Build\+Shaders\+And\+Input\+Layout} ()
-\item 
-void \textbf{ Build\+Skull\+Geometry} ()
-\item 
-void \textbf{ Build\+PSOs} ()
-\item 
-void \textbf{ Build\+Frame\+Resources} ()
-\item 
-void \textbf{ Build\+Materials} ()
-\item 
-void \textbf{ Build\+Render\+Items} ()
-\item 
-void \textbf{ Draw\+Render\+Items} (ID3\+D12\+Graphics\+Command\+List $\ast$cmd\+List, const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&ritems)
-\item 
-std\+::array$<$ const CD3\+DX12\+\_\+\+STATIC\+\_\+\+SAMPLER\+\_\+\+DESC, 6 $>$ \textbf{ Get\+Static\+Samplers} ()
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Attributes}
-\begin{DoxyCompactItemize}
-\item 
-std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \textbf{ Frame\+Resource} $>$ $>$ \textbf{ m\+Frame\+Resources}
-\item 
-\textbf{ Frame\+Resource} $\ast$ \textbf{ m\+Curr\+Frame\+Resource} = nullptr
-\item 
-int \textbf{ m\+Curr\+Frame\+Resource\+Index} = 0
-\item 
-UINT \textbf{ m\+Cbv\+Srv\+Descriptor\+Size} = 0
-\item 
-Com\+Ptr$<$ ID3\+D12\+Root\+Signature $>$ \textbf{ m\+Root\+Signature} = nullptr
-\item 
-Com\+Ptr$<$ ID3\+D12\+Descriptor\+Heap $>$ \textbf{ m\+Srv\+Descriptor\+Heap} = nullptr
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \textbf{ Mesh\+Geometry} $>$ $>$ \textbf{ m\+Geometries}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \textbf{ Material} $>$ $>$ \textbf{ m\+Materials}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \textbf{ Texture} $>$ $>$ \textbf{ m\+Textures}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, Com\+Ptr$<$ ID3\+DBlob $>$ $>$ \textbf{ m\+Shaders}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, Com\+Ptr$<$ ID3\+D12\+Pipeline\+State $>$ $>$ \textbf{ m\+PSOs}
-\item 
-std\+::vector$<$ D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC $>$ \textbf{ m\+Input\+Layout}
-\item 
-std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \textbf{ Render\+Item} $>$ $>$ \textbf{ m\+All\+Ritems}
-\item 
-std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \textbf{ m\+Opaque\+Ritems}
-\item 
-UINT \textbf{ m\+Instance\+Count} = 0
-\item 
-\textbf{ Pass\+Constants} \textbf{ m\+Main\+Pass\+CB}
-\item 
-\textbf{ Camera} \textbf{ m\+Camera}
-\item 
-POINT \textbf{ m\+Last\+Mouse\+Pos}
+virtual bool \mbox{\hyperlink{class_instancing_app_a54fb53e71ea05faabb191c04ec9da496}{Initialize}} () override
 \end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
@@ -111,484 +25,57 @@ POINT \textbf{ m\+Last\+Mouse\+Pos}
 \doxysubsection{Detailed Description}
 
 
-Definition at line \textbf{ 61} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source_l00061}{61}} of file \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source}{Week11-\/1-\/\+Instancing\+App.\+cpp}}.
 
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\mbox{\label{class_instancing_app_a860c0b0f362ec1f3cfb7ed15465bfa6b}} 
+\mbox{\Hypertarget{class_instancing_app_a860c0b0f362ec1f3cfb7ed15465bfa6b}\label{class_instancing_app_a860c0b0f362ec1f3cfb7ed15465bfa6b}} 
 \index{InstancingApp@{InstancingApp}!InstancingApp@{InstancingApp}}
 \index{InstancingApp@{InstancingApp}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{InstancingApp()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+\doxysubsubsection{\texorpdfstring{InstancingApp()}{InstancingApp()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily Instancing\+App\+::\+Instancing\+App (\begin{DoxyParamCaption}\item[{HINSTANCE}]{h\+Instance }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 157} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source_l00157}{157}} of file \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source}{Week11-\/1-\/\+Instancing\+App.\+cpp}}.
 
-\mbox{\label{class_instancing_app_a66c60448cb0a8fa3809b7443c0dd102c}} 
+\mbox{\Hypertarget{class_instancing_app_a66c60448cb0a8fa3809b7443c0dd102c}\label{class_instancing_app_a66c60448cb0a8fa3809b7443c0dd102c}} 
 \index{InstancingApp@{InstancingApp}!InstancingApp@{InstancingApp}}
 \index{InstancingApp@{InstancingApp}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{InstancingApp()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily Instancing\+App\+::\+Instancing\+App (\begin{DoxyParamCaption}\item[{const \textbf{ Instancing\+App} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+\doxysubsubsection{\texorpdfstring{InstancingApp()}{InstancingApp()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Instancing\+App\+::\+Instancing\+App (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 
-\mbox{\label{class_instancing_app_abc930d5569efb946d8cb6ab4c077b87b}} 
+\mbox{\Hypertarget{class_instancing_app_abc930d5569efb946d8cb6ab4c077b87b}\label{class_instancing_app_abc930d5569efb946d8cb6ab4c077b87b}} 
 \index{InstancingApp@{InstancingApp}!````~InstancingApp@{$\sim$InstancingApp}}
 \index{````~InstancingApp@{$\sim$InstancingApp}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{$\sim$InstancingApp()}
+\doxysubsubsection{\texorpdfstring{$\sim$InstancingApp()}{~InstancingApp()}}
 {\footnotesize\ttfamily Instancing\+App\+::$\sim$\+Instancing\+App (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 162} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source_l00162}{162}} of file \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source}{Week11-\/1-\/\+Instancing\+App.\+cpp}}.
 
 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\label{class_instancing_app_a7b1e7bffcb6a6f2d8148e215cef8c1e1}} 
-\index{InstancingApp@{InstancingApp}!AnimateMaterials@{AnimateMaterials}}
-\index{AnimateMaterials@{AnimateMaterials}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{AnimateMaterials()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Animate\+Materials (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 353} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a53561c18b55c3c00aa1e8a05a5daac6e}} 
-\index{InstancingApp@{InstancingApp}!BuildDescriptorHeaps@{BuildDescriptorHeaps}}
-\index{BuildDescriptorHeaps@{BuildDescriptorHeaps}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildDescriptorHeaps()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Descriptor\+Heaps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 607} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a005449fae58d2f1ca3a4cbc51d3fca90}} 
-\index{InstancingApp@{InstancingApp}!BuildFrameResources@{BuildFrameResources}}
-\index{BuildFrameResources@{BuildFrameResources}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildFrameResources()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Frame\+Resources (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 835} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a52d8e06d1fed15c786aa2846db02bf97}} 
-\index{InstancingApp@{InstancingApp}!BuildMaterials@{BuildMaterials}}
-\index{BuildMaterials@{BuildMaterials}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildMaterials()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Materials (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 845} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a64c161eb1b31eec48462387ddd1c58f7}} 
-\index{InstancingApp@{InstancingApp}!BuildPSOs@{BuildPSOs}}
-\index{BuildPSOs@{BuildPSOs}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildPSOs()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+PSOs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 802} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_af5a2dab33a4fbcfbff1bc35eefff3db8}} 
-\index{InstancingApp@{InstancingApp}!BuildRenderItems@{BuildRenderItems}}
-\index{BuildRenderItems@{BuildRenderItems}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildRenderItems()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Render\+Items (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 912} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a0c5ea8455bc830e28b788f1f3f9b3530}} 
-\index{InstancingApp@{InstancingApp}!BuildRootSignature@{BuildRootSignature}}
-\index{BuildRootSignature@{BuildRootSignature}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildRootSignature()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Root\+Signature (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 549} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a2a313b82c54e2df396eee54c382acc29}} 
-\index{InstancingApp@{InstancingApp}!BuildShadersAndInputLayout@{BuildShadersAndInputLayout}}
-\index{BuildShadersAndInputLayout@{BuildShadersAndInputLayout}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildShadersAndInputLayout()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Shaders\+And\+Input\+Layout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 683} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_abb0e135fb30bccf21d6e5959681ccd58}} 
-\index{InstancingApp@{InstancingApp}!BuildSkullGeometry@{BuildSkullGeometry}}
-\index{BuildSkullGeometry@{BuildSkullGeometry}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{BuildSkullGeometry()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Build\+Skull\+Geometry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 706} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_af7081b9865f0149bb91348eaa2e635f5}} 
-\index{InstancingApp@{InstancingApp}!Draw@{Draw}}
-\index{Draw@{Draw}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{Draw()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Draw (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59edf2bc95e5e6a}.
-
-
-
-Definition at line \textbf{ 236} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a0932e1038ee3f81ba78ca49026b8b854}} 
-\index{InstancingApp@{InstancingApp}!DrawRenderItems@{DrawRenderItems}}
-\index{DrawRenderItems@{DrawRenderItems}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{DrawRenderItems()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Draw\+Render\+Items (\begin{DoxyParamCaption}\item[{ID3\+D12\+Graphics\+Command\+List $\ast$}]{cmd\+List,  }\item[{const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&}]{ritems }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 970} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a00e904b7fd56a65b7501c22b05bc6410}} 
-\index{InstancingApp@{InstancingApp}!GetStaticSamplers@{GetStaticSamplers}}
-\index{GetStaticSamplers@{GetStaticSamplers}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{GetStaticSamplers()}
-{\footnotesize\ttfamily std\+::array$<$ const CD3\+DX12\+\_\+\+STATIC\+\_\+\+SAMPLER\+\_\+\+DESC, 6 $>$ Instancing\+App\+::\+Get\+Static\+Samplers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 991} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a54fb53e71ea05faabb191c04ec9da496}} 
+\mbox{\Hypertarget{class_instancing_app_a54fb53e71ea05faabb191c04ec9da496}\label{class_instancing_app_a54fb53e71ea05faabb191c04ec9da496}} 
 \index{InstancingApp@{InstancingApp}!Initialize@{Initialize}}
 \index{Initialize@{Initialize}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{Initialize()}
+\doxysubsubsection{\texorpdfstring{Initialize()}{Initialize()}}
 {\footnotesize\ttfamily bool Instancing\+App\+::\+Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
 
 
 
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a961fa79170dcbde858923a5250c322be}.
+Reimplemented from \mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3\+DApp}}.
 
 
 
-Definition at line \textbf{ 168} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source_l00168}{168}} of file \mbox{\hyperlink{_week11-1-_instancing_app_8cpp_source}{Week11-\/1-\/\+Instancing\+App.\+cpp}}.
 
-\mbox{\label{class_instancing_app_a59678e065c3dcf29798a48586531d7ff}} 
-\index{InstancingApp@{InstancingApp}!LoadTextures@{LoadTextures}}
-\index{LoadTextures@{LoadTextures}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{LoadTextures()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Load\+Textures (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 489} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a15152d390c683b3788bb7f84aa4b3ef8}} 
-\index{InstancingApp@{InstancingApp}!OnKeyboardInput@{OnKeyboardInput}}
-\index{OnKeyboardInput@{OnKeyboardInput}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{OnKeyboardInput()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+On\+Keyboard\+Input (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 333} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a19e928415e8d0e657627c4e39c117a9d}} 
-\index{InstancingApp@{InstancingApp}!OnMouseDown@{OnMouseDown}}
-\index{OnMouseDown@{OnMouseDown}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{OnMouseDown()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+On\+Mouse\+Down (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afa0d546d52408a9b55866e6ba065ddae}.
-
-
-
-Definition at line \textbf{ 304} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a956cb29859b5c0c18cdf1d54b11e6490}} 
-\index{InstancingApp@{InstancingApp}!OnMouseMove@{OnMouseMove}}
-\index{OnMouseMove@{OnMouseMove}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{OnMouseMove()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+On\+Mouse\+Move (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_aa5270048920cd8a62dc07c7ed5e97622}.
-
-
-
-Definition at line \textbf{ 317} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a47281ab4c93613eea6468d675694acac}} 
-\index{InstancingApp@{InstancingApp}!OnMouseUp@{OnMouseUp}}
-\index{OnMouseUp@{OnMouseUp}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{OnMouseUp()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+On\+Mouse\+Up (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a98be07429ac3ffb5f76cbe831f9d94de}.
-
-
-
-Definition at line \textbf{ 312} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a0d0b3ee2d6e7b1e8b92870617ee17bd7}} 
-\index{InstancingApp@{InstancingApp}!OnResize@{OnResize}}
-\index{OnResize@{OnResize}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{OnResize()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+On\+Resize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}.
-
-
-
-Definition at line \textbf{ 203} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a592cb3b5db964bcded3da4a873bdcf30}} 
+\mbox{\Hypertarget{class_instancing_app_a592cb3b5db964bcded3da4a873bdcf30}\label{class_instancing_app_a592cb3b5db964bcded3da4a873bdcf30}} 
 \index{InstancingApp@{InstancingApp}!operator=@{operator=}}
 \index{operator=@{operator=}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{operator=()}
-{\footnotesize\ttfamily \textbf{ Instancing\+App} \& Instancing\+App\+::operator= (\begin{DoxyParamCaption}\item[{const \textbf{ Instancing\+App} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
-
-\mbox{\label{class_instancing_app_afdb84c31c063507e038aad4c77dabb5e}} 
-\index{InstancingApp@{InstancingApp}!Update@{Update}}
-\index{Update@{Update}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{Update()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Update (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_ae31029e118e14ee3ae4649f1c6f8d2dd}.
-
-
-
-Definition at line \textbf{ 211} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_aab182f5cb58ed6fe0f766f34abdd9d29}} 
-\index{InstancingApp@{InstancingApp}!UpdateInstanceData@{UpdateInstanceData}}
-\index{UpdateInstanceData@{UpdateInstanceData}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{UpdateInstanceData()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Update\+Instance\+Data (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 383} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a918326c8e05e2836d423668932fe44fd}} 
-\index{InstancingApp@{InstancingApp}!UpdateMainPassCB@{UpdateMainPassCB}}
-\index{UpdateMainPassCB@{UpdateMainPassCB}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{UpdateMainPassCB()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Update\+Main\+Pass\+CB (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 453} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a8718b5913ae0b437c26fe3e7e9dd3d81}} 
-\index{InstancingApp@{InstancingApp}!UpdateMaterialBuffer@{UpdateMaterialBuffer}}
-\index{UpdateMaterialBuffer@{UpdateMaterialBuffer}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{UpdateMaterialBuffer()}
-{\footnotesize\ttfamily void Instancing\+App\+::\+Update\+Material\+Buffer (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 425} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-
-
-\doxysubsection{Member Data Documentation}
-\mbox{\label{class_instancing_app_a9d8a99d1a41575656d9c71dcf1b30a8b}} 
-\index{InstancingApp@{InstancingApp}!mAllRitems@{mAllRitems}}
-\index{mAllRitems@{mAllRitems}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mAllRitems}
-{\footnotesize\ttfamily std\+::vector$<$std\+::unique\+\_\+ptr$<$\textbf{ Render\+Item}$>$ $>$ Instancing\+App\+::m\+All\+Ritems\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 120} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a0beecc4127e3c268094493fbb27937de}} 
-\index{InstancingApp@{InstancingApp}!mCamera@{mCamera}}
-\index{mCamera@{mCamera}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mCamera}
-{\footnotesize\ttfamily \textbf{ Camera} Instancing\+App\+::m\+Camera\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 129} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a872eda4c04c0812be1f0a720cf3c28d5}} 
-\index{InstancingApp@{InstancingApp}!mCbvSrvDescriptorSize@{mCbvSrvDescriptorSize}}
-\index{mCbvSrvDescriptorSize@{mCbvSrvDescriptorSize}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mCbvSrvDescriptorSize}
-{\footnotesize\ttfamily UINT Instancing\+App\+::m\+Cbv\+Srv\+Descriptor\+Size = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 105} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a1604396bb0bc6487afae3b8e2001239f}} 
-\index{InstancingApp@{InstancingApp}!mCurrFrameResource@{mCurrFrameResource}}
-\index{mCurrFrameResource@{mCurrFrameResource}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mCurrFrameResource}
-{\footnotesize\ttfamily \textbf{ Frame\+Resource}$\ast$ Instancing\+App\+::m\+Curr\+Frame\+Resource = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 102} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a430e78514eb3f8f34f95ac33d3527502}} 
-\index{InstancingApp@{InstancingApp}!mCurrFrameResourceIndex@{mCurrFrameResourceIndex}}
-\index{mCurrFrameResourceIndex@{mCurrFrameResourceIndex}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mCurrFrameResourceIndex}
-{\footnotesize\ttfamily int Instancing\+App\+::m\+Curr\+Frame\+Resource\+Index = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 103} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a9f205383e4225b71ae08c2e8f70ac439}} 
-\index{InstancingApp@{InstancingApp}!mFrameResources@{mFrameResources}}
-\index{mFrameResources@{mFrameResources}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mFrameResources}
-{\footnotesize\ttfamily std\+::vector$<$std\+::unique\+\_\+ptr$<$\textbf{ Frame\+Resource}$>$ $>$ Instancing\+App\+::m\+Frame\+Resources\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 101} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a34e14745191d778c8a820973124e744e}} 
-\index{InstancingApp@{InstancingApp}!mGeometries@{mGeometries}}
-\index{mGeometries@{mGeometries}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mGeometries}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, std\+::unique\+\_\+ptr$<$\textbf{ Mesh\+Geometry}$>$ $>$ Instancing\+App\+::m\+Geometries\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 111} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a825d053993fae4b395448effa9a29b99}} 
-\index{InstancingApp@{InstancingApp}!mInputLayout@{mInputLayout}}
-\index{mInputLayout@{mInputLayout}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mInputLayout}
-{\footnotesize\ttfamily std\+::vector$<$D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC$>$ Instancing\+App\+::m\+Input\+Layout\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 117} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_ad259f7f19d9d4f9f74f9eb8325486288}} 
-\index{InstancingApp@{InstancingApp}!mInstanceCount@{mInstanceCount}}
-\index{mInstanceCount@{mInstanceCount}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mInstanceCount}
-{\footnotesize\ttfamily UINT Instancing\+App\+::m\+Instance\+Count = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 125} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_af7887314b29c61f4b07217b10d91a289}} 
-\index{InstancingApp@{InstancingApp}!mLastMousePos@{mLastMousePos}}
-\index{mLastMousePos@{mLastMousePos}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mLastMousePos}
-{\footnotesize\ttfamily POINT Instancing\+App\+::m\+Last\+Mouse\+Pos\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 131} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a6ac42a04aa7792974bf484905297423e}} 
-\index{InstancingApp@{InstancingApp}!mMainPassCB@{mMainPassCB}}
-\index{mMainPassCB@{mMainPassCB}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mMainPassCB}
-{\footnotesize\ttfamily \textbf{ Pass\+Constants} Instancing\+App\+::m\+Main\+Pass\+CB\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 127} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_ac5dc145c182df2d15ff4a8613f5c5570}} 
-\index{InstancingApp@{InstancingApp}!mMaterials@{mMaterials}}
-\index{mMaterials@{mMaterials}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mMaterials}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, std\+::unique\+\_\+ptr$<$\textbf{ Material}$>$ $>$ Instancing\+App\+::m\+Materials\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 112} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_ae9e35002997c6186333bfcb9ab2c05fc}} 
-\index{InstancingApp@{InstancingApp}!mOpaqueRitems@{mOpaqueRitems}}
-\index{mOpaqueRitems@{mOpaqueRitems}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mOpaqueRitems}
-{\footnotesize\ttfamily std\+::vector$<$\textbf{ Render\+Item}$\ast$$>$ Instancing\+App\+::m\+Opaque\+Ritems\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 123} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a544f25ba2f17f7d10fc7c7a56e6327a4}} 
-\index{InstancingApp@{InstancingApp}!mPSOs@{mPSOs}}
-\index{mPSOs@{mPSOs}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mPSOs}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, Com\+Ptr$<$ID3\+D12\+Pipeline\+State$>$ $>$ Instancing\+App\+::m\+PSOs\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 115} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a4a28849e2e4db1b62e62f5035fb1e736}} 
-\index{InstancingApp@{InstancingApp}!mRootSignature@{mRootSignature}}
-\index{mRootSignature@{mRootSignature}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mRootSignature}
-{\footnotesize\ttfamily Com\+Ptr$<$ID3\+D12\+Root\+Signature$>$ Instancing\+App\+::m\+Root\+Signature = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 107} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a378ef2049fed35c90e5bc8c81198e0bc}} 
-\index{InstancingApp@{InstancingApp}!mShaders@{mShaders}}
-\index{mShaders@{mShaders}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mShaders}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, Com\+Ptr$<$ID3\+DBlob$>$ $>$ Instancing\+App\+::m\+Shaders\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 114} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_a79ff13118d5a5c8253e0363d2a261d38}} 
-\index{InstancingApp@{InstancingApp}!mSrvDescriptorHeap@{mSrvDescriptorHeap}}
-\index{mSrvDescriptorHeap@{mSrvDescriptorHeap}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mSrvDescriptorHeap}
-{\footnotesize\ttfamily Com\+Ptr$<$ID3\+D12\+Descriptor\+Heap$>$ Instancing\+App\+::m\+Srv\+Descriptor\+Heap = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 109} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
-
-\mbox{\label{class_instancing_app_acc1924e497b8dbf82d9cf998d6a1eda5}} 
-\index{InstancingApp@{InstancingApp}!mTextures@{mTextures}}
-\index{mTextures@{mTextures}!InstancingApp@{InstancingApp}}
-\doxysubsubsection{mTextures}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, std\+::unique\+\_\+ptr$<$\textbf{ Texture}$>$ $>$ Instancing\+App\+::m\+Textures\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 113} of file \textbf{ Week11-\/1-\/\+Instancing\+App.\+cpp}.
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \& Instancing\+App\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_instancing_app}{Instancing\+App}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 

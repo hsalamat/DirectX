@@ -1,69 +1,69 @@
-\doxysection{Frame\+Resource.\+h}
+\hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source}{}\doxysection{Frame\+Resource.\+h}
 \label{_week4_2_land_and_waves_2_frame_resource_8h_source}\index{Week4/LandAndWaves/FrameResource.h@{Week4/LandAndWaves/FrameResource.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week4_2_land_and_waves_2_frame_resource_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00002 }
-\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{keyword}{struct }ObjectConstants}
-\DoxyCodeLine{00008 \{}
-\DoxyCodeLine{00009     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00010 \};}
-\DoxyCodeLine{00011 }
-\DoxyCodeLine{00012 \textcolor{keyword}{struct }PassConstants}
-\DoxyCodeLine{00013 \{}
-\DoxyCodeLine{00014     DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();}
-\DoxyCodeLine{00015     DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00016     DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00017     DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00018     DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00019     DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00020     DirectX::XMFLOAT3 EyePosW = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00021     \textcolor{keywordtype}{float} cbPerObjectPad1 = 0.0f;}
-\DoxyCodeLine{00022     DirectX::XMFLOAT2 RenderTargetSize = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00023     DirectX::XMFLOAT2 InvRenderTargetSize = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00024     \textcolor{keywordtype}{float} NearZ = 0.0f;}
-\DoxyCodeLine{00025     \textcolor{keywordtype}{float} FarZ = 0.0f;}
-\DoxyCodeLine{00026     \textcolor{keywordtype}{float} TotalTime = 0.0f;}
-\DoxyCodeLine{00027     \textcolor{keywordtype}{float} DeltaTime = 0.0f;}
-\DoxyCodeLine{00028 \};}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00030 \textcolor{keyword}{struct }Vertex}
-\DoxyCodeLine{00031 \{}
-\DoxyCodeLine{00032     DirectX::XMFLOAT3 Pos;}
-\DoxyCodeLine{00033     DirectX::XMFLOAT4 Color;}
-\DoxyCodeLine{00034 \};}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
-\DoxyCodeLine{00037 \textcolor{comment}{// for a frame.  }}
-\DoxyCodeLine{00038 \textcolor{keyword}{struct }FrameResource}
-\DoxyCodeLine{00039 \{}
-\DoxyCodeLine{00040 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00041     }
-\DoxyCodeLine{00042     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT waveVertCount);}
-\DoxyCodeLine{00043     FrameResource(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00044     FrameResource\& operator=(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00045     \string~FrameResource();}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
-\DoxyCodeLine{00048     \textcolor{comment}{// So each frame needs their own allocator.}}
-\DoxyCodeLine{00049     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
-\DoxyCodeLine{00052     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
-\DoxyCodeLine{00053     std::unique\_ptr<UploadBuffer<PassConstants>> PassCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00054     std::unique\_ptr<UploadBuffer<ObjectConstants>> ObjectCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     \textcolor{comment}{// We cannot update a dynamic vertex buffer until the GPU is done processing}}
-\DoxyCodeLine{00057     \textcolor{comment}{// the commands that reference it.  So each frame needs their own.}}
-\DoxyCodeLine{00058     std::unique\_ptr<UploadBuffer<Vertex>> WavesVB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
-\DoxyCodeLine{00061     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
-\DoxyCodeLine{00062     UINT64 Fence = 0;}
-\DoxyCodeLine{00063 \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00001}00001 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00003}00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00004}00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00007}00007 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00008}00008 \{}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00009}00009     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00010}00010 \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00012}00012 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_pass_constants}{PassConstants}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00013}00013 \{}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00014}00014     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00015}00015     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00016}00016     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00017}00017     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00018}00018     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00019}00019     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00020}00020     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00021}00021     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_aaae2d67cebf30e767a800a1e508e249a}{cbPerObjectPad1}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00022}00022     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00023}00023     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00024}00024     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00025}00025     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00026}00026     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00027}00027     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00028}00028 \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00030}00030 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_vertex}{Vertex}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00032}00032     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00033}\mbox{\hyperlink{struct_vertex_a98fd91c181a316de963a06c060ff5448}{00033}}     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_vertex_a98fd91c181a316de963a06c060ff5448}{Color}};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00034}00034 \};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00036}00036 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00037}00037 \textcolor{comment}{// for a frame.  }}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00038}00038 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_frame_resource}{FrameResource}}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00039}00039 \{}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00040}00040 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00041}00041     }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00042}\mbox{\hyperlink{struct_frame_resource_a54f82f228dffae81c831093de0ff7de0}{00042}}     \mbox{\hyperlink{struct_frame_resource_a54f82f228dffae81c831093de0ff7de0}{FrameResource}}(ID3D12Device* device, UINT passCount, UINT objectCount, UINT waveVertCount);}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00043}\mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{00043}}     \mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{FrameResource}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00044}\mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{00044}}     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& \mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00045}\mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{00045}}     \mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{\string~FrameResource}}();}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00047}00047     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00048}00048     \textcolor{comment}{// So each frame needs their own allocator.}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00049}00049     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> \mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00051}00051     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00052}00052     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00053}00053     std::unique\_ptr<UploadBuffer<PassConstants>> \mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00054}00054     std::unique\_ptr<UploadBuffer<ObjectConstants>> \mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00056}00056     \textcolor{comment}{// We cannot update a dynamic vertex buffer until the GPU is done processing}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00057}00057     \textcolor{comment}{// the commands that reference it.  So each frame needs their own.}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00058}\mbox{\hyperlink{struct_frame_resource_a36a43467f17b51ef358f55084a5fb132}{00058}}     std::unique\_ptr<UploadBuffer<Vertex>> \mbox{\hyperlink{struct_frame_resource_a36a43467f17b51ef358f55084a5fb132}{WavesVB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00060}00060     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00061}00061     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00062}00062     UINT64 \mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week4_2_land_and_waves_2_frame_resource_8h_source_l00063}00063 \};}
 
 \end{DoxyCode}

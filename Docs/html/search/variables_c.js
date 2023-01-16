@@ -7,6 +7,5 @@ var searchData=
   ['normalmapindex_4',['NormalMapIndex',['../struct_material_data.html#a654eb04cfeb8b2164b0832c767277cd6',1,'MaterialData']]],
   ['normalmapname_5',['NormalMapName',['../struct_m3_d_loader_1_1_m3d_material.html#a42990056b9693fcf035189f261d4990d',1,'M3DLoader::M3dMaterial']]],
   ['normalsrvheapindex_6',['NormalSrvHeapIndex',['../struct_material.html#af6139531ff098c78d4d03d2fa232f27e',1,'Material']]],
-  ['numdataelements_7',['NumDataElements',['../class_vec_add_app.html#aa329d8f3d4377bf1e4fa4ca348c9bd7d',1,'VecAddApp::NumDataElements()'],['../class_particle_add_c_s_app.html#aa865535138c4745cc99338bcd2c128b2',1,'ParticleAddCSApp::NumDataElements()']]],
-  ['numframesdirty_8',['NumFramesDirty',['../struct_material.html#aacbebebfe577cd18d8652a01e8fae8c0',1,'Material::NumFramesDirty()'],['../struct_render_item.html#aca6ae2de91638af530fd5ce91fea3306',1,'RenderItem::NumFramesDirty()']]]
+  ['numframesdirty_7',['NumFramesDirty',['../struct_material.html#aacbebebfe577cd18d8652a01e8fae8c0',1,'Material::NumFramesDirty()'],['../struct_render_item.html#aca6ae2de91638af530fd5ce91fea3306',1,'RenderItem::NumFramesDirty()']]]
 ];

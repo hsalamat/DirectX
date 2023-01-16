@@ -34,18 +34,5 @@ var class_camera =
     [ "SetPosition", "class_camera.html#af2a973276a03c6822cfc8dd0b763d938", null ],
     [ "Strafe", "class_camera.html#a9b3e0ff70f8d5119a837391170bcfa2f", null ],
     [ "UpdateViewMatrix", "class_camera.html#a69369efae2a33da50510cc8c43c58bc5", null ],
-    [ "Walk", "class_camera.html#a05cfb8c4c4e3a9bccaaad6ee0eb5af1f", null ],
-    [ "mAspect", "class_camera.html#a914b8674a8e313526fd9e278442e4bff", null ],
-    [ "mFarWindowHeight", "class_camera.html#a877cecaf6499006d0763a590c087f3a0", null ],
-    [ "mFarZ", "class_camera.html#ad11bd107b6e87cd729abedd56ab81c0d", null ],
-    [ "mFovY", "class_camera.html#a8847b237a8e8da1c61f648c545bc0605", null ],
-    [ "mLook", "class_camera.html#a86f6db72d862f1403615882d8aedb621", null ],
-    [ "mNearWindowHeight", "class_camera.html#ad2fa69d91f845db0ba823e0aef28295b", null ],
-    [ "mNearZ", "class_camera.html#a9bb513be8b07997dca8ee09dd815552b", null ],
-    [ "mPosition", "class_camera.html#ae591ceadeb811057384a08afda6761b1", null ],
-    [ "mProj", "class_camera.html#a549760053f9c590e6266b092dcf1d68a", null ],
-    [ "mRight", "class_camera.html#adeb59d6c426d02fa6553d64763ce6610", null ],
-    [ "mUp", "class_camera.html#af69a040c77f44e00c332511dcc30bec8", null ],
-    [ "mView", "class_camera.html#a255c5659900e3662c792ef5b77e5dac8", null ],
-    [ "mViewDirty", "class_camera.html#aa6ae23444086da354d11228558ce9600", null ]
+    [ "Walk", "class_camera.html#a05cfb8c4c4e3a9bccaaad6ee0eb5af1f", null ]
 ];

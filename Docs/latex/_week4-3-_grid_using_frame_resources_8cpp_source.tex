@@ -1,753 +1,753 @@
-\doxysection{Week4-\/3-\/\+Grid\+Using\+Frame\+Resources.cpp}
+\hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source}{}\doxysection{Week4-\/3-\/\+Grid\+Using\+Frame\+Resources.cpp}
 \label{_week4-3-_grid_using_frame_resources_8cpp_source}\index{Week4/Week4/Week4-\/3-\/GridUsingFrameResources.cpp@{Week4/Week4/Week4-\/3-\/GridUsingFrameResources.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include <string>}}
-\DoxyCodeLine{00020 }
-\DoxyCodeLine{00021 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00022 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025 \textcolor{comment}{//Our application class will then instantiate a vector of three frame resources, }}
-\DoxyCodeLine{00026 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028 \textcolor{comment}{//Lightweight structure stores parameters to draw a shape.  This will vary from app-\/to-\/app.}}
-\DoxyCodeLine{00029 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00030 \{}
-\DoxyCodeLine{00031     RenderItem() = \textcolor{keywordflow}{default};}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00034     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00035     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00036     XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00037 }
-\DoxyCodeLine{00038     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00039     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00040     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify object data, we should set }}
-\DoxyCodeLine{00041     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00042     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00043 }
-\DoxyCodeLine{00044     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00045     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \textcolor{comment}{// Geometry associated with this render-\/item. Note that multiple}}
-\DoxyCodeLine{00048     \textcolor{comment}{// render-\/items can share the same geometry.}}
-\DoxyCodeLine{00049     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00052     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00055     UINT IndexCount = 0; \textcolor{comment}{//Number of indices read from the index buffer for each instance.}}
-\DoxyCodeLine{00056     UINT StartIndexLocation = 0; \textcolor{comment}{//The location of the first index read by the GPU from the index buffer.}}
-\DoxyCodeLine{00057     \textcolor{keywordtype}{int} BaseVertexLocation = 0; \textcolor{comment}{//A value added to each index before reading a vertex from the vertex buffer.}}
-\DoxyCodeLine{00058 \};}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060 \textcolor{keyword}{class }ShapesApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00061 \{}
-\DoxyCodeLine{00062 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00063     ShapesApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00064     ShapesApp(\textcolor{keyword}{const} ShapesApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00065     ShapesApp\& operator=(\textcolor{keyword}{const} ShapesApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00066     \string~ShapesApp();}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00071     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00080     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00081     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00082     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00083 }
-\DoxyCodeLine{00084     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00085     \textcolor{keywordtype}{void} BuildConstantBufferViews();}
-\DoxyCodeLine{00086     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00087     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} BuildShapeGeometry();}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00090     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00091 }
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00093     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
-\DoxyCodeLine{00094 }
-\DoxyCodeLine{00095 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00096 }
-\DoxyCodeLine{00097     \textcolor{comment}{//keep member variables to track the current frame resource :}}
-\DoxyCodeLine{00098     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00099     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00100     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00103     ComPtr<ID3D12DescriptorHeap> mCbvHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00104 }
-\DoxyCodeLine{00105     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00108     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00109     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00114     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
-\DoxyCodeLine{00117     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
-\DoxyCodeLine{00118 }
-\DoxyCodeLine{00119     \textcolor{comment}{// Render items divided by PSO.}}
-\DoxyCodeLine{00120     std::vector<RenderItem*> mOpaqueRitems;}
-\DoxyCodeLine{00121 }
-\DoxyCodeLine{00122     \textcolor{comment}{//std::vector<RenderItem*> mTransparentRitems;  //we could have render items for transparant items}}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124 }
-\DoxyCodeLine{00125 }
-\DoxyCodeLine{00126     \textcolor{comment}{//this mMainPassCB stores constant data that is fixed over a given}}
-\DoxyCodeLine{00127     \textcolor{comment}{//rendering pass such as the eye position, the view and projection matrices, and information}}
-\DoxyCodeLine{00128     \textcolor{comment}{//about the screen(render target) dimensions; it also includes game timing information,}}
-\DoxyCodeLine{00129     \textcolor{comment}{//which is useful data to have access to in shader programs.}}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     PassConstants mMainPassCB;}
-\DoxyCodeLine{00132 }
-\DoxyCodeLine{00133     UINT mPassCbvOffset = 0;}
-\DoxyCodeLine{00134 }
-\DoxyCodeLine{00135     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00136 }
-\DoxyCodeLine{00137     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00138     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00139     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00140 }
-\DoxyCodeLine{00141     \textcolor{keywordtype}{float} mTheta = 1.5f * XM\_PI;}
-\DoxyCodeLine{00142     \textcolor{keywordtype}{float} mPhi = 0.2f * XM\_PI;}
-\DoxyCodeLine{00143     \textcolor{keywordtype}{float} mRadius = 15.0f;}
-\DoxyCodeLine{00144 }
-\DoxyCodeLine{00145     POINT mLastMousePos;}
-\DoxyCodeLine{00146 \};}
-\DoxyCodeLine{00147 }
-\DoxyCodeLine{00148 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00149     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00150 \{}
-\DoxyCodeLine{00151     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00152 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00153     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00154 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00155 }
-\DoxyCodeLine{00156     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00157     \{}
-\DoxyCodeLine{00158         ShapesApp theApp(hInstance);}
-\DoxyCodeLine{00159         \textcolor{keywordflow}{if} (!theApp.Initialize())}
-\DoxyCodeLine{00160             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00161 }
-\DoxyCodeLine{00162         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00163     \}}
-\DoxyCodeLine{00164     \textcolor{keywordflow}{catch} (DxException\& e)}
-\DoxyCodeLine{00165     \{}
-\DoxyCodeLine{00166         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00167         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00168     \}}
-\DoxyCodeLine{00169 \}}
-\DoxyCodeLine{00170 }
-\DoxyCodeLine{00171 ShapesApp::ShapesApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00172     : D3DApp(hInstance)}
-\DoxyCodeLine{00173 \{}
-\DoxyCodeLine{00174 \}}
-\DoxyCodeLine{00175 }
-\DoxyCodeLine{00176 ShapesApp::\string~ShapesApp()}
-\DoxyCodeLine{00177 \{}
-\DoxyCodeLine{00178     \textcolor{keywordflow}{if} (md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00179         FlushCommandQueue();}
-\DoxyCodeLine{00180 \}}
-\DoxyCodeLine{00181 }
-\DoxyCodeLine{00182 \textcolor{keywordtype}{bool} ShapesApp::Initialize()}
-\DoxyCodeLine{00183 \{}
-\DoxyCodeLine{00184     \textcolor{keywordflow}{if} (!D3DApp::Initialize())}
-\DoxyCodeLine{00185         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00186 }
-\DoxyCodeLine{00187     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00188     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00189 }
-\DoxyCodeLine{00190     BuildRootSignature();}
-\DoxyCodeLine{00191     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00192     BuildShapeGeometry();}
-\DoxyCodeLine{00193     BuildRenderItems();}
-\DoxyCodeLine{00194     BuildFrameResources();}
-\DoxyCodeLine{00195     BuildDescriptorHeaps();}
-\DoxyCodeLine{00196     BuildConstantBufferViews();}
-\DoxyCodeLine{00197     BuildPSOs();}
-\DoxyCodeLine{00198 }
-\DoxyCodeLine{00199     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00200     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00201     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00202     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00203 }
-\DoxyCodeLine{00204     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00205     FlushCommandQueue();}
-\DoxyCodeLine{00206 }
-\DoxyCodeLine{00207     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00208 \}}
-\DoxyCodeLine{00209 }
-\DoxyCodeLine{00210 \textcolor{keywordtype}{void} ShapesApp::OnResize()}
-\DoxyCodeLine{00211 \{}
-\DoxyCodeLine{00212     D3DApp::OnResize();}
-\DoxyCodeLine{00213 }
-\DoxyCodeLine{00214     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00215     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00216     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00217 \}}
-\DoxyCodeLine{00218 }
-\DoxyCodeLine{00219 \textcolor{comment}{//for CPU frame n, the algorithm}}
-\DoxyCodeLine{00220 \textcolor{comment}{//1. Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00221 \textcolor{comment}{//2. Wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00222 \textcolor{comment}{//3. Update resources in mCurrFrameResource (like cbuffers).}}
-\DoxyCodeLine{00223 }
-\DoxyCodeLine{00224 \textcolor{keywordtype}{void} ShapesApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00225 \{}
-\DoxyCodeLine{00226     OnKeyboardInput(gt);}
-\DoxyCodeLine{00227     UpdateCamera(gt);}
-\DoxyCodeLine{00228 }
-\DoxyCodeLine{00229     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00230     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00231     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00232 }
-\DoxyCodeLine{00233 }
-\DoxyCodeLine{00234     \textcolor{comment}{//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!}}
-\DoxyCodeLine{00235     \textcolor{keywordflow}{if} (mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00236     \{}
-\DoxyCodeLine{00237         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00238         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00239         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00240         CloseHandle(eventHandle);}
-\DoxyCodeLine{00241     \}}
-\DoxyCodeLine{00242 }
-\DoxyCodeLine{00243     \textcolor{comment}{//The idea of these changes is to group constants based on update frequency. The per}}
-\DoxyCodeLine{00244     \textcolor{comment}{//pass constants only need to be updated once per rendering pass, and the object constants}}
-\DoxyCodeLine{00245     \textcolor{comment}{//only need to change when an object’s world matrix changes.}}
-\DoxyCodeLine{00246     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00247     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00248 \}}
-\DoxyCodeLine{00249 }
-\DoxyCodeLine{00250 \textcolor{keywordtype}{void} ShapesApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00251 \{}
-\DoxyCodeLine{00252     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00253 }
-\DoxyCodeLine{00254     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00255     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00256     ThrowIfFailed(cmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00257 }
-\DoxyCodeLine{00258     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00259     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00260     \textcolor{keywordflow}{if} (mIsWireframe)}
-\DoxyCodeLine{00261     \{}
-\DoxyCodeLine{00262         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
-\DoxyCodeLine{00263     \}}
-\DoxyCodeLine{00264     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00265     \{}
-\DoxyCodeLine{00266         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00267     \}}
-\DoxyCodeLine{00268 }
-\DoxyCodeLine{00269     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00270     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00271 }
-\DoxyCodeLine{00272     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00273     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00274         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00275 }
-\DoxyCodeLine{00276     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00277     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00278     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00279 }
-\DoxyCodeLine{00280     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00281     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00282 }
-\DoxyCodeLine{00283     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}
-\DoxyCodeLine{00284     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00285 }
-\DoxyCodeLine{00286     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00287 }
-\DoxyCodeLine{00288     \textcolor{keywordtype}{int} passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;}
-\DoxyCodeLine{00289     \textcolor{keyword}{auto} passCbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00290     passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00291     mCommandList-\/>SetGraphicsRootDescriptorTable(1, passCbvHandle);}
-\DoxyCodeLine{00292 }
-\DoxyCodeLine{00293     DrawRenderItems(mCommandList.Get(), mOpaqueRitems);}
-\DoxyCodeLine{00294 }
-\DoxyCodeLine{00295     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00296     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00297         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00298 }
-\DoxyCodeLine{00299     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00300     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00301 }
-\DoxyCodeLine{00302     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00303     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00304     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00305 }
-\DoxyCodeLine{00306     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00307     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00308     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00309 }
-\DoxyCodeLine{00310 }
-\DoxyCodeLine{00311     \textcolor{comment}{//we have been calling D3DApp::FlushCommandQueue at the end of every}}
-\DoxyCodeLine{00312     \textcolor{comment}{//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient}}
-\DoxyCodeLine{00313     \textcolor{comment}{//For every frame, the CPU and GPU are idling at some point.}}
-\DoxyCodeLine{00314     \textcolor{comment}{//  FlushCommandQueue();}}
-\DoxyCodeLine{00315 }
-\DoxyCodeLine{00316     \textcolor{comment}{//step9:  Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00317     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00318 }
-\DoxyCodeLine{00319     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
-\DoxyCodeLine{00320     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
-\DoxyCodeLine{00321     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00322     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00323 }
-\DoxyCodeLine{00324     \textcolor{comment}{// Note that GPU could still be working on commands from previous}}
-\DoxyCodeLine{00325     \textcolor{comment}{// frames, but that is okay, because we are not touching any frame}}
-\DoxyCodeLine{00326     \textcolor{comment}{// resources associated with those frames.}}
-\DoxyCodeLine{00327 }
-\DoxyCodeLine{00328 \}}
-\DoxyCodeLine{00329 }
-\DoxyCodeLine{00330 \textcolor{keywordtype}{void} ShapesApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00331 \{}
-\DoxyCodeLine{00332     mLastMousePos.x = x;}
-\DoxyCodeLine{00333     mLastMousePos.y = y;}
-\DoxyCodeLine{00334 }
-\DoxyCodeLine{00335     SetCapture(mhMainWnd);}
-\DoxyCodeLine{00336 \}}
-\DoxyCodeLine{00337 }
-\DoxyCodeLine{00338 \textcolor{keywordtype}{void} ShapesApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00339 \{}
-\DoxyCodeLine{00340     ReleaseCapture();}
-\DoxyCodeLine{00341 \}}
-\DoxyCodeLine{00342 }
-\DoxyCodeLine{00343 \textcolor{keywordtype}{void} ShapesApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00344 \{}
-\DoxyCodeLine{00345     \textcolor{keywordflow}{if} ((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00346     \{}
-\DoxyCodeLine{00347         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00348         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00349         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
-\DoxyCodeLine{00350 }
-\DoxyCodeLine{00351         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00352         mTheta += dx;}
-\DoxyCodeLine{00353         mPhi += dy;}
-\DoxyCodeLine{00354 }
-\DoxyCodeLine{00355         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00356         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00357     \}}
-\DoxyCodeLine{00358     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ((btnState \& MK\_RBUTTON) != 0)}
-\DoxyCodeLine{00359     \{}
-\DoxyCodeLine{00360         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00361         \textcolor{keywordtype}{float} dx = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00362         \textcolor{keywordtype}{float} dy = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
-\DoxyCodeLine{00363 }
-\DoxyCodeLine{00364         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00365         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00366 }
-\DoxyCodeLine{00367         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00368         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00369     \}}
-\DoxyCodeLine{00370 }
-\DoxyCodeLine{00371     mLastMousePos.x = x;}
-\DoxyCodeLine{00372     mLastMousePos.y = y;}
-\DoxyCodeLine{00373 \}}
-\DoxyCodeLine{00374 }
-\DoxyCodeLine{00375 \textcolor{keywordtype}{void} ShapesApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00376 \{}
-\DoxyCodeLine{00377     \textcolor{comment}{//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.}}
-\DoxyCodeLine{00378     \textcolor{comment}{//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, }}
-\DoxyCodeLine{00379     \textcolor{comment}{//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.}}
-\DoxyCodeLine{00380     \textcolor{comment}{//if (GetAsyncKeyState('1') \& 0x8000)}}
-\DoxyCodeLine{00381 }
-\DoxyCodeLine{00382     \textcolor{keywordtype}{short} key = GetAsyncKeyState(\textcolor{charliteral}{'1'});}
-\DoxyCodeLine{00383     \textcolor{keywordflow}{if} (key \& 0x8000)  \textcolor{comment}{//if one is pressed, 0x8000 = 32767 , key = -\/32767 = FFFFFFFFFFFF8001}}
-\DoxyCodeLine{00384         mIsWireframe = \textcolor{keyword}{true};}
-\DoxyCodeLine{00385     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00386         mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00387 \}}
-\DoxyCodeLine{00388 }
-\DoxyCodeLine{00389 \textcolor{keywordtype}{void} ShapesApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00390 \{}
-\DoxyCodeLine{00391     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00392     mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);}
-\DoxyCodeLine{00393     mEyePos.z = mRadius * sinf(mPhi) * sinf(mTheta);}
-\DoxyCodeLine{00394     mEyePos.y = mRadius * cosf(mPhi);}
-\DoxyCodeLine{00395 }
-\DoxyCodeLine{00396     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00397     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00398     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00399     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00400 }
-\DoxyCodeLine{00401     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00402     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00403 \}}
-\DoxyCodeLine{00404 }
-\DoxyCodeLine{00405 \textcolor{comment}{//Update resources (cbuffers) in mCurrFrameResource}}
-\DoxyCodeLine{00406 \textcolor{keywordtype}{void} ShapesApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00407 \{}
-\DoxyCodeLine{00408     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00409     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00410     \{}
-\DoxyCodeLine{00411         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00412         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00413         \textcolor{keywordflow}{if} (e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00414         \{}
-\DoxyCodeLine{00415             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00416 }
-\DoxyCodeLine{00417             ObjectConstants objConstants;}
-\DoxyCodeLine{00418             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00419 }
-\DoxyCodeLine{00420             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00421 }
-\DoxyCodeLine{00422             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00423             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00424         \}}
-\DoxyCodeLine{00425     \}}
-\DoxyCodeLine{00426 \}}
-\DoxyCodeLine{00427 }
-\DoxyCodeLine{00428 \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
-\DoxyCodeLine{00429 \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item}}
-\DoxyCodeLine{00430 \textcolor{keywordtype}{void} ShapesApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00431 \{}
-\DoxyCodeLine{00432     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00433     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00434 }
-\DoxyCodeLine{00435     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00436     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00437     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00438     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00439 }
-\DoxyCodeLine{00440     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00441     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00442     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00443     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00444     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00445     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00446     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00447     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00448     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00449     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00450     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00451     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00452     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00453 }
-\DoxyCodeLine{00454     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00455     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00456 \}}
-\DoxyCodeLine{00457 }
-\DoxyCodeLine{00458 \textcolor{keywordtype}{void} ShapesApp::BuildDescriptorHeaps()}
-\DoxyCodeLine{00459 \{}
-\DoxyCodeLine{00460     UINT objCount = (UINT)mOpaqueRitems.size();}
-\DoxyCodeLine{00461 }
-\DoxyCodeLine{00462     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource,}}
-\DoxyCodeLine{00463     \textcolor{comment}{// +1 for the perPass CBV for each frame resource.}}
-\DoxyCodeLine{00464     UINT numDescriptors = (objCount + 1) * gNumFrameResources;}
-\DoxyCodeLine{00465 }
-\DoxyCodeLine{00466     \textcolor{comment}{// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.}}
-\DoxyCodeLine{00467     mPassCbvOffset = objCount * gNumFrameResources;}
-\DoxyCodeLine{00468 }
-\DoxyCodeLine{00469     D3D12\_DESCRIPTOR\_HEAP\_DESC cbvHeapDesc;}
-\DoxyCodeLine{00470     cbvHeapDesc.NumDescriptors = numDescriptors;}
-\DoxyCodeLine{00471     cbvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00472     cbvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00473     cbvHeapDesc.NodeMask = 0;}
-\DoxyCodeLine{00474     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&cbvHeapDesc,}
-\DoxyCodeLine{00475         IID\_PPV\_ARGS(\&mCbvHeap)));}
-\DoxyCodeLine{00476 \}}
-\DoxyCodeLine{00477 }
-\DoxyCodeLine{00478 \textcolor{keywordtype}{void} ShapesApp::BuildConstantBufferViews()}
-\DoxyCodeLine{00479 \{}
-\DoxyCodeLine{00480     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00481 }
-\DoxyCodeLine{00482     UINT objCount = (UINT)mOpaqueRitems.size();}
-\DoxyCodeLine{00483 }
-\DoxyCodeLine{00484     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource.}}
-\DoxyCodeLine{00485     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)}
-\DoxyCodeLine{00486     \{}
-\DoxyCodeLine{00487         \textcolor{keyword}{auto} objectCB = mFrameResources[frameIndex]-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{00488         \textcolor{keywordflow}{for} (UINT i = 0; i < objCount; ++i)}
-\DoxyCodeLine{00489         \{}
-\DoxyCodeLine{00490             D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = objectCB-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{00491 }
-\DoxyCodeLine{00492             \textcolor{comment}{// Offset to the ith object constant buffer in the buffer.}}
-\DoxyCodeLine{00493             cbAddress += i * objCBByteSize;}
-\DoxyCodeLine{00494 }
-\DoxyCodeLine{00495             \textcolor{comment}{// Offset to the object cbv in the descriptor heap.}}
-\DoxyCodeLine{00496             \textcolor{keywordtype}{int} heapIndex = frameIndex * objCount + i;}
-\DoxyCodeLine{00497             \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00498             handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00499 }
-\DoxyCodeLine{00500             D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
-\DoxyCodeLine{00501             cbvDesc.BufferLocation = cbAddress;}
-\DoxyCodeLine{00502             cbvDesc.SizeInBytes = objCBByteSize;}
-\DoxyCodeLine{00503 }
-\DoxyCodeLine{00504             md3dDevice-\/>CreateConstantBufferView(\&cbvDesc, handle);}
-\DoxyCodeLine{00505         \}}
-\DoxyCodeLine{00506     \}}
-\DoxyCodeLine{00507 }
-\DoxyCodeLine{00508     UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(PassConstants));}
-\DoxyCodeLine{00509 }
-\DoxyCodeLine{00510     \textcolor{comment}{// Last three descriptors are the pass CBVs for each frame resource.}}
-\DoxyCodeLine{00511     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < gNumFrameResources; ++frameIndex)}
-\DoxyCodeLine{00512     \{}
-\DoxyCodeLine{00513         \textcolor{keyword}{auto} passCB = mFrameResources[frameIndex]-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00514         D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = passCB-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{00515 }
-\DoxyCodeLine{00516         \textcolor{comment}{// Offset to the pass cbv in the descriptor heap.}}
-\DoxyCodeLine{00517         \textcolor{keywordtype}{int} heapIndex = mPassCbvOffset + frameIndex;}
-\DoxyCodeLine{00518         \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00519         handle.Offset(heapIndex, mCbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00520 }
-\DoxyCodeLine{00521         D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
-\DoxyCodeLine{00522         cbvDesc.BufferLocation = cbAddress;}
-\DoxyCodeLine{00523         cbvDesc.SizeInBytes = passCBByteSize;}
-\DoxyCodeLine{00524 }
-\DoxyCodeLine{00525         md3dDevice-\/>CreateConstantBufferView(\&cbvDesc, handle);}
-\DoxyCodeLine{00526     \}}
-\DoxyCodeLine{00527 \}}
-\DoxyCodeLine{00528 }
-\DoxyCodeLine{00529 \textcolor{keywordtype}{void} ShapesApp::BuildRootSignature()}
-\DoxyCodeLine{00530 \{}
-\DoxyCodeLine{00531     \textcolor{comment}{//The resources that our shaders expect have changed; therefore, we need to update the}}
-\DoxyCodeLine{00532     \textcolor{comment}{//root signature accordingly to take two descriptor tables(we need two tables because the}}
-\DoxyCodeLine{00533     \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
-\DoxyCodeLine{00534     \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item) :}}
-\DoxyCodeLine{00535 }
-\DoxyCodeLine{00536     CD3DX12\_DESCRIPTOR\_RANGE cbvTable0;}
-\DoxyCodeLine{00537     cbvTable0.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 0);}
-\DoxyCodeLine{00538 }
-\DoxyCodeLine{00539     CD3DX12\_DESCRIPTOR\_RANGE cbvTable1;}
-\DoxyCodeLine{00540     cbvTable1.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 1);}
-\DoxyCodeLine{00541 }
-\DoxyCodeLine{00542     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00543     CD3DX12\_ROOT\_PARAMETER slotRootParameter[2];}
-\DoxyCodeLine{00544 }
-\DoxyCodeLine{00545     \textcolor{comment}{// Create root CBVs.}}
-\DoxyCodeLine{00546     slotRootParameter[0].InitAsDescriptorTable(1, \&cbvTable0);}
-\DoxyCodeLine{00547     slotRootParameter[1].InitAsDescriptorTable(1, \&cbvTable1);}
-\DoxyCodeLine{00548 }
-\DoxyCodeLine{00549     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00550     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(2, slotRootParameter, 0, \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00551         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{00552 }
-\DoxyCodeLine{00553     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00554     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00555     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00556     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00557         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00558 }
-\DoxyCodeLine{00559     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00560     \{}
-\DoxyCodeLine{00561         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00562     \}}
-\DoxyCodeLine{00563     ThrowIfFailed(hr);}
-\DoxyCodeLine{00564 }
-\DoxyCodeLine{00565     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00566         0,}
-\DoxyCodeLine{00567         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00568         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00569         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00570 \}}
-\DoxyCodeLine{00571 }
-\DoxyCodeLine{00572 \textcolor{keywordtype}{void} ShapesApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00573 \{}
-\DoxyCodeLine{00574     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
-\DoxyCodeLine{00575     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
-\DoxyCodeLine{00576 }
-\DoxyCodeLine{00577     mInputLayout =}
-\DoxyCodeLine{00578     \{}
-\DoxyCodeLine{00579         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00580         \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32A32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00581     \};}
-\DoxyCodeLine{00582 \}}
-\DoxyCodeLine{00583 }
-\DoxyCodeLine{00584 \textcolor{comment}{//step1}}
-\DoxyCodeLine{00585 \textcolor{keywordtype}{void} ShapesApp::BuildShapeGeometry()}
-\DoxyCodeLine{00586 \{}
-\DoxyCodeLine{00587     \textcolor{comment}{//GeometryGenerator is a utility class for generating simple geometric shapes like grids, grid, grids, and boxes}}
-\DoxyCodeLine{00588     GeometryGenerator geoGen;}
-\DoxyCodeLine{00589     \textcolor{comment}{//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertexand index list}}
-\DoxyCodeLine{00590 }
-\DoxyCodeLine{00591     \textcolor{comment}{//GeometryGenerator::CreateGrid(float width, float depth, uint32 m, uint32 n)}}
-\DoxyCodeLine{00592     GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);}
-\DoxyCodeLine{00593     \textcolor{comment}{// We are concatenating all the geometry into one big vertex/index buffer.  So}}
-\DoxyCodeLine{00594     \textcolor{comment}{// define the regions in the buffer each submesh covers.}}
-\DoxyCodeLine{00595 }
-\DoxyCodeLine{00596     \textcolor{comment}{// Cache the vertex offsets to each object in the concatenated vertex buffer.}}
-\DoxyCodeLine{00597     UINT gridVertexOffset = 0;}
-\DoxyCodeLine{00598 }
-\DoxyCodeLine{00599 }
-\DoxyCodeLine{00600     \textcolor{comment}{// Cache the starting index for each object in the concatenated index buffer.}}
-\DoxyCodeLine{00601     UINT gridIndexOffset = 0;}
-\DoxyCodeLine{00602 }
-\DoxyCodeLine{00603 }
-\DoxyCodeLine{00604     \textcolor{comment}{// Define the SubmeshGeometry that cover different }}
-\DoxyCodeLine{00605     \textcolor{comment}{// regions of the vertex/index buffers.}}
-\DoxyCodeLine{00606     SubmeshGeometry gridSubmesh;}
-\DoxyCodeLine{00607     gridSubmesh.IndexCount = (UINT)grid.Indices32.size();}
-\DoxyCodeLine{00608     gridSubmesh.StartIndexLocation = gridIndexOffset;}
-\DoxyCodeLine{00609     gridSubmesh.BaseVertexLocation = gridVertexOffset;}
-\DoxyCodeLine{00610 }
-\DoxyCodeLine{00611     \textcolor{comment}{// Extract the vertex elements we are interested in and pack the}}
-\DoxyCodeLine{00612     \textcolor{comment}{// vertices of all the meshes into one vertex buffer.}}
-\DoxyCodeLine{00613 }
-\DoxyCodeLine{00614     \textcolor{keyword}{auto} totalVertexCount = grid.Vertices.size();}
-\DoxyCodeLine{00615 }
-\DoxyCodeLine{00616     std::vector<Vertex> vertices(totalVertexCount);}
-\DoxyCodeLine{00617 }
-\DoxyCodeLine{00618     UINT k = 0;}
-\DoxyCodeLine{00619     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < grid.Vertices.size(); ++i, ++k)}
-\DoxyCodeLine{00620     \{}
-\DoxyCodeLine{00621         vertices[k].Pos = grid.Vertices[i].Position;}
-\DoxyCodeLine{00622         vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);}
-\DoxyCodeLine{00623     \}}
-\DoxyCodeLine{00624 }
-\DoxyCodeLine{00625 }
-\DoxyCodeLine{00626     std::vector<std::uint16\_t> indices;}
-\DoxyCodeLine{00627     indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));}
-\DoxyCodeLine{00628 }
-\DoxyCodeLine{00629 }
-\DoxyCodeLine{00630     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00631     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00632 }
-\DoxyCodeLine{00633     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00634     geo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
-\DoxyCodeLine{00635 }
-\DoxyCodeLine{00636     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00637     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00638 }
-\DoxyCodeLine{00639     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00640     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00641 }
-\DoxyCodeLine{00642     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00643         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00644 }
-\DoxyCodeLine{00645     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00646         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00647 }
-\DoxyCodeLine{00648     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00649     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00650     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00651     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00652 }
-\DoxyCodeLine{00653     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = gridSubmesh;}
-\DoxyCodeLine{00654 }
-\DoxyCodeLine{00655 }
-\DoxyCodeLine{00656     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00657 \}}
-\DoxyCodeLine{00658 }
-\DoxyCodeLine{00659 \textcolor{keywordtype}{void} ShapesApp::BuildPSOs()}
-\DoxyCodeLine{00660 \{}
-\DoxyCodeLine{00661     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00662 }
-\DoxyCodeLine{00663     \textcolor{comment}{//}}
-\DoxyCodeLine{00664     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00665     \textcolor{comment}{//}}
-\DoxyCodeLine{00666     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00667     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00668     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00669     opaquePsoDesc.VS =}
-\DoxyCodeLine{00670     \{}
-\DoxyCodeLine{00671         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00672         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00673     \};}
-\DoxyCodeLine{00674     opaquePsoDesc.PS =}
-\DoxyCodeLine{00675     \{}
-\DoxyCodeLine{00676         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00677         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00678     \};}
-\DoxyCodeLine{00679     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00680     opaquePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_SOLID;}
-\DoxyCodeLine{00681     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00682     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00683     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00684     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00685     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00686     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00687     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00688     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00689     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00690     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00691 }
-\DoxyCodeLine{00692     \textcolor{comment}{// PSO for opaque wireframe objects.}}
-\DoxyCodeLine{00693 }
-\DoxyCodeLine{00694     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00695     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
-\DoxyCodeLine{00696     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
-\DoxyCodeLine{00697 \}}
-\DoxyCodeLine{00698 }
-\DoxyCodeLine{00699 \textcolor{comment}{//build three frame resources}}
-\DoxyCodeLine{00700 \textcolor{comment}{//FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);}}
-\DoxyCodeLine{00701 }
-\DoxyCodeLine{00702 \textcolor{keywordtype}{void} ShapesApp::BuildFrameResources()}
-\DoxyCodeLine{00703 \{}
-\DoxyCodeLine{00704     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{00705     \{}
-\DoxyCodeLine{00706         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{00707             1, (UINT)mAllRitems.size()));}
-\DoxyCodeLine{00708     \}}
-\DoxyCodeLine{00709 \}}
-\DoxyCodeLine{00710 }
-\DoxyCodeLine{00711 \textcolor{keywordtype}{void} ShapesApp::BuildRenderItems()}
-\DoxyCodeLine{00712 \{}
-\DoxyCodeLine{00713     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00714     XMStoreFloat4x4(\&gridRitem-\/>World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));}
-\DoxyCodeLine{00715     gridRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{00716     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
-\DoxyCodeLine{00717     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00718     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;  \textcolor{comment}{//13806}}
-\DoxyCodeLine{00719     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation; \textcolor{comment}{//0}}
-\DoxyCodeLine{00720     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation; \textcolor{comment}{//0}}
-\DoxyCodeLine{00721     mAllRitems.push\_back(std::move(gridRitem));}
-\DoxyCodeLine{00722 }
-\DoxyCodeLine{00723 }
-\DoxyCodeLine{00724     \textcolor{comment}{// All the render items are opaque.}}
-\DoxyCodeLine{00725     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
-\DoxyCodeLine{00726     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
-\DoxyCodeLine{00727     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00728         mOpaqueRitems.push\_back(e.get());}
-\DoxyCodeLine{00729 \}}
-\DoxyCodeLine{00730 }
-\DoxyCodeLine{00731 \textcolor{keywordtype}{void} ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{00732 \{}
-\DoxyCodeLine{00733     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00734 }
-\DoxyCodeLine{00735     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{00736 }
-\DoxyCodeLine{00737     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{00738     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{00739     \{}
-\DoxyCodeLine{00740         \textcolor{keyword}{auto} ri = ritems[i];}
-\DoxyCodeLine{00741 }
-\DoxyCodeLine{00742         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{00743         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{00744         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{00745 }
-\DoxyCodeLine{00746         \textcolor{comment}{// Offset to the CBV in the descriptor heap for this object and for this frame resource.}}
-\DoxyCodeLine{00747         UINT cbvIndex = mCurrFrameResourceIndex * (UINT)mOpaqueRitems.size() + ri-\/>ObjCBIndex;}
-\DoxyCodeLine{00748         \textcolor{keyword}{auto} cbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00749         cbvHandle.Offset(cbvIndex, mCbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00750 }
-\DoxyCodeLine{00751         cmdList-\/>SetGraphicsRootDescriptorTable(0, cbvHandle);}
-\DoxyCodeLine{00752 }
-\DoxyCodeLine{00753         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{00754     \}}
-\DoxyCodeLine{00755 \}}
-\DoxyCodeLine{00756 }
-\DoxyCodeLine{00757 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00019}00019 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00021}00021 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00022}00022 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00023}00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00025}00025 \textcolor{comment}{//Our application class will then instantiate a vector of three frame resources, }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00026}\mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00026}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00028}00028 \textcolor{comment}{//Lightweight structure stores parameters to draw a shape.  This will vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00029}00029 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00030}00030 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00031}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00031}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00033}00033     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00034}00034     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00035}00035     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00036}00036     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00038}00038     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00039}00039     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00040}00040     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify object data, we should set }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00041}00041     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00042}00042     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00044}00044     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00045}00045     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00047}00047     \textcolor{comment}{// Geometry associated with this render-\/item. Note that multiple}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00048}00048     \textcolor{comment}{// render-\/items can share the same geometry.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00049}00049     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00051}00051     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00052}00052     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00054}00054     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00055}00055     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0; \textcolor{comment}{//Number of indices read from the index buffer for each instance.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00056}00056     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0; \textcolor{comment}{//The location of the first index read by the GPU from the index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00057}00057     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0; \textcolor{comment}{//A value added to each index before reading a vertex from the vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00058}00058 \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00060}00060 \textcolor{keyword}{class }\mbox{\hyperlink{class_shapes_app}{ShapesApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00061}00061 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00062}00062 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00063}\mbox{\hyperlink{class_shapes_app_a7677a2e3525c70b75fe7b9bbf3a55af8}{00063}}     \mbox{\hyperlink{class_shapes_app_a7677a2e3525c70b75fe7b9bbf3a55af8}{ShapesApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00064}\mbox{\hyperlink{class_shapes_app_ada5ae7c0ce97f4046065bff3741c1450}{00064}}     \mbox{\hyperlink{class_shapes_app_ada5ae7c0ce97f4046065bff3741c1450}{ShapesApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_shapes_app}{ShapesApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00065}\mbox{\hyperlink{class_shapes_app_a0c45571476d6aa46a50a926b924face2}{00065}}     \mbox{\hyperlink{class_shapes_app}{ShapesApp}}\& \mbox{\hyperlink{class_shapes_app_a0c45571476d6aa46a50a926b924face2}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_shapes_app}{ShapesApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00066}\mbox{\hyperlink{class_shapes_app_a848dbf65b387b3dbf0e6d0e186627046}{00066}}     \mbox{\hyperlink{class_shapes_app_a848dbf65b387b3dbf0e6d0e186627046}{\string~ShapesApp}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00068}\mbox{\hyperlink{class_shapes_app_abfc4d08c57e46e93753d60034116c582}{00068}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_shapes_app_abfc4d08c57e46e93753d60034116c582}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00070}00070 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00071}00071     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00072}00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00073}00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00075}00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00076}00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00077}00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00079}00079     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00080}00080     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00081}00081     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00082}00082     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00083}00083 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00084}00084     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00085}00085     \textcolor{keywordtype}{void} BuildConstantBufferViews();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00086}00086     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00087}00087     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00088}00088     \textcolor{keywordtype}{void} BuildShapeGeometry();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00089}00089     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00090}00090     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00091}00091 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00092}00092     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00093}00093     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00095}00095 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00097}00097     \textcolor{comment}{//keep member variables to track the current frame resource :}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00098}00098     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00099}00099     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00100}00100     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00102}00102     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00103}00103     ComPtr<ID3D12DescriptorHeap> mCbvHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00104}00104 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00105}00105     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00107}00107     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00108}00108     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00109}00109     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00111}00111     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00113}00113     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00114}00114     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00116}00116     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00117}00117     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00119}00119     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00120}00120     std::vector<RenderItem*> mOpaqueRitems;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00121}00121 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00122}00122     \textcolor{comment}{//std::vector<RenderItem*> mTransparentRitems;  //we could have render items for transparant items}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00124}00124 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00126}00126     \textcolor{comment}{//this mMainPassCB stores constant data that is fixed over a given}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00127}00127     \textcolor{comment}{//rendering pass such as the eye position, the view and projection matrices, and information}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00128}00128     \textcolor{comment}{//about the screen(render target) dimensions; it also includes game timing information,}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00129}00129     \textcolor{comment}{//which is useful data to have access to in shader programs.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00131}00131     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} mMainPassCB;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00132}00132 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00133}00133     UINT mPassCbvOffset = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00135}00135     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00136}00136 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00137}00137     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00138}00138     XMFLOAT4X4 mView = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00139}00139     XMFLOAT4X4 mProj = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00141}00141     \textcolor{keywordtype}{float} mTheta = 1.5f * XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00142}00142     \textcolor{keywordtype}{float} mPhi = 0.2f * XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00143}00143     \textcolor{keywordtype}{float} mRadius = 15.0f;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00144}00144 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00145}00145     POINT mLastMousePos;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00146}00146 \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00147}00147 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00148}\mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_aabcda87589d774901aa87061b8fd0176}{00148}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00149}00149     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00150}00150 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00151}00151     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00152}00152 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00153}00153     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00154}00154 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00156}00156     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00157}00157     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00158}00158         \mbox{\hyperlink{class_shapes_app}{ShapesApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00159}00159         \textcolor{keywordflow}{if} (!theApp.\mbox{\hyperlink{class_shapes_app_a8f04fd823611fac3380e07f1b83e9348}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00160}00160             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00162}00162         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00163}00163     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00164}00164     \textcolor{keywordflow}{catch} (\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00165}00165     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00166}00166         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00167}00167         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00168}00168     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00169}00169 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00170}00170 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00171}00171 \mbox{\hyperlink{class_shapes_app_a7677a2e3525c70b75fe7b9bbf3a55af8}{ShapesApp::ShapesApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00172}00172     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00173}00173 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00174}00174 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00175}00175 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00176}00176 \mbox{\hyperlink{class_shapes_app_a848dbf65b387b3dbf0e6d0e186627046}{ShapesApp::\string~ShapesApp}}()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00177}00177 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00178}00178     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00179}00179         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00180}00180 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00181}00181 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00182}00182 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_shapes_app_a8f04fd823611fac3380e07f1b83e9348}{ShapesApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00183}00183 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00184}00184     \textcolor{keywordflow}{if} (!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00185}00185         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00186}00186 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00187}00187     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00188}00188     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00189}00189 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00190}00190     BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00191}00191     BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00192}00192     BuildShapeGeometry();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00193}00193     BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00194}00194     BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00195}00195     BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00196}00196     BuildConstantBufferViews();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00197}00197     BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00198}00198 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00199}00199     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00200}00200     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00201}00201     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00202}00202     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00203}00203 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00204}00204     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00205}00205     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00207}00207     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00208}00208 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00209}00209 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00210}00210 \textcolor{keywordtype}{void} ShapesApp::OnResize()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00211}00211 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00212}00212     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00213}00213 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00214}00214     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00215}00215     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00216}00216     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00217}00217 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00218}00218 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00219}00219 \textcolor{comment}{//for CPU frame n, the algorithm}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00220}00220 \textcolor{comment}{//1. Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00221}00221 \textcolor{comment}{//2. Wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00222}00222 \textcolor{comment}{//3. Update resources in mCurrFrameResource (like cbuffers).}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00223}00223 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00224}00224 \textcolor{keywordtype}{void} ShapesApp::Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00225}00225 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00226}00226     OnKeyboardInput(gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00227}00227     UpdateCamera(gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00229}00229     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00230}00230     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00231}00231     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00232}00232 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00233}00233 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00234}00234     \textcolor{comment}{//this section is really what D3DApp::FlushCommandQueue() used to do for us at the end of each draw() function!}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00235}00235     \textcolor{keywordflow}{if} (mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00236}00236     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00237}00237         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00238}00238         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00239}00239         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00240}00240         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00241}00241     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00242}00242 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00243}00243     \textcolor{comment}{//The idea of these changes is to group constants based on update frequency. The per}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00244}00244     \textcolor{comment}{//pass constants only need to be updated once per rendering pass, and the object constants}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00245}00245     \textcolor{comment}{//only need to change when an object’s world matrix changes.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00246}00246     UpdateObjectCBs(gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00247}00247     UpdateMainPassCB(gt);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00248}00248 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00249}00249 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00250}00250 \textcolor{keywordtype}{void} ShapesApp::Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00251}00251 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00252}00252     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00253}00253 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00254}00254     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00255}00255     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00256}00256     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00257}00257 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00258}00258     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00259}00259     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00260}00260     \textcolor{keywordflow}{if} (mIsWireframe)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00261}00261     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00262}00262         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00263}00263     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00264}00264     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00265}00265     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00266}00266         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00267}00267     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00268}00268 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00269}00269     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00270}00270     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00272}00272     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00273}00273     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00274}00274         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00275}00275 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00276}00276     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00277}00277     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00278}00278     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00279}00279 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00280}00280     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00281}00281     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00282}00282 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00283}00283     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mCbvHeap.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00284}00284     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00285}00285 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00286}00286     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00287}00287 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00288}00288     \textcolor{keywordtype}{int} passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00289}00289     \textcolor{keyword}{auto} passCbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00290}00290     passCbvHandle.Offset(passCbvIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00291}00291     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootDescriptorTable(1, passCbvHandle);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00292}00292 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00293}00293     DrawRenderItems(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), mOpaqueRitems);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00294}00294 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00295}00295     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00296}00296     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00297}00297         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00298}00298 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00299}00299     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00300}00300     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00301}00301 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00302}00302     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00303}00303     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00304}00304     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00305}00305 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00306}00306     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00307}00307     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00308}00308     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00309}00309 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00310}00310 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00311}00311     \textcolor{comment}{//we have been calling D3DApp::FlushCommandQueue at the end of every}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00312}00312     \textcolor{comment}{//frame to ensure the GPU has finished executing all the commands for the frame.This solution works but is inefficient}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00313}00313     \textcolor{comment}{//For every frame, the CPU and GPU are idling at some point.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00314}00314     \textcolor{comment}{//  FlushCommandQueue();}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00315}00315 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00316}00316     \textcolor{comment}{//step9:  Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00317}00317     mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00318}00318 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00319}00319     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00320}00320     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00321}00321     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00322}00322     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00323}00323 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00324}00324     \textcolor{comment}{// Note that GPU could still be working on commands from previous}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00325}00325     \textcolor{comment}{// frames, but that is okay, because we are not touching any frame}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00326}00326     \textcolor{comment}{// resources associated with those frames.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00327}00327 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00328}00328 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00329}00329 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00330}00330 \textcolor{keywordtype}{void} ShapesApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00331}00331 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00332}00332     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00333}00333     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00334}00334 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00335}00335     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00336}00336 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00337}00337 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00338}00338 \textcolor{keywordtype}{void} ShapesApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00339}00339 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00340}00340     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00341}00341 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00342}00342 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00343}00343 \textcolor{keywordtype}{void} ShapesApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00344}00344 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00345}00345     \textcolor{keywordflow}{if} ((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00346}00346     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00347}00347         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00348}00348         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00349}00349         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00350}00350 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00351}00351         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00352}00352         mTheta += dx;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00353}00353         mPhi += dy;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00354}00354 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00355}00355         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00356}00356         mPhi = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mPhi, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00357}00357     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00358}00358     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00359}00359     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00360}00360         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00361}00361         \textcolor{keywordtype}{float} dx = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00362}00362         \textcolor{keywordtype}{float} dy = 0.05f * \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00363}00363 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00364}00364         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00365}00365         mRadius += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00366}00366 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00367}00367         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00368}00368         mRadius = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00369}00369     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00370}00370 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00371}00371     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00372}00372     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00373}00373 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00374}00374 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00375}00375 \textcolor{keywordtype}{void} ShapesApp::OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00376}00376 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00377}00377     \textcolor{comment}{//Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00378}00378     \textcolor{comment}{//If the function succeeds, the return value specifies whether the key was pressed since the last call to GetAsyncKeyState, }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00379}00379     \textcolor{comment}{//and whether the key is currently up or down. If the most significant bit is set, the key is down, and if the least significant bit is set, the key was pressed after the previous call to GetAsyncKeyState.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00380}00380     \textcolor{comment}{//if (GetAsyncKeyState('1') \& 0x8000)}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00381}00381 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00382}00382     \textcolor{keywordtype}{short} key = GetAsyncKeyState(\textcolor{charliteral}{'1'});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00383}00383     \textcolor{keywordflow}{if} (key \& 0x8000)  \textcolor{comment}{//if one is pressed, 0x8000 = 32767 , key = -\/32767 = FFFFFFFFFFFF8001}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00384}00384         mIsWireframe = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00385}00385     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00386}00386         mIsWireframe = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00387}00387 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00388}00388 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00389}00389 \textcolor{keywordtype}{void} ShapesApp::UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00390}00390 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00391}00391     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00392}00392     mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00393}00393     mEyePos.z = mRadius * sinf(mPhi) * sinf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00394}00394     mEyePos.y = mRadius * cosf(mPhi);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00395}00395 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00396}00396     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00397}00397     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00398}00398     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00399}00399     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00400}00400 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00401}00401     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00402}00402     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00403}00403 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00404}00404 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00405}00405 \textcolor{comment}{//Update resources (cbuffers) in mCurrFrameResource}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00406}00406 \textcolor{keywordtype}{void} ShapesApp::UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00407}00407 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00408}00408     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00409}00409     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00410}00410     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00411}00411         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00412}00412         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00413}00413         \textcolor{keywordflow}{if} (e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00414}00414         \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00415}00415             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00416}00416 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00417}00417             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00418}00418             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00419}00419 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00420}00420             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00421}00421 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00422}00422             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00423}00423             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00424}00424         \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00425}00425     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00426}00426 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00427}00427 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00428}00428 \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00429}00429 \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00430}00430 \textcolor{keywordtype}{void} ShapesApp::UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00431}00431 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00432}00432     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00433}00433     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00434}00434 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00435}00435     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00436}00436     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00437}00437     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00438}00438     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00439}00439 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00440}00440     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00441}00441     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00442}00442     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00443}00443     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00444}00444     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00445}00445     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00446}00446     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = mEyePos;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00447}00447     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00448}00448     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00449}00449     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00450}00450     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00451}00451     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00452}00452     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00453}00453 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00454}00454     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00455}00455     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00456}00456 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00457}00457 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00458}00458 \textcolor{keywordtype}{void} ShapesApp::BuildDescriptorHeaps()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00459}00459 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00460}00460     UINT objCount = (UINT)mOpaqueRitems.size();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00461}00461 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00462}00462     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource,}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00463}00463     \textcolor{comment}{// +1 for the perPass CBV for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00464}00464     UINT numDescriptors = (objCount + 1) * \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00465}00465 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00466}00466     \textcolor{comment}{// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00467}00467     mPassCbvOffset = objCount * \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00468}00468 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00469}00469     D3D12\_DESCRIPTOR\_HEAP\_DESC cbvHeapDesc;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00470}00470     cbvHeapDesc.NumDescriptors = numDescriptors;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00471}00471     cbvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00472}00472     cbvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00473}00473     cbvHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00474}00474     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(\&cbvHeapDesc,}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00475}00475         IID\_PPV\_ARGS(\&mCbvHeap)));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00476}00476 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00477}00477 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00478}00478 \textcolor{keywordtype}{void} ShapesApp::BuildConstantBufferViews()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00479}00479 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00480}00480     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00481}00481 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00482}00482     UINT objCount = (UINT)mOpaqueRitems.size();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00483}00483 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00484}00484     \textcolor{comment}{// Need a CBV descriptor for each object for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00485}00485     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++frameIndex)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00486}00486     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00487}00487         \textcolor{keyword}{auto} objectCB = mFrameResources[frameIndex]-\/>ObjectCB-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00488}00488         \textcolor{keywordflow}{for} (UINT i = 0; i < objCount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00489}00489         \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00490}00490             D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = objectCB-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00491}00491 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00492}00492             \textcolor{comment}{// Offset to the ith object constant buffer in the buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00493}00493             cbAddress += i * objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00494}00494 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00495}00495             \textcolor{comment}{// Offset to the object cbv in the descriptor heap.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00496}00496             \textcolor{keywordtype}{int} heapIndex = frameIndex * objCount + i;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00497}00497             \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00498}00498             handle.Offset(heapIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00499}00499 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00500}00500             D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00501}00501             cbvDesc.BufferLocation = cbAddress;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00502}00502             cbvDesc.SizeInBytes = objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00503}00503 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00504}00504             \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateConstantBufferView(\&cbvDesc, handle);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00505}00505         \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00506}00506     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00507}00507 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00508}00508     UINT passCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_pass_constants}{PassConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00509}00509 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00510}00510     \textcolor{comment}{// Last three descriptors are the pass CBVs for each frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00511}00511     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} frameIndex = 0; frameIndex < \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++frameIndex)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00512}00512     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00513}00513         \textcolor{keyword}{auto} passCB = mFrameResources[frameIndex]-\/>PassCB-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00514}00514         D3D12\_GPU\_VIRTUAL\_ADDRESS cbAddress = passCB-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00515}00515 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00516}00516         \textcolor{comment}{// Offset to the pass cbv in the descriptor heap.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00517}00517         \textcolor{keywordtype}{int} heapIndex = mPassCbvOffset + frameIndex;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00518}00518         \textcolor{keyword}{auto} handle = CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00519}00519         handle.Offset(heapIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00520}00520 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00521}00521         D3D12\_CONSTANT\_BUFFER\_VIEW\_DESC cbvDesc;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00522}00522         cbvDesc.BufferLocation = cbAddress;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00523}00523         cbvDesc.SizeInBytes = passCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00524}00524 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00525}00525         \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateConstantBufferView(\&cbvDesc, handle);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00526}00526     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00527}00527 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00528}00528 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00529}00529 \textcolor{keywordtype}{void} ShapesApp::BuildRootSignature()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00530}00530 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00531}00531     \textcolor{comment}{//The resources that our shaders expect have changed; therefore, we need to update the}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00532}00532     \textcolor{comment}{//root signature accordingly to take two descriptor tables(we need two tables because the}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00533}00533     \textcolor{comment}{//CBVs will be set at different frequencies—the per pass CBV only needs to be set once per}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00534}00534     \textcolor{comment}{//rendering pass while the per object CBV needs to be set per render item) :}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00535}00535 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00536}00536     CD3DX12\_DESCRIPTOR\_RANGE cbvTable0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00537}00537     cbvTable0.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00538}00538 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00539}00539     CD3DX12\_DESCRIPTOR\_RANGE cbvTable1;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00540}00540     cbvTable1.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_CBV, 1, 1);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00541}00541 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00542}00542     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00543}00543     CD3DX12\_ROOT\_PARAMETER slotRootParameter[2];}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00544}00544 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00545}00545     \textcolor{comment}{// Create root CBVs.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00546}00546     slotRootParameter[0].InitAsDescriptorTable(1, \&cbvTable0);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00547}00547     slotRootParameter[1].InitAsDescriptorTable(1, \&cbvTable1);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00548}00548 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00549}00549     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00550}00550     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(2, slotRootParameter, 0, \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00551}00551         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00552}00552 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00553}00553     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00554}00554     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00555}00555     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00556}00556     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00557}00557         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00558}00558 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00559}00559     \textcolor{keywordflow}{if} (errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00560}00560     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00561}00561         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00562}00562     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00563}00563     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00564}00564 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00565}00565     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00566}00566         0,}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00567}00567         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00568}00568         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00569}00569         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00570}00570 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00571}00571 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00572}00572 \textcolor{keywordtype}{void} ShapesApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00573}00573 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00574}00574     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00575}00575     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00576}00576 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00577}00577     mInputLayout =}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00578}00578     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00579}00579         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00580}00580         \{ \textcolor{stringliteral}{"{}COLOR"{}}, 0, DXGI\_FORMAT\_R32G32B32A32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00581}00581     \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00582}00582 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00583}00583 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00584}00584 \textcolor{comment}{//step1}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00585}00585 \textcolor{keywordtype}{void} ShapesApp::BuildShapeGeometry()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00586}00586 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00587}00587     \textcolor{comment}{//GeometryGenerator is a utility class for generating simple geometric shapes like grids, grid, grids, and boxes}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00588}00588     \mbox{\hyperlink{class_geometry_generator}{GeometryGenerator}} geoGen;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00589}00589     \textcolor{comment}{//The MeshData structure is a simple structure nested inside GeometryGenerator that stores a vertexand index list}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00590}00590 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00591}00591     \textcolor{comment}{//GeometryGenerator::CreateGrid(float width, float depth, uint32 m, uint32 n)}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00592}00592     \mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data}{GeometryGenerator::MeshData}} grid = geoGen.\mbox{\hyperlink{class_geometry_generator_a594d746f5a6a3a645ea2c85a9feabafe}{CreateGrid}}(20.0f, 30.0f, 60, 40);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00593}00593     \textcolor{comment}{// We are concatenating all the geometry into one big vertex/index buffer.  So}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00594}00594     \textcolor{comment}{// define the regions in the buffer each submesh covers.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00595}00595 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00596}00596     \textcolor{comment}{// Cache the vertex offsets to each object in the concatenated vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00597}00597     UINT gridVertexOffset = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00598}00598 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00599}00599 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00600}00600     \textcolor{comment}{// Cache the starting index for each object in the concatenated index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00601}00601     UINT gridIndexOffset = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00602}00602 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00603}00603 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00604}00604     \textcolor{comment}{// Define the SubmeshGeometry that cover different }}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00605}00605     \textcolor{comment}{// regions of the vertex/index buffers.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00606}00606     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} gridSubmesh;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00607}00607     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_af32ad2f27a3c6c78700f726050e2eb73}{Indices32}}.size();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00608}00608     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = gridIndexOffset;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00609}00609     gridSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = gridVertexOffset;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00610}00610 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00611}00611     \textcolor{comment}{// Extract the vertex elements we are interested in and pack the}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00612}00612     \textcolor{comment}{// vertices of all the meshes into one vertex buffer.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00613}00613 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00614}00614     \textcolor{keyword}{auto} totalVertexCount = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00615}00615 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00616}00616     std::vector<Vertex> vertices(totalVertexCount);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00617}00617 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00618}00618     UINT k = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00619}00619     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}.size(); ++i, ++k)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00620}00620     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00621}00621         vertices[k].Pos = grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a2a85f97f9a84b4f68d71cdcd41a7198b}{Vertices}}[i].Position;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00622}00622         vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkOrange);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00623}00623     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00624}00624 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00625}00625 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00626}00626     std::vector<std::uint16\_t> indices;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00627}00627     indices.insert(indices.end(), std::begin(grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}()), std::end(grid.\mbox{\hyperlink{struct_geometry_generator_1_1_mesh_data_a905f88aa2c83239ed6887f8dd9bcbf52}{GetIndices16}}()));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00628}00628 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00629}00629 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00630}00630     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00631}00631     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00632}00632 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00633}00633     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00634}00634     geo-\/>Name = \textcolor{stringliteral}{"{}shapeGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00635}00635 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00636}00636     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00637}00637     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00638}00638 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00639}00639     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00640}00640     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00641}00641 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00642}00642     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00643}00643         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00644}00644 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00645}00645     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00646}00646         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00647}00647 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00648}00648     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00649}00649     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00650}00650     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00651}00651     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00652}00652 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00653}00653     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}] = gridSubmesh;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00654}00654 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00655}00655 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00656}00656     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00657}00657 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00658}00658 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00659}00659 \textcolor{keywordtype}{void} ShapesApp::BuildPSOs()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00660}00660 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00661}00661     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00662}00662 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00663}00663     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00664}00664     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00665}00665     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00666}00666     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00667}00667     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00668}00668     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00669}00669     opaquePsoDesc.VS =}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00670}00670     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00671}00671         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00672}00672         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00673}00673     \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00674}00674     opaquePsoDesc.PS =}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00675}00675     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00676}00676         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00677}00677         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00678}00678     \};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00679}00679     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00680}00680     opaquePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_SOLID;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00681}00681     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00682}00682     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00683}00683     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00684}00684     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00685}00685     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00686}00686     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00687}00687     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00688}00688     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00689}00689     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00690}00690     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00691}00691 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00692}00692     \textcolor{comment}{// PSO for opaque wireframe objects.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00693}00693 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00694}00694     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00695}00695     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00696}00696     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00697}00697 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00698}00698 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00699}00699 \textcolor{comment}{//build three frame resources}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00700}00700 \textcolor{comment}{//FrameResource constructor:     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount);}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00701}00701 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00702}00702 \textcolor{keywordtype}{void} ShapesApp::BuildFrameResources()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00703}00703 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00704}00704     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_week4-3-_grid_using_frame_resources_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00705}00705     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00706}00706         mFrameResources.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00707}00707             1, (UINT)mAllRitems.size()));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00708}00708     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00709}00709 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00710}00710 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00711}00711 \textcolor{keywordtype}{void} ShapesApp::BuildRenderItems()}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00712}00712 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00713}00713     \textcolor{keyword}{auto} gridRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00714}00714     XMStoreFloat4x4(\&gridRitem-\/>World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00715}00715     gridRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00716}00716     gridRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}shapeGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00717}00717     gridRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00718}00718     gridRitem-\/>IndexCount = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].IndexCount;  \textcolor{comment}{//13806}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00719}00719     gridRitem-\/>StartIndexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].StartIndexLocation; \textcolor{comment}{//0}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00720}00720     gridRitem-\/>BaseVertexLocation = gridRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}grid"{}}].BaseVertexLocation; \textcolor{comment}{//0}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00721}00721     mAllRitems.push\_back(std::move(gridRitem));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00722}00722 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00723}00723 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00724}00724     \textcolor{comment}{// All the render items are opaque.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00725}00725     \textcolor{comment}{//Our application will maintain lists of render items based on how they need to be}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00726}00726     \textcolor{comment}{//drawn; that is, render items that need different PSOs will be kept in different lists.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00727}00727     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00728}00728         mOpaqueRitems.push\_back(e.get());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00729}00729 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00730}00730 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00731}00731 \textcolor{keywordtype}{void} ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00732}00732 \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00733}00733     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00734}00734 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00735}00735     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00736}00736 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00737}00737     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00738}00738     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00739}00739     \{}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00740}00740         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00741}00741 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00742}00742         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00743}00743         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00744}00744         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00745}00745 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00746}00746         \textcolor{comment}{// Offset to the CBV in the descriptor heap for this object and for this frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00747}00747         UINT cbvIndex = mCurrFrameResourceIndex * (UINT)mOpaqueRitems.size() + ri-\/>ObjCBIndex;}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00748}00748         \textcolor{keyword}{auto} cbvHandle = CD3DX12\_GPU\_DESCRIPTOR\_HANDLE(mCbvHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00749}00749         cbvHandle.Offset(cbvIndex, \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00750}00750 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00751}00751         cmdList-\/>SetGraphicsRootDescriptorTable(0, cbvHandle);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00752}00752 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00753}00753         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00754}00754     \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00755}00755 \}}
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00756}00756 }
+\DoxyCodeLine{\Hypertarget{_week4-3-_grid_using_frame_resources_8cpp_source_l00757}00757 }
 
 \end{DoxyCode}

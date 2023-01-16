@@ -1,4 +1,4 @@
-\doxysection{Land\+App Class Reference}
+\hypertarget{class_land_app}{}\doxysection{Land\+App Class Reference}
 \label{class_land_app}\index{LandApp@{LandApp}}
 Inheritance diagram for Land\+App\+:\begin{figure}[H]
 \begin{center}
@@ -9,105 +9,15 @@ Inheritance diagram for Land\+App\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\textbf{ Land\+App} (HINSTANCE h\+Instance)
+\mbox{\hyperlink{class_land_app_a704abdd210d4cdf0e85dc1107e46d9af}{Land\+App}} (HINSTANCE h\+Instance)
 \item 
-\textbf{ Land\+App} (const \textbf{ Land\+App} \&rhs)=delete
+\mbox{\hyperlink{class_land_app_a3242a965fd75bcda3d4b5435819d0393}{Land\+App}} (const \mbox{\hyperlink{class_land_app}{Land\+App}} \&rhs)=delete
 \item 
-\textbf{ Land\+App} \& \textbf{ operator=} (const \textbf{ Land\+App} \&rhs)=delete
+\mbox{\hyperlink{class_land_app}{Land\+App}} \& \mbox{\hyperlink{class_land_app_af3e228ab03b38c4b22d27e4b5b8e09e6}{operator=}} (const \mbox{\hyperlink{class_land_app}{Land\+App}} \&rhs)=delete
 \item 
-\textbf{ $\sim$\+Land\+App} ()
+\mbox{\hyperlink{class_land_app_a3c01b6196065cc23fe028e2c04aa7c35}{$\sim$\+Land\+App}} ()
 \item 
-virtual bool \textbf{ Initialize} () override
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-virtual void \textbf{ On\+Resize} () override
-\item 
-virtual void \textbf{ Update} (const \textbf{ Game\+Timer} \&gt) override
-\item 
-virtual void \textbf{ Draw} (const \textbf{ Game\+Timer} \&gt) override
-\item 
-virtual void \textbf{ On\+Mouse\+Down} (WPARAM btn\+State, int x, int y) override
-\item 
-virtual void \textbf{ On\+Mouse\+Up} (WPARAM btn\+State, int x, int y) override
-\item 
-virtual void \textbf{ On\+Mouse\+Move} (WPARAM btn\+State, int x, int y) override
-\item 
-void \textbf{ On\+Keyboard\+Input} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Camera} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Object\+CBs} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Update\+Main\+Pass\+CB} (const \textbf{ Game\+Timer} \&gt)
-\item 
-void \textbf{ Build\+Descriptor\+Heaps} ()
-\item 
-void \textbf{ Build\+Constant\+Buffer\+Views} ()
-\item 
-void \textbf{ Build\+Root\+Signature} ()
-\item 
-void \textbf{ Build\+Shaders\+And\+Input\+Layout} ()
-\item 
-void \textbf{ Build\+Land\+Geometry} ()
-\item 
-void \textbf{ Build\+PSOs} ()
-\item 
-void \textbf{ Build\+Frame\+Resources} ()
-\item 
-void \textbf{ Build\+Render\+Items} ()
-\item 
-void \textbf{ Draw\+Render\+Items} (ID3\+D12\+Graphics\+Command\+List $\ast$cmd\+List, const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&ritems)
-\item 
-float \textbf{ Get\+Hills\+Height} (float x, float z) const
-\end{DoxyCompactItemize}
-\doxysubsection*{Private Attributes}
-\begin{DoxyCompactItemize}
-\item 
-std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \textbf{ Frame\+Resource} $>$ $>$ \textbf{ m\+Frame\+Resources}
-\item 
-\textbf{ Frame\+Resource} $\ast$ \textbf{ m\+Curr\+Frame\+Resource} = nullptr
-\item 
-int \textbf{ m\+Curr\+Frame\+Resource\+Index} = 0
-\item 
-Com\+Ptr$<$ ID3\+D12\+Root\+Signature $>$ \textbf{ m\+Root\+Signature} = nullptr
-\item 
-Com\+Ptr$<$ ID3\+D12\+Descriptor\+Heap $>$ \textbf{ m\+Cbv\+Heap} = nullptr
-\item 
-Com\+Ptr$<$ ID3\+D12\+Descriptor\+Heap $>$ \textbf{ m\+Srv\+Descriptor\+Heap} = nullptr
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \textbf{ Mesh\+Geometry} $>$ $>$ \textbf{ m\+Geometries}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, Com\+Ptr$<$ ID3\+DBlob $>$ $>$ \textbf{ m\+Shaders}
-\item 
-std\+::unordered\+\_\+map$<$ std\+::string, Com\+Ptr$<$ ID3\+D12\+Pipeline\+State $>$ $>$ \textbf{ m\+PSOs}
-\item 
-std\+::vector$<$ D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC $>$ \textbf{ m\+Input\+Layout}
-\item 
-std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \textbf{ Render\+Item} $>$ $>$ \textbf{ m\+All\+Ritems}
-\item 
-std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \textbf{ m\+Opaque\+Ritems}
-\item 
-\textbf{ Pass\+Constants} \textbf{ m\+Main\+Pass\+CB}
-\item 
-UINT \textbf{ m\+Pass\+Cbv\+Offset} = 0
-\item 
-bool \textbf{ m\+Is\+Wireframe} = false
-\item 
-XMFLOAT3 \textbf{ m\+Eye\+Pos} = \{ 0.\+0f, 0.\+0f, 0.\+0f \}
-\item 
-XMFLOAT4\+X4 \textbf{ m\+View} = \textbf{ Math\+Helper\+::\+Identity4x4}()
-\item 
-XMFLOAT4\+X4 \textbf{ m\+Proj} = \textbf{ Math\+Helper\+::\+Identity4x4}()
-\item 
-float \textbf{ m\+Theta} = 1.\+5f $\ast$ XM\+\_\+\+PI
-\item 
-float \textbf{ m\+Phi} = XM\+\_\+\+PIDIV2 -\/ 0.\+1f
-\item 
-float \textbf{ m\+Radius} = 50.\+0f
-\item 
-POINT \textbf{ m\+Last\+Mouse\+Pos}
+virtual bool \mbox{\hyperlink{class_land_app_a0f34f007713f98980ff69e8fd16eaf48}{Initialize}} () override
 \end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
@@ -115,504 +25,57 @@ POINT \textbf{ m\+Last\+Mouse\+Pos}
 \doxysubsection{Detailed Description}
 
 
-Definition at line \textbf{ 64} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week4-8-_land_app_8cpp_source_l00064}{64}} of file \mbox{\hyperlink{_week4-8-_land_app_8cpp_source}{Week4-\/8-\/\+Land\+App.\+cpp}}.
 
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\mbox{\label{class_land_app_a704abdd210d4cdf0e85dc1107e46d9af}} 
+\mbox{\Hypertarget{class_land_app_a704abdd210d4cdf0e85dc1107e46d9af}\label{class_land_app_a704abdd210d4cdf0e85dc1107e46d9af}} 
 \index{LandApp@{LandApp}!LandApp@{LandApp}}
 \index{LandApp@{LandApp}!LandApp@{LandApp}}
-\doxysubsubsection{LandApp()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+\doxysubsubsection{\texorpdfstring{LandApp()}{LandApp()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily Land\+App\+::\+Land\+App (\begin{DoxyParamCaption}\item[{HINSTANCE}]{h\+Instance }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 184} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week4-8-_land_app_8cpp_source_l00184}{184}} of file \mbox{\hyperlink{_week4-8-_land_app_8cpp_source}{Week4-\/8-\/\+Land\+App.\+cpp}}.
 
-\mbox{\label{class_land_app_a3242a965fd75bcda3d4b5435819d0393}} 
+\mbox{\Hypertarget{class_land_app_a3242a965fd75bcda3d4b5435819d0393}\label{class_land_app_a3242a965fd75bcda3d4b5435819d0393}} 
 \index{LandApp@{LandApp}!LandApp@{LandApp}}
 \index{LandApp@{LandApp}!LandApp@{LandApp}}
-\doxysubsubsection{LandApp()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily Land\+App\+::\+Land\+App (\begin{DoxyParamCaption}\item[{const \textbf{ Land\+App} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+\doxysubsubsection{\texorpdfstring{LandApp()}{LandApp()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Land\+App\+::\+Land\+App (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_land_app}{Land\+App}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 
-\mbox{\label{class_land_app_a3c01b6196065cc23fe028e2c04aa7c35}} 
+\mbox{\Hypertarget{class_land_app_a3c01b6196065cc23fe028e2c04aa7c35}\label{class_land_app_a3c01b6196065cc23fe028e2c04aa7c35}} 
 \index{LandApp@{LandApp}!````~LandApp@{$\sim$LandApp}}
 \index{````~LandApp@{$\sim$LandApp}!LandApp@{LandApp}}
-\doxysubsubsection{$\sim$LandApp()}
+\doxysubsubsection{\texorpdfstring{$\sim$LandApp()}{~LandApp()}}
 {\footnotesize\ttfamily Land\+App\+::$\sim$\+Land\+App (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
-Definition at line \textbf{ 189} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week4-8-_land_app_8cpp_source_l00189}{189}} of file \mbox{\hyperlink{_week4-8-_land_app_8cpp_source}{Week4-\/8-\/\+Land\+App.\+cpp}}.
 
 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\label{class_land_app_a390beb4b4f83c6b89c9ba04d26861f3e}} 
-\index{LandApp@{LandApp}!BuildConstantBufferViews@{BuildConstantBufferViews}}
-\index{BuildConstantBufferViews@{BuildConstantBufferViews}!LandApp@{LandApp}}
-\doxysubsubsection{BuildConstantBufferViews()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Constant\+Buffer\+Views (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 490} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_aaa7a6cb2a0e1de81a03e06e582bf6b3c}} 
-\index{LandApp@{LandApp}!BuildDescriptorHeaps@{BuildDescriptorHeaps}}
-\index{BuildDescriptorHeaps@{BuildDescriptorHeaps}!LandApp@{LandApp}}
-\doxysubsubsection{BuildDescriptorHeaps()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Descriptor\+Heaps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 470} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a7217b479df78304a053417643db25fa0}} 
-\index{LandApp@{LandApp}!BuildFrameResources@{BuildFrameResources}}
-\index{BuildFrameResources@{BuildFrameResources}!LandApp@{LandApp}}
-\doxysubsubsection{BuildFrameResources()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Frame\+Resources (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 771} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a1bfe3c292521fa26f9e64659256862bd}} 
-\index{LandApp@{LandApp}!BuildLandGeometry@{BuildLandGeometry}}
-\index{BuildLandGeometry@{BuildLandGeometry}!LandApp@{LandApp}}
-\doxysubsubsection{BuildLandGeometry()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Land\+Geometry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 597} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ac545d2958b83337efa28d33f3aa2f751}} 
-\index{LandApp@{LandApp}!BuildPSOs@{BuildPSOs}}
-\index{BuildPSOs@{BuildPSOs}!LandApp@{LandApp}}
-\doxysubsubsection{BuildPSOs()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+PSOs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 725} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a87db8c0a5ebd313afd7bfde251acd0c3}} 
-\index{LandApp@{LandApp}!BuildRenderItems@{BuildRenderItems}}
-\index{BuildRenderItems@{BuildRenderItems}!LandApp@{LandApp}}
-\doxysubsubsection{BuildRenderItems()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Render\+Items (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 780} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a88f7e00376ca9ccf25d0c4e07b0e075b}} 
-\index{LandApp@{LandApp}!BuildRootSignature@{BuildRootSignature}}
-\index{BuildRootSignature@{BuildRootSignature}!LandApp@{LandApp}}
-\doxysubsubsection{BuildRootSignature()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Root\+Signature (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 541} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a008c6a072cc485b799e02c7656a55b2b}} 
-\index{LandApp@{LandApp}!BuildShadersAndInputLayout@{BuildShadersAndInputLayout}}
-\index{BuildShadersAndInputLayout@{BuildShadersAndInputLayout}!LandApp@{LandApp}}
-\doxysubsubsection{BuildShadersAndInputLayout()}
-{\footnotesize\ttfamily void Land\+App\+::\+Build\+Shaders\+And\+Input\+Layout (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 584} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a4fb07e00fc1059a8a22ff8ce81d003d4}} 
-\index{LandApp@{LandApp}!Draw@{Draw}}
-\index{Draw@{Draw}!LandApp@{LandApp}}
-\doxysubsubsection{Draw()}
-{\footnotesize\ttfamily void Land\+App\+::\+Draw (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afc159e00500db82ec59edf2bc95e5e6a}.
-
-
-
-Definition at line \textbf{ 262} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_aa89a75edb370bab36984ed77b9317ae1}} 
-\index{LandApp@{LandApp}!DrawRenderItems@{DrawRenderItems}}
-\index{DrawRenderItems@{DrawRenderItems}!LandApp@{LandApp}}
-\doxysubsubsection{DrawRenderItems()}
-{\footnotesize\ttfamily void Land\+App\+::\+Draw\+Render\+Items (\begin{DoxyParamCaption}\item[{ID3\+D12\+Graphics\+Command\+List $\ast$}]{cmd\+List,  }\item[{const std\+::vector$<$ \textbf{ Render\+Item} $\ast$ $>$ \&}]{ritems }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 802} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a206cc55b08b5a49cb39c93aa9bab9fdb}} 
-\index{LandApp@{LandApp}!GetHillsHeight@{GetHillsHeight}}
-\index{GetHillsHeight@{GetHillsHeight}!LandApp@{LandApp}}
-\doxysubsubsection{GetHillsHeight()}
-{\footnotesize\ttfamily float Land\+App\+::\+Get\+Hills\+Height (\begin{DoxyParamCaption}\item[{float}]{x,  }\item[{float}]{z }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 828} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a0f34f007713f98980ff69e8fd16eaf48}} 
+\mbox{\Hypertarget{class_land_app_a0f34f007713f98980ff69e8fd16eaf48}\label{class_land_app_a0f34f007713f98980ff69e8fd16eaf48}} 
 \index{LandApp@{LandApp}!Initialize@{Initialize}}
 \index{Initialize@{Initialize}!LandApp@{LandApp}}
-\doxysubsubsection{Initialize()}
+\doxysubsubsection{\texorpdfstring{Initialize()}{Initialize()}}
 {\footnotesize\ttfamily bool Land\+App\+::\+Initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
 
 
 
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a961fa79170dcbde858923a5250c322be}.
+Reimplemented from \mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3\+DApp}}.
 
 
 
-Definition at line \textbf{ 195} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
+Definition at line \mbox{\hyperlink{_week4-8-_land_app_8cpp_source_l00195}{195}} of file \mbox{\hyperlink{_week4-8-_land_app_8cpp_source}{Week4-\/8-\/\+Land\+App.\+cpp}}.
 
-\mbox{\label{class_land_app_a4c533e07953fef05c1269589e31061de}} 
-\index{LandApp@{LandApp}!OnKeyboardInput@{OnKeyboardInput}}
-\index{OnKeyboardInput@{OnKeyboardInput}!LandApp@{LandApp}}
-\doxysubsubsection{OnKeyboardInput()}
-{\footnotesize\ttfamily void Land\+App\+::\+On\+Keyboard\+Input (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 387} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a400fddc78eea6a4fe205f21b338e2f73}} 
-\index{LandApp@{LandApp}!OnMouseDown@{OnMouseDown}}
-\index{OnMouseDown@{OnMouseDown}!LandApp@{LandApp}}
-\doxysubsubsection{OnMouseDown()}
-{\footnotesize\ttfamily void Land\+App\+::\+On\+Mouse\+Down (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_afa0d546d52408a9b55866e6ba065ddae}.
-
-
-
-Definition at line \textbf{ 342} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ab87efd54677d87dd456013d49715df57}} 
-\index{LandApp@{LandApp}!OnMouseMove@{OnMouseMove}}
-\index{OnMouseMove@{OnMouseMove}!LandApp@{LandApp}}
-\doxysubsubsection{OnMouseMove()}
-{\footnotesize\ttfamily void Land\+App\+::\+On\+Mouse\+Move (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_aa5270048920cd8a62dc07c7ed5e97622}.
-
-
-
-Definition at line \textbf{ 355} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a6c9c33df94e43bb310c378ce4271efe2}} 
-\index{LandApp@{LandApp}!OnMouseUp@{OnMouseUp}}
-\index{OnMouseUp@{OnMouseUp}!LandApp@{LandApp}}
-\doxysubsubsection{OnMouseUp()}
-{\footnotesize\ttfamily void Land\+App\+::\+On\+Mouse\+Up (\begin{DoxyParamCaption}\item[{WPARAM}]{btn\+State,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a98be07429ac3ffb5f76cbe831f9d94de}.
-
-
-
-Definition at line \textbf{ 350} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a1c641f73a6dfd12d0564dfc409895d13}} 
-\index{LandApp@{LandApp}!OnResize@{OnResize}}
-\index{OnResize@{OnResize}!LandApp@{LandApp}}
-\doxysubsubsection{OnResize()}
-{\footnotesize\ttfamily void Land\+App\+::\+On\+Resize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Reimplemented from \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}.
-
-
-
-Definition at line \textbf{ 223} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_af3e228ab03b38c4b22d27e4b5b8e09e6}} 
+\mbox{\Hypertarget{class_land_app_af3e228ab03b38c4b22d27e4b5b8e09e6}\label{class_land_app_af3e228ab03b38c4b22d27e4b5b8e09e6}} 
 \index{LandApp@{LandApp}!operator=@{operator=}}
 \index{operator=@{operator=}!LandApp@{LandApp}}
-\doxysubsubsection{operator=()}
-{\footnotesize\ttfamily \textbf{ Land\+App} \& Land\+App\+::operator= (\begin{DoxyParamCaption}\item[{const \textbf{ Land\+App} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
-
-\mbox{\label{class_land_app_aaf7534b9e79b8da629c2e8883046f618}} 
-\index{LandApp@{LandApp}!Update@{Update}}
-\index{Update@{Update}!LandApp@{LandApp}}
-\doxysubsubsection{Update()}
-{\footnotesize\ttfamily void Land\+App\+::\+Update (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
-
-
-
-Implements \textbf{ D3\+DApp} \doxyref{}{p.}{class_d3_d_app_ae31029e118e14ee3ae4649f1c6f8d2dd}.
-
-
-
-Definition at line \textbf{ 237} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a18ffc06cedbd2d981c6ef6c8638e64d2}} 
-\index{LandApp@{LandApp}!UpdateCamera@{UpdateCamera}}
-\index{UpdateCamera@{UpdateCamera}!LandApp@{LandApp}}
-\doxysubsubsection{UpdateCamera()}
-{\footnotesize\ttfamily void Land\+App\+::\+Update\+Camera (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 401} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a6500b47ebab200fae42bb1af082b5e43}} 
-\index{LandApp@{LandApp}!UpdateMainPassCB@{UpdateMainPassCB}}
-\index{UpdateMainPassCB@{UpdateMainPassCB}!LandApp@{LandApp}}
-\doxysubsubsection{UpdateMainPassCB()}
-{\footnotesize\ttfamily void Land\+App\+::\+Update\+Main\+Pass\+CB (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 442} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a051dbae175d45ac2462bf122a1d547f6}} 
-\index{LandApp@{LandApp}!UpdateObjectCBs@{UpdateObjectCBs}}
-\index{UpdateObjectCBs@{UpdateObjectCBs}!LandApp@{LandApp}}
-\doxysubsubsection{UpdateObjectCBs()}
-{\footnotesize\ttfamily void Land\+App\+::\+Update\+Object\+CBs (\begin{DoxyParamCaption}\item[{const \textbf{ Game\+Timer} \&}]{gt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 418} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-
-
-\doxysubsection{Member Data Documentation}
-\mbox{\label{class_land_app_a4aab1e22d90188caeb86821bc3d5ff59}} 
-\index{LandApp@{LandApp}!mAllRitems@{mAllRitems}}
-\index{mAllRitems@{mAllRitems}!LandApp@{LandApp}}
-\doxysubsubsection{mAllRitems}
-{\footnotesize\ttfamily std\+::vector$<$std\+::unique\+\_\+ptr$<$\textbf{ Render\+Item}$>$ $>$ Land\+App\+::m\+All\+Ritems\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 122} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a46bdbcb4cba61a8899896013c0891b39}} 
-\index{LandApp@{LandApp}!mCbvHeap@{mCbvHeap}}
-\index{mCbvHeap@{mCbvHeap}!LandApp@{LandApp}}
-\doxysubsubsection{mCbvHeap}
-{\footnotesize\ttfamily Com\+Ptr$<$ID3\+D12\+Descriptor\+Heap$>$ Land\+App\+::m\+Cbv\+Heap = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 111} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a6a46f10e086707897d97d51a287713bb}} 
-\index{LandApp@{LandApp}!mCurrFrameResource@{mCurrFrameResource}}
-\index{mCurrFrameResource@{mCurrFrameResource}!LandApp@{LandApp}}
-\doxysubsubsection{mCurrFrameResource}
-{\footnotesize\ttfamily \textbf{ Frame\+Resource}$\ast$ Land\+App\+::m\+Curr\+Frame\+Resource = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 107} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_acb0d0145ffc976419dcf73d3f99f2c53}} 
-\index{LandApp@{LandApp}!mCurrFrameResourceIndex@{mCurrFrameResourceIndex}}
-\index{mCurrFrameResourceIndex@{mCurrFrameResourceIndex}!LandApp@{LandApp}}
-\doxysubsubsection{mCurrFrameResourceIndex}
-{\footnotesize\ttfamily int Land\+App\+::m\+Curr\+Frame\+Resource\+Index = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 108} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a5db181e57e6c5367f98497915b0a4b0f}} 
-\index{LandApp@{LandApp}!mEyePos@{mEyePos}}
-\index{mEyePos@{mEyePos}!LandApp@{LandApp}}
-\doxysubsubsection{mEyePos}
-{\footnotesize\ttfamily XMFLOAT3 Land\+App\+::m\+Eye\+Pos = \{ 0.\+0f, 0.\+0f, 0.\+0f \}\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 145} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ac3105fed3c7810423adf0aa92f7f89c6}} 
-\index{LandApp@{LandApp}!mFrameResources@{mFrameResources}}
-\index{mFrameResources@{mFrameResources}!LandApp@{LandApp}}
-\doxysubsubsection{mFrameResources}
-{\footnotesize\ttfamily std\+::vector$<$std\+::unique\+\_\+ptr$<$\textbf{ Frame\+Resource}$>$ $>$ Land\+App\+::m\+Frame\+Resources\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 106} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a460e65b483e0d443368d4178db035082}} 
-\index{LandApp@{LandApp}!mGeometries@{mGeometries}}
-\index{mGeometries@{mGeometries}!LandApp@{LandApp}}
-\doxysubsubsection{mGeometries}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, std\+::unique\+\_\+ptr$<$\textbf{ Mesh\+Geometry}$>$ $>$ Land\+App\+::m\+Geometries\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 115} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ad9671511039569fe9c7558ef83982ec5}} 
-\index{LandApp@{LandApp}!mInputLayout@{mInputLayout}}
-\index{mInputLayout@{mInputLayout}!LandApp@{LandApp}}
-\doxysubsubsection{mInputLayout}
-{\footnotesize\ttfamily std\+::vector$<$D3\+D12\+\_\+\+INPUT\+\_\+\+ELEMENT\+\_\+\+DESC$>$ Land\+App\+::m\+Input\+Layout\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 119} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a6f6c44c956b9790056cccf84b2936bc3}} 
-\index{LandApp@{LandApp}!mIsWireframe@{mIsWireframe}}
-\index{mIsWireframe@{mIsWireframe}!LandApp@{LandApp}}
-\doxysubsubsection{mIsWireframe}
-{\footnotesize\ttfamily bool Land\+App\+::m\+Is\+Wireframe = false\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 143} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a910174bc87f1abc5138d4a8686124430}} 
-\index{LandApp@{LandApp}!mLastMousePos@{mLastMousePos}}
-\index{mLastMousePos@{mLastMousePos}!LandApp@{LandApp}}
-\doxysubsubsection{mLastMousePos}
-{\footnotesize\ttfamily POINT Land\+App\+::m\+Last\+Mouse\+Pos\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 158} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a2b007e2f895a4bdd0cf638c4f9420b3f}} 
-\index{LandApp@{LandApp}!mMainPassCB@{mMainPassCB}}
-\index{mMainPassCB@{mMainPassCB}!LandApp@{LandApp}}
-\doxysubsubsection{mMainPassCB}
-{\footnotesize\ttfamily \textbf{ Pass\+Constants} Land\+App\+::m\+Main\+Pass\+CB\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 139} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a8be662a3f0300d6a241398ae00717ee3}} 
-\index{LandApp@{LandApp}!mOpaqueRitems@{mOpaqueRitems}}
-\index{mOpaqueRitems@{mOpaqueRitems}!LandApp@{LandApp}}
-\doxysubsubsection{mOpaqueRitems}
-{\footnotesize\ttfamily std\+::vector$<$\textbf{ Render\+Item}$\ast$$>$ Land\+App\+::m\+Opaque\+Ritems\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 128} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a5d95f49c8ce30f8d7f82c1c28c00537f}} 
-\index{LandApp@{LandApp}!mPassCbvOffset@{mPassCbvOffset}}
-\index{mPassCbvOffset@{mPassCbvOffset}!LandApp@{LandApp}}
-\doxysubsubsection{mPassCbvOffset}
-{\footnotesize\ttfamily UINT Land\+App\+::m\+Pass\+Cbv\+Offset = 0\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 141} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a3b7bd975713d148289e448ac380103d1}} 
-\index{LandApp@{LandApp}!mPhi@{mPhi}}
-\index{mPhi@{mPhi}!LandApp@{LandApp}}
-\doxysubsubsection{mPhi}
-{\footnotesize\ttfamily float Land\+App\+::m\+Phi = XM\+\_\+\+PIDIV2 -\/ 0.\+1f\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 155} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a08cc8b33cd683e09584f6ee4aa3b32ac}} 
-\index{LandApp@{LandApp}!mProj@{mProj}}
-\index{mProj@{mProj}!LandApp@{LandApp}}
-\doxysubsubsection{mProj}
-{\footnotesize\ttfamily XMFLOAT4\+X4 Land\+App\+::m\+Proj = \textbf{ Math\+Helper\+::\+Identity4x4}()\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 147} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a200a73da822d13449773dba16fdbfc1a}} 
-\index{LandApp@{LandApp}!mPSOs@{mPSOs}}
-\index{mPSOs@{mPSOs}!LandApp@{LandApp}}
-\doxysubsubsection{mPSOs}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, Com\+Ptr$<$ID3\+D12\+Pipeline\+State$>$ $>$ Land\+App\+::m\+PSOs\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 117} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ae6b122c7a8efee5da00d9f3d31bccb48}} 
-\index{LandApp@{LandApp}!mRadius@{mRadius}}
-\index{mRadius@{mRadius}!LandApp@{LandApp}}
-\doxysubsubsection{mRadius}
-{\footnotesize\ttfamily float Land\+App\+::m\+Radius = 50.\+0f\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 156} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_aa22053aa8bb2398692fb042a97a7fcab}} 
-\index{LandApp@{LandApp}!mRootSignature@{mRootSignature}}
-\index{mRootSignature@{mRootSignature}!LandApp@{LandApp}}
-\doxysubsubsection{mRootSignature}
-{\footnotesize\ttfamily Com\+Ptr$<$ID3\+D12\+Root\+Signature$>$ Land\+App\+::m\+Root\+Signature = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 110} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_ad900acbb42f9f0c2afd37edf4b8456c9}} 
-\index{LandApp@{LandApp}!mShaders@{mShaders}}
-\index{mShaders@{mShaders}!LandApp@{LandApp}}
-\doxysubsubsection{mShaders}
-{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, Com\+Ptr$<$ID3\+DBlob$>$ $>$ Land\+App\+::m\+Shaders\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 116} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a00085bf096718278d49b6dc0c824072c}} 
-\index{LandApp@{LandApp}!mSrvDescriptorHeap@{mSrvDescriptorHeap}}
-\index{mSrvDescriptorHeap@{mSrvDescriptorHeap}!LandApp@{LandApp}}
-\doxysubsubsection{mSrvDescriptorHeap}
-{\footnotesize\ttfamily Com\+Ptr$<$ID3\+D12\+Descriptor\+Heap$>$ Land\+App\+::m\+Srv\+Descriptor\+Heap = nullptr\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 113} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a930b28a3cbe6c888fffce968346085a5}} 
-\index{LandApp@{LandApp}!mTheta@{mTheta}}
-\index{mTheta@{mTheta}!LandApp@{LandApp}}
-\doxysubsubsection{mTheta}
-{\footnotesize\ttfamily float Land\+App\+::m\+Theta = 1.\+5f $\ast$ XM\+\_\+\+PI\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 154} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
-
-\mbox{\label{class_land_app_a21dc72331a869604a7d8da57bbdabc39}} 
-\index{LandApp@{LandApp}!mView@{mView}}
-\index{mView@{mView}!LandApp@{LandApp}}
-\doxysubsubsection{mView}
-{\footnotesize\ttfamily XMFLOAT4\+X4 Land\+App\+::m\+View = \textbf{ Math\+Helper\+::\+Identity4x4}()\hspace{0.3cm}{\ttfamily [private]}}
-
-
-
-Definition at line \textbf{ 146} of file \textbf{ Week4-\/8-\/\+Land\+App.\+cpp}.
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_land_app}{Land\+App}} \& Land\+App\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_land_app}{Land\+App}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
 

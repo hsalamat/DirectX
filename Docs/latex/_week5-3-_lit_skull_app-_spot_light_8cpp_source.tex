@@ -1,687 +1,687 @@
-\doxysection{Week5-\/3-\/\+Lit\+Skull\+App-\/\+Spot\+Light.cpp}
+\hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source}{}\doxysection{Week5-\/3-\/\+Lit\+Skull\+App-\/\+Spot\+Light.cpp}
 \label{_week5-3-_lit_skull_app-_spot_light_8cpp_source}\index{Week5/LitSkull/Week5-\/3-\/LitSkullApp-\/SpotLight.cpp@{Week5/LitSkull/Week5-\/3-\/LitSkullApp-\/SpotLight.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00018 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00021 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00022 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00023 }
-\DoxyCodeLine{00024 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00025 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00026 }
-\DoxyCodeLine{00027 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00028 }
-\DoxyCodeLine{00029 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
-\DoxyCodeLine{00030 \textcolor{comment}{// vary from app-\/to-\/app.}}
-\DoxyCodeLine{00031 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00032 \{}
-\DoxyCodeLine{00033     RenderItem() = \textcolor{keywordflow}{default};}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00036     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00037     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00038     XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00042     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00043     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
-\DoxyCodeLine{00044     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00045     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00048     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050     Material* Mat = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00051     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00054     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00057     UINT IndexCount = 0;}
-\DoxyCodeLine{00058     UINT StartIndexLocation = 0;}
-\DoxyCodeLine{00059     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
-\DoxyCodeLine{00060 \};}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062 \textcolor{keyword}{class }SkullApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00063 \{}
-\DoxyCodeLine{00064 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00065     SkullApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00066     SkullApp(\textcolor{keyword}{const} SkullApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00067     SkullApp\& operator=(\textcolor{keyword}{const} SkullApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00068     \string~SkullApp();}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00074     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00078     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00079     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00080 }
-\DoxyCodeLine{00081     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00082     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00083     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00085     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00086 }
-\DoxyCodeLine{00087     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{void} BuildSkullGeometry();}
-\DoxyCodeLine{00090     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00091     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} BuildMaterials();}
-\DoxyCodeLine{00093 }
-\DoxyCodeLine{00094     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00095     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
-\DoxyCodeLine{00096  }
-\DoxyCodeLine{00097 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00098 }
-\DoxyCodeLine{00099     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00100     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00101     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00102 }
-\DoxyCodeLine{00103     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00104 }
-\DoxyCodeLine{00105     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00106     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{00107     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     \textcolor{comment}{//ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;}}
-\DoxyCodeLine{00112     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00113  }
-\DoxyCodeLine{00114     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00115     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
-\DoxyCodeLine{00116 }
-\DoxyCodeLine{00117     \textcolor{comment}{// Render items divided by PSO.}}
-\DoxyCodeLine{00118     std::vector<RenderItem*> mOpaqueRitems;}
-\DoxyCodeLine{00119 }
-\DoxyCodeLine{00120     PassConstants mMainPassCB;}
-\DoxyCodeLine{00121     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00122 }
-\DoxyCodeLine{00123     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00124     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00125     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00126 }
-\DoxyCodeLine{00127     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
-\DoxyCodeLine{00128     \textcolor{keywordtype}{float} mPhi = 0.2f*XM\_PI;}
-\DoxyCodeLine{00129     \textcolor{keywordtype}{float} mRadius = 15.0f;}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     POINT mLastMousePos;}
-\DoxyCodeLine{00132 \};}
-\DoxyCodeLine{00133 }
-\DoxyCodeLine{00134 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00135     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00136 \{}
-\DoxyCodeLine{00137     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00138 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00139     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00140 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00141 }
-\DoxyCodeLine{00142     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00143     \{}
-\DoxyCodeLine{00144         SkullApp theApp(hInstance);}
-\DoxyCodeLine{00145         \textcolor{keywordflow}{if}(!theApp.Initialize())}
-\DoxyCodeLine{00146             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00147 }
-\DoxyCodeLine{00148         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00149     \}}
-\DoxyCodeLine{00150     \textcolor{keywordflow}{catch}(DxException\& e)}
-\DoxyCodeLine{00151     \{}
-\DoxyCodeLine{00152         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00153         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00154     \}}
-\DoxyCodeLine{00155 \}}
-\DoxyCodeLine{00156 }
-\DoxyCodeLine{00157 SkullApp::SkullApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00158     : D3DApp(hInstance)}
-\DoxyCodeLine{00159 \{}
-\DoxyCodeLine{00160 \}}
-\DoxyCodeLine{00161 }
-\DoxyCodeLine{00162 SkullApp::\string~SkullApp()}
-\DoxyCodeLine{00163 \{}
-\DoxyCodeLine{00164     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00165         FlushCommandQueue();}
-\DoxyCodeLine{00166 \}}
-\DoxyCodeLine{00167 }
-\DoxyCodeLine{00168 \textcolor{keywordtype}{bool} SkullApp::Initialize()}
-\DoxyCodeLine{00169 \{}
-\DoxyCodeLine{00170     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
-\DoxyCodeLine{00171         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00172 }
-\DoxyCodeLine{00173     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00174     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00175 }
-\DoxyCodeLine{00176 }
-\DoxyCodeLine{00177     BuildRootSignature();}
-\DoxyCodeLine{00178     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00179     BuildSkullGeometry();}
-\DoxyCodeLine{00180     BuildMaterials();}
-\DoxyCodeLine{00181 }
-\DoxyCodeLine{00182     BuildRenderItems();}
-\DoxyCodeLine{00183     BuildFrameResources();}
-\DoxyCodeLine{00184     BuildPSOs();}
-\DoxyCodeLine{00185 }
-\DoxyCodeLine{00186     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00187     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00188     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00189     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00190 }
-\DoxyCodeLine{00191     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00192     FlushCommandQueue();}
-\DoxyCodeLine{00193 }
-\DoxyCodeLine{00194     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00195 \}}
-\DoxyCodeLine{00196  }
-\DoxyCodeLine{00197 \textcolor{keywordtype}{void} SkullApp::OnResize()}
-\DoxyCodeLine{00198 \{}
-\DoxyCodeLine{00199     D3DApp::OnResize();}
-\DoxyCodeLine{00200 }
-\DoxyCodeLine{00201     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00202     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00203     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00204 \}}
-\DoxyCodeLine{00205 }
-\DoxyCodeLine{00206 \textcolor{keywordtype}{void} SkullApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00207 \{}
-\DoxyCodeLine{00208     OnKeyboardInput(gt);}
-\DoxyCodeLine{00209     UpdateCamera(gt);}
-\DoxyCodeLine{00210 }
-\DoxyCodeLine{00211     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00212     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00213     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00214 }
-\DoxyCodeLine{00215     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
-\DoxyCodeLine{00216     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00217     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00218     \{}
-\DoxyCodeLine{00219         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00220         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00221         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00222         CloseHandle(eventHandle);}
-\DoxyCodeLine{00223     \}}
-\DoxyCodeLine{00224 }
-\DoxyCodeLine{00225 }
-\DoxyCodeLine{00226     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00227     UpdateMaterialCBs(gt);}
-\DoxyCodeLine{00228     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00229 \}}
-\DoxyCodeLine{00230 }
-\DoxyCodeLine{00231 \textcolor{keywordtype}{void} SkullApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00232 \{}
-\DoxyCodeLine{00233     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00234 }
-\DoxyCodeLine{00235     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00236     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00237     ThrowIfFailed(cmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00238 }
-\DoxyCodeLine{00239     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00240     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00241     \textcolor{comment}{//ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSO.Get()));}}
-\DoxyCodeLine{00242 }
-\DoxyCodeLine{00243     \textcolor{keywordflow}{if} (mIsWireframe)}
-\DoxyCodeLine{00244     \{}
-\DoxyCodeLine{00245         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
-\DoxyCodeLine{00246     \}}
-\DoxyCodeLine{00247     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00248     \{}
-\DoxyCodeLine{00249         ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00250     \}}
-\DoxyCodeLine{00251 }
-\DoxyCodeLine{00252     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00253     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00254 }
-\DoxyCodeLine{00255     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00256     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00257         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00258 }
-\DoxyCodeLine{00259     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00260     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00261     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00262 }
-\DoxyCodeLine{00263     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00264     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00265 }
-\DoxyCodeLine{00266     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00267 }
-\DoxyCodeLine{00268     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00269     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
-\DoxyCodeLine{00270 }
-\DoxyCodeLine{00271     DrawRenderItems(mCommandList.Get(), mOpaqueRitems);}
-\DoxyCodeLine{00272 }
-\DoxyCodeLine{00273     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00274     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00275         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00276 }
-\DoxyCodeLine{00277     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00278     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00279 }
-\DoxyCodeLine{00280     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00281     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00282     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00283 }
-\DoxyCodeLine{00284     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00285     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00286     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00287 }
-\DoxyCodeLine{00288     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00289     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00290 }
-\DoxyCodeLine{00291     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
-\DoxyCodeLine{00292     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
-\DoxyCodeLine{00293     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00294     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00295 \}}
-\DoxyCodeLine{00296 }
-\DoxyCodeLine{00297 \textcolor{keywordtype}{void} SkullApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00298 \{}
-\DoxyCodeLine{00299     mLastMousePos.x = x;}
-\DoxyCodeLine{00300     mLastMousePos.y = y;}
-\DoxyCodeLine{00301 }
-\DoxyCodeLine{00302     SetCapture(mhMainWnd);}
-\DoxyCodeLine{00303 \}}
-\DoxyCodeLine{00304 }
-\DoxyCodeLine{00305 \textcolor{keywordtype}{void} SkullApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00306 \{}
-\DoxyCodeLine{00307     ReleaseCapture();}
-\DoxyCodeLine{00308 \}}
-\DoxyCodeLine{00309 }
-\DoxyCodeLine{00310 \textcolor{keywordtype}{void} SkullApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00311 \{}
-\DoxyCodeLine{00312     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00313     \{}
-\DoxyCodeLine{00314         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00315         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00316         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
-\DoxyCodeLine{00317 }
-\DoxyCodeLine{00318         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00319         mTheta += dx;}
-\DoxyCodeLine{00320         mPhi += dy;}
-\DoxyCodeLine{00321 }
-\DoxyCodeLine{00322         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00323         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00324     \}}
-\DoxyCodeLine{00325     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
-\DoxyCodeLine{00326     \{}
-\DoxyCodeLine{00327         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00328         \textcolor{keywordtype}{float} dx = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00329         \textcolor{keywordtype}{float} dy = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
-\DoxyCodeLine{00330 }
-\DoxyCodeLine{00331         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00332         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00333 }
-\DoxyCodeLine{00334         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00335         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00336     \}}
-\DoxyCodeLine{00337 }
-\DoxyCodeLine{00338     mLastMousePos.x = x;}
-\DoxyCodeLine{00339     mLastMousePos.y = y;}
-\DoxyCodeLine{00340 \}}
-\DoxyCodeLine{00341  }
-\DoxyCodeLine{00342 \textcolor{keywordtype}{void} SkullApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00343 \{}
-\DoxyCodeLine{00344     \textcolor{keywordflow}{if} (GetAsyncKeyState(\textcolor{charliteral}{'1'}) \& 0x8000)}
-\DoxyCodeLine{00345         mIsWireframe = \textcolor{keyword}{true};}
-\DoxyCodeLine{00346     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00347         mIsWireframe = \textcolor{keyword}{false};}
-\DoxyCodeLine{00348 \}}
-\DoxyCodeLine{00349  }
-\DoxyCodeLine{00350 \textcolor{keywordtype}{void} SkullApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00351 \{}
-\DoxyCodeLine{00352     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00353     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
-\DoxyCodeLine{00354     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
-\DoxyCodeLine{00355     mEyePos.y = mRadius*cosf(mPhi);}
-\DoxyCodeLine{00356 }
-\DoxyCodeLine{00357     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00358     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00359     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00360     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00361 }
-\DoxyCodeLine{00362     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00363     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00364 \}}
-\DoxyCodeLine{00365 }
-\DoxyCodeLine{00366 }
-\DoxyCodeLine{00367 }
-\DoxyCodeLine{00368 \textcolor{keywordtype}{void} SkullApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00369 \{}
-\DoxyCodeLine{00370     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00371     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00372     \{}
-\DoxyCodeLine{00373         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00374         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00375         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00376         \{}
-\DoxyCodeLine{00377             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00378 }
-\DoxyCodeLine{00379             ObjectConstants objConstants;}
-\DoxyCodeLine{00380             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00381 }
-\DoxyCodeLine{00382             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00383 }
-\DoxyCodeLine{00384             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00385             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00386         \}}
-\DoxyCodeLine{00387     \}}
-\DoxyCodeLine{00388 \}}
-\DoxyCodeLine{00389 }
-\DoxyCodeLine{00390 \textcolor{keywordtype}{void} SkullApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00391 \{}
-\DoxyCodeLine{00392     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
-\DoxyCodeLine{00393     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{00394     \{}
-\DoxyCodeLine{00395         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{00396         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{00397         Material* mat = e.second.get();}
-\DoxyCodeLine{00398         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00399         \{}
-\DoxyCodeLine{00400             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
-\DoxyCodeLine{00401 }
-\DoxyCodeLine{00402             MaterialConstants matConstants;}
-\DoxyCodeLine{00403             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
-\DoxyCodeLine{00404             matConstants.FresnelR0 = mat-\/>FresnelR0;}
-\DoxyCodeLine{00405             matConstants.Roughness = mat-\/>Roughness;}
-\DoxyCodeLine{00406             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
-\DoxyCodeLine{00407 }
-\DoxyCodeLine{00408             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
-\DoxyCodeLine{00409 }
-\DoxyCodeLine{00410             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00411             mat-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00412         \}}
-\DoxyCodeLine{00413     \}}
-\DoxyCodeLine{00414 \}}
-\DoxyCodeLine{00415 }
-\DoxyCodeLine{00416 \textcolor{keywordtype}{void} SkullApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00417 \{}
-\DoxyCodeLine{00418     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00419     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00420 }
-\DoxyCodeLine{00421     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00422     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00423     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00424     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00425 }
-\DoxyCodeLine{00426     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00427     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00428     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00429     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00430     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00431     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00432     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00433     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00434     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00435     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00436     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00437     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00438     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00439 }
-\DoxyCodeLine{00440     \textcolor{comment}{//step1}}
-\DoxyCodeLine{00441     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
-\DoxyCodeLine{00442 }
-\DoxyCodeLine{00443     \textcolor{comment}{//mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}}
-\DoxyCodeLine{00444     \textcolor{comment}{//mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}}
-\DoxyCodeLine{00445     \textcolor{comment}{//mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}}
-\DoxyCodeLine{00446     \textcolor{comment}{//mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}}
-\DoxyCodeLine{00447     \textcolor{comment}{//mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}}
-\DoxyCodeLine{00448     \textcolor{comment}{//mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}}
-\DoxyCodeLine{00449 }
-\DoxyCodeLine{00450 }
-\DoxyCodeLine{00451     mMainPassCB.Lights[0].Position = \{ 0.0f, 5.0f, 0.0f \};}
-\DoxyCodeLine{00452     mMainPassCB.Lights[0].Direction = \{ 0.0f, -\/5.0f, 0.0f \};}
-\DoxyCodeLine{00453     mMainPassCB.Lights[0].Strength = \{ 0.35f, 0.35f, 0.35f \};}
-\DoxyCodeLine{00454     mMainPassCB.Lights[0].SpotPower = 0.95;}
-\DoxyCodeLine{00455 }
-\DoxyCodeLine{00456     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00457     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00458 \}}
-\DoxyCodeLine{00459 }
-\DoxyCodeLine{00460 \textcolor{keywordtype}{void} SkullApp::BuildRootSignature()}
-\DoxyCodeLine{00461 \{}
-\DoxyCodeLine{00462     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00463     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
-\DoxyCodeLine{00464 }
-\DoxyCodeLine{00465     \textcolor{comment}{// Create root CBV.}}
-\DoxyCodeLine{00466     slotRootParameter[0].InitAsConstantBufferView(0);}
-\DoxyCodeLine{00467     slotRootParameter[1].InitAsConstantBufferView(1);}
-\DoxyCodeLine{00468     slotRootParameter[2].InitAsConstantBufferView(2);}
-\DoxyCodeLine{00469 }
-\DoxyCodeLine{00470     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00471     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{00472 }
-\DoxyCodeLine{00473     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00474     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00475     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00476     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00477         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00478 }
-\DoxyCodeLine{00479     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00480     \{}
-\DoxyCodeLine{00481         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00482     \}}
-\DoxyCodeLine{00483     ThrowIfFailed(hr);}
-\DoxyCodeLine{00484 }
-\DoxyCodeLine{00485     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00486         0,}
-\DoxyCodeLine{00487         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00488         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00489         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00490 \}}
-\DoxyCodeLine{00491 }
-\DoxyCodeLine{00492 \textcolor{keywordtype}{void} SkullApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00493 \{}
-\DoxyCodeLine{00494 }
-\DoxyCodeLine{00495     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS\_SpotLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
-\DoxyCodeLine{00496     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS\_SpotLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
-\DoxyCodeLine{00497     }
-\DoxyCodeLine{00498     mInputLayout =}
-\DoxyCodeLine{00499     \{}
-\DoxyCodeLine{00500         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00501         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
-\DoxyCodeLine{00502     \};}
-\DoxyCodeLine{00503 \}}
-\DoxyCodeLine{00504 }
-\DoxyCodeLine{00505 }
-\DoxyCodeLine{00506 \textcolor{keywordtype}{void} SkullApp::BuildSkullGeometry()}
-\DoxyCodeLine{00507 \{}
-\DoxyCodeLine{00508     std::ifstream fin(\textcolor{stringliteral}{"{}Models/skull.txt"{}});}
-\DoxyCodeLine{00509 }
-\DoxyCodeLine{00510     \textcolor{keywordflow}{if}(!fin)}
-\DoxyCodeLine{00511     \{}
-\DoxyCodeLine{00512         MessageBox(0, L\textcolor{stringliteral}{"{}Models/skull.txt not found."{}}, 0, 0);}
-\DoxyCodeLine{00513         \textcolor{keywordflow}{return};}
-\DoxyCodeLine{00514     \}}
-\DoxyCodeLine{00515 }
-\DoxyCodeLine{00516     UINT vcount = 0;}
-\DoxyCodeLine{00517     UINT tcount = 0;}
-\DoxyCodeLine{00518     std::string ignore;}
-\DoxyCodeLine{00519 }
-\DoxyCodeLine{00520     fin >> ignore >> vcount;}
-\DoxyCodeLine{00521     fin >> ignore >> tcount;}
-\DoxyCodeLine{00522     fin >> ignore >> ignore >> ignore >> ignore;}
-\DoxyCodeLine{00523 }
-\DoxyCodeLine{00524     std::vector<Vertex> vertices(vcount);}
-\DoxyCodeLine{00525     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
-\DoxyCodeLine{00526     \{}
-\DoxyCodeLine{00527         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
-\DoxyCodeLine{00528         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
-\DoxyCodeLine{00529     \}}
-\DoxyCodeLine{00530 }
-\DoxyCodeLine{00531     fin >> ignore;}
-\DoxyCodeLine{00532     fin >> ignore;}
-\DoxyCodeLine{00533     fin >> ignore;}
-\DoxyCodeLine{00534 }
-\DoxyCodeLine{00535     std::vector<std::int32\_t> indices(3 * tcount);}
-\DoxyCodeLine{00536     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
-\DoxyCodeLine{00537     \{}
-\DoxyCodeLine{00538         fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];}
-\DoxyCodeLine{00539     \}}
-\DoxyCodeLine{00540 }
-\DoxyCodeLine{00541     fin.close();}
-\DoxyCodeLine{00542 }
-\DoxyCodeLine{00543     \textcolor{comment}{//}}
-\DoxyCodeLine{00544     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
-\DoxyCodeLine{00545     \textcolor{comment}{//}}
-\DoxyCodeLine{00546 }
-\DoxyCodeLine{00547     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00548 }
-\DoxyCodeLine{00549     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
-\DoxyCodeLine{00550 }
-\DoxyCodeLine{00551     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00552     geo-\/>Name = \textcolor{stringliteral}{"{}skullGeo"{}};}
-\DoxyCodeLine{00553 }
-\DoxyCodeLine{00554     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00555     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00556 }
-\DoxyCodeLine{00557     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00558     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00559 }
-\DoxyCodeLine{00560     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00561         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00562 }
-\DoxyCodeLine{00563     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00564         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00565 }
-\DoxyCodeLine{00566     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00567     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00568     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
-\DoxyCodeLine{00569     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00570 }
-\DoxyCodeLine{00571     SubmeshGeometry submesh;}
-\DoxyCodeLine{00572     submesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00573     submesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00574     submesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00575 }
-\DoxyCodeLine{00576     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}] = submesh;}
-\DoxyCodeLine{00577 }
-\DoxyCodeLine{00578     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00579 \}}
-\DoxyCodeLine{00580 }
-\DoxyCodeLine{00581 \textcolor{keywordtype}{void} SkullApp::BuildPSOs()}
-\DoxyCodeLine{00582 \{}
-\DoxyCodeLine{00583     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00584 }
-\DoxyCodeLine{00585     \textcolor{comment}{//}}
-\DoxyCodeLine{00586     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00587     \textcolor{comment}{//}}
-\DoxyCodeLine{00588     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00589     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00590     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00591     opaquePsoDesc.VS = }
-\DoxyCodeLine{00592     \{ }
-\DoxyCodeLine{00593         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
-\DoxyCodeLine{00594         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00595     \};}
-\DoxyCodeLine{00596     opaquePsoDesc.PS = }
-\DoxyCodeLine{00597     \{ }
-\DoxyCodeLine{00598         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00599         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00600     \};}
-\DoxyCodeLine{00601     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00602     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00603     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00604     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00605     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
-\DoxyCodeLine{00606     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00607     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00608     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00609     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00610     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00611     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00612 }
-\DoxyCodeLine{00613     \textcolor{comment}{//}}
-\DoxyCodeLine{00614     \textcolor{comment}{// PSO for opaque wireframe objects.}}
-\DoxyCodeLine{00615     \textcolor{comment}{//}}
-\DoxyCodeLine{00616 }
-\DoxyCodeLine{00617     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
-\DoxyCodeLine{00618     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
-\DoxyCodeLine{00619     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
-\DoxyCodeLine{00620 }
-\DoxyCodeLine{00621 \}}
-\DoxyCodeLine{00622 }
-\DoxyCodeLine{00623 \textcolor{keywordtype}{void} SkullApp::BuildFrameResources()}
-\DoxyCodeLine{00624 \{}
-\DoxyCodeLine{00625     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{00626     \{}
-\DoxyCodeLine{00627         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{00628             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
-\DoxyCodeLine{00629     \}}
-\DoxyCodeLine{00630 \}}
-\DoxyCodeLine{00631 }
-\DoxyCodeLine{00632 \textcolor{keywordtype}{void} SkullApp::BuildMaterials()}
-\DoxyCodeLine{00633 \{}
-\DoxyCodeLine{00634 }
-\DoxyCodeLine{00635     \textcolor{keyword}{auto} skullMat = std::make\_unique<Material>();}
-\DoxyCodeLine{00636     skullMat-\/>Name = \textcolor{stringliteral}{"{}skullMat"{}};}
-\DoxyCodeLine{00637     skullMat-\/>MatCBIndex = 0;}
-\DoxyCodeLine{00638     skullMat-\/>DiffuseSrvHeapIndex = 0;}
-\DoxyCodeLine{00639     skullMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00640     skullMat-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05);}
-\DoxyCodeLine{00641     skullMat-\/>Roughness = 0.3f;}
-\DoxyCodeLine{00642     }
-\DoxyCodeLine{00643 }
-\DoxyCodeLine{00644     mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}] = std::move(skullMat);}
-\DoxyCodeLine{00645 \}}
-\DoxyCodeLine{00646 }
-\DoxyCodeLine{00647 \textcolor{keywordtype}{void} SkullApp::BuildRenderItems()}
-\DoxyCodeLine{00648 \{}
-\DoxyCodeLine{00649 }
-\DoxyCodeLine{00650     \textcolor{keyword}{auto} skullRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00651     XMStoreFloat4x4(\&skullRitem-\/>World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));}
-\DoxyCodeLine{00652 }
-\DoxyCodeLine{00653     skullRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{00654     skullRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}].get();}
-\DoxyCodeLine{00655     skullRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}skullGeo"{}}].get();}
-\DoxyCodeLine{00656     skullRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00657     skullRitem-\/>IndexCount = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].IndexCount;}
-\DoxyCodeLine{00658     skullRitem-\/>StartIndexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].StartIndexLocation;}
-\DoxyCodeLine{00659     skullRitem-\/>BaseVertexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].BaseVertexLocation;}
-\DoxyCodeLine{00660     mAllRitems.push\_back(std::move(skullRitem));}
-\DoxyCodeLine{00661 }
-\DoxyCodeLine{00662 }
-\DoxyCodeLine{00663     \textcolor{comment}{// All the render items are opaque.}}
-\DoxyCodeLine{00664     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00665         mOpaqueRitems.push\_back(e.get());}
-\DoxyCodeLine{00666 \}}
-\DoxyCodeLine{00667 }
-\DoxyCodeLine{00668 \textcolor{keywordtype}{void} SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{00669 \{}
-\DoxyCodeLine{00670     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00671     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
-\DoxyCodeLine{00672  }
-\DoxyCodeLine{00673     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{00674     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
-\DoxyCodeLine{00675 }
-\DoxyCodeLine{00676     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{00677     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{00678     \{}
-\DoxyCodeLine{00679         \textcolor{keyword}{auto} ri = ritems[i];}
-\DoxyCodeLine{00680 }
-\DoxyCodeLine{00681         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{00682         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{00683         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{00684 }
-\DoxyCodeLine{00685         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
-\DoxyCodeLine{00686         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
-\DoxyCodeLine{00687 }
-\DoxyCodeLine{00688         cmdList-\/>SetGraphicsRootConstantBufferView(0, objCBAddress);}
-\DoxyCodeLine{00689         cmdList-\/>SetGraphicsRootConstantBufferView(1, matCBAddress);}
-\DoxyCodeLine{00690 }
-\DoxyCodeLine{00691         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{00692     \}}
-\DoxyCodeLine{00693 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00014}00014 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00020}00020 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00021}00021 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00022}00022 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00023}00023 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00024}00024 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00025}00025 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00027}\mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00027}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00028}00028 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00029}00029 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00030}00030 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00031}00031 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00032}00032 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00033}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00033}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00035}00035     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00036}00036     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00037}00037     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00038}00038     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00041}00041     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00042}00042     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00043}00043     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00044}00044     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00045}00045     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00047}00047     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00048}00048     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00050}00050     \mbox{\hyperlink{struct_material}{Material}}* \mbox{\hyperlink{struct_render_item_a47f9e6fad8619fccc9caa92e3c7c9793}{Mat}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00051}00051     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00053}00053     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00054}00054     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00056}00056     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00057}00057     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00058}00058     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00059}00059     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00060}00060 \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00062}00062 \textcolor{keyword}{class }\mbox{\hyperlink{class_skull_app}{SkullApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00063}00063 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00064}00064 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00065}\mbox{\hyperlink{class_skull_app_a67f8a414a525582fa098b5cf364939e5}{00065}}     \mbox{\hyperlink{class_skull_app_a67f8a414a525582fa098b5cf364939e5}{SkullApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00066}\mbox{\hyperlink{class_skull_app_a5ae9d5d475f682f245e1d6a3f8440bd3}{00066}}     \mbox{\hyperlink{class_skull_app_a5ae9d5d475f682f245e1d6a3f8440bd3}{SkullApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_skull_app}{SkullApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00067}\mbox{\hyperlink{class_skull_app_a30d4900a9c6987046d24301134dd546e}{00067}}     \mbox{\hyperlink{class_skull_app}{SkullApp}}\& \mbox{\hyperlink{class_skull_app_a30d4900a9c6987046d24301134dd546e}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_skull_app}{SkullApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00068}\mbox{\hyperlink{class_skull_app_a22865d0254dfbb104981e28dbaa750e0}{00068}}     \mbox{\hyperlink{class_skull_app_a22865d0254dfbb104981e28dbaa750e0}{\string~SkullApp}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00070}\mbox{\hyperlink{class_skull_app_aa58177862d40828267b6c7099514481d}{00070}}     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_skull_app_aa58177862d40828267b6c7099514481d}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00072}00072 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00073}00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00074}00074     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00075}00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00077}00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00078}00078     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00079}00079     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00081}00081     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00082}00082     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00083}00083     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00084}00084     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00085}00085     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00087}00087     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00088}00088     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00089}00089     \textcolor{keywordtype}{void} BuildSkullGeometry();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00090}00090     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00091}00091     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00092}00092     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00093}00093 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00094}00094     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00095}00095     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00096}00096  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00097}00097 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00098}00098 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00099}00099     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00100}00100     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00101}00101     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00102}00102 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00103}00103     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00104}00104 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00105}00105     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00106}00106     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00107}00107     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00109}00109     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00111}00111     \textcolor{comment}{//ComPtr<ID3D12PipelineState> mOpaquePSO = nullptr;}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00112}00112     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00113}00113  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00114}00114     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00115}00115     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00117}00117     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00118}00118     std::vector<RenderItem*> mOpaqueRitems;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00119}00119 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00120}00120     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} mMainPassCB;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00121}00121     \textcolor{keywordtype}{bool} mIsWireframe = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00122}00122 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00123}00123     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00124}00124     XMFLOAT4X4 mView = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00125}00125     XMFLOAT4X4 mProj = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00127}00127     \textcolor{keywordtype}{float} mTheta = 1.5f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00128}00128     \textcolor{keywordtype}{float} mPhi = 0.2f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00129}00129     \textcolor{keywordtype}{float} mRadius = 15.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00131}00131     POINT mLastMousePos;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00132}00132 \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00133}00133 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00134}\mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_aabcda87589d774901aa87061b8fd0176}{00134}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00135}00135     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00136}00136 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00137}00137     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00138}00138 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00139}00139     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00140}00140 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00141}00141 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00142}00142     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00143}00143     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00144}00144         \mbox{\hyperlink{class_skull_app}{SkullApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00145}00145         \textcolor{keywordflow}{if}(!theApp.\mbox{\hyperlink{class_skull_app_ac0abafc8ce97d82674d15800b14a5e13}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00146}00146             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00147}00147 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00148}00148         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00149}00149     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00150}00150     \textcolor{keywordflow}{catch}(\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00151}00151     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00152}00152         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00153}00153         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00154}00154     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00155}00155 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00156}00156 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00157}00157 \mbox{\hyperlink{class_skull_app_a67f8a414a525582fa098b5cf364939e5}{SkullApp::SkullApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00158}00158     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00159}00159 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00160}00160 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00162}00162 \mbox{\hyperlink{class_skull_app_a22865d0254dfbb104981e28dbaa750e0}{SkullApp::\string~SkullApp}}()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00163}00163 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00164}00164     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00165}00165         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00166}00166 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00167}00167 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00168}00168 \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_skull_app_ac0abafc8ce97d82674d15800b14a5e13}{SkullApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00169}00169 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00170}00170     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00171}00171         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00172}00172 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00173}00173     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00174}00174     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00175}00175 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00176}00176 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00177}00177     BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00178}00178     BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00179}00179     BuildSkullGeometry();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00180}00180     BuildMaterials();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00181}00181 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00182}00182     BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00183}00183     BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00184}00184     BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00185}00185 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00186}00186     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00187}00187     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00188}00188     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00189}00189     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00190}00190 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00191}00191     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00192}00192     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00193}00193 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00194}00194     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00195}00195 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00196}00196  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00197}00197 \textcolor{keywordtype}{void} SkullApp::OnResize()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00198}00198 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00199}00199     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00200}00200 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00201}00201     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00202}00202     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00203}00203     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00204}00204 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00205}00205 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00206}00206 \textcolor{keywordtype}{void} SkullApp::Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00207}00207 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00208}00208     OnKeyboardInput(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00209}00209     UpdateCamera(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00210}00210 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00211}00211     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00212}00212     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% \mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00213}00213     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00214}00214 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00215}00215     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00216}00216     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00217}00217     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00218}00218     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00219}00219         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00220}00220         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00221}00221         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00222}00222         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00223}00223     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00224}00224 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00225}00225 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00226}00226     UpdateObjectCBs(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00227}00227     UpdateMaterialCBs(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00228}00228     UpdateMainPassCB(gt);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00229}00229 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00230}00230 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00231}00231 \textcolor{keywordtype}{void} SkullApp::Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00232}00232 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00233}00233     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00235}00235     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00236}00236     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00237}00237     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00238}00238 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00239}00239     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00240}00240     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00241}00241     \textcolor{comment}{//ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSO.Get()));}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00242}00242 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00243}00243     \textcolor{keywordflow}{if} (mIsWireframe)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00244}00244     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00245}00245         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00246}00246     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00247}00247     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00248}00248     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00249}00249         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00250}00250     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00251}00251 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00252}00252     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00253}00253     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00254}00254 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00255}00255     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00256}00256     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00257}00257         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00258}00258 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00259}00259     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00260}00260     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), Colors::LightSteelBlue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00261}00261     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00262}00262 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00263}00263     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00264}00264     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00265}00265 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00266}00266     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00267}00267 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00268}00268     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00269}00269     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00270}00270 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00271}00271     DrawRenderItems(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), mOpaqueRitems);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00272}00272 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00273}00273     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00274}00274     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00275}00275         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00276}00276 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00277}00277     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00278}00278     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00279}00279 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00280}00280     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00281}00281     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00282}00282     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00283}00283 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00284}00284     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00285}00285     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00286}00286     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00287}00287 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00288}00288     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00289}00289     mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00290}00290 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00291}00291     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00292}00292     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00293}00293     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00294}00294     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00295}00295 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00296}00296 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00297}00297 \textcolor{keywordtype}{void} SkullApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00298}00298 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00299}00299     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00300}00300     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00301}00301 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00302}00302     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00303}00303 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00304}00304 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00305}00305 \textcolor{keywordtype}{void} SkullApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00306}00306 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00307}00307     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00308}00308 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00309}00309 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00310}00310 \textcolor{keywordtype}{void} SkullApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00311}00311 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00312}00312     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00313}00313     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00314}00314         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00315}00315         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00316}00316         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00317}00317 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00318}00318         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00319}00319         mTheta += dx;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00320}00320         mPhi += dy;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00321}00321 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00322}00322         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00323}00323         mPhi = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mPhi, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00324}00324     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00325}00325     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00326}00326     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00327}00327         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00328}00328         \textcolor{keywordtype}{float} dx = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00329}00329         \textcolor{keywordtype}{float} dy = 0.05f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00330}00330 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00331}00331         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00332}00332         mRadius += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00333}00333 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00334}00334         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00335}00335         mRadius = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00336}00336     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00337}00337 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00338}00338     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00339}00339     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00340}00340 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00341}00341  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00342}00342 \textcolor{keywordtype}{void} SkullApp::OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00343}00343 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00344}00344     \textcolor{keywordflow}{if} (GetAsyncKeyState(\textcolor{charliteral}{'1'}) \& 0x8000)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00345}00345         mIsWireframe = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00346}00346     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00347}00347         mIsWireframe = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00348}00348 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00349}00349  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00350}00350 \textcolor{keywordtype}{void} SkullApp::UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00351}00351 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00352}00352     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00353}00353     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00354}00354     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00355}00355     mEyePos.y = mRadius*cosf(mPhi);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00356}00356 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00357}00357     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00358}00358     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00359}00359     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00360}00360     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00361}00361 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00362}00362     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00363}00363     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00364}00364 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00365}00365 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00366}00366 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00367}00367 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00368}00368 \textcolor{keywordtype}{void} SkullApp::UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00369}00369 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00370}00370     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00371}00371     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00372}00372     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00373}00373         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00374}00374         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00375}00375         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00376}00376         \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00377}00377             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00378}00378 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00379}00379             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00380}00380             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00381}00381 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00382}00382             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00383}00383 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00384}00384             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00385}00385             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00386}00386         \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00387}00387     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00388}00388 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00389}00389 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00390}00390 \textcolor{keywordtype}{void} SkullApp::UpdateMaterialCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00391}00391 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00392}00392     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00393}00393     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00394}00394     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00395}00395         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00396}00396         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00397}00397         \mbox{\hyperlink{struct_material}{Material}}* mat = e.second.get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00398}00398         \textcolor{keywordflow}{if}(mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} > 0)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00399}00399         \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00400}00400             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00401}00401 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00402}00402             \mbox{\hyperlink{struct_material_constants}{MaterialConstants}} matConstants;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00403}00403             matConstants.\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = mat-\/>\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00404}00404             matConstants.\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = mat-\/>\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00405}00405             matConstants.\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = mat-\/>\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00406}00406             XMStoreFloat4x4(\&matConstants.\mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}}, XMMatrixTranspose(matTransform));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00407}00407 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00408}00408             currMaterialCB-\/>CopyData(mat-\/>\mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{MatCBIndex}}, matConstants);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00409}00409 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00410}00410             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00411}00411             mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}}-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00412}00412         \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00413}00413     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00414}00414 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00415}00415 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00416}00416 \textcolor{keywordtype}{void} SkullApp::UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00417}00417 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00418}00418     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00419}00419     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00420}00420 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00421}00421     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00422}00422     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00423}00423     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00424}00424     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00425}00425 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00426}00426     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00427}00427     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00428}00428     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00429}00429     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00430}00430     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00431}00431     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00432}00432     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = mEyePos;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00433}00433     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00434}00434     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00435}00435     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00436}00436     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00437}00437     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00438}00438     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00439}00439 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00440}00440     \textcolor{comment}{//step1}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00441}00441     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00442}00442 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00443}00443     \textcolor{comment}{//mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00444}00444     \textcolor{comment}{//mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00445}00445     \textcolor{comment}{//mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00446}00446     \textcolor{comment}{//mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00447}00447     \textcolor{comment}{//mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00448}00448     \textcolor{comment}{//mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00449}00449 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00450}00450 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00451}00451     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a759c2228a71bfc669460ae4210a48e52}{Position}} = \{ 0.0f, 5.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00452}00452     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.0f, -\/5.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00453}00453     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.35f, 0.35f, 0.35f \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00454}00454     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a7202d90f1b073d3ac170c18451f0bc92}{SpotPower}} = 0.95;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00455}00455 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00456}00456     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00457}00457     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00458}00458 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00459}00459 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00460}00460 \textcolor{keywordtype}{void} SkullApp::BuildRootSignature()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00461}00461 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00462}00462     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00463}00463     CD3DX12\_ROOT\_PARAMETER slotRootParameter[3];}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00464}00464 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00465}00465     \textcolor{comment}{// Create root CBV.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00466}00466     slotRootParameter[0].InitAsConstantBufferView(0);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00467}00467     slotRootParameter[1].InitAsConstantBufferView(1);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00468}00468     slotRootParameter[2].InitAsConstantBufferView(2);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00469}00469 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00470}00470     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00471}00471     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(3, slotRootParameter, 0, \textcolor{keyword}{nullptr}, D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00472}00472 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00473}00473     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00474}00474     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00475}00475     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00476}00476     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00477}00477         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00478}00478 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00479}00479     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00480}00480     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00481}00481         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00482}00482     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00483}00483     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00484}00484 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00485}00485     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00486}00486         0,}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00487}00487         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00488}00488         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00489}00489         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00490}00490 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00491}00491 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00492}00492 \textcolor{keywordtype}{void} SkullApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00493}00493 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00494}00494 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00495}00495     mShaders[\textcolor{stringliteral}{"{}standardVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)VS\_SpotLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00496}00496     mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)PS\_SpotLight.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_1"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00497}00497     }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00498}00498     mInputLayout =}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00499}00499     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00500}00500         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00501}00501         \{ \textcolor{stringliteral}{"{}NORMAL"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 12, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \},}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00502}00502     \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00503}00503 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00504}00504 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00505}00505 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00506}00506 \textcolor{keywordtype}{void} SkullApp::BuildSkullGeometry()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00507}00507 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00508}00508     std::ifstream fin(\textcolor{stringliteral}{"{}Models/skull.txt"{}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00509}00509 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00510}00510     \textcolor{keywordflow}{if}(!fin)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00511}00511     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00512}00512         MessageBox(0, L\textcolor{stringliteral}{"{}Models/skull.txt not found."{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00513}00513         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00514}00514     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00515}00515 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00516}00516     UINT vcount = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00517}00517     UINT tcount = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00518}00518     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00519}00519 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00520}00520     fin >> ignore >> vcount;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00521}00521     fin >> ignore >> tcount;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00522}00522     fin >> ignore >> ignore >> ignore >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00523}00523 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00524}00524     std::vector<Vertex> vertices(vcount);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00525}00525     \textcolor{keywordflow}{for}(UINT i = 0; i < vcount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00526}00526     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00527}00527         fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00528}00528         fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00529}00529     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00530}00530 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00531}00531     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00532}00532     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00533}00533     fin >> ignore;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00534}00534 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00535}00535     std::vector<std::int32\_t> indices(3 * tcount);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00536}00536     \textcolor{keywordflow}{for}(UINT i = 0; i < tcount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00537}00537     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00538}00538         fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00539}00539     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00540}00540 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00541}00541     fin.close();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00542}00542 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00543}00543     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00544}00544     \textcolor{comment}{// Pack the indices of all the meshes into one index buffer.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00545}00545     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00546}00546 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00547}00547     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00548}00548 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00549}00549     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::int32\_t);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00550}00550 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00551}00551     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00552}00552     geo-\/>Name = \textcolor{stringliteral}{"{}skullGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00553}00553 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00554}00554     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00555}00555     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00556}00556 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00557}00557     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00558}00558     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00559}00559 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00560}00560     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00561}00561         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00562}00562 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00563}00563     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00564}00564         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00565}00565 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00566}00566     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00567}00567     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00568}00568     geo-\/>IndexFormat = DXGI\_FORMAT\_R32\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00569}00569     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00570}00570 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00571}00571     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00572}00572     submesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00573}00573     submesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00574}00574     submesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00575}00575 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00576}00576     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}] = submesh;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00577}00577 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00578}00578     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00579}00579 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00580}00580 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00581}00581 \textcolor{keywordtype}{void} SkullApp::BuildPSOs()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00582}00582 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00583}00583     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00584}00584 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00585}00585     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00586}00586     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00587}00587     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00588}00588     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00589}00589     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00590}00590     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00591}00591     opaquePsoDesc.VS = }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00592}00592     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00593}00593         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00594}00594         mShaders[\textcolor{stringliteral}{"{}standardVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00595}00595     \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00596}00596     opaquePsoDesc.PS = }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00597}00597     \{ }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00598}00598         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00599}00599         mShaders[\textcolor{stringliteral}{"{}opaquePS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00600}00600     \};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00601}00601     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00602}00602     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00603}00603     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00604}00604     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00605}00605     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_TRIANGLE;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00606}00606     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00607}00607     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00608}00608     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00609}00609     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00610}00610     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00611}00611     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00612}00612 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00613}00613     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00614}00614     \textcolor{comment}{// PSO for opaque wireframe objects.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00615}00615     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00616}00616 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00617}00617     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaqueWireframePsoDesc = opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00618}00618     opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00619}00619     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaqueWireframePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque\_wireframe"{}}])));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00620}00620 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00621}00621 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00622}00622 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00623}00623 \textcolor{keywordtype}{void} SkullApp::BuildFrameResources()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00624}00624 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00625}00625     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_week5-3-_lit_skull_app-_spot_light_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00626}00626     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00627}00627         mFrameResources.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00628}00628             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00629}00629     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00630}00630 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00631}00631 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00632}00632 \textcolor{keywordtype}{void} SkullApp::BuildMaterials()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00633}00633 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00634}00634 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00635}00635     \textcolor{keyword}{auto} skullMat = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00636}00636     skullMat-\/>Name = \textcolor{stringliteral}{"{}skullMat"{}};}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00637}00637     skullMat-\/>MatCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00638}00638     skullMat-\/>DiffuseSrvHeapIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00639}00639     skullMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00640}00640     skullMat-\/>FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00641}00641     skullMat-\/>Roughness = 0.3f;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00642}00642     }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00643}00643 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00644}00644     mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}] = std::move(skullMat);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00645}00645 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00646}00646 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00647}00647 \textcolor{keywordtype}{void} SkullApp::BuildRenderItems()}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00648}00648 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00649}00649 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00650}00650     \textcolor{keyword}{auto} skullRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00651}00651     XMStoreFloat4x4(\&skullRitem-\/>World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 1.0f, 0.0f));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00652}00652 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00653}00653     skullRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00654}00654     skullRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}skullMat"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00655}00655     skullRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}skullGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00656}00656     skullRitem-\/>PrimitiveType = D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00657}00657     skullRitem-\/>IndexCount = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00658}00658     skullRitem-\/>StartIndexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00659}00659     skullRitem-\/>BaseVertexLocation = skullRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}skull"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00660}00660     mAllRitems.push\_back(std::move(skullRitem));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00661}00661 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00662}00662 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00663}00663     \textcolor{comment}{// All the render items are opaque.}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00664}00664     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00665}00665         mOpaqueRitems.push\_back(e.get());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00666}00666 \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00667}00667 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00668}00668 \textcolor{keywordtype}{void} SkullApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00669}00669 \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00670}00670     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00671}00671     UINT matCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}));}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00672}00672  }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00673}00673     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00674}00674     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00675}00675 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00676}00676     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00677}00677     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00678}00678     \{}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00679}00679         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00680}00680 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00681}00681         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00682}00682         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00683}00683         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00684}00684 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00685}00685         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00686}00686         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00687}00687 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00688}00688         cmdList-\/>SetGraphicsRootConstantBufferView(0, objCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00689}00689         cmdList-\/>SetGraphicsRootConstantBufferView(1, matCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00690}00690 }
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00691}00691         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00692}00692     \}}
+\DoxyCodeLine{\Hypertarget{_week5-3-_lit_skull_app-_spot_light_8cpp_source_l00693}00693 \}}
 
 \end{DoxyCode}

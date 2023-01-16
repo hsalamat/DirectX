@@ -1,84 +1,84 @@
-\doxysection{Week2-\/4-\/win32\+Message\+SDemo.cpp}
+\hypertarget{_week2-4-win32_message_s_demo_8cpp_source}{}\doxysection{Week2-\/4-\/win32\+Message\+SDemo.cpp}
 \label{_week2-4-win32_message_s_demo_8cpp_source}\index{Week2/Win32Examples/Week2-\/4-\/win32MessageSDemo.cpp@{Week2/Win32Examples/Week2-\/4-\/win32MessageSDemo.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#include <windows.h>}}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#include <string>}}
-\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include "{}WindowsMessageMap.h"{}}}
-\DoxyCodeLine{00018 }
-\DoxyCodeLine{00019 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) }
-\DoxyCodeLine{00020 \{}
-\DoxyCodeLine{00021     \textcolor{keyword}{static} WindowsMessageMap mm;}
-\DoxyCodeLine{00022     std::string message = mm(msg, wParam, lParam);}
-\DoxyCodeLine{00023     OutputDebugStringA(message.c\_str());}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025     \textcolor{keywordflow}{switch} (msg)}
-\DoxyCodeLine{00026     \{}
-\DoxyCodeLine{00027     \textcolor{keywordflow}{case} WM\_CLOSE:}
-\DoxyCodeLine{00028         PostQuitMessage(100); \textcolor{comment}{//if you like to return 100}}
-\DoxyCodeLine{00029         \textcolor{keywordflow}{break};}
-\DoxyCodeLine{00030     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
-\DoxyCodeLine{00031         \textcolor{keywordflow}{if} (wParam == \textcolor{charliteral}{'F'})}
-\DoxyCodeLine{00032         \{}
-\DoxyCodeLine{00033             SetWindowText(hWnd, L\textcolor{stringliteral}{"{}F has been pressed"{}});}
-\DoxyCodeLine{00034         \}}
-\DoxyCodeLine{00035     \}}
-\DoxyCodeLine{00036     \textcolor{keywordflow}{return} DefWindowProcW(hWnd, msg, wParam, lParam);}
-\DoxyCodeLine{00037 \}}
-\DoxyCodeLine{00038 }
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00041 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043 \{}
-\DoxyCodeLine{00044     \textcolor{comment}{//register window class}}
-\DoxyCodeLine{00045     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/ns-\/winuser-\/wndclassexa}}
-\DoxyCodeLine{00046     \textcolor{keyword}{const} \textcolor{keyword}{auto} pClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
-\DoxyCodeLine{00047     WNDCLASSEX wc = \{ 0 \};}
-\DoxyCodeLine{00048     wc.cbSize = \textcolor{keyword}{sizeof}(wc);}
-\DoxyCodeLine{00049     wc.style = CS\_OWNDC; \textcolor{comment}{//own its Device Context}}
-\DoxyCodeLine{00050     wc.lpfnWndProc = WndProc;}
-\DoxyCodeLine{00051     wc.cbClsExtra = 0;   }
-\DoxyCodeLine{00052     wc.cbWndExtra = 0;    }
-\DoxyCodeLine{00053     wc.hInstance = hInstance;}
-\DoxyCodeLine{00054     wc.hIcon = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00055     wc.hCursor = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00056     wc.hbrBackground = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00057     wc.lpszMenuName = \textcolor{keyword}{nullptr}; }
-\DoxyCodeLine{00058     \textcolor{comment}{//wc.lpszClassName = L"{}BasicWndClass"{};}}
-\DoxyCodeLine{00059     wc.lpszClassName = pClassName;}
-\DoxyCodeLine{00060     RegisterClassEx(\&wc);}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062     \textcolor{comment}{//create window}}
-\DoxyCodeLine{00063     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/nf-\/winuser-\/createwindowexa}}
-\DoxyCodeLine{00064     HWND hWnd = CreateWindowEx(}
-\DoxyCodeLine{00065         0,}
-\DoxyCodeLine{00066         pClassName,}
-\DoxyCodeLine{00067         L\textcolor{stringliteral}{"{}My First Window"{}},}
-\DoxyCodeLine{00068         WS\_CAPTION | WS\_MINIMIZEBOX | WS\_SYSMENU,}
-\DoxyCodeLine{00069         200, 200, 640, 480,}
-\DoxyCodeLine{00070         \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, hInstance, \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00071     );}
-\DoxyCodeLine{00072     ShowWindow(hWnd, SW\_SHOW);}
-\DoxyCodeLine{00073     \textcolor{comment}{//while (true);}}
-\DoxyCodeLine{00074     MSG msg = \{ 0 \};}
-\DoxyCodeLine{00081     BOOL bRet = 1;}
-\DoxyCodeLine{00082     \textcolor{keywordflow}{while} ((bRet = GetMessage(\&msg, 0, 0, 0)) != 0)}
-\DoxyCodeLine{00083     \{}
-\DoxyCodeLine{00084         TranslateMessage(\&msg);}
-\DoxyCodeLine{00085         DispatchMessage(\&msg);      }
-\DoxyCodeLine{00086     \}}
-\DoxyCodeLine{00087 }
-\DoxyCodeLine{00088     \textcolor{keywordflow}{if} (bRet == -\/1)}
-\DoxyCodeLine{00089     \{}
-\DoxyCodeLine{00090         MessageBox(0, L\textcolor{stringliteral}{"{}GetMessage FAILED"{}}, L\textcolor{stringliteral}{"{}Error"{}}, MB\_OK);}
-\DoxyCodeLine{00091         \textcolor{keywordflow}{return} bRet;}
-\DoxyCodeLine{00092     \}}
-\DoxyCodeLine{00093     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00094     \{}
-\DoxyCodeLine{00095 }
-\DoxyCodeLine{00096         \textcolor{keywordflow}{return} msg.wParam;}
-\DoxyCodeLine{00097     \}}
-\DoxyCodeLine{00098 \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_windows_message_map_8h}{WindowsMessageMap.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00019}\mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{00019}} LRESULT CALLBACK \mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{WndProc}}(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00020}00020 \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00021}00021     \textcolor{keyword}{static} \mbox{\hyperlink{class_windows_message_map}{WindowsMessageMap}} mm;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00022}00022     std::string message = mm(msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00023}00023     OutputDebugStringA(message.c\_str());}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00025}00025     \textcolor{keywordflow}{switch} (msg)}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00026}00026     \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00027}00027     \textcolor{keywordflow}{case} WM\_CLOSE:}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00028}00028         PostQuitMessage(100); \textcolor{comment}{//if you like to return 100}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00029}00029         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00030}00030     \textcolor{keywordflow}{case} WM\_KEYDOWN:}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00031}00031         \textcolor{keywordflow}{if} (wParam == \textcolor{charliteral}{'F'})}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00032}00032         \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00033}00033             SetWindowText(hWnd, L\textcolor{stringliteral}{"{}F has been pressed"{}});}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00034}00034         \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00035}00035     \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00036}00036     \textcolor{keywordflow}{return} DefWindowProcW(hWnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00037}00037 \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00041}\mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp_aad7900b674de058446ff8791973fafca}{00041}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp_aad7900b674de058446ff8791973fafca}{WinMain}}(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00043}00043 \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00044}00044     \textcolor{comment}{//register window class}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00045}00045     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/ns-\/winuser-\/wndclassexa}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00046}00046     \textcolor{keyword}{const} \textcolor{keyword}{auto} pClassName = L\textcolor{stringliteral}{"{}BasicWndClass"{}};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00047}00047     WNDCLASSEX wc = \{ 0 \};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00048}00048     wc.cbSize = \textcolor{keyword}{sizeof}(wc);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00049}00049     wc.style = CS\_OWNDC; \textcolor{comment}{//own its Device Context}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00050}00050     wc.lpfnWndProc = \mbox{\hyperlink{_week2-4-win32_message_s_demo_8cpp_a2641211f9fb5d626cfc3bbfd916829b0}{WndProc}};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00051}00051     wc.cbClsExtra = 0;   }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00052}00052     wc.cbWndExtra = 0;    }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00053}00053     wc.hInstance = hInstance;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00054}00054     wc.hIcon = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00055}00055     wc.hCursor = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00056}00056     wc.hbrBackground = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00057}00057     wc.lpszMenuName = \textcolor{keyword}{nullptr}; }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00058}00058     \textcolor{comment}{//wc.lpszClassName = L"{}BasicWndClass"{};}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00059}00059     wc.lpszClassName = pClassName;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00060}00060     RegisterClassEx(\&wc);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00062}00062     \textcolor{comment}{//create window}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00063}00063     \textcolor{comment}{//https://docs.microsoft.com/en-\/us/windows/win32/api/winuser/nf-\/winuser-\/createwindowexa}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00064}00064     HWND hWnd = CreateWindowEx(}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00065}00065         0,}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00066}00066         pClassName,}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00067}00067         L\textcolor{stringliteral}{"{}My First Window"{}},}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00068}00068         WS\_CAPTION | WS\_MINIMIZEBOX | WS\_SYSMENU,}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00069}00069         200, 200, 640, 480,}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00070}00070         \textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, hInstance, \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00071}00071     );}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00072}00072     ShowWindow(hWnd, SW\_SHOW);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00073}00073     \textcolor{comment}{//while (true);}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00074}00074     MSG msg = \{ 0 \};}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00081}00081     BOOL bRet = 1;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00082}00082     \textcolor{keywordflow}{while} ((bRet = GetMessage(\&msg, 0, 0, 0)) != 0)}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00083}00083     \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00084}00084         TranslateMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00085}00085         DispatchMessage(\&msg);      }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00086}00086     \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00088}00088     \textcolor{keywordflow}{if} (bRet == -\/1)}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00089}00089     \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00090}00090         MessageBox(0, L\textcolor{stringliteral}{"{}GetMessage FAILED"{}}, L\textcolor{stringliteral}{"{}Error"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00091}00091         \textcolor{keywordflow}{return} bRet;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00092}00092     \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00093}00093     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00094}00094     \{}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00095}00095 }
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00096}00096         \textcolor{keywordflow}{return} msg.wParam;}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00097}00097     \}}
+\DoxyCodeLine{\Hypertarget{_week2-4-win32_message_s_demo_8cpp_source_l00098}00098 \}}
 
 \end{DoxyCode}

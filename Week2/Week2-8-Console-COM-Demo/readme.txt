@@ -1,12 +1,15 @@
 Introduction
 COM (Component Object Model) is the popular TLA (three-letter acronym) that seems to be everywhere 
-in the Windows world these days. There are tons of new technologies coming out all the time, all based on COM. 
+in the Windows world these days. There are tons of new technologies coming out all the time, 
+all based on COM. 
+
 The documentation throws around lots of terms like COM object, interface, server, and so on, 
 but it all assumes you're familiar with how COM works and how to use it.
 
 This article introduces COM from the beginning, describes the underlying mechanisms involved, 
 and shows how to use COM objects provided by others (specifically, the Windows shell). 
-By the end of the article, you will be able to use the COM objects built-in to Windows and provided by third parties.
+By the end of the article, you will be able to use the COM objects built-in to Windows 
+and provided by third parties.
 
 1.COM - What Exactly Is It? - A quick introduction to the COM standard, and the problems it was created to solve. 
 You don't need to know this to use COM, but I'd still recommend reading it to get an understanding of
@@ -28,7 +31,11 @@ why things are done the way they are in COM.
 COM - What exactly is it?
 COM is, simply put, a method for sharing binary code across different applications and languages. 
 This is unlike the C++ approach, which promotes reuse of source code. 
-ATL is a perfect example of this. While source-level reuse works fine, it only works for C++. 
+ATL is a perfect example of this. The Active Template Library (ATL) is 
+a set of template-based C++ classes that let you create small, 
+fast Component Object Model (COM) objects. 
+
+While source-level reuse works fine, it only works for C++. 
 It also introduces the possibility of name collisions, not to mention bloat from having multiple copies of the code 
 in your projects.
 
@@ -54,7 +61,7 @@ so that's why a lot of COM code uses C++. But remember, the language that the mo
 because the resulting binary is usable by all languages.
 
 Incidentally, COM is not Win32-specific. It could, in theory, be ported to Unix or any other OS. 
-However, I have never seem COM mentioned outside of the Windows world.
+However, I have never seen COM mentioned outside of the Windows world.
 
 Definitions of the Basic Elements
 Let's go from the bottom up. An interface is simply a group of functions. 
@@ -99,7 +106,9 @@ Often, the COM library is referred to as just "COM," but I will not do that here
 Working with COM Objects
 Every language has its own way of dealing with objects. For example, in C++ you create them on the stack,
 or use new to dynamically allocate them. Since COM must be language-neutral, 
-the COM library provides its own object-management routines. A comparison of COM and C++ object management is listed below:
+the COM library provides its own object-management routines. 
+
+A comparison of COM and C++ object management is listed below:
 
 Creating a new object
 In C++, use operator new or create an object on the stack.
@@ -119,7 +128,6 @@ Creating a COM object
 To create a COM object and get an interface from the object, you call the COM library API CoCreateInstance(). 
 The prototype for CoCreateInstance() is:
 
-Copy Code
 HRESULT CoCreateInstance (
     REFCLSID  rclsid,
     LPUNKNOWN pUnkOuter,
@@ -129,18 +137,25 @@ HRESULT CoCreateInstance (
 The parameters are:
 
 rclsid
-The CLSID of the coclass. For example, you can pass CLSID_ShellLink to create a COM object used to create shortcuts.
+The CLSID of the coclass. For example, you can pass CLSID_ShellLink to create a COM object 
+used to create shortcuts.
 
 pUnkOuter
-This is only used when aggregating COM objects, which is a way of taking an existing coclass and adding new methods to it. 
+This is only used when aggregating COM objects, which is a way of taking an existing coclass a
+nd adding new methods to it. 
+
 For our purposes, we can just pass NULL to indicate we're not using aggregation.
 
 dwClsContext
-Indicates what kind of COM servers we want to use. For this article, we will always be using the simplest kind of server, 
-an in-process DLL, so we'll pass CLSCTX_INPROC_SERVER. One caveat: you should not use CLSCTX_ALL (which is the default in ATL) because it will fail on Windows 95 systems that do not have DCOM installed.
+Indicates what kind of COM servers we want to use. For this article, we will always be using 
+the simplest kind of server, an in-process DLL, so we'll pass CLSCTX_INPROC_SERVER. 
+
+One caveat: you should not use CLSCTX_ALL (which is the default in ATL) because it will fail on 
+Windows 95 systems that do not have DCOM installed.
 
 riid
-The IID of the interface you want returned. For example, you can pass IID_IShellLink to get a pointer to an IShellLink interface.
+The IID of the interface you want returned. For example, you can pass IID_IShellLink to get a pointer 
+to an IShellLink interface.
 
 ppv
 Address of an interface pointer. The COM library returns the requested interface through this parameter.
@@ -149,7 +164,7 @@ loading the server into memory, and creating an instance of the coclass you requ
 
 Here's a sample call, which instantiates a CLSID_ShellLink object and requests an IShellLink interface pointer to that COM object.
 
-Copy Code
+
 HRESULT     hr;
 IShellLink* pISL;
 
@@ -184,7 +199,8 @@ whenever you're done using an interface. If you don't release interfaces,
 the COM objects (and the DLLs that contain the code) will remain in memory, 
 and will needlessly add to your app's working set. If your app will be running for a long time, 
 you should call the CoFreeUnusedLibraries() API during your idle processing. 
-This API unloads any COM servers that have no outstanding references, so this also reduces your app's memory usage.
+This API unloads any COM servers that have no outstanding references, 
+so this also reduces your app's memory usage.
 
 Continuing the above example, here's how you would use Release():
 
@@ -202,18 +218,20 @@ if ( SUCCEEDED ( hr ) )
 The IUnknown interface is explained fully in the next section.
 
 The Base Interface - IUnknown
-Every COM interface is derived from IUnknown. The name is a bit misleading, in that it's not an unknown interface. 
-The name signifies that if you have an IUnknown pointer to a COM object, you don't know what the underlying object is,
-since every COM object implements IUnknown.
+Every COM interface is derived from IUnknown. The name is a bit misleading, in that it's not an 
+unknown interface. 
+
+The name signifies that if you have an IUnknown pointer to a COM object, you don't know 
+what the underlying object is, since every COM object implements IUnknown.
 
 IUnknown has three methods:
 
-AddRef() - Tells the COM object to increment its reference count. You would use this method if you made a copy of 
-an interface pointer, and both the original and the copy would still be used. 
+AddRef() - Tells the COM object to increment its reference count. You would use this method 
+if you made a copy of an interface pointer, and both the original and the copy would still be used. 
 We won't need to use AddRef() for our purposes in this article.
 
-Release() - Tells the COM object to decrement its reference count. See the previous example for a code snippet 
-demonstrating Release().
+Release() - Tells the COM object to decrement its reference count. 
+See the previous example for a code snippet demonstrating Release().
 
 QueryInterface() - Requests an interface pointer from a COM object. 
 You use this when a coclass implements more than one interface.
@@ -230,14 +248,18 @@ The IID of the interface you're requesting.
 
 ppv
 Address of an interface pointer. QueryInterface() returns the interface through this parameter if it is successful.
-Let's continue our shell link example. The coclass for making shell links implements IShellLink and IPersistFile. If you already have an IShellLink pointer, pISL, you can request an IPersistFile interface from the COM object with code like this:
+Let's continue our shell link example. The coclass for making shell links implements 
+IShellLink and IPersistFile. If you already have an IShellLink pointer, pISL, 
+you can request an IPersistFile interface from the COM object with code like this:
 
 
 HRESULT hr;
 IPersistFile* pIPF;
 
     hr = pISL->QueryInterface ( IID_IPersistFile, (void**) &pIPF );
-You then test hr with the SUCCEEDED macro to determine if QueryInterface() worked. If it succeeded, you can then use the new interface pointer, pIPF, just like any other interface. You must also call pIPF->Release() to tell the COM object that you're done using the interface.
+You then test hr with the SUCCEEDED macro to determine if QueryInterface() worked. 
+If it succeeded, you can then use the new interface pointer, pIPF, just like any other interface. 
+You must also call pIPF->Release() to tell the COM object that you're done using the interface.
 
 
 String Handling
@@ -304,7 +326,8 @@ char szANSIString [MAX_PATH];
 After this call, szANSIString will contain the ANSI version of the Unicode string.
 
 wcstombs()
-The CRT function wcstombs() is a bit simpler, but it just ends up calling WideCharToMultiByte(), so in the end the results are the same. The prototype for wcstombs() is:
+The CRT function wcstombs() is a bit simpler, but it just ends up calling WideCharToMultiByte(), 
+so in the end the results are the same. The prototype for wcstombs() is:
 
 
 size_t wcstombs (
@@ -487,18 +510,30 @@ IPersistFile* pIPF;
     // 7. Uninit the COM library.  In MFC apps, this is not necessary since MFC
     // does it for us.
     CoUninitialize();
-Handling HRESULTs
-I've already shown some simple error handling, using the SUCCEEDED and FAILED macros. Now I'll give some more details on what to do with the HRESULTs returned from COM methods.
 
-An HRESULT is a 32-bit signed integer, with nonnegative values indicating success, and negative values indicating failure. An HRESULT has three fields: the severity bit (to indicate success or failure), the facility code, and the status code. The "facility" indicates what component or program the HRESULT is coming from. Microsoft assigns facility codes to the various components, for example COM has one, the Task Scheduler has one, and so on. The "code" is a 16-bit field that has no intrinsic meaning; the codes are just an arbitrary association between a number and a meaning, just like the values returned by GetLastError().
+Handling HRESULTs
+I've already shown some simple error handling, using the SUCCEEDED and FAILED macros. 
+Now I'll give some more details on what to do with the HRESULTs returned from COM methods.
+
+An HRESULT is a 32-bit signed integer, with nonnegative values indicating success, 
+and negative values indicating failure. 
+An HRESULT has three fields: the severity bit (to indicate success or failure), 
+the facility code, and the status code. 
+The "facility" indicates what component or program the HRESULT is coming from. 
+Microsoft assigns facility codes to the various components, for example COM has one, 
+the Task Scheduler has one, and so on. The "code" is a 16-bit field that has no intrinsic meaning; 
+the codes are just an arbitrary association between a number and a meaning, 
+just like the values returned by GetLastError().
 
 If you look up error codes in the winerror.h file, you'll see a lot of HRESULTs listed, with the naming convention [facility]_[severity]_[description]. Generic HRESULTs that can be returned by any component (like E_OUTOFMEMORY) have no facility in their name. Examples:
 
-REGDB_E_READREGDB: Facility = REGDB, for "registry database"; E = error; READREGDB is a description of the error (couldn't read the database).
+REGDB_E_READREGDB: Facility = REGDB, for "registry database"; E = error; READREGDB is a description 
+of the error (couldn't read the database).
 S_OK: Facility = generic; S = success; OK is a description of the status (everything's OK).
 Fortunately, there are easier ways to determine the meaning of an HRESULT than looking through winerror.h. HRESULTs for built-in facilities can be looked up with the Error Lookup tool. For example, say you forgot to call CoInitialize() before CoCreateInstance(). CoCreateInstance() will return a value of 0x800401F0. You can enter that value into Error Lookup and you'll see the description: "CoInitialize has not been called."
 
 
-
-You can also look up HRESULT descriptions in the debugger. If you have an HRESULT variable called hres, you can view the description in the Watch window by entering "hres,hr" as the value to watch. The ",hr" tells VC to display the value as an HRESULT description.
+You can also look up HRESULT descriptions in the debugger. If you have an HRESULT variable called hres, 
+you can view the description in the Watch window by entering "hres,hr" as the value to watch. 
+The ",hr" tells VC to display the value as an HRESULT description.
 

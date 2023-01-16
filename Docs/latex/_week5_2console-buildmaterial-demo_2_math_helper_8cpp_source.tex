@@ -1,88 +1,88 @@
-\doxysection{Math\+Helper.\+cpp}
+\hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source}{}\doxysection{Math\+Helper.\+cpp}
 \label{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source}\index{Week5/console-\/buildmaterial-\/demo/MathHelper.cpp@{Week5/console-\/buildmaterial-\/demo/MathHelper.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week5_2console-buildmaterial-demo_2_math_helper_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// MathHelper.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}MathHelper.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include <float.h>}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include <cmath>}}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{const} \textcolor{keywordtype}{float} MathHelper::Infinity = FLT\_MAX;}
-\DoxyCodeLine{00012 \textcolor{keyword}{const} \textcolor{keywordtype}{float} MathHelper::Pi       = 3.1415926535f;}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014 \textcolor{keywordtype}{float} MathHelper::AngleFromXY(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y)}
-\DoxyCodeLine{00015 \{}
-\DoxyCodeLine{00016     \textcolor{keywordtype}{float} theta = 0.0f;}
-\DoxyCodeLine{00017  }
-\DoxyCodeLine{00018     \textcolor{comment}{// Quadrant I or IV}}
-\DoxyCodeLine{00019     \textcolor{keywordflow}{if}(x >= 0.0f) }
-\DoxyCodeLine{00020     \{}
-\DoxyCodeLine{00021         \textcolor{comment}{// If x = 0, then atanf(y/x) = +pi/2 if y > 0}}
-\DoxyCodeLine{00022         \textcolor{comment}{//                atanf(y/x) = -\/pi/2 if y < 0}}
-\DoxyCodeLine{00023         theta = atanf(y / x); \textcolor{comment}{// in [-\/pi/2, +pi/2]}}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025         \textcolor{keywordflow}{if}(theta < 0.0f)}
-\DoxyCodeLine{00026             theta += 2.0f*Pi; \textcolor{comment}{// in [0, 2*pi).}}
-\DoxyCodeLine{00027     \}}
-\DoxyCodeLine{00028 }
-\DoxyCodeLine{00029     \textcolor{comment}{// Quadrant II or III}}
-\DoxyCodeLine{00030     \textcolor{keywordflow}{else}      }
-\DoxyCodeLine{00031         theta = atanf(y/x) + Pi; \textcolor{comment}{// in [0, 2*pi).}}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{keywordflow}{return} theta;}
-\DoxyCodeLine{00034 \}}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 XMVECTOR MathHelper::RandUnitVec3()}
-\DoxyCodeLine{00037 \{}
-\DoxyCodeLine{00038     XMVECTOR One  = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00039     XMVECTOR Zero = XMVectorZero();}
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041     \textcolor{comment}{// Keep trying until we get a point on/in the hemisphere.}}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{while}(\textcolor{keyword}{true})}
-\DoxyCodeLine{00043     \{}
-\DoxyCodeLine{00044         \textcolor{comment}{// Generate random point in the cube [-\/1,1]\string^3.}}
-\DoxyCodeLine{00045         XMVECTOR v = XMVectorSet(MathHelper::RandF(-\/1.0f, 1.0f), MathHelper::RandF(-\/1.0f, 1.0f), MathHelper::RandF(-\/1.0f, 1.0f), 0.0f);}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047         \textcolor{comment}{// Ignore points outside the unit sphere in order to get an even distribution }}
-\DoxyCodeLine{00048         \textcolor{comment}{// over the unit sphere.  Otherwise points will clump more on the sphere near }}
-\DoxyCodeLine{00049         \textcolor{comment}{// the corners of the cube.}}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051         \textcolor{keywordflow}{if}( XMVector3Greater( XMVector3LengthSq(v), One) )}
-\DoxyCodeLine{00052             \textcolor{keywordflow}{continue};}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054         \textcolor{keywordflow}{return} XMVector3Normalize(v);}
-\DoxyCodeLine{00055     \}}
-\DoxyCodeLine{00056 \}}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058 XMVECTOR MathHelper::RandHemisphereUnitVec3(XMVECTOR n)}
-\DoxyCodeLine{00059 \{}
-\DoxyCodeLine{00060     XMVECTOR One  = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00061     XMVECTOR Zero = XMVectorZero();}
-\DoxyCodeLine{00062 }
-\DoxyCodeLine{00063     \textcolor{comment}{// Keep trying until we get a point on/in the hemisphere.}}
-\DoxyCodeLine{00064     \textcolor{keywordflow}{while}(\textcolor{keyword}{true})}
-\DoxyCodeLine{00065     \{}
-\DoxyCodeLine{00066         \textcolor{comment}{// Generate random point in the cube [-\/1,1]\string^3.}}
-\DoxyCodeLine{00067         XMVECTOR v = XMVectorSet(MathHelper::RandF(-\/1.0f, 1.0f), MathHelper::RandF(-\/1.0f, 1.0f), MathHelper::RandF(-\/1.0f, 1.0f), 0.0f);}
-\DoxyCodeLine{00068 }
-\DoxyCodeLine{00069         \textcolor{comment}{// Ignore points outside the unit sphere in order to get an even distribution }}
-\DoxyCodeLine{00070         \textcolor{comment}{// over the unit sphere.  Otherwise points will clump more on the sphere near }}
-\DoxyCodeLine{00071         \textcolor{comment}{// the corners of the cube.}}
-\DoxyCodeLine{00072         }
-\DoxyCodeLine{00073         \textcolor{keywordflow}{if}( XMVector3Greater( XMVector3LengthSq(v), One) )}
-\DoxyCodeLine{00074             \textcolor{keywordflow}{continue};}
-\DoxyCodeLine{00075 }
-\DoxyCodeLine{00076         \textcolor{comment}{// Ignore points in the bottom hemisphere.}}
-\DoxyCodeLine{00077         \textcolor{keywordflow}{if}( XMVector3Less( XMVector3Dot(n, v), Zero ) )}
-\DoxyCodeLine{00078             \textcolor{keywordflow}{continue};}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080         \textcolor{keywordflow}{return} XMVector3Normalize(v);}
-\DoxyCodeLine{00081     \}}
-\DoxyCodeLine{00082 \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00002}00002 \textcolor{comment}{// MathHelper.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week5_2console-buildmaterial-demo_2_math_helper_8h}{MathHelper.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include <float.h>}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include <cmath>}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00009}00009 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00011}00011 \textcolor{keyword}{const} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_afc6585db4fa6c09d5c16f898e6883175}{MathHelper::Infinity}} = FLT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00012}00012 \textcolor{keyword}{const} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}       = 3.1415926535f;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00014}00014 \textcolor{keywordtype}{float} \mbox{\hyperlink{class_math_helper_a44b4f8f5faf51c790c87ebb7c2fc5c1e}{MathHelper::AngleFromXY}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00015}00015 \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00016}00016     \textcolor{keywordtype}{float} theta = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00017}00017  }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00018}00018     \textcolor{comment}{// Quadrant I or IV}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00019}00019     \textcolor{keywordflow}{if}(x >= 0.0f) }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00020}00020     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00021}00021         \textcolor{comment}{// If x = 0, then atanf(y/x) = +pi/2 if y > 0}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00022}00022         \textcolor{comment}{//                atanf(y/x) = -\/pi/2 if y < 0}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00023}00023         theta = atanf(y / x); \textcolor{comment}{// in [-\/pi/2, +pi/2]}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00025}00025         \textcolor{keywordflow}{if}(theta < 0.0f)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00026}00026             theta += 2.0f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{Pi}}; \textcolor{comment}{// in [0, 2*pi).}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00027}00027     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00028}00028 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00029}00029     \textcolor{comment}{// Quadrant II or III}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00030}00030     \textcolor{keywordflow}{else}      }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00031}00031         theta = atanf(y/x) + \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{Pi}}; \textcolor{comment}{// in [0, 2*pi).}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00033}00033     \textcolor{keywordflow}{return} theta;}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00034}00034 \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00036}00036 XMVECTOR \mbox{\hyperlink{class_math_helper_ad28ffa12ec507b33bd45dd3a842173a6}{MathHelper::RandUnitVec3}}()}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00037}00037 \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00038}00038     XMVECTOR One  = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00039}00039     XMVECTOR Zero = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00041}00041     \textcolor{comment}{// Keep trying until we get a point on/in the hemisphere.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00042}00042     \textcolor{keywordflow}{while}(\textcolor{keyword}{true})}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00043}00043     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00044}00044         \textcolor{comment}{// Generate random point in the cube [-\/1,1]\string^3.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00045}00045         XMVECTOR v = XMVectorSet(\mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00047}00047         \textcolor{comment}{// Ignore points outside the unit sphere in order to get an even distribution }}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00048}00048         \textcolor{comment}{// over the unit sphere.  Otherwise points will clump more on the sphere near }}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00049}00049         \textcolor{comment}{// the corners of the cube.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00051}00051         \textcolor{keywordflow}{if}( XMVector3Greater( XMVector3LengthSq(v), One) )}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00052}00052             \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00054}00054         \textcolor{keywordflow}{return} XMVector3Normalize(v);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00055}00055     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00056}00056 \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00058}00058 XMVECTOR \mbox{\hyperlink{class_math_helper_a9bde27abe2ead37dcd4e559f18025273}{MathHelper::RandHemisphereUnitVec3}}(XMVECTOR n)}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00059}00059 \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00060}00060     XMVECTOR One  = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00061}00061     XMVECTOR Zero = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00062}00062 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00063}00063     \textcolor{comment}{// Keep trying until we get a point on/in the hemisphere.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00064}00064     \textcolor{keywordflow}{while}(\textcolor{keyword}{true})}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00065}00065     \{}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00066}00066         \textcolor{comment}{// Generate random point in the cube [-\/1,1]\string^3.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00067}00067         XMVECTOR v = XMVectorSet(\mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(-\/1.0f, 1.0f), 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00069}00069         \textcolor{comment}{// Ignore points outside the unit sphere in order to get an even distribution }}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00070}00070         \textcolor{comment}{// over the unit sphere.  Otherwise points will clump more on the sphere near }}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00071}00071         \textcolor{comment}{// the corners of the cube.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00072}00072         }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00073}00073         \textcolor{keywordflow}{if}( XMVector3Greater( XMVector3LengthSq(v), One) )}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00074}00074             \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00075}00075 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00076}00076         \textcolor{comment}{// Ignore points in the bottom hemisphere.}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00077}00077         \textcolor{keywordflow}{if}( XMVector3Less( XMVector3Dot(n, v), Zero ) )}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00078}00078             \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00080}00080         \textcolor{keywordflow}{return} XMVector3Normalize(v);}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00081}00081     \}}
+\DoxyCodeLine{\Hypertarget{_week5_2console-buildmaterial-demo_2_math_helper_8cpp_source_l00082}00082 \}}
 
 \end{DoxyCode}

@@ -1,654 +1,654 @@
-\doxysection{d3d\+App.\+cpp}
+\hypertarget{d3d_app_8cpp_source}{}\doxysection{d3d\+App.\+cpp}
 \label{d3d_app_8cpp_source}\index{Common/d3dApp.cpp@{Common/d3dApp.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{d3d_app_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// d3dApp.cpp }}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}d3dApp.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include <WindowsX.h>}}
-\DoxyCodeLine{00007 }
-\DoxyCodeLine{00008 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00009 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{00010 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00011 }
-\DoxyCodeLine{00012 LRESULT CALLBACK}
-\DoxyCodeLine{00013 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{00014 \{}
-\DoxyCodeLine{00015     \textcolor{comment}{// Forward hwnd on because we can get messages (e.g., WM\_CREATE)}}
-\DoxyCodeLine{00016     \textcolor{comment}{// before CreateWindow returns, and thus before mhMainWnd is valid.}}
-\DoxyCodeLine{00017     \textcolor{keywordflow}{return} D3DApp::GetApp()-\/>MsgProc(hwnd, msg, wParam, lParam);}
-\DoxyCodeLine{00018 \}}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 D3DApp* D3DApp::mApp = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00021 D3DApp* D3DApp::GetApp()}
-\DoxyCodeLine{00022 \{}
-\DoxyCodeLine{00023     \textcolor{keywordflow}{return} mApp;}
-\DoxyCodeLine{00024 \}}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026 D3DApp::D3DApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00027 :   mhAppInst(hInstance)}
-\DoxyCodeLine{00028 \{}
-\DoxyCodeLine{00029     \textcolor{comment}{// Only one D3DApp can be constructed.}}
-\DoxyCodeLine{00030     assert(mApp == \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00031     mApp = \textcolor{keyword}{this};}
-\DoxyCodeLine{00032 \}}
-\DoxyCodeLine{00033 }
-\DoxyCodeLine{00034 D3DApp::\string~D3DApp()}
-\DoxyCodeLine{00035 \{}
-\DoxyCodeLine{00036     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00037         FlushCommandQueue();}
-\DoxyCodeLine{00038 \}}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040 HINSTANCE D3DApp::AppInst()\textcolor{keyword}{const}}
-\DoxyCodeLine{00041 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{return} mhAppInst;}
-\DoxyCodeLine{00043 \}}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045 HWND D3DApp::MainWnd()\textcolor{keyword}{const}}
-\DoxyCodeLine{00046 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00047     \textcolor{keywordflow}{return} mhMainWnd;}
-\DoxyCodeLine{00048 \}}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050 \textcolor{keywordtype}{float} D3DApp::AspectRatio()\textcolor{keyword}{const}}
-\DoxyCodeLine{00051 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00052     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(mClientWidth) / mClientHeight;}
-\DoxyCodeLine{00053 \}}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055 \textcolor{keywordtype}{bool} D3DApp::Get4xMsaaState()\textcolor{keyword}{const}}
-\DoxyCodeLine{00056 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00057     \textcolor{keywordflow}{return} m4xMsaaState;}
-\DoxyCodeLine{00058 \}}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060 \textcolor{keywordtype}{void} D3DApp::Set4xMsaaState(\textcolor{keywordtype}{bool} value)}
-\DoxyCodeLine{00061 \{}
-\DoxyCodeLine{00062     \textcolor{keywordflow}{if}(m4xMsaaState != value)}
-\DoxyCodeLine{00063     \{}
-\DoxyCodeLine{00064         m4xMsaaState = value;}
-\DoxyCodeLine{00065 }
-\DoxyCodeLine{00067         CreateSwapChain();}
-\DoxyCodeLine{00068         OnResize();}
-\DoxyCodeLine{00069     \}}
-\DoxyCodeLine{00070 \}}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072 \textcolor{keywordtype}{int} D3DApp::Run()}
-\DoxyCodeLine{00073 \{}
-\DoxyCodeLine{00074     MSG msg = \{0\};}
-\DoxyCodeLine{00075  }
-\DoxyCodeLine{00076     mTimer.Reset();}
-\DoxyCodeLine{00077 }
-\DoxyCodeLine{00078     \textcolor{keywordflow}{while}(msg.message != WM\_QUIT)}
-\DoxyCodeLine{00079     \{}
-\DoxyCodeLine{00080         \textcolor{comment}{// If there are Window messages then process them.}}
-\DoxyCodeLine{00081         \textcolor{keywordflow}{if}(PeekMessage( \&msg, 0, 0, 0, PM\_REMOVE ))}
-\DoxyCodeLine{00082         \{}
-\DoxyCodeLine{00083             TranslateMessage( \&msg );}
-\DoxyCodeLine{00084             DispatchMessage( \&msg );}
-\DoxyCodeLine{00085         \}}
-\DoxyCodeLine{00086         \textcolor{comment}{// Otherwise, do animation/game stuff.}}
-\DoxyCodeLine{00087         \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00088         \{   }
-\DoxyCodeLine{00089             mTimer.Tick();}
-\DoxyCodeLine{00090 }
-\DoxyCodeLine{00091             \textcolor{keywordflow}{if}( !mAppPaused )}
-\DoxyCodeLine{00092             \{}
-\DoxyCodeLine{00093                 CalculateFrameStats();}
-\DoxyCodeLine{00094                 Update(mTimer); }
-\DoxyCodeLine{00095                 Draw(mTimer);}
-\DoxyCodeLine{00096             \}}
-\DoxyCodeLine{00097             \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00098             \{}
-\DoxyCodeLine{00099                 Sleep(100);}
-\DoxyCodeLine{00100             \}}
-\DoxyCodeLine{00101         \}}
-\DoxyCodeLine{00102     \}}
-\DoxyCodeLine{00103 }
-\DoxyCodeLine{00104     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{int})msg.wParam;}
-\DoxyCodeLine{00105 \}}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107 \textcolor{keywordtype}{bool} D3DApp::Initialize()}
-\DoxyCodeLine{00108 \{}
-\DoxyCodeLine{00109     \textcolor{keywordflow}{if}(!InitMainWindow())}
-\DoxyCodeLine{00110         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     \textcolor{keywordflow}{if}(!InitDirect3D())}
-\DoxyCodeLine{00113         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00114 }
-\DoxyCodeLine{00115     \textcolor{comment}{// Do the initial resize code.}}
-\DoxyCodeLine{00116     OnResize();}
-\DoxyCodeLine{00117 }
-\DoxyCodeLine{00118     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00119 \}}
-\DoxyCodeLine{00120  }
-\DoxyCodeLine{00121 \textcolor{keywordtype}{void} D3DApp::CreateRtvAndDsvDescriptorHeaps()}
-\DoxyCodeLine{00122 \{}
-\DoxyCodeLine{00123     D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc;}
-\DoxyCodeLine{00124     rtvHeapDesc.NumDescriptors = SwapChainBufferCount;}
-\DoxyCodeLine{00125     rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
-\DoxyCodeLine{00126     rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
-\DoxyCodeLine{00127     rtvHeapDesc.NodeMask = 0;}
-\DoxyCodeLine{00128     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(}
-\DoxyCodeLine{00129         \&rtvHeapDesc, IID\_PPV\_ARGS(mRtvHeap.GetAddressOf())));}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131 }
-\DoxyCodeLine{00132     D3D12\_DESCRIPTOR\_HEAP\_DESC dsvHeapDesc;}
-\DoxyCodeLine{00133     dsvHeapDesc.NumDescriptors = 1;}
-\DoxyCodeLine{00134     dsvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV;}
-\DoxyCodeLine{00135     dsvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
-\DoxyCodeLine{00136     dsvHeapDesc.NodeMask = 0;}
-\DoxyCodeLine{00137     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(}
-\DoxyCodeLine{00138         \&dsvHeapDesc, IID\_PPV\_ARGS(mDsvHeap.GetAddressOf())));}
-\DoxyCodeLine{00139 \}}
-\DoxyCodeLine{00140 }
-\DoxyCodeLine{00141 \textcolor{keywordtype}{void} D3DApp::OnResize()}
-\DoxyCodeLine{00142 \{}
-\DoxyCodeLine{00143     assert(md3dDevice);}
-\DoxyCodeLine{00144     assert(mSwapChain);}
-\DoxyCodeLine{00145     assert(mDirectCmdListAlloc);}
-\DoxyCodeLine{00146 }
-\DoxyCodeLine{00148     FlushCommandQueue();}
-\DoxyCodeLine{00149 }
-\DoxyCodeLine{00150     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00151 }
-\DoxyCodeLine{00153     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < SwapChainBufferCount; ++i)}
-\DoxyCodeLine{00154         mSwapChainBuffer[i].Reset();}
-\DoxyCodeLine{00155     mDepthStencilBuffer.Reset();}
-\DoxyCodeLine{00156     }
-\DoxyCodeLine{00158     ThrowIfFailed(mSwapChain-\/>ResizeBuffers(}
-\DoxyCodeLine{00159         SwapChainBufferCount, }
-\DoxyCodeLine{00160         mClientWidth, mClientHeight, }
-\DoxyCodeLine{00161         mBackBufferFormat, }
-\DoxyCodeLine{00162         DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH));}
-\DoxyCodeLine{00163 }
-\DoxyCodeLine{00164     mCurrBackBuffer = 0;}
-\DoxyCodeLine{00165  }
-\DoxyCodeLine{00166     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHeapHandle(mRtvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00167     \textcolor{keywordflow}{for} (UINT i = 0; i < SwapChainBufferCount; i++)}
-\DoxyCodeLine{00168     \{}
-\DoxyCodeLine{00169         ThrowIfFailed(mSwapChain-\/>GetBuffer(i, IID\_PPV\_ARGS(\&mSwapChainBuffer[i])));}
-\DoxyCodeLine{00170         md3dDevice-\/>CreateRenderTargetView(mSwapChainBuffer[i].Get(), \textcolor{keyword}{nullptr}, rtvHeapHandle);}
-\DoxyCodeLine{00171         rtvHeapHandle.Offset(1, mRtvDescriptorSize);}
-\DoxyCodeLine{00172     \}}
-\DoxyCodeLine{00173 }
-\DoxyCodeLine{00175     D3D12\_RESOURCE\_DESC depthStencilDesc;}
-\DoxyCodeLine{00176     depthStencilDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00177     depthStencilDesc.Alignment = 0;}
-\DoxyCodeLine{00178     depthStencilDesc.Width = mClientWidth;}
-\DoxyCodeLine{00179     depthStencilDesc.Height = mClientHeight;}
-\DoxyCodeLine{00180     depthStencilDesc.DepthOrArraySize = 1;}
-\DoxyCodeLine{00181     depthStencilDesc.MipLevels = 1;}
-\DoxyCodeLine{00182 }
-\DoxyCodeLine{00187     depthStencilDesc.Format = DXGI\_FORMAT\_R24G8\_TYPELESS;}
-\DoxyCodeLine{00188 }
-\DoxyCodeLine{00189     depthStencilDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00190     depthStencilDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00191     depthStencilDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
-\DoxyCodeLine{00192     depthStencilDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_DEPTH\_STENCIL;}
-\DoxyCodeLine{00193 }
-\DoxyCodeLine{00194     D3D12\_CLEAR\_VALUE optClear;}
-\DoxyCodeLine{00195     optClear.Format = mDepthStencilFormat;}
-\DoxyCodeLine{00196     optClear.DepthStencil.Depth = 1.0f;}
-\DoxyCodeLine{00197     optClear.DepthStencil.Stencil = 0;}
-\DoxyCodeLine{00198     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00199         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00200         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00201         \&depthStencilDesc,}
-\DoxyCodeLine{00202         D3D12\_RESOURCE\_STATE\_COMMON,}
-\DoxyCodeLine{00203         \&optClear,}
-\DoxyCodeLine{00204         IID\_PPV\_ARGS(mDepthStencilBuffer.GetAddressOf())));}
-\DoxyCodeLine{00205 }
-\DoxyCodeLine{00207     D3D12\_DEPTH\_STENCIL\_VIEW\_DESC dsvDesc;}
-\DoxyCodeLine{00208     dsvDesc.Flags = D3D12\_DSV\_FLAG\_NONE;}
-\DoxyCodeLine{00209     dsvDesc.ViewDimension = D3D12\_DSV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00210     dsvDesc.Format = mDepthStencilFormat;}
-\DoxyCodeLine{00211     dsvDesc.Texture2D.MipSlice = 0;}
-\DoxyCodeLine{00212     md3dDevice-\/>CreateDepthStencilView(mDepthStencilBuffer.Get(), \&dsvDesc, DepthStencilView());}
-\DoxyCodeLine{00213 }
-\DoxyCodeLine{00215     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mDepthStencilBuffer.Get(),}
-\DoxyCodeLine{00216         D3D12\_RESOURCE\_STATE\_COMMON, D3D12\_RESOURCE\_STATE\_DEPTH\_WRITE));}
-\DoxyCodeLine{00217     }
-\DoxyCodeLine{00219     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00220     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00221     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00222 }
-\DoxyCodeLine{00224     FlushCommandQueue();}
-\DoxyCodeLine{00225 }
-\DoxyCodeLine{00227     mScreenViewport.TopLeftX = 0;}
-\DoxyCodeLine{00228     mScreenViewport.TopLeftY = 0;}
-\DoxyCodeLine{00229     mScreenViewport.Width    = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(mClientWidth);}
-\DoxyCodeLine{00230     mScreenViewport.Height   = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(mClientHeight);}
-\DoxyCodeLine{00231     mScreenViewport.MinDepth = 0.0f;}
-\DoxyCodeLine{00232     mScreenViewport.MaxDepth = 1.0f;}
-\DoxyCodeLine{00233 }
-\DoxyCodeLine{00234     mScissorRect = \{ 0, 0, mClientWidth, mClientHeight \};}
-\DoxyCodeLine{00235 \}}
-\DoxyCodeLine{00236  }
-\DoxyCodeLine{00237 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{00238 \{}
-\DoxyCodeLine{00239     \textcolor{keywordflow}{switch}( msg )}
-\DoxyCodeLine{00240     \{}
-\DoxyCodeLine{00244     \textcolor{keywordflow}{case} WM\_ACTIVATE:}
-\DoxyCodeLine{00245         \textcolor{keywordflow}{if}( LOWORD(wParam) == WA\_INACTIVE )}
-\DoxyCodeLine{00246         \{}
-\DoxyCodeLine{00247             mAppPaused = \textcolor{keyword}{true};}
-\DoxyCodeLine{00248             mTimer.Stop();}
-\DoxyCodeLine{00249         \}}
-\DoxyCodeLine{00250         \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00251         \{}
-\DoxyCodeLine{00252             mAppPaused = \textcolor{keyword}{false};}
-\DoxyCodeLine{00253             mTimer.Start();}
-\DoxyCodeLine{00254         \}}
-\DoxyCodeLine{00255         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00256 }
-\DoxyCodeLine{00258     \textcolor{keywordflow}{case} WM\_SIZE:}
-\DoxyCodeLine{00260         mClientWidth  = LOWORD(lParam);}
-\DoxyCodeLine{00261         mClientHeight = HIWORD(lParam);}
-\DoxyCodeLine{00262         \textcolor{keywordflow}{if}( md3dDevice )}
-\DoxyCodeLine{00263         \{}
-\DoxyCodeLine{00264             \textcolor{keywordflow}{if}( wParam == SIZE\_MINIMIZED )}
-\DoxyCodeLine{00265             \{}
-\DoxyCodeLine{00266                 mAppPaused = \textcolor{keyword}{true};}
-\DoxyCodeLine{00267                 mMinimized = \textcolor{keyword}{true};}
-\DoxyCodeLine{00268                 mMaximized = \textcolor{keyword}{false};}
-\DoxyCodeLine{00269             \}}
-\DoxyCodeLine{00270             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( wParam == SIZE\_MAXIMIZED )}
-\DoxyCodeLine{00271             \{}
-\DoxyCodeLine{00272                 mAppPaused = \textcolor{keyword}{false};}
-\DoxyCodeLine{00273                 mMinimized = \textcolor{keyword}{false};}
-\DoxyCodeLine{00274                 mMaximized = \textcolor{keyword}{true};}
-\DoxyCodeLine{00275                 OnResize();}
-\DoxyCodeLine{00276             \}}
-\DoxyCodeLine{00277             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( wParam == SIZE\_RESTORED )}
-\DoxyCodeLine{00278             \{}
-\DoxyCodeLine{00279                 }
-\DoxyCodeLine{00280                 \textcolor{comment}{// Restoring from minimized state?}}
-\DoxyCodeLine{00281                 \textcolor{keywordflow}{if}( mMinimized )}
-\DoxyCodeLine{00282                 \{}
-\DoxyCodeLine{00283                     mAppPaused = \textcolor{keyword}{false};}
-\DoxyCodeLine{00284                     mMinimized = \textcolor{keyword}{false};}
-\DoxyCodeLine{00285                     OnResize();}
-\DoxyCodeLine{00286                 \}}
-\DoxyCodeLine{00287 }
-\DoxyCodeLine{00288                 \textcolor{comment}{// Restoring from maximized state?}}
-\DoxyCodeLine{00289                 \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( mMaximized )}
-\DoxyCodeLine{00290                 \{}
-\DoxyCodeLine{00291                     mAppPaused = \textcolor{keyword}{false};}
-\DoxyCodeLine{00292                     mMaximized = \textcolor{keyword}{false};}
-\DoxyCodeLine{00293                     OnResize();}
-\DoxyCodeLine{00294                 \}}
-\DoxyCodeLine{00295                 \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( mResizing )}
-\DoxyCodeLine{00296                 \{}
-\DoxyCodeLine{00305                 \}}
-\DoxyCodeLine{00306                 \textcolor{keywordflow}{else} \textcolor{comment}{// API call such as SetWindowPos or mSwapChain-\/>SetFullscreenState.}}
-\DoxyCodeLine{00307                 \{}
-\DoxyCodeLine{00308                     OnResize();}
-\DoxyCodeLine{00309                 \}}
-\DoxyCodeLine{00310             \}}
-\DoxyCodeLine{00311         \}}
-\DoxyCodeLine{00312         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00313 }
-\DoxyCodeLine{00315     \textcolor{keywordflow}{case} WM\_ENTERSIZEMOVE:}
-\DoxyCodeLine{00316         mAppPaused = \textcolor{keyword}{true};}
-\DoxyCodeLine{00317         mResizing  = \textcolor{keyword}{true};}
-\DoxyCodeLine{00318         mTimer.Stop();}
-\DoxyCodeLine{00319         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00320 }
-\DoxyCodeLine{00323     \textcolor{keywordflow}{case} WM\_EXITSIZEMOVE:}
-\DoxyCodeLine{00324         mAppPaused = \textcolor{keyword}{false};}
-\DoxyCodeLine{00325         mResizing  = \textcolor{keyword}{false};}
-\DoxyCodeLine{00326         mTimer.Start();}
-\DoxyCodeLine{00327         OnResize();}
-\DoxyCodeLine{00328         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00329  }
-\DoxyCodeLine{00331     \textcolor{keywordflow}{case} WM\_DESTROY:}
-\DoxyCodeLine{00332         PostQuitMessage(0);}
-\DoxyCodeLine{00333         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00334 }
-\DoxyCodeLine{00337     \textcolor{keywordflow}{case} WM\_MENUCHAR:}
-\DoxyCodeLine{00338         \textcolor{comment}{// Don't beep when we alt-\/enter.}}
-\DoxyCodeLine{00339         \textcolor{keywordflow}{return} MAKELRESULT(0, MNC\_CLOSE);}
-\DoxyCodeLine{00340 }
-\DoxyCodeLine{00342     \textcolor{keywordflow}{case} WM\_GETMINMAXINFO:}
-\DoxyCodeLine{00343         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.x = 200;}
-\DoxyCodeLine{00344         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.y = 200; }
-\DoxyCodeLine{00345         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00346 }
-\DoxyCodeLine{00347     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
-\DoxyCodeLine{00348     \textcolor{keywordflow}{case} WM\_MBUTTONDOWN:}
-\DoxyCodeLine{00349     \textcolor{keywordflow}{case} WM\_RBUTTONDOWN:}
-\DoxyCodeLine{00350         OnMouseDown(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
-\DoxyCodeLine{00351         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00352     \textcolor{keywordflow}{case} WM\_LBUTTONUP:}
-\DoxyCodeLine{00353     \textcolor{keywordflow}{case} WM\_MBUTTONUP:}
-\DoxyCodeLine{00354     \textcolor{keywordflow}{case} WM\_RBUTTONUP:}
-\DoxyCodeLine{00355         OnMouseUp(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
-\DoxyCodeLine{00356         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00357     \textcolor{keywordflow}{case} WM\_MOUSEMOVE:}
-\DoxyCodeLine{00358         OnMouseMove(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
-\DoxyCodeLine{00359         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00360     \textcolor{keywordflow}{case} WM\_KEYUP:}
-\DoxyCodeLine{00361         \textcolor{keywordflow}{if}(wParam == VK\_ESCAPE)}
-\DoxyCodeLine{00362         \{}
-\DoxyCodeLine{00363             PostQuitMessage(0);}
-\DoxyCodeLine{00364         \}}
-\DoxyCodeLine{00365         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((\textcolor{keywordtype}{int})wParam == VK\_F2)}
-\DoxyCodeLine{00366             Set4xMsaaState(!m4xMsaaState);}
-\DoxyCodeLine{00367 }
-\DoxyCodeLine{00368         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00369     \}}
-\DoxyCodeLine{00370 }
-\DoxyCodeLine{00371     \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam);}
-\DoxyCodeLine{00372 \}}
-\DoxyCodeLine{00373 }
-\DoxyCodeLine{00374 \textcolor{keywordtype}{bool} D3DApp::InitMainWindow()}
-\DoxyCodeLine{00375 \{}
-\DoxyCodeLine{00376     WNDCLASS wc;}
-\DoxyCodeLine{00377     wc.style         = CS\_HREDRAW | CS\_VREDRAW;}
-\DoxyCodeLine{00378     wc.lpfnWndProc   = MainWndProc; }
-\DoxyCodeLine{00379     wc.cbClsExtra    = 0;}
-\DoxyCodeLine{00380     wc.cbWndExtra    = 0;}
-\DoxyCodeLine{00381     wc.hInstance     = mhAppInst;}
-\DoxyCodeLine{00382     wc.hIcon         = LoadIcon(0, IDI\_APPLICATION);}
-\DoxyCodeLine{00383     wc.hCursor       = LoadCursor(0, IDC\_ARROW);}
-\DoxyCodeLine{00384     wc.hbrBackground = (HBRUSH)GetStockObject(NULL\_BRUSH);}
-\DoxyCodeLine{00385     wc.lpszMenuName  = 0;}
-\DoxyCodeLine{00386     wc.lpszClassName = L\textcolor{stringliteral}{"{}MainWnd"{}};}
-\DoxyCodeLine{00387 }
-\DoxyCodeLine{00388     \textcolor{keywordflow}{if}( !RegisterClass(\&wc) )}
-\DoxyCodeLine{00389     \{}
-\DoxyCodeLine{00390         MessageBox(0, L\textcolor{stringliteral}{"{}RegisterClass Failed."{}}, 0, 0);}
-\DoxyCodeLine{00391         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00392     \}}
-\DoxyCodeLine{00393 }
-\DoxyCodeLine{00395     RECT R = \{ 0, 0, mClientWidth, mClientHeight \};}
-\DoxyCodeLine{00396     AdjustWindowRect(\&R, WS\_OVERLAPPEDWINDOW, \textcolor{keyword}{false});}
-\DoxyCodeLine{00397     \textcolor{keywordtype}{int} width  = R.right -\/ R.left;}
-\DoxyCodeLine{00398     \textcolor{keywordtype}{int} height = R.bottom -\/ R.top;}
-\DoxyCodeLine{00399 }
-\DoxyCodeLine{00400     mhMainWnd = CreateWindow(L\textcolor{stringliteral}{"{}MainWnd"{}}, mMainWndCaption.c\_str(), }
-\DoxyCodeLine{00401         WS\_OVERLAPPEDWINDOW, CW\_USEDEFAULT, CW\_USEDEFAULT, width, height, 0, 0, mhAppInst, 0); }
-\DoxyCodeLine{00402     \textcolor{keywordflow}{if}( !mhMainWnd )}
-\DoxyCodeLine{00403     \{}
-\DoxyCodeLine{00404         MessageBox(0, L\textcolor{stringliteral}{"{}CreateWindow Failed."{}}, 0, 0);}
-\DoxyCodeLine{00405         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00406     \}}
-\DoxyCodeLine{00407 }
-\DoxyCodeLine{00408     ShowWindow(mhMainWnd, SW\_SHOW);}
-\DoxyCodeLine{00409     UpdateWindow(mhMainWnd);}
-\DoxyCodeLine{00410 }
-\DoxyCodeLine{00411     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00412 \}}
-\DoxyCodeLine{00413 }
-\DoxyCodeLine{00414 \textcolor{keywordtype}{bool} D3DApp::InitDirect3D()}
-\DoxyCodeLine{00415 \{}
-\DoxyCodeLine{00416 \textcolor{preprocessor}{\#if defined(DEBUG) || defined(\_DEBUG) }}
-\DoxyCodeLine{00419 \{}
-\DoxyCodeLine{00420     ComPtr<ID3D12Debug> debugController;}
-\DoxyCodeLine{00421     ThrowIfFailed(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController)));}
-\DoxyCodeLine{00422     debugController-\/>EnableDebugLayer();}
-\DoxyCodeLine{00423 \}}
-\DoxyCodeLine{00424 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00425 }
-\DoxyCodeLine{00434     ThrowIfFailed(CreateDXGIFactory1(IID\_PPV\_ARGS(\&mdxgiFactory)));}
-\DoxyCodeLine{00435 }
-\DoxyCodeLine{00436     UINT i = 0;}
-\DoxyCodeLine{00437     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00440     std::vector<IDXGIAdapter*> adapterList;}
-\DoxyCodeLine{00441     \textcolor{keywordflow}{while} (mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00442     \{}
-\DoxyCodeLine{00443         adapterList.push\_back(adapter);}
-\DoxyCodeLine{00444         ++i;}
-\DoxyCodeLine{00445     \}}
-\DoxyCodeLine{00447     HRESULT hardwareResult = D3D12CreateDevice(}
-\DoxyCodeLine{00448         \textcolor{keyword}{nullptr},             \textcolor{comment}{// default adapter}}
-\DoxyCodeLine{00449         \textcolor{comment}{//adapterList[0],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter}}
-\DoxyCodeLine{00450         D3D\_FEATURE\_LEVEL\_12\_0,}
-\DoxyCodeLine{00451         IID\_PPV\_ARGS(\&md3dDevice));}
-\DoxyCodeLine{00452 }
-\DoxyCodeLine{00454     \textcolor{keywordflow}{if}(FAILED(hardwareResult))}
-\DoxyCodeLine{00455     \{}
-\DoxyCodeLine{00456         ComPtr<IDXGIAdapter> pWarpAdapter;}
-\DoxyCodeLine{00457         ThrowIfFailed(mdxgiFactory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&pWarpAdapter)));}
-\DoxyCodeLine{00458 }
-\DoxyCodeLine{00459         ThrowIfFailed(D3D12CreateDevice(}
-\DoxyCodeLine{00460             pWarpAdapter.Get(),}
-\DoxyCodeLine{00461             D3D\_FEATURE\_LEVEL\_12\_0,}
-\DoxyCodeLine{00462             IID\_PPV\_ARGS(\&md3dDevice)));}
-\DoxyCodeLine{00463     \}}
-\DoxyCodeLine{00464 }
-\DoxyCodeLine{00465     ThrowIfFailed(md3dDevice-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE,}
-\DoxyCodeLine{00466         IID\_PPV\_ARGS(\&mFence)));}
-\DoxyCodeLine{00467 }
-\DoxyCodeLine{00468     mRtvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
-\DoxyCodeLine{00469     mDsvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV);}
-\DoxyCodeLine{00470     mCbvSrvUavDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00471 }
-\DoxyCodeLine{00475 }
-\DoxyCodeLine{00476     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
-\DoxyCodeLine{00477     msQualityLevels.Format = mBackBufferFormat;}
-\DoxyCodeLine{00478     msQualityLevels.SampleCount = 4;}
-\DoxyCodeLine{00479     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
-\DoxyCodeLine{00480     msQualityLevels.NumQualityLevels = 0;}
-\DoxyCodeLine{00481     ThrowIfFailed(md3dDevice-\/>CheckFeatureSupport(}
-\DoxyCodeLine{00482         D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS,}
-\DoxyCodeLine{00483         \&msQualityLevels,}
-\DoxyCodeLine{00484         \textcolor{keyword}{sizeof}(msQualityLevels)));}
-\DoxyCodeLine{00485 }
-\DoxyCodeLine{00486     m4xMsaaQuality = msQualityLevels.NumQualityLevels;}
-\DoxyCodeLine{00487     assert(m4xMsaaQuality > 0 \&\& \textcolor{stringliteral}{"{}Unexpected MSAA quality level."{}});}
-\DoxyCodeLine{00488     }
-\DoxyCodeLine{00489 \textcolor{preprocessor}{\#ifdef \_DEBUG}}
-\DoxyCodeLine{00490     LogAdapters();}
-\DoxyCodeLine{00491 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00492 }
-\DoxyCodeLine{00493     CreateCommandObjects();}
-\DoxyCodeLine{00494     CreateSwapChain();}
-\DoxyCodeLine{00495     CreateRtvAndDsvDescriptorHeaps();}
-\DoxyCodeLine{00496 }
-\DoxyCodeLine{00497     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00498 \}}
-\DoxyCodeLine{00499 }
-\DoxyCodeLine{00500 }
-\DoxyCodeLine{00501 }
-\DoxyCodeLine{00502 \textcolor{keywordtype}{void} D3DApp::CreateCommandObjects()}
-\DoxyCodeLine{00503 \{}
-\DoxyCodeLine{00504     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
-\DoxyCodeLine{00505     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
-\DoxyCodeLine{00506     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
-\DoxyCodeLine{00507     ThrowIfFailed(md3dDevice-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&mCommandQueue)));}
-\DoxyCodeLine{00508 }
-\DoxyCodeLine{00509     ThrowIfFailed(md3dDevice-\/>CreateCommandAllocator(}
-\DoxyCodeLine{00510         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
-\DoxyCodeLine{00511         IID\_PPV\_ARGS(mDirectCmdListAlloc.GetAddressOf())));}
-\DoxyCodeLine{00512 }
-\DoxyCodeLine{00513     ThrowIfFailed(md3dDevice-\/>CreateCommandList(}
-\DoxyCodeLine{00514         0,}
-\DoxyCodeLine{00515         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
-\DoxyCodeLine{00516         mDirectCmdListAlloc.Get(), \textcolor{comment}{// Associated command allocator}}
-\DoxyCodeLine{00517         \textcolor{keyword}{nullptr},                   \textcolor{comment}{// Initial PipelineStateObject}}
-\DoxyCodeLine{00518         IID\_PPV\_ARGS(mCommandList.GetAddressOf())));}
-\DoxyCodeLine{00519 }
-\DoxyCodeLine{00523     mCommandList-\/>Close();}
-\DoxyCodeLine{00524 \}}
-\DoxyCodeLine{00525 }
-\DoxyCodeLine{00526 \textcolor{keywordtype}{void} D3DApp::CreateSwapChain()}
-\DoxyCodeLine{00527 \{}
-\DoxyCodeLine{00529     mSwapChain.Reset();}
-\DoxyCodeLine{00530 }
-\DoxyCodeLine{00531     DXGI\_SWAP\_CHAIN\_DESC sd;}
-\DoxyCodeLine{00532     sd.BufferDesc.Width = mClientWidth;}
-\DoxyCodeLine{00533     sd.BufferDesc.Height = mClientHeight;}
-\DoxyCodeLine{00534     sd.BufferDesc.RefreshRate.Numerator = 60;}
-\DoxyCodeLine{00535     sd.BufferDesc.RefreshRate.Denominator = 1;}
-\DoxyCodeLine{00536     sd.BufferDesc.Format = mBackBufferFormat;}
-\DoxyCodeLine{00537     sd.BufferDesc.ScanlineOrdering = DXGI\_MODE\_SCANLINE\_ORDER\_UNSPECIFIED;}
-\DoxyCodeLine{00538     sd.BufferDesc.Scaling = DXGI\_MODE\_SCALING\_UNSPECIFIED;}
-\DoxyCodeLine{00539     sd.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00540     sd.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00541     sd.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
-\DoxyCodeLine{00542     sd.BufferCount = SwapChainBufferCount;}
-\DoxyCodeLine{00543     sd.OutputWindow = mhMainWnd;}
-\DoxyCodeLine{00544     sd.Windowed = \textcolor{keyword}{true};}
-\DoxyCodeLine{00545     sd.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
-\DoxyCodeLine{00546     sd.Flags = DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH;}
-\DoxyCodeLine{00547 }
-\DoxyCodeLine{00548     \textcolor{comment}{// Note: Swap chain uses queue to perform flush.}}
-\DoxyCodeLine{00549     ThrowIfFailed(mdxgiFactory-\/>CreateSwapChain(}
-\DoxyCodeLine{00550         mCommandQueue.Get(),}
-\DoxyCodeLine{00551         \&sd, }
-\DoxyCodeLine{00552         mSwapChain.GetAddressOf()));}
-\DoxyCodeLine{00553 \}}
-\DoxyCodeLine{00554 }
-\DoxyCodeLine{00555 \textcolor{keywordtype}{void} D3DApp::FlushCommandQueue()}
-\DoxyCodeLine{00556 \{}
-\DoxyCodeLine{00558     mCurrentFence++;}
-\DoxyCodeLine{00559 }
-\DoxyCodeLine{00563     ThrowIfFailed(mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence));}
-\DoxyCodeLine{00564 }
-\DoxyCodeLine{00566     \textcolor{keywordflow}{if}(mFence-\/>GetCompletedValue() < mCurrentFence)}
-\DoxyCodeLine{00567     \{}
-\DoxyCodeLine{00568         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00569 }
-\DoxyCodeLine{00571         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrentFence, eventHandle));}
-\DoxyCodeLine{00572 }
-\DoxyCodeLine{00574         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00575         CloseHandle(eventHandle);}
-\DoxyCodeLine{00576     \}}
-\DoxyCodeLine{00577 \}}
-\DoxyCodeLine{00578 }
-\DoxyCodeLine{00579 }
-\DoxyCodeLine{00580 }
-\DoxyCodeLine{00581 ID3D12Resource* D3DApp::CurrentBackBuffer()\textcolor{keyword}{const}}
-\DoxyCodeLine{00582 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00583     \textcolor{keywordflow}{return} mSwapChainBuffer[mCurrBackBuffer].Get();}
-\DoxyCodeLine{00584 \}}
-\DoxyCodeLine{00585 }
-\DoxyCodeLine{00586 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::CurrentBackBufferView()\textcolor{keyword}{const}}
-\DoxyCodeLine{00587 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00588     \textcolor{keywordflow}{return} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(}
-\DoxyCodeLine{00589         mRtvHeap-\/>GetCPUDescriptorHandleForHeapStart(),}
-\DoxyCodeLine{00590         mCurrBackBuffer,}
-\DoxyCodeLine{00591         mRtvDescriptorSize);}
-\DoxyCodeLine{00592 \}}
-\DoxyCodeLine{00593 }
-\DoxyCodeLine{00594 D3D12\_CPU\_DESCRIPTOR\_HANDLE D3DApp::DepthStencilView()\textcolor{keyword}{const}}
-\DoxyCodeLine{00595 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00596     \textcolor{keywordflow}{return} mDsvHeap-\/>GetCPUDescriptorHandleForHeapStart();}
-\DoxyCodeLine{00597 \}}
-\DoxyCodeLine{00598 }
-\DoxyCodeLine{00599 \textcolor{keywordtype}{void} D3DApp::CalculateFrameStats()}
-\DoxyCodeLine{00600 \{}
-\DoxyCodeLine{00601     \textcolor{comment}{// Code computes the average frames per second, and also the }}
-\DoxyCodeLine{00602     \textcolor{comment}{// average time it takes to render one frame.  These stats }}
-\DoxyCodeLine{00603     \textcolor{comment}{// are appended to the window caption bar.}}
-\DoxyCodeLine{00604     }
-\DoxyCodeLine{00605     \textcolor{keyword}{static} \textcolor{keywordtype}{int} frameCnt = 0;}
-\DoxyCodeLine{00606     \textcolor{keyword}{static} \textcolor{keywordtype}{float} timeElapsed = 0.0f;}
-\DoxyCodeLine{00607 }
-\DoxyCodeLine{00608     frameCnt++;}
-\DoxyCodeLine{00609 }
-\DoxyCodeLine{00610     \textcolor{comment}{// Compute averages over one second period.}}
-\DoxyCodeLine{00611     \textcolor{keywordflow}{if}( (mTimer.TotalTime() -\/ timeElapsed) >= 1.0f )}
-\DoxyCodeLine{00612     \{}
-\DoxyCodeLine{00613         \textcolor{keywordtype}{float} fps = (float)frameCnt; \textcolor{comment}{// fps = frameCnt / 1}}
-\DoxyCodeLine{00614         \textcolor{keywordtype}{float} mspf = 1000.0f / fps;}
-\DoxyCodeLine{00615 }
-\DoxyCodeLine{00616         wstring fpsStr = to\_wstring(fps);}
-\DoxyCodeLine{00617         wstring mspfStr = to\_wstring(mspf);}
-\DoxyCodeLine{00618 }
-\DoxyCodeLine{00619         wstring windowText = mMainWndCaption +}
-\DoxyCodeLine{00620             L\textcolor{stringliteral}{"{}    fps: "{}} + fpsStr +}
-\DoxyCodeLine{00621             L\textcolor{stringliteral}{"{}   mspf: "{}} + mspfStr;}
-\DoxyCodeLine{00622 }
-\DoxyCodeLine{00623         SetWindowText(mhMainWnd, windowText.c\_str());}
-\DoxyCodeLine{00624         }
-\DoxyCodeLine{00625         \textcolor{comment}{// Reset for next average.}}
-\DoxyCodeLine{00626         frameCnt = 0;}
-\DoxyCodeLine{00627         timeElapsed += 1.0f;}
-\DoxyCodeLine{00628     \}}
-\DoxyCodeLine{00629 \}}
-\DoxyCodeLine{00630 }
-\DoxyCodeLine{00636 \textcolor{keywordtype}{void} D3DApp::LogAdapters()}
-\DoxyCodeLine{00637 \{}
-\DoxyCodeLine{00638     UINT i = 0;}
-\DoxyCodeLine{00639     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00640     std::vector<IDXGIAdapter*> adapterList;}
-\DoxyCodeLine{00641     \textcolor{keywordflow}{while}(mdxgiFactory-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00642     \{}
-\DoxyCodeLine{00643         DXGI\_ADAPTER\_DESC desc;}
-\DoxyCodeLine{00644         adapter-\/>GetDesc(\&desc);}
-\DoxyCodeLine{00645 }
-\DoxyCodeLine{00646         std::wstring text = L\textcolor{stringliteral}{"{}***Adapter: "{}};}
-\DoxyCodeLine{00647         text += desc.Description;}
-\DoxyCodeLine{00648         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00649 }
-\DoxyCodeLine{00650         OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00651 }
-\DoxyCodeLine{00652         adapterList.push\_back(adapter);}
-\DoxyCodeLine{00653         }
-\DoxyCodeLine{00654         ++i;}
-\DoxyCodeLine{00655     \}}
-\DoxyCodeLine{00656 }
-\DoxyCodeLine{00657     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < adapterList.size(); ++i)}
-\DoxyCodeLine{00658     \{}
-\DoxyCodeLine{00659         LogAdapterOutputs(adapterList[i]);}
-\DoxyCodeLine{00660         ReleaseCom(adapterList[i]);}
-\DoxyCodeLine{00661     \}}
-\DoxyCodeLine{00662 \}}
-\DoxyCodeLine{00663 }
-\DoxyCodeLine{00669 \textcolor{keywordtype}{void} D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)}
-\DoxyCodeLine{00670 \{}
-\DoxyCodeLine{00671     UINT i = 0;}
-\DoxyCodeLine{00672     IDXGIOutput* output = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00673     \textcolor{keywordflow}{while}(adapter-\/>EnumOutputs(i, \&output) != DXGI\_ERROR\_NOT\_FOUND)}
-\DoxyCodeLine{00674     \{}
-\DoxyCodeLine{00676         DXGI\_OUTPUT\_DESC desc;}
-\DoxyCodeLine{00677         output-\/>GetDesc(\&desc);}
-\DoxyCodeLine{00678         }
-\DoxyCodeLine{00679         std::wstring text = L\textcolor{stringliteral}{"{}***Output: "{}};}
-\DoxyCodeLine{00680         text += desc.DeviceName;}
-\DoxyCodeLine{00681         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00682         OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00683 }
-\DoxyCodeLine{00684         LogOutputDisplayModes(output, mBackBufferFormat);}
-\DoxyCodeLine{00685 }
-\DoxyCodeLine{00686         ReleaseCom(output);}
-\DoxyCodeLine{00687 }
-\DoxyCodeLine{00688         ++i;}
-\DoxyCodeLine{00689     \}}
-\DoxyCodeLine{00690 \}}
-\DoxyCodeLine{00691 }
-\DoxyCodeLine{00692 \textcolor{comment}{//we can get a list of all supported display modes an output supports in that format with the following code}}
-\DoxyCodeLine{00693 \textcolor{keywordtype}{void} D3DApp::LogOutputDisplayModes(IDXGIOutput* output, DXGI\_FORMAT format)}
-\DoxyCodeLine{00694 \{}
-\DoxyCodeLine{00695     UINT count = 0;}
-\DoxyCodeLine{00696     UINT flags = 0;}
-\DoxyCodeLine{00697 }
-\DoxyCodeLine{00699     output-\/>GetDisplayModeList(format, flags, \&count, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00700 }
-\DoxyCodeLine{00701     std::vector<DXGI\_MODE\_DESC> modeList(count);}
-\DoxyCodeLine{00702     output-\/>GetDisplayModeList(format, flags, \&count, \&modeList[0]);}
-\DoxyCodeLine{00703 }
-\DoxyCodeLine{00704     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& x : modeList)}
-\DoxyCodeLine{00705     \{}
-\DoxyCodeLine{00706         UINT n = x.RefreshRate.Numerator;}
-\DoxyCodeLine{00707         UINT d = x.RefreshRate.Denominator;}
-\DoxyCodeLine{00708         std::wstring text =}
-\DoxyCodeLine{00709             L\textcolor{stringliteral}{"{}Width = "{}} + std::to\_wstring(x.Width) + L\textcolor{stringliteral}{"{} "{}} +}
-\DoxyCodeLine{00710             L\textcolor{stringliteral}{"{}Height = "{}} + std::to\_wstring(x.Height) + L\textcolor{stringliteral}{"{} "{}} +}
-\DoxyCodeLine{00711             L\textcolor{stringliteral}{"{}Refresh = "{}} + std::to\_wstring(n) + L\textcolor{stringliteral}{"{}/"{}} + std::to\_wstring(d) +}
-\DoxyCodeLine{00712             L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
-\DoxyCodeLine{00713 }
-\DoxyCodeLine{00714         ::OutputDebugString(text.c\_str());}
-\DoxyCodeLine{00715     \}}
-\DoxyCodeLine{00716 \}}
-\DoxyCodeLine{00717 }
-\DoxyCodeLine{00718 }
-\DoxyCodeLine{00719 }
-\DoxyCodeLine{00720 }
-\DoxyCodeLine{00721 }
-\DoxyCodeLine{00722 }
-\DoxyCodeLine{00723 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00002}00002 \textcolor{comment}{// d3dApp.cpp }}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{d3d_app_8h}{d3dApp.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include <WindowsX.h>}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00008}00008 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00009}00009 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00010}00010 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00012}00012 LRESULT CALLBACK}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00013}\mbox{\hyperlink{d3d_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{00013}} \mbox{\hyperlink{d3d_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00014}00014 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00015}00015     \textcolor{comment}{// Forward hwnd on because we can get messages (e.g., WM\_CREATE)}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00016}00016     \textcolor{comment}{// before CreateWindow returns, and thus before mhMainWnd is valid.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00017}00017     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_a66173f354ad8b3edc6c714883c7203df}{D3DApp::GetApp}}()-\/>\mbox{\hyperlink{class_d3_d_app_a50a6ba535971837f61c79d7f9390dc30}{MsgProc}}(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00018}00018 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00020}00020 \mbox{\hyperlink{class_d3_d_app}{D3DApp}}* \mbox{\hyperlink{class_d3_d_app_a37175a2b8bb82d0aed153568a3789a0c}{D3DApp::mApp}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00021}\mbox{\hyperlink{class_d3_d_app_a66173f354ad8b3edc6c714883c7203df}{00021}} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}* \mbox{\hyperlink{class_d3_d_app_a66173f354ad8b3edc6c714883c7203df}{D3DApp::GetApp}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00022}00022 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00023}00023     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_a37175a2b8bb82d0aed153568a3789a0c}{mApp}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00024}00024 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00026}\mbox{\hyperlink{class_d3_d_app_a973ca94b98dea10bf478f336f28e335f}{00026}} \mbox{\hyperlink{class_d3_d_app_a973ca94b98dea10bf478f336f28e335f}{D3DApp::D3DApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00027}00027 :   mhAppInst(hInstance)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00028}00028 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00029}00029     \textcolor{comment}{// Only one D3DApp can be constructed.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00030}00030     assert(\mbox{\hyperlink{class_d3_d_app_a37175a2b8bb82d0aed153568a3789a0c}{mApp}} == \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00031}00031     \mbox{\hyperlink{class_d3_d_app_a37175a2b8bb82d0aed153568a3789a0c}{mApp}} = \textcolor{keyword}{this};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00032}00032 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00034}\mbox{\hyperlink{class_d3_d_app_ab58c61812da3a6c656279c79c39f0600}{00034}} \mbox{\hyperlink{class_d3_d_app_ab58c61812da3a6c656279c79c39f0600}{D3DApp::\string~D3DApp}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00035}00035 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00036}00036     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00037}00037         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00038}00038 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00040}\mbox{\hyperlink{class_d3_d_app_ab5fc7468412d19bae8f4e82fb634769a}{00040}} HINSTANCE \mbox{\hyperlink{class_d3_d_app_ab5fc7468412d19bae8f4e82fb634769a}{D3DApp::AppInst}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00041}00041 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00042}00042     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_a68be4559a964d5972c3e43a20d7c00a3}{mhAppInst}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00043}00043 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00045}\mbox{\hyperlink{class_d3_d_app_ae70e0422d916077999b25cc1b984027d}{00045}} HWND \mbox{\hyperlink{class_d3_d_app_ae70e0422d916077999b25cc1b984027d}{D3DApp::MainWnd}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00046}00046 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00047}00047     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00048}00048 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00050}\mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{00050}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{D3DApp::AspectRatio}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00051}00051 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00052}00052     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}) / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00053}00053 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00055}\mbox{\hyperlink{class_d3_d_app_a84b1bd8014d56b1e8c3ec9c7b486646e}{00055}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d3_d_app_a84b1bd8014d56b1e8c3ec9c7b486646e}{D3DApp::Get4xMsaaState}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00056}00056 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00057}00057     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00058}00058 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00060}\mbox{\hyperlink{class_d3_d_app_a74ce23c1a7b775c3af6c67522abaa2bd}{00060}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a74ce23c1a7b775c3af6c67522abaa2bd}{D3DApp::Set4xMsaaState}}(\textcolor{keywordtype}{bool} value)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00061}00061 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00062}00062     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} != value)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00063}00063     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00064}00064         \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} = value;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00065}00065 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00067}00067         \mbox{\hyperlink{class_d3_d_app_a93e68c33a000808033ce442cd5568dec}{CreateSwapChain}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00068}00068         \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00069}00069     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00070}00070 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00072}\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{00072}} \textcolor{keywordtype}{int} \mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{D3DApp::Run}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00073}00073 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00074}00074     MSG msg = \{0\};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00075}00075  }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00076}00076     \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_af67b252c869cc649971b8cceefcb1eb8}{Reset}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00077}00077 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00078}00078     \textcolor{keywordflow}{while}(msg.message != WM\_QUIT)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00079}00079     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00080}00080         \textcolor{comment}{// If there are Window messages then process them.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00081}00081         \textcolor{keywordflow}{if}(PeekMessage( \&msg, 0, 0, 0, PM\_REMOVE ))}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00082}00082         \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00083}00083             TranslateMessage( \&msg );}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00084}00084             DispatchMessage( \&msg );}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00085}00085         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00086}00086         \textcolor{comment}{// Otherwise, do animation/game stuff.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00087}00087         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00088}00088         \{   }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00089}00089             \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_ac02f02b90ae1c2d6a2834abb5069f367}{Tick}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00090}00090 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00091}00091             \textcolor{keywordflow}{if}( !\mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00092}00092             \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00093}00093                 \mbox{\hyperlink{class_d3_d_app_a147e313c7da814224b74c3e29161245d}{CalculateFrameStats}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00094}00094                 \mbox{\hyperlink{class_d3_d_app_ae31029e118e14ee3ae4649f1c6f8d2dd}{Update}}(\mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}); }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00095}00095                 \mbox{\hyperlink{class_d3_d_app_afc159e00500db82ec59edf2bc95e5e6a}{Draw}}(\mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00096}00096             \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00097}00097             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00098}00098             \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00099}00099                 Sleep(100);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00100}00100             \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00101}00101         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00102}00102     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00104}00104     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{int})msg.wParam;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00105}00105 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00107}\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{00107}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00108}00108 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00109}00109     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a775e141865e0de4dc3f3a39281cbcf02}{InitMainWindow}}())}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00110}00110         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00112}00112     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a13ad61cbed0b9641974cc6183ba6a22b}{InitDirect3D}}())}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00113}00113         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00115}00115     \textcolor{comment}{// Do the initial resize code.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00116}00116     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00117}00117 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00118}00118     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00119}00119 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00120}00120  }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00121}\mbox{\hyperlink{class_d3_d_app_a4ca280598775faf38a663fb902f5b227}{00121}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a4ca280598775faf38a663fb902f5b227}{D3DApp::CreateRtvAndDsvDescriptorHeaps}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00122}00122 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00123}00123     D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00124}00124     rtvHeapDesc.NumDescriptors = \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00125}00125     rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00126}00126     rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00127}00127     rtvHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00128}00128     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00129}00129         \&rtvHeapDesc, IID\_PPV\_ARGS(\mbox{\hyperlink{class_d3_d_app_adb69a9972a7aa8884307b18070e0f455}{mRtvHeap}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00131}00131 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00132}00132     D3D12\_DESCRIPTOR\_HEAP\_DESC dsvHeapDesc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00133}00133     dsvHeapDesc.NumDescriptors = 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00134}00134     dsvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00135}00135     dsvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00136}00136     dsvHeapDesc.NodeMask = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00137}00137     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00138}00138         \&dsvHeapDesc, IID\_PPV\_ARGS(\mbox{\hyperlink{class_d3_d_app_a40c212366e13b47ff5858e852ca21a1e}{mDsvHeap}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00139}00139 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00141}\mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{00141}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00142}00142 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00143}00143     assert(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00144}00144     assert(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00145}00145     assert(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00146}00146 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00148}00148     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00149}00149 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00150}00150     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00151}00151 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00153}00153     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}}; ++i)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00154}00154         \mbox{\hyperlink{class_d3_d_app_ad84c0de388ee240f478cc14c1dc7ba24}{mSwapChainBuffer}}[i].Reset();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00155}00155     \mbox{\hyperlink{class_d3_d_app_a5abf385ad562d607c7087a82ccf5ffef}{mDepthStencilBuffer}}.Reset();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00156}00156     }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00158}00158     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>ResizeBuffers(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00159}00159         \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}}, }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00160}00160         \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}}, }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00161}00161         \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}}, }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00162}00162         DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00163}00163 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00164}00164     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00165}00165  }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00166}00166     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHeapHandle(\mbox{\hyperlink{class_d3_d_app_adb69a9972a7aa8884307b18070e0f455}{mRtvHeap}}-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00167}00167     \textcolor{keywordflow}{for} (UINT i = 0; i < \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}}; i++)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00168}00168     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00169}00169         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>GetBuffer(i, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_ad84c0de388ee240f478cc14c1dc7ba24}{mSwapChainBuffer}}[i])));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00170}00170         \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ad84c0de388ee240f478cc14c1dc7ba24}{mSwapChainBuffer}}[i].Get(), \textcolor{keyword}{nullptr}, rtvHeapHandle);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00171}00171         rtvHeapHandle.Offset(1, \mbox{\hyperlink{class_d3_d_app_ae164797b666d06a8f2e609a0ab1d1f75}{mRtvDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00172}00172     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00173}00173 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00175}00175     D3D12\_RESOURCE\_DESC depthStencilDesc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00176}00176     depthStencilDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00177}00177     depthStencilDesc.Alignment = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00178}00178     depthStencilDesc.Width = \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00179}00179     depthStencilDesc.Height = \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00180}00180     depthStencilDesc.DepthOrArraySize = 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00181}00181     depthStencilDesc.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00187}00187     depthStencilDesc.Format = DXGI\_FORMAT\_R24G8\_TYPELESS;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00188}00188 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00189}00189     depthStencilDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00190}00190     depthStencilDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00191}00191     depthStencilDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00192}00192     depthStencilDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_DEPTH\_STENCIL;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00193}00193 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00194}00194     D3D12\_CLEAR\_VALUE optClear;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00195}00195     optClear.Format = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00196}00196     optClear.DepthStencil.Depth = 1.0f;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00197}00197     optClear.DepthStencil.Stencil = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00198}00198     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00199}00199         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00200}00200         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00201}00201         \&depthStencilDesc,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00202}00202         D3D12\_RESOURCE\_STATE\_COMMON,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00203}00203         \&optClear,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00204}00204         IID\_PPV\_ARGS(\mbox{\hyperlink{class_d3_d_app_a5abf385ad562d607c7087a82ccf5ffef}{mDepthStencilBuffer}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00205}00205 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00207}00207     D3D12\_DEPTH\_STENCIL\_VIEW\_DESC dsvDesc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00208}00208     dsvDesc.Flags = D3D12\_DSV\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00209}00209     dsvDesc.ViewDimension = D3D12\_DSV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00210}00210     dsvDesc.Format = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00211}00211     dsvDesc.Texture2D.MipSlice = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00212}00212     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a5abf385ad562d607c7087a82ccf5ffef}{mDepthStencilBuffer}}.Get(), \&dsvDesc, \mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00213}00213 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00215}00215     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a5abf385ad562d607c7087a82ccf5ffef}{mDepthStencilBuffer}}.Get(),}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00216}00216         D3D12\_RESOURCE\_STATE\_COMMON, D3D12\_RESOURCE\_STATE\_DEPTH\_WRITE));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00217}00217     }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00219}00219     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00220}00220     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00221}00221     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00222}00222 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00224}00224     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00225}00225 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00227}00227     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.TopLeftX = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00228}00228     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.TopLeftY = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00229}00229     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.Width    = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00230}00230     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.Height   = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00231}00231     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.MinDepth = 0.0f;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00232}00232     \mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}}.MaxDepth = 1.0f;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00233}00233 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00234}00234     \mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}} = \{ 0, 0, \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}} \};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00235}00235 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00236}00236  }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00237}\mbox{\hyperlink{class_d3_d_app_a50a6ba535971837f61c79d7f9390dc30}{00237}} LRESULT \mbox{\hyperlink{class_d3_d_app_a50a6ba535971837f61c79d7f9390dc30}{D3DApp::MsgProc}}(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00238}00238 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00239}00239     \textcolor{keywordflow}{switch}( msg )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00240}00240     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00244}00244     \textcolor{keywordflow}{case} WM\_ACTIVATE:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00245}00245         \textcolor{keywordflow}{if}( LOWORD(wParam) == WA\_INACTIVE )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00246}00246         \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00247}00247             \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00248}00248             \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a61b1ecea219fbe2dfff86f9f9cab98b1}{Stop}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00249}00249         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00250}00250         \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00251}00251         \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00252}00252             \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00253}00253             \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a4af503863ddee320c9e034dc2938c2e1}{Start}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00254}00254         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00255}00255         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00256}00256 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00258}00258     \textcolor{keywordflow}{case} WM\_SIZE:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00260}00260         \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}  = LOWORD(lParam);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00261}00261         \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}} = HIWORD(lParam);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00262}00262         \textcolor{keywordflow}{if}( \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00263}00263         \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00264}00264             \textcolor{keywordflow}{if}( wParam == SIZE\_MINIMIZED )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00265}00265             \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00266}00266                 \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00267}00267                 \mbox{\hyperlink{class_d3_d_app_a042fc6ee35adee941a1ca38dc31bf517}{mMinimized}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00268}00268                 \mbox{\hyperlink{class_d3_d_app_a0a1a869eb2966b6d0e905902b05671c6}{mMaximized}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00269}00269             \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00270}00270             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( wParam == SIZE\_MAXIMIZED )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00271}00271             \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00272}00272                 \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00273}00273                 \mbox{\hyperlink{class_d3_d_app_a042fc6ee35adee941a1ca38dc31bf517}{mMinimized}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00274}00274                 \mbox{\hyperlink{class_d3_d_app_a0a1a869eb2966b6d0e905902b05671c6}{mMaximized}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00275}00275                 \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00276}00276             \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00277}00277             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( wParam == SIZE\_RESTORED )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00278}00278             \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00279}00279                 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00280}00280                 \textcolor{comment}{// Restoring from minimized state?}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00281}00281                 \textcolor{keywordflow}{if}( \mbox{\hyperlink{class_d3_d_app_a042fc6ee35adee941a1ca38dc31bf517}{mMinimized}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00282}00282                 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00283}00283                     \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00284}00284                     \mbox{\hyperlink{class_d3_d_app_a042fc6ee35adee941a1ca38dc31bf517}{mMinimized}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00285}00285                     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00286}00286                 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00287}00287 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00288}00288                 \textcolor{comment}{// Restoring from maximized state?}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00289}00289                 \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( \mbox{\hyperlink{class_d3_d_app_a0a1a869eb2966b6d0e905902b05671c6}{mMaximized}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00290}00290                 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00291}00291                     \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00292}00292                     \mbox{\hyperlink{class_d3_d_app_a0a1a869eb2966b6d0e905902b05671c6}{mMaximized}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00293}00293                     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00294}00294                 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00295}00295                 \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}( \mbox{\hyperlink{class_d3_d_app_abf2dd8ed33542b683ba236a82bcc6e6f}{mResizing}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00296}00296                 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00305}00305                 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00306}00306                 \textcolor{keywordflow}{else} \textcolor{comment}{// API call such as SetWindowPos or mSwapChain-\/>SetFullscreenState.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00307}00307                 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00308}00308                     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00309}00309                 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00310}00310             \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00311}00311         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00312}00312         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00313}00313 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00315}00315     \textcolor{keywordflow}{case} WM\_ENTERSIZEMOVE:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00316}00316         \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00317}00317         \mbox{\hyperlink{class_d3_d_app_abf2dd8ed33542b683ba236a82bcc6e6f}{mResizing}}  = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00318}00318         \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a61b1ecea219fbe2dfff86f9f9cab98b1}{Stop}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00319}00319         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00320}00320 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00323}00323     \textcolor{keywordflow}{case} WM\_EXITSIZEMOVE:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00324}00324         \mbox{\hyperlink{class_d3_d_app_aa2678014bf27f35a50af237d5f9d2b3a}{mAppPaused}} = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00325}00325         \mbox{\hyperlink{class_d3_d_app_abf2dd8ed33542b683ba236a82bcc6e6f}{mResizing}}  = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00326}00326         \mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a4af503863ddee320c9e034dc2938c2e1}{Start}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00327}00327         \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{OnResize}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00328}00328         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00329}00329  }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00331}00331     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00332}00332         PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00333}00333         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00334}00334 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00337}00337     \textcolor{keywordflow}{case} WM\_MENUCHAR:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00338}00338         \textcolor{comment}{// Don't beep when we alt-\/enter.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00339}00339         \textcolor{keywordflow}{return} MAKELRESULT(0, MNC\_CLOSE);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00340}00340 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00342}00342     \textcolor{keywordflow}{case} WM\_GETMINMAXINFO:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00343}00343         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.x = 200;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00344}00344         ((MINMAXINFO*)lParam)-\/>ptMinTrackSize.y = 200; }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00345}00345         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00346}00346 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00347}00347     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00348}00348     \textcolor{keywordflow}{case} WM\_MBUTTONDOWN:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00349}00349     \textcolor{keywordflow}{case} WM\_RBUTTONDOWN:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00350}00350         \mbox{\hyperlink{class_d3_d_app_afa0d546d52408a9b55866e6ba065ddae}{OnMouseDown}}(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00351}00351         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00352}00352     \textcolor{keywordflow}{case} WM\_LBUTTONUP:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00353}00353     \textcolor{keywordflow}{case} WM\_MBUTTONUP:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00354}00354     \textcolor{keywordflow}{case} WM\_RBUTTONUP:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00355}00355         \mbox{\hyperlink{class_d3_d_app_a98be07429ac3ffb5f76cbe831f9d94de}{OnMouseUp}}(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00356}00356         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00357}00357     \textcolor{keywordflow}{case} WM\_MOUSEMOVE:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00358}00358         \mbox{\hyperlink{class_d3_d_app_aa5270048920cd8a62dc07c7ed5e97622}{OnMouseMove}}(wParam, GET\_X\_LPARAM(lParam), GET\_Y\_LPARAM(lParam));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00359}00359         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00360}00360     \textcolor{keywordflow}{case} WM\_KEYUP:}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00361}00361         \textcolor{keywordflow}{if}(wParam == VK\_ESCAPE)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00362}00362         \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00363}00363             PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00364}00364         \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00365}00365         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((\textcolor{keywordtype}{int})wParam == VK\_F2)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00366}00366             \mbox{\hyperlink{class_d3_d_app_a74ce23c1a7b775c3af6c67522abaa2bd}{Set4xMsaaState}}(!\mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00367}00367 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00368}00368         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00369}00369     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00370}00370 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00371}00371     \textcolor{keywordflow}{return} DefWindowProc(hwnd, msg, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00372}00372 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00373}00373 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00374}\mbox{\hyperlink{class_d3_d_app_a775e141865e0de4dc3f3a39281cbcf02}{00374}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d3_d_app_a775e141865e0de4dc3f3a39281cbcf02}{D3DApp::InitMainWindow}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00375}00375 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00376}00376     WNDCLASS wc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00377}00377     wc.style         = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00378}00378     wc.lpfnWndProc   = \mbox{\hyperlink{d3d_app_8cpp_a6430a76bf18e17d995aa340aaf8c30a9}{MainWndProc}}; }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00379}00379     wc.cbClsExtra    = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00380}00380     wc.cbWndExtra    = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00381}00381     wc.hInstance     = \mbox{\hyperlink{class_d3_d_app_a68be4559a964d5972c3e43a20d7c00a3}{mhAppInst}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00382}00382     wc.hIcon         = LoadIcon(0, IDI\_APPLICATION);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00383}00383     wc.hCursor       = LoadCursor(0, IDC\_ARROW);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00384}00384     wc.hbrBackground = (HBRUSH)GetStockObject(NULL\_BRUSH);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00385}00385     wc.lpszMenuName  = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00386}00386     wc.lpszClassName = L\textcolor{stringliteral}{"{}MainWnd"{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00387}00387 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00388}00388     \textcolor{keywordflow}{if}( !RegisterClass(\&wc) )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00389}00389     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00390}00390         MessageBox(0, L\textcolor{stringliteral}{"{}RegisterClass Failed."{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00391}00391         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00392}00392     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00393}00393 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00395}00395     RECT R = \{ 0, 0, \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}} \};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00396}00396     AdjustWindowRect(\&R, WS\_OVERLAPPEDWINDOW, \textcolor{keyword}{false});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00397}00397     \textcolor{keywordtype}{int} width  = R.right -\/ R.left;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00398}00398     \textcolor{keywordtype}{int} height = R.bottom -\/ R.top;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00399}00399 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00400}00400     \mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}} = CreateWindow(L\textcolor{stringliteral}{"{}MainWnd"{}}, \mbox{\hyperlink{class_d3_d_app_afb2eb2bca9adc01c7224200eab6b14dc}{mMainWndCaption}}.c\_str(), }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00401}00401         WS\_OVERLAPPEDWINDOW, CW\_USEDEFAULT, CW\_USEDEFAULT, width, height, 0, 0, \mbox{\hyperlink{class_d3_d_app_a68be4559a964d5972c3e43a20d7c00a3}{mhAppInst}}, 0); }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00402}00402     \textcolor{keywordflow}{if}( !\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}} )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00403}00403     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00404}00404         MessageBox(0, L\textcolor{stringliteral}{"{}CreateWindow Failed."{}}, 0, 0);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00405}00405         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00406}00406     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00407}00407 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00408}00408     ShowWindow(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}}, SW\_SHOW);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00409}00409     UpdateWindow(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00410}00410 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00411}00411     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00412}00412 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00413}00413 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00414}\mbox{\hyperlink{class_d3_d_app_a13ad61cbed0b9641974cc6183ba6a22b}{00414}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_d3_d_app_a13ad61cbed0b9641974cc6183ba6a22b}{D3DApp::InitDirect3D}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00415}00415 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00416}00416 \textcolor{preprocessor}{\#if defined(DEBUG) || defined(\_DEBUG) }}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00419}00419 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00420}00420     ComPtr<ID3D12Debug> debugController;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00421}00421     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController)));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00422}00422     debugController-\/>EnableDebugLayer();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00423}00423 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00424}00424 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00425}00425 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00434}00434     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(CreateDXGIFactory1(IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_a8bb5fcea3838adea2a82cd32cf641ea0}{mdxgiFactory}})));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00435}00435 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00436}00436     UINT i = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00437}00437     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00440}00440     std::vector<IDXGIAdapter*> adapterList;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00441}00441     \textcolor{keywordflow}{while} (\mbox{\hyperlink{class_d3_d_app_a8bb5fcea3838adea2a82cd32cf641ea0}{mdxgiFactory}}-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00442}00442     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00443}00443         adapterList.push\_back(adapter);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00444}00444         ++i;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00445}00445     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00447}00447     HRESULT hardwareResult = D3D12CreateDevice(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00448}00448         \textcolor{keyword}{nullptr},             \textcolor{comment}{// default adapter}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00449}00449         \textcolor{comment}{//adapterList[0],          //NVDIA adapter! at home, you can comment this out and use nullptr to point to a stronger adapter}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00450}00450         D3D\_FEATURE\_LEVEL\_12\_0,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00451}00451         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00452}00452 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00454}00454     \textcolor{keywordflow}{if}(FAILED(hardwareResult))}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00455}00455     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00456}00456         ComPtr<IDXGIAdapter> pWarpAdapter;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00457}00457         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a8bb5fcea3838adea2a82cd32cf641ea0}{mdxgiFactory}}-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&pWarpAdapter)));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00458}00458 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00459}00459         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12CreateDevice(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00460}00460             pWarpAdapter.Get(),}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00461}00461             D3D\_FEATURE\_LEVEL\_12\_0,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00462}00462             IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}})));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00463}00463     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00464}00464 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00465}00465     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00466}00466         IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}})));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00467}00467 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00468}00468     \mbox{\hyperlink{class_d3_d_app_ae164797b666d06a8f2e609a0ab1d1f75}{mRtvDescriptorSize}} = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00469}00469     \mbox{\hyperlink{class_d3_d_app_a61a130cb7d4045a2ab26b486cd07edb5}{mDsvDescriptorSize}} = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_DSV);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00470}00470     \mbox{\hyperlink{class_d3_d_app_a0e084fa045c8e46d65a37889ff5d307d}{mCbvSrvUavDescriptorSize}} = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00471}00471 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00475}00475 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00476}00476     D3D12\_FEATURE\_DATA\_MULTISAMPLE\_QUALITY\_LEVELS msQualityLevels;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00477}00477     msQualityLevels.Format = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00478}00478     msQualityLevels.SampleCount = 4;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00479}00479     msQualityLevels.Flags = D3D12\_MULTISAMPLE\_QUALITY\_LEVELS\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00480}00480     msQualityLevels.NumQualityLevels = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00481}00481     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CheckFeatureSupport(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00482}00482         D3D12\_FEATURE\_MULTISAMPLE\_QUALITY\_LEVELS,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00483}00483         \&msQualityLevels,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00484}00484         \textcolor{keyword}{sizeof}(msQualityLevels)));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00485}00485 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00486}00486     \mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} = msQualityLevels.NumQualityLevels;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00487}00487     assert(\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} > 0 \&\& \textcolor{stringliteral}{"{}Unexpected MSAA quality level."{}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00488}00488     }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00489}00489 \textcolor{preprocessor}{\#ifdef \_DEBUG}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00490}00490     \mbox{\hyperlink{class_d3_d_app_a64f791b345ac87edeab057c34cf17de3}{LogAdapters}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00491}00491 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00492}00492 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00493}00493     \mbox{\hyperlink{class_d3_d_app_a978d7c0fda3b30b09c91dc52ec99d942}{CreateCommandObjects}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00494}00494     \mbox{\hyperlink{class_d3_d_app_a93e68c33a000808033ce442cd5568dec}{CreateSwapChain}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00495}00495     \mbox{\hyperlink{class_d3_d_app_a4ca280598775faf38a663fb902f5b227}{CreateRtvAndDsvDescriptorHeaps}}();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00496}00496 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00497}00497     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00498}00498 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00499}00499 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00500}00500 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00501}00501 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00502}\mbox{\hyperlink{class_d3_d_app_a978d7c0fda3b30b09c91dc52ec99d942}{00502}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a978d7c0fda3b30b09c91dc52ec99d942}{D3DApp::CreateCommandObjects}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00503}00503 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00504}00504     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00505}00505     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00506}00506     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00507}00507     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&\mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}})));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00508}00508 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00509}00509     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommandAllocator(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00510}00510         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00511}00511         IID\_PPV\_ARGS(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00512}00512 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00513}00513     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateCommandList(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00514}00514         0,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00515}00515         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00516}00516         \mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{comment}{// Associated command allocator}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00517}00517         \textcolor{keyword}{nullptr},                   \textcolor{comment}{// Initial PipelineStateObject}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00518}00518         IID\_PPV\_ARGS(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00519}00519 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00523}00523     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00524}00524 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00525}00525 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00526}\mbox{\hyperlink{class_d3_d_app_a93e68c33a000808033ce442cd5568dec}{00526}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a93e68c33a000808033ce442cd5568dec}{D3DApp::CreateSwapChain}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00527}00527 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00529}00529     \mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}.Reset();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00530}00530 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00531}00531     DXGI\_SWAP\_CHAIN\_DESC sd;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00532}00532     sd.BufferDesc.Width = \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00533}00533     sd.BufferDesc.Height = \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00534}00534     sd.BufferDesc.RefreshRate.Numerator = 60;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00535}00535     sd.BufferDesc.RefreshRate.Denominator = 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00536}00536     sd.BufferDesc.Format = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00537}00537     sd.BufferDesc.ScanlineOrdering = DXGI\_MODE\_SCANLINE\_ORDER\_UNSPECIFIED;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00538}00538     sd.BufferDesc.Scaling = DXGI\_MODE\_SCALING\_UNSPECIFIED;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00539}00539     sd.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00540}00540     sd.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00541}00541     sd.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00542}00542     sd.BufferCount = \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00543}00543     sd.OutputWindow = \mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00544}00544     sd.Windowed = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00545}00545     sd.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00546}00546     sd.Flags = DXGI\_SWAP\_CHAIN\_FLAG\_ALLOW\_MODE\_SWITCH;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00547}00547 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00548}00548     \textcolor{comment}{// Note: Swap chain uses queue to perform flush.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00549}00549     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a8bb5fcea3838adea2a82cd32cf641ea0}{mdxgiFactory}}-\/>CreateSwapChain(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00550}00550         \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}.Get(),}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00551}00551         \&sd, }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00552}00552         \mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}.GetAddressOf()));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00553}00553 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00554}00554 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00555}\mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{00555}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{D3DApp::FlushCommandQueue}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00556}00556 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00558}00558     \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}}++;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00559}00559 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00563}00563     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}}));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00564}00564 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00566}00566     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}})}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00567}00567     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00568}00568         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00569}00569 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00571}00571         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00572}00572 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00574}00574         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00575}00575         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00576}00576     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00577}00577 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00578}00578 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00579}00579 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00580}00580 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00581}\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{00581}} ID3D12Resource* \mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{D3DApp::CurrentBackBuffer}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00582}00582 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00583}00583     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_ad84c0de388ee240f478cc14c1dc7ba24}{mSwapChainBuffer}}[\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}}].Get();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00584}00584 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00585}00585 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00586}\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{00586}} D3D12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{D3DApp::CurrentBackBufferView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00587}00587 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00588}00588     \textcolor{keywordflow}{return} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE(}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00589}00589         \mbox{\hyperlink{class_d3_d_app_adb69a9972a7aa8884307b18070e0f455}{mRtvHeap}}-\/>GetCPUDescriptorHandleForHeapStart(),}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00590}00590         \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}},}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00591}00591         \mbox{\hyperlink{class_d3_d_app_ae164797b666d06a8f2e609a0ab1d1f75}{mRtvDescriptorSize}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00592}00592 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00593}00593 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00594}\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{00594}} D3D12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{D3DApp::DepthStencilView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00595}00595 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00596}00596     \textcolor{keywordflow}{return} \mbox{\hyperlink{class_d3_d_app_a40c212366e13b47ff5858e852ca21a1e}{mDsvHeap}}-\/>GetCPUDescriptorHandleForHeapStart();}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00597}00597 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00598}00598 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00599}\mbox{\hyperlink{class_d3_d_app_a147e313c7da814224b74c3e29161245d}{00599}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a147e313c7da814224b74c3e29161245d}{D3DApp::CalculateFrameStats}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00600}00600 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00601}00601     \textcolor{comment}{// Code computes the average frames per second, and also the }}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00602}00602     \textcolor{comment}{// average time it takes to render one frame.  These stats }}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00603}00603     \textcolor{comment}{// are appended to the window caption bar.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00604}00604     }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00605}00605     \textcolor{keyword}{static} \textcolor{keywordtype}{int} frameCnt = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00606}00606     \textcolor{keyword}{static} \textcolor{keywordtype}{float} timeElapsed = 0.0f;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00607}00607 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00608}00608     frameCnt++;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00609}00609 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00610}00610     \textcolor{comment}{// Compute averages over one second period.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00611}00611     \textcolor{keywordflow}{if}( (\mbox{\hyperlink{class_d3_d_app_a687d7ace8230b136b6431c8697cc47fd}{mTimer}}.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}() -\/ timeElapsed) >= 1.0f )}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00612}00612     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00613}00613         \textcolor{keywordtype}{float} fps = (float)frameCnt; \textcolor{comment}{// fps = frameCnt / 1}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00614}00614         \textcolor{keywordtype}{float} mspf = 1000.0f / fps;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00615}00615 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00616}00616         wstring fpsStr = to\_wstring(fps);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00617}00617         wstring mspfStr = to\_wstring(mspf);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00618}00618 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00619}00619         wstring windowText = \mbox{\hyperlink{class_d3_d_app_afb2eb2bca9adc01c7224200eab6b14dc}{mMainWndCaption}} +}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00620}00620             L\textcolor{stringliteral}{"{}    fps: "{}} + fpsStr +}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00621}00621             L\textcolor{stringliteral}{"{}   mspf: "{}} + mspfStr;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00622}00622 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00623}00623         SetWindowText(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}}, windowText.c\_str());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00624}00624         }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00625}00625         \textcolor{comment}{// Reset for next average.}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00626}00626         frameCnt = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00627}00627         timeElapsed += 1.0f;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00628}00628     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00629}00629 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00630}00630 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00636}\mbox{\hyperlink{class_d3_d_app_a64f791b345ac87edeab057c34cf17de3}{00636}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a64f791b345ac87edeab057c34cf17de3}{D3DApp::LogAdapters}}()}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00637}00637 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00638}00638     UINT i = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00639}00639     IDXGIAdapter* adapter = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00640}00640     std::vector<IDXGIAdapter*> adapterList;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00641}00641     \textcolor{keywordflow}{while}(\mbox{\hyperlink{class_d3_d_app_a8bb5fcea3838adea2a82cd32cf641ea0}{mdxgiFactory}}-\/>EnumAdapters(i, \&adapter) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00642}00642     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00643}00643         DXGI\_ADAPTER\_DESC desc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00644}00644         adapter-\/>GetDesc(\&desc);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00645}00645 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00646}00646         std::wstring text = L\textcolor{stringliteral}{"{}***Adapter: "{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00647}00647         text += desc.Description;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00648}00648         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00649}00649 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00650}00650         OutputDebugString(text.c\_str());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00651}00651 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00652}00652         adapterList.push\_back(adapter);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00653}00653         }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00654}00654         ++i;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00655}00655     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00656}00656 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00657}00657     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < adapterList.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00658}00658     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00659}00659         \mbox{\hyperlink{class_d3_d_app_a72d9458209b467ad1b53db8db92995ba}{LogAdapterOutputs}}(adapterList[i]);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00660}00660         \mbox{\hyperlink{d3d_util_8h_a0670b8f550c413fb123fa6df8dc87267}{ReleaseCom}}(adapterList[i]);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00661}00661     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00662}00662 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00663}00663 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00669}\mbox{\hyperlink{class_d3_d_app_a72d9458209b467ad1b53db8db92995ba}{00669}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a72d9458209b467ad1b53db8db92995ba}{D3DApp::LogAdapterOutputs}}(IDXGIAdapter* adapter)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00670}00670 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00671}00671     UINT i = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00672}00672     IDXGIOutput* output = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00673}00673     \textcolor{keywordflow}{while}(adapter-\/>EnumOutputs(i, \&output) != DXGI\_ERROR\_NOT\_FOUND)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00674}00674     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00676}00676         DXGI\_OUTPUT\_DESC desc;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00677}00677         output-\/>GetDesc(\&desc);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00678}00678         }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00679}00679         std::wstring text = L\textcolor{stringliteral}{"{}***Output: "{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00680}00680         text += desc.DeviceName;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00681}00681         text += L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00682}00682         OutputDebugString(text.c\_str());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00683}00683 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00684}00684         \mbox{\hyperlink{class_d3_d_app_a96563a403e9119629fff43b86d9807ea}{LogOutputDisplayModes}}(output, \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00685}00685 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00686}00686         \mbox{\hyperlink{d3d_util_8h_a0670b8f550c413fb123fa6df8dc87267}{ReleaseCom}}(output);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00687}00687 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00688}00688         ++i;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00689}00689     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00690}00690 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00691}00691 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00692}00692 \textcolor{comment}{//we can get a list of all supported display modes an output supports in that format with the following code}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00693}\mbox{\hyperlink{class_d3_d_app_a96563a403e9119629fff43b86d9807ea}{00693}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d_app_a96563a403e9119629fff43b86d9807ea}{D3DApp::LogOutputDisplayModes}}(IDXGIOutput* output, DXGI\_FORMAT format)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00694}00694 \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00695}00695     UINT count = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00696}00696     UINT flags = 0;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00697}00697 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00699}00699     output-\/>GetDisplayModeList(format, flags, \&count, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00700}00700 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00701}00701     std::vector<DXGI\_MODE\_DESC> modeList(count);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00702}00702     output-\/>GetDisplayModeList(format, flags, \&count, \&modeList[0]);}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00703}00703 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00704}00704     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& x : modeList)}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00705}00705     \{}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00706}00706         UINT n = x.RefreshRate.Numerator;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00707}00707         UINT d = x.RefreshRate.Denominator;}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00708}00708         std::wstring text =}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00709}00709             L\textcolor{stringliteral}{"{}Width = "{}} + std::to\_wstring(x.Width) + L\textcolor{stringliteral}{"{} "{}} +}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00710}00710             L\textcolor{stringliteral}{"{}Height = "{}} + std::to\_wstring(x.Height) + L\textcolor{stringliteral}{"{} "{}} +}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00711}00711             L\textcolor{stringliteral}{"{}Refresh = "{}} + std::to\_wstring(n) + L\textcolor{stringliteral}{"{}/"{}} + std::to\_wstring(d) +}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00712}00712             L\textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00713}00713 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00714}00714         ::OutputDebugString(text.c\_str());}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00715}00715     \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00716}00716 \}}
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00717}00717 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00718}00718 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00719}00719 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00720}00720 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00721}00721 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00722}00722 }
+\DoxyCodeLine{\Hypertarget{d3d_app_8cpp_source_l00723}00723 }
 
 \end{DoxyCode}

@@ -31,9 +31,7 @@ var class_d_x_sample =
     [ "SetCustomWindowText", "class_d_x_sample.html#a57daa7205a38431871fa3d5abccef731", null ],
     [ "SetCustomWindowText", "class_d_x_sample.html#a57daa7205a38431871fa3d5abccef731", null ],
     [ "m_aspectRatio", "class_d_x_sample.html#a526d30be9be2182747aa97d7d130f664", null ],
-    [ "m_assetsPath", "class_d_x_sample.html#a204f2581ce2e2197412083acf85cf07a", null ],
     [ "m_height", "class_d_x_sample.html#a56ff92a24d9f30901fa370b0112cdefd", null ],
-    [ "m_title", "class_d_x_sample.html#a38c4154f6bbcc09a2561b7784f716385", null ],
     [ "m_useWarpDevice", "class_d_x_sample.html#a00b60a6d941dcaa6d750ee1c31f2a5f1", null ],
     [ "m_width", "class_d_x_sample.html#ad54a7eccea7fc9a8e9c80cbefca364a8", null ]
 ];

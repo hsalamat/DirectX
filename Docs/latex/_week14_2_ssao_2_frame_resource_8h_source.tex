@@ -1,122 +1,122 @@
-\doxysection{Frame\+Resource.\+h}
+\hypertarget{_week14_2_ssao_2_frame_resource_8h_source}{}\doxysection{Frame\+Resource.\+h}
 \label{_week14_2_ssao_2_frame_resource_8h_source}\index{Week14/Ssao/FrameResource.h@{Week14/Ssao/FrameResource.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week14_2_ssao_2_frame_resource_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00002 }
-\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{keyword}{struct }ObjectConstants}
-\DoxyCodeLine{00008 \{}
-\DoxyCodeLine{00009     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00010     DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{00011     UINT     MaterialIndex;}
-\DoxyCodeLine{00012     UINT     ObjPad0;}
-\DoxyCodeLine{00013     UINT     ObjPad1;}
-\DoxyCodeLine{00014     UINT     ObjPad2;}
-\DoxyCodeLine{00015 \};}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017 \textcolor{keyword}{struct }PassConstants}
-\DoxyCodeLine{00018 \{}
-\DoxyCodeLine{00019     DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();}
-\DoxyCodeLine{00020     DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00021     DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00022     DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00023     DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00024     DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00025     DirectX::XMFLOAT4X4 ViewProjTex = MathHelper::Identity4x4();}
-\DoxyCodeLine{00026     DirectX::XMFLOAT4X4 ShadowTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{00027     DirectX::XMFLOAT3 EyePosW = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00028     \textcolor{keywordtype}{float} cbPerObjectPad1 = 0.0f;}
-\DoxyCodeLine{00029     DirectX::XMFLOAT2 RenderTargetSize = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00030     DirectX::XMFLOAT2 InvRenderTargetSize = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00031     \textcolor{keywordtype}{float} NearZ = 0.0f;}
-\DoxyCodeLine{00032     \textcolor{keywordtype}{float} FarZ = 0.0f;}
-\DoxyCodeLine{00033     \textcolor{keywordtype}{float} TotalTime = 0.0f;}
-\DoxyCodeLine{00034     \textcolor{keywordtype}{float} DeltaTime = 0.0f;}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036     DirectX::XMFLOAT4 AmbientLight = \{ 0.0f, 0.0f, 0.0f, 1.0f \};}
-\DoxyCodeLine{00037 }
-\DoxyCodeLine{00038     \textcolor{comment}{// Indices [0, NUM\_DIR\_LIGHTS) are directional lights;}}
-\DoxyCodeLine{00039     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS) are point lights;}}
-\DoxyCodeLine{00040     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHT+NUM\_SPOT\_LIGHTS)}}
-\DoxyCodeLine{00041     \textcolor{comment}{// are spot lights for a maximum of MaxLights per object.}}
-\DoxyCodeLine{00042     Light Lights[MaxLights];}
-\DoxyCodeLine{00043 \};}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045 \textcolor{keyword}{struct }SsaoConstants}
-\DoxyCodeLine{00046 \{}
-\DoxyCodeLine{00047     DirectX::XMFLOAT4X4 Proj;}
-\DoxyCodeLine{00048     DirectX::XMFLOAT4X4 InvProj;}
-\DoxyCodeLine{00049     DirectX::XMFLOAT4X4 ProjTex;}
-\DoxyCodeLine{00050     DirectX::XMFLOAT4   OffsetVectors[14];}
-\DoxyCodeLine{00051 }
-\DoxyCodeLine{00052     \textcolor{comment}{// For SsaoBlur.hlsl}}
-\DoxyCodeLine{00053     DirectX::XMFLOAT4 BlurWeights[3];}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     DirectX::XMFLOAT2 InvRenderTargetSize = \{ 0.0f, 0.0f \};}
-\DoxyCodeLine{00056 }
-\DoxyCodeLine{00057     \textcolor{comment}{// Coordinates given in view space.}}
-\DoxyCodeLine{00058     \textcolor{keywordtype}{float} OcclusionRadius  = 0.5f;}
-\DoxyCodeLine{00059     \textcolor{keywordtype}{float} OcclusionFadeStart = 0.2f;}
-\DoxyCodeLine{00060     \textcolor{keywordtype}{float} OcclusionFadeEnd = 2.0f;}
-\DoxyCodeLine{00061     \textcolor{keywordtype}{float} SurfaceEpsilon = 0.05f;}
-\DoxyCodeLine{00062 \};}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064 \textcolor{keyword}{struct }MaterialData}
-\DoxyCodeLine{00065 \{}
-\DoxyCodeLine{00066     DirectX::XMFLOAT4 DiffuseAlbedo = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
-\DoxyCodeLine{00067     DirectX::XMFLOAT3 FresnelR0 = \{ 0.01f, 0.01f, 0.01f \};}
-\DoxyCodeLine{00068     \textcolor{keywordtype}{float} Roughness = 0.5f;}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070     \textcolor{comment}{// Used in texture mapping.}}
-\DoxyCodeLine{00071     DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{00072 }
-\DoxyCodeLine{00073     UINT DiffuseMapIndex = 0;}
-\DoxyCodeLine{00074     UINT NormalMapIndex = 0;}
-\DoxyCodeLine{00075     UINT MaterialPad1;}
-\DoxyCodeLine{00076     UINT MaterialPad2;}
-\DoxyCodeLine{00077 \};}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079 \textcolor{keyword}{struct }Vertex}
-\DoxyCodeLine{00080 \{}
-\DoxyCodeLine{00081     DirectX::XMFLOAT3 Pos;}
-\DoxyCodeLine{00082     DirectX::XMFLOAT3 Normal;}
-\DoxyCodeLine{00083     DirectX::XMFLOAT2 TexC;}
-\DoxyCodeLine{00084     DirectX::XMFLOAT3 TangentU;}
-\DoxyCodeLine{00085 \};}
-\DoxyCodeLine{00086 }
-\DoxyCodeLine{00087 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
-\DoxyCodeLine{00088 \textcolor{comment}{// for a frame.  }}
-\DoxyCodeLine{00089 \textcolor{keyword}{struct }FrameResource}
-\DoxyCodeLine{00090 \{}
-\DoxyCodeLine{00091 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00092     }
-\DoxyCodeLine{00093     FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);}
-\DoxyCodeLine{00094     FrameResource(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00095     FrameResource\& operator=(\textcolor{keyword}{const} FrameResource\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00096     \string~FrameResource();}
-\DoxyCodeLine{00097 }
-\DoxyCodeLine{00098     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
-\DoxyCodeLine{00099     \textcolor{comment}{// So each frame needs their own allocator.}}
-\DoxyCodeLine{00100     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc;}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
-\DoxyCodeLine{00103     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
-\DoxyCodeLine{00104     std::unique\_ptr<UploadBuffer<PassConstants>> PassCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00105     std::unique\_ptr<UploadBuffer<ObjectConstants>> ObjectCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00106     std::unique\_ptr<UploadBuffer<SsaoConstants>> SsaoCB = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00107 }
-\DoxyCodeLine{00108     std::unique\_ptr<UploadBuffer<MaterialData>> MaterialBuffer = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00109 }
-\DoxyCodeLine{00110     }
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
-\DoxyCodeLine{00114     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
-\DoxyCodeLine{00115     UINT64 Fence = 0;}
-\DoxyCodeLine{00116 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00001}00001 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00003}00003 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00004}00004 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00007}00007 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00008}00008 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00009}00009     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00010}00010     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_object_constants_a0a7f8e4817a18595707569b307060a42}{TexTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00011}00011     UINT     \mbox{\hyperlink{struct_object_constants_a63990992d97885bddd733fe80f9cded5}{MaterialIndex}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00012}00012     UINT     \mbox{\hyperlink{struct_object_constants_a5ffa3de0d623c23dcc06818c2f788f41}{ObjPad0}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00013}00013     UINT     \mbox{\hyperlink{struct_object_constants_ac3f6de148ad1fd953f4781189b4af0e7}{ObjPad1}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00014}00014     UINT     \mbox{\hyperlink{struct_object_constants_ad5a749ac920d3621c2f47572f026e36f}{ObjPad2}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00015}00015 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00017}00017 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_pass_constants}{PassConstants}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00018}00018 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00019}00019     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00020}00020     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00021}00021     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00022}00022     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00023}00023     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00024}00024     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00025}\mbox{\hyperlink{struct_pass_constants_a3848424316072fdcf6e2682f926e633e}{00025}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a3848424316072fdcf6e2682f926e633e}{ViewProjTex}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00026}00026     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_pass_constants_a7b97ccf0d0d1966eb0c46a51d357fb44}{ShadowTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00027}00027     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00028}00028     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_aaae2d67cebf30e767a800a1e508e249a}{cbPerObjectPad1}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00029}00029     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00030}00030     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00031}00031     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00032}00032     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00033}00033     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00034}00034     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00036}00036     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.0f, 0.0f, 0.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00038}00038     \textcolor{comment}{// Indices [0, NUM\_DIR\_LIGHTS) are directional lights;}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00039}00039     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS) are point lights;}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00040}00040     \textcolor{comment}{// indices [NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHTS, NUM\_DIR\_LIGHTS+NUM\_POINT\_LIGHT+NUM\_SPOT\_LIGHTS)}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00041}00041     \textcolor{comment}{// are spot lights for a maximum of MaxLights per object.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00042}00042     \mbox{\hyperlink{struct_light}{Light}} \mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[\mbox{\hyperlink{d3d_util_8h_a3654e541e465ac5978e40d2fc5e7fdfa}{MaxLights}}];}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00043}00043 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00045}\mbox{\hyperlink{struct_ssao_constants}{00045}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_ssao_constants}{SsaoConstants}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00046}00046 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00047}\mbox{\hyperlink{struct_ssao_constants_a2a8042399f81b1f7ca017c202a4f6788}{00047}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_ssao_constants_a2a8042399f81b1f7ca017c202a4f6788}{Proj}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00048}\mbox{\hyperlink{struct_ssao_constants_a60ed941833c26a45c9680cf76df4cb8b}{00048}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_ssao_constants_a60ed941833c26a45c9680cf76df4cb8b}{InvProj}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00049}\mbox{\hyperlink{struct_ssao_constants_ae9edbae7f876d81c7dd1242504301418}{00049}}     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_ssao_constants_ae9edbae7f876d81c7dd1242504301418}{ProjTex}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00050}\mbox{\hyperlink{struct_ssao_constants_ad78238970797934796cef31f483b10c1}{00050}}     DirectX::XMFLOAT4   \mbox{\hyperlink{struct_ssao_constants_ad78238970797934796cef31f483b10c1}{OffsetVectors}}[14];}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00052}00052     \textcolor{comment}{// For SsaoBlur.hlsl}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00053}\mbox{\hyperlink{struct_ssao_constants_add06c2f7e2307dbec383ef3d7f3e2077}{00053}}     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_ssao_constants_add06c2f7e2307dbec383ef3d7f3e2077}{BlurWeights}}[3];}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00055}\mbox{\hyperlink{struct_ssao_constants_a1970d3f3b3e5e46cd24fce13e491f6ab}{00055}}     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_ssao_constants_a1970d3f3b3e5e46cd24fce13e491f6ab}{InvRenderTargetSize}} = \{ 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00057}00057     \textcolor{comment}{// Coordinates given in view space.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00058}\mbox{\hyperlink{struct_ssao_constants_acf90841f9282953fb2b3cf4fcb30aade}{00058}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_ssao_constants_acf90841f9282953fb2b3cf4fcb30aade}{OcclusionRadius}}  = 0.5f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00059}\mbox{\hyperlink{struct_ssao_constants_a6674d0aefa6aed93ebdc77e45f345f62}{00059}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_ssao_constants_a6674d0aefa6aed93ebdc77e45f345f62}{OcclusionFadeStart}} = 0.2f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00060}\mbox{\hyperlink{struct_ssao_constants_aed02b0894fafe356df6a4e6a450859de}{00060}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_ssao_constants_aed02b0894fafe356df6a4e6a450859de}{OcclusionFadeEnd}} = 2.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00061}\mbox{\hyperlink{struct_ssao_constants_abf32155369950df2faedb83d1898d2d0}{00061}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_ssao_constants_abf32155369950df2faedb83d1898d2d0}{SurfaceEpsilon}} = 0.05f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00062}00062 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00064}00064 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_material_data}{MaterialData}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00065}00065 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00066}00066     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_material_data_a368064ea68b6318f9723e4382ce61c1e}{DiffuseAlbedo}} = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00067}00067     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_material_data_a48dabca765cb9d694fc2d94deacaf7ee}{FresnelR0}} = \{ 0.01f, 0.01f, 0.01f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00068}00068     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_material_data_a05fa693da46d7de38524d87cd6c25643}{Roughness}} = 0.5f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00070}00070     \textcolor{comment}{// Used in texture mapping.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00071}00071     DirectX::XMFLOAT4X4 \mbox{\hyperlink{struct_material_data_a203a39255c268bded69137a42aac2ff5}{MatTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00073}00073     UINT \mbox{\hyperlink{struct_material_data_a534cce27bb0857f90e7736938da159d1}{DiffuseMapIndex}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00074}00074     UINT \mbox{\hyperlink{struct_material_data_a654eb04cfeb8b2164b0832c767277cd6}{NormalMapIndex}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00075}00075     UINT \mbox{\hyperlink{struct_material_data_a70c3fd73ef05f7eebb44d8e356050d4d}{MaterialPad1}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00076}00076     UINT \mbox{\hyperlink{struct_material_data_a350e3f86f67ce03fa9edebfd11e6dd51}{MaterialPad2}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00077}00077 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00079}00079 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_vertex}{Vertex}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00080}00080 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00081}00081     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_af07583772f2c7eee146e655826467dcb}{Pos}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00082}00082     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_a553ed48ae98dda36da8e57cfa53877d4}{Normal}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00083}00083     DirectX::XMFLOAT2 \mbox{\hyperlink{struct_vertex_a43e8c374e56c6ed3acc708ba2de1c70c}{TexC}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00084}00084     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_vertex_a064607f6e07daf39834fd21f9d8fcd53}{TangentU}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00085}00085 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00087}00087 \textcolor{comment}{// Stores the resources needed for the CPU to build the command lists}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00088}00088 \textcolor{comment}{// for a frame.  }}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00089}00089 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_frame_resource}{FrameResource}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00090}00090 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00091}00091 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00092}00092     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00093}\mbox{\hyperlink{struct_frame_resource_a496fdce5ab50522a3dcbf9260be6e86c}{00093}}     \mbox{\hyperlink{struct_frame_resource_a496fdce5ab50522a3dcbf9260be6e86c}{FrameResource}}(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00094}\mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{00094}}     \mbox{\hyperlink{struct_frame_resource_a847d99ad6c492fd988ab52623e56aed5}{FrameResource}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00095}\mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{00095}}     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& \mbox{\hyperlink{struct_frame_resource_a4d75d2a5a7bca5a0bd70a15b449c5776}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{struct_frame_resource}{FrameResource}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00096}\mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{00096}}     \mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{\string~FrameResource}}();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00097}00097 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00098}00098     \textcolor{comment}{// We cannot reset the allocator until the GPU is done processing the commands.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00099}00099     \textcolor{comment}{// So each frame needs their own allocator.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00100}00100     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> \mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00102}00102     \textcolor{comment}{// We cannot update a cbuffer until the GPU is done processing the commands}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00103}00103     \textcolor{comment}{// that reference it.  So each frame needs their own cbuffers.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00104}00104     std::unique\_ptr<UploadBuffer<PassConstants>> \mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00105}00105     std::unique\_ptr<UploadBuffer<ObjectConstants>> \mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00106}\mbox{\hyperlink{struct_frame_resource_acbd138f70a1e51af6acc4dcec6017b35}{00106}}     std::unique\_ptr<UploadBuffer<SsaoConstants>> \mbox{\hyperlink{struct_frame_resource_acbd138f70a1e51af6acc4dcec6017b35}{SsaoCB}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00107}00107 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00108}00108     std::unique\_ptr<UploadBuffer<MaterialData>> \mbox{\hyperlink{struct_frame_resource_a623a325c888fa5cce093fabc6c7f7701}{MaterialBuffer}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00109}00109 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00110}00110     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00113}00113     \textcolor{comment}{// Fence value to mark commands up to this fence point.  This lets us}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00114}00114     \textcolor{comment}{// check if these frame resources are still in use by the GPU.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00115}00115     UINT64 \mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_frame_resource_8h_source_l00116}00116 \};}
 
 \end{DoxyCode}

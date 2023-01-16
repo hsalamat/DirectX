@@ -1,133 +1,133 @@
-\doxysection{Week2-\/0-\/2-\/mousepaint\+Demo.cpp}
+\hypertarget{_week2-0-2-mousepaint_demo_8cpp_source}{}\doxysection{Week2-\/0-\/2-\/mousepaint\+Demo.cpp}
 \label{_week2-0-2-mousepaint_demo_8cpp_source}\index{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/2-\/mousepaintDemo.cpp@{Week2/Week 2-\/0-\/myfirstwin32/Week2-\/0-\/2-\/mousepaintDemo.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00011 \textcolor{preprocessor}{\#include <windows.h>}}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013 \textcolor{preprocessor}{\#define MAXPOINTS 1000}}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 }
-\DoxyCodeLine{00016 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 }
-\DoxyCodeLine{00019 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
-\DoxyCodeLine{00020 }
-\DoxyCodeLine{00021     PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 \{}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025     \textcolor{keyword}{static} TCHAR szAppName[] = TEXT(\textcolor{stringliteral}{"{}Connect"{}});}
-\DoxyCodeLine{00026 }
-\DoxyCodeLine{00027     HWND         hwnd;}
-\DoxyCodeLine{00028     MSG          msg;}
-\DoxyCodeLine{00029     WNDCLASS     wndclass;}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031 }
-\DoxyCodeLine{00032     wndclass.style = CS\_HREDRAW | CS\_VREDRAW;}
-\DoxyCodeLine{00033     wndclass.lpfnWndProc = WndProc;}
-\DoxyCodeLine{00034     wndclass.cbClsExtra = 0;}
-\DoxyCodeLine{00035     wndclass.cbWndExtra = 0;}
-\DoxyCodeLine{00036     wndclass.hInstance = hInstance;}
-\DoxyCodeLine{00037     wndclass.hIcon = LoadIcon(NULL, IDI\_APPLICATION);}
-\DoxyCodeLine{00038     wndclass.hCursor = LoadCursor(NULL, IDC\_ARROW);}
-\DoxyCodeLine{00039     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH);}
-\DoxyCodeLine{00040     wndclass.lpszMenuName = NULL;}
-\DoxyCodeLine{00041     wndclass.lpszClassName = szAppName;}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043 }
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045     \textcolor{keywordflow}{if} (!RegisterClass(\&wndclass))}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \{}
-\DoxyCodeLine{00048         MessageBox(NULL, TEXT(\textcolor{stringliteral}{"{}Program requires Windows Desktop Empty App!"{}}),}
-\DoxyCodeLine{00049             szAppName, MB\_ICONERROR);}
-\DoxyCodeLine{00050         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00051     \}}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     hwnd = CreateWindow(szAppName, TEXT(\textcolor{stringliteral}{"{}Connect-\/the-\/Points Mouse Demo"{}}),}
-\DoxyCodeLine{00056         WS\_OVERLAPPEDWINDOW,}
-\DoxyCodeLine{00057         CW\_USEDEFAULT, CW\_USEDEFAULT,}
-\DoxyCodeLine{00058         CW\_USEDEFAULT, CW\_USEDEFAULT,}
-\DoxyCodeLine{00059         NULL, NULL, hInstance, NULL);}
-\DoxyCodeLine{00060 }
-\DoxyCodeLine{00061     ShowWindow(hwnd, iCmdShow);}
-\DoxyCodeLine{00062     UpdateWindow(hwnd);}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     \textcolor{keywordflow}{while} (GetMessage(\&msg, NULL, 0, 0))}
-\DoxyCodeLine{00066 }
-\DoxyCodeLine{00067     \{}
-\DoxyCodeLine{00068         TranslateMessage(\&msg);}
-\DoxyCodeLine{00069         DispatchMessage(\&msg);}
-\DoxyCodeLine{00070     \}}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072     \textcolor{keywordflow}{return} msg.wParam;}
-\DoxyCodeLine{00073 \}}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075 }
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079 \{}
-\DoxyCodeLine{00080 }
-\DoxyCodeLine{00081     \textcolor{keyword}{static} POINT pt[MAXPOINTS];}
-\DoxyCodeLine{00082     \textcolor{keyword}{static} \textcolor{keywordtype}{int}   iCount;}
-\DoxyCodeLine{00083     HDC          hdc;}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{int}          i, j;}
-\DoxyCodeLine{00085     PAINTSTRUCT  ps;}
-\DoxyCodeLine{00086 }
-\DoxyCodeLine{00087     \textcolor{keywordflow}{switch} (message)}
-\DoxyCodeLine{00088     \{}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
-\DoxyCodeLine{00091         iCount = 0;}
-\DoxyCodeLine{00092         InvalidateRect(hwnd, NULL, TRUE);}
-\DoxyCodeLine{00093         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00094 }
-\DoxyCodeLine{00095     \textcolor{keywordflow}{case} WM\_MOUSEMOVE:}
-\DoxyCodeLine{00096 }
-\DoxyCodeLine{00097         \textcolor{keywordflow}{if} (wParam \& MK\_LBUTTON \&\& iCount < 1000)}
-\DoxyCodeLine{00098         \{}
-\DoxyCodeLine{00099             pt[iCount].x = LOWORD(lParam);}
-\DoxyCodeLine{00100             pt[iCount++].y = HIWORD(lParam);}
-\DoxyCodeLine{00101 }
-\DoxyCodeLine{00102             hdc = GetDC(hwnd);}
-\DoxyCodeLine{00103             SetPixel(hdc, LOWORD(lParam), HIWORD(lParam), 0);}
-\DoxyCodeLine{00104             ReleaseDC(hwnd, hdc);}
-\DoxyCodeLine{00105         \}}
-\DoxyCodeLine{00106         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00107 }
-\DoxyCodeLine{00108     \textcolor{keywordflow}{case} WM\_LBUTTONUP:}
-\DoxyCodeLine{00109         InvalidateRect(hwnd, NULL, FALSE);}
-\DoxyCodeLine{00110         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     \textcolor{keywordflow}{case} WM\_PAINT:}
-\DoxyCodeLine{00113         hdc = BeginPaint(hwnd, \&ps);}
-\DoxyCodeLine{00114         SetCursor(LoadCursor(NULL, IDC\_WAIT));}
-\DoxyCodeLine{00115         ShowCursor(TRUE);}
-\DoxyCodeLine{00116 }
-\DoxyCodeLine{00117         \textcolor{keywordflow}{for} (i = 0; i < iCount -\/ 1; i++)}
-\DoxyCodeLine{00118             \textcolor{keywordflow}{for} (j = i + 1; j < iCount; j++)}
-\DoxyCodeLine{00119             \{}
-\DoxyCodeLine{00120 }
-\DoxyCodeLine{00121                 MoveToEx(hdc, pt[i].x, pt[i].y, NULL);}
-\DoxyCodeLine{00122                 LineTo(hdc, pt[j].x, pt[j].y);}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124             \}}
-\DoxyCodeLine{00125 }
-\DoxyCodeLine{00126         ShowCursor(FALSE);}
-\DoxyCodeLine{00127         SetCursor(LoadCursor(NULL, IDC\_ARROW));}
-\DoxyCodeLine{00128         EndPaint(hwnd, \&ps);}
-\DoxyCodeLine{00129         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     \textcolor{keywordflow}{case} WM\_DESTROY:}
-\DoxyCodeLine{00132         PostQuitMessage(0);}
-\DoxyCodeLine{00133         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00134     \}}
-\DoxyCodeLine{00135     \textcolor{keywordflow}{return} DefWindowProc(hwnd, message, wParam, lParam);}
-\DoxyCodeLine{00136 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00011}00011 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00013}\mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a1409378747976a5bb615f2fb82bd5f2a}{00013}} \textcolor{preprocessor}{\#define MAXPOINTS 1000}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00016}00016 LRESULT CALLBACK \mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a9135ea2a0d6fce68ba3b858226a31a4f}{WndProc}}(HWND, UINT, WPARAM, LPARAM);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00019}\mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_aad7900b674de058446ff8791973fafca}{00019}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_aad7900b674de058446ff8791973fafca}{WinMain}}(HINSTANCE hInstance, HINSTANCE hPrevInstance,}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00021}00021     PSTR szCmdLine, \textcolor{keywordtype}{int} iCmdShow)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00022}00022 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00023}00023 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00025}00025     \textcolor{keyword}{static} TCHAR szAppName[] = TEXT(\textcolor{stringliteral}{"{}Connect"{}});}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00027}00027     HWND         hwnd;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00028}00028     MSG          msg;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00029}00029     WNDCLASS     wndclass;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00032}00032     wndclass.style = CS\_HREDRAW | CS\_VREDRAW;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00033}00033     wndclass.lpfnWndProc = \mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a9135ea2a0d6fce68ba3b858226a31a4f}{WndProc}};}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00034}00034     wndclass.cbClsExtra = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00035}00035     wndclass.cbWndExtra = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00036}00036     wndclass.hInstance = hInstance;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00037}00037     wndclass.hIcon = LoadIcon(NULL, IDI\_APPLICATION);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00038}00038     wndclass.hCursor = LoadCursor(NULL, IDC\_ARROW);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00039}00039     wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE\_BRUSH);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00040}00040     wndclass.lpszMenuName = NULL;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00041}00041     wndclass.lpszClassName = szAppName;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00043}00043 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00045}00045     \textcolor{keywordflow}{if} (!RegisterClass(\&wndclass))}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00047}00047     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00048}00048         MessageBox(NULL, TEXT(\textcolor{stringliteral}{"{}Program requires Windows Desktop Empty App!"{}}),}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00049}00049             szAppName, MB\_ICONERROR);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00050}00050         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00051}00051     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00055}00055     hwnd = CreateWindow(szAppName, TEXT(\textcolor{stringliteral}{"{}Connect-\/the-\/Points Mouse Demo"{}}),}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00056}00056         WS\_OVERLAPPEDWINDOW,}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00057}00057         CW\_USEDEFAULT, CW\_USEDEFAULT,}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00058}00058         CW\_USEDEFAULT, CW\_USEDEFAULT,}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00059}00059         NULL, NULL, hInstance, NULL);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00061}00061     ShowWindow(hwnd, iCmdShow);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00062}00062     UpdateWindow(hwnd);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00065}00065     \textcolor{keywordflow}{while} (GetMessage(\&msg, NULL, 0, 0))}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00067}00067     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00068}00068         TranslateMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00069}00069         DispatchMessage(\&msg);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00070}00070     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00072}00072     \textcolor{keywordflow}{return} msg.wParam;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00073}00073 \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00075}00075 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00077}\mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a9135ea2a0d6fce68ba3b858226a31a4f}{00077}} LRESULT CALLBACK \mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a9135ea2a0d6fce68ba3b858226a31a4f}{WndProc}}(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00079}00079 \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00080}00080 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00081}00081     \textcolor{keyword}{static} POINT pt[\mbox{\hyperlink{_week2-0-2-mousepaint_demo_8cpp_a1409378747976a5bb615f2fb82bd5f2a}{MAXPOINTS}}];}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00082}00082     \textcolor{keyword}{static} \textcolor{keywordtype}{int}   iCount;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00083}00083     HDC          hdc;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00084}00084     \textcolor{keywordtype}{int}          i, j;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00085}00085     PAINTSTRUCT  ps;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00087}00087     \textcolor{keywordflow}{switch} (message)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00088}00088     \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00090}00090     \textcolor{keywordflow}{case} WM\_LBUTTONDOWN:}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00091}00091         iCount = 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00092}00092         InvalidateRect(hwnd, NULL, TRUE);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00093}00093         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00095}00095     \textcolor{keywordflow}{case} WM\_MOUSEMOVE:}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00097}00097         \textcolor{keywordflow}{if} (wParam \& MK\_LBUTTON \&\& iCount < 1000)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00098}00098         \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00099}00099             pt[iCount].x = LOWORD(lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00100}00100             pt[iCount++].y = HIWORD(lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00101}00101 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00102}00102             hdc = GetDC(hwnd);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00103}00103             SetPixel(hdc, LOWORD(lParam), HIWORD(lParam), 0);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00104}00104             ReleaseDC(hwnd, hdc);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00105}00105         \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00106}00106         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00107}00107 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00108}00108     \textcolor{keywordflow}{case} WM\_LBUTTONUP:}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00109}00109         InvalidateRect(hwnd, NULL, FALSE);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00110}00110         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00112}00112     \textcolor{keywordflow}{case} WM\_PAINT:}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00113}00113         hdc = BeginPaint(hwnd, \&ps);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00114}00114         SetCursor(LoadCursor(NULL, IDC\_WAIT));}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00115}00115         ShowCursor(TRUE);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00117}00117         \textcolor{keywordflow}{for} (i = 0; i < iCount -\/ 1; i++)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00118}00118             \textcolor{keywordflow}{for} (j = i + 1; j < iCount; j++)}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00119}00119             \{}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00120}00120 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00121}00121                 MoveToEx(hdc, pt[i].x, pt[i].y, NULL);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00122}00122                 LineTo(hdc, pt[j].x, pt[j].y);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00124}00124             \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00126}00126         ShowCursor(FALSE);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00127}00127         SetCursor(LoadCursor(NULL, IDC\_ARROW));}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00128}00128         EndPaint(hwnd, \&ps);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00129}00129         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00131}00131     \textcolor{keywordflow}{case} WM\_DESTROY:}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00132}00132         PostQuitMessage(0);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00133}00133         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00134}00134     \}}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00135}00135     \textcolor{keywordflow}{return} DefWindowProc(hwnd, message, wParam, lParam);}
+\DoxyCodeLine{\Hypertarget{_week2-0-2-mousepaint_demo_8cpp_source_l00136}00136 \}}
 
 \end{DoxyCode}

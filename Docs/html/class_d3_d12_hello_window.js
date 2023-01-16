@@ -1,25 +1,8 @@
 var class_d3_d12_hello_window =
 [
     [ "D3D12HelloWindow", "class_d3_d12_hello_window.html#ad23a2e6265b54755ed116a648124eb32", null ],
-    [ "LoadAssets", "class_d3_d12_hello_window.html#a2c09f2a35186ac58b9cb3217dd6da238", null ],
-    [ "LoadPipeline", "class_d3_d12_hello_window.html#ac519ed951fde72b59e61118dce62e111", null ],
     [ "OnDestroy", "class_d3_d12_hello_window.html#aae7da1c07166ccf6aa4c8b88af692bff", null ],
     [ "OnInit", "class_d3_d12_hello_window.html#a512026fc5a0bbb36bdd36cfeca5eb834", null ],
     [ "OnRender", "class_d3_d12_hello_window.html#aa8048f9788cc6b6b51de99aa6d5d9ec5", null ],
-    [ "OnUpdate", "class_d3_d12_hello_window.html#aa82d80363a38f438311fd20a0e1962a0", null ],
-    [ "PopulateCommandList", "class_d3_d12_hello_window.html#a573c888fa1436c43eee13bf912d590ec", null ],
-    [ "WaitForPreviousFrame", "class_d3_d12_hello_window.html#ac48efb1036ddb147d9034b3f7b819d83", null ],
-    [ "m_commandAllocator", "class_d3_d12_hello_window.html#af03d2d5e4c4d05f638390fce6832b7c9", null ],
-    [ "m_commandList", "class_d3_d12_hello_window.html#a269a489e1be89581296d68f3c923efd1", null ],
-    [ "m_commandQueue", "class_d3_d12_hello_window.html#a898029cfbb1ae34b39e278c3e31d8ce6", null ],
-    [ "m_device", "class_d3_d12_hello_window.html#a14dba3f7b85da853fe07f4db7e745c2d", null ],
-    [ "m_fence", "class_d3_d12_hello_window.html#aa0b68816ff06d74e403745e87be80c4c", null ],
-    [ "m_fenceEvent", "class_d3_d12_hello_window.html#afdca656ecd7b5dac41ea17bada8199e1", null ],
-    [ "m_fenceValue", "class_d3_d12_hello_window.html#ad3e2e771bfad096b88845e4ddfd82f01", null ],
-    [ "m_frameIndex", "class_d3_d12_hello_window.html#aa3408144b7cd6b9fe2a8bd9fa141b2b8", null ],
-    [ "m_pipelineState", "class_d3_d12_hello_window.html#a0daae51a9f9fba6f10226ca919d09c70", null ],
-    [ "m_renderTargets", "class_d3_d12_hello_window.html#a60f0816db3d95e8519160c52609a16bd", null ],
-    [ "m_rtvDescriptorSize", "class_d3_d12_hello_window.html#a995f8149d0b5bb2ab7857e1018be7210", null ],
-    [ "m_rtvHeap", "class_d3_d12_hello_window.html#a126068bd4d677f54cbf1488d71cd1870", null ],
-    [ "m_swapChain", "class_d3_d12_hello_window.html#aebedc5be586006f0dc9a3b32e2045c9e", null ]
+    [ "OnUpdate", "class_d3_d12_hello_window.html#aa82d80363a38f438311fd20a0e1962a0", null ]
 ];

@@ -2,8 +2,7 @@ var dir_708da76e200cecfc6785e232a0ecf880 =
 [
     [ "D3D12HelloTriangle.cpp", "_d3_d12_hello_triangle_8cpp.html", null ],
     [ "D3D12HelloTriangle.h", "_d3_d12_hello_triangle_8h.html", [
-      [ "D3D12HelloTriangle", "class_d3_d12_hello_triangle.html", "class_d3_d12_hello_triangle" ],
-      [ "D3D12HelloTriangle::Vertex", "struct_d3_d12_hello_triangle_1_1_vertex.html", "struct_d3_d12_hello_triangle_1_1_vertex" ]
+      [ "D3D12HelloTriangle", "class_d3_d12_hello_triangle.html", "class_d3_d12_hello_triangle" ]
     ] ],
     [ "d3dx12.h", "_week2_2_week2-6-_hello_01_triangle_2d3dx12_8h.html", null ],
     [ "DXSample.cpp", "_week2-6-_hello_01_triangle_2_d_x_sample_8cpp.html", null ],

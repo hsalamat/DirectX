@@ -1,138 +1,138 @@
-\doxysection{Game\+Timer.\+cpp}
+\hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source}{}\doxysection{Game\+Timer.\+cpp}
 \label{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source}\index{Week3/Week3-\/3-\/console-\/performancecounter/GameTimer.cpp@{Week3/Week3-\/3-\/console-\/performancecounter/GameTimer.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// GameTimer.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include <windows.h>}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}GameTimer.h"{}}}
-\DoxyCodeLine{00007 }
-\DoxyCodeLine{00008 GameTimer::GameTimer()}
-\DoxyCodeLine{00009 : mSecondsPerCount(0.0), mDeltaTime(-\/1.0), mBaseTime(0), }
-\DoxyCodeLine{00010   mPausedTime(0), mPrevTime(0), mCurrTime(0), mStopped(false)}
-\DoxyCodeLine{00011 \{}
-\DoxyCodeLine{00012     \_\_int64 countsPerSec;}
-\DoxyCodeLine{00013     QueryPerformanceFrequency((LARGE\_INTEGER*)\&countsPerSec);}
-\DoxyCodeLine{00014     mSecondsPerCount = 1.0 / (double)countsPerSec;}
-\DoxyCodeLine{00015 \}}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017 \textcolor{comment}{// Returns the total time elapsed since Reset() was called, NOT counting any}}
-\DoxyCodeLine{00018 \textcolor{comment}{// time when the clock is stopped.}}
-\DoxyCodeLine{00019 \textcolor{keywordtype}{float} GameTimer::TotalTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00020 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00021     \textcolor{comment}{// If we are stopped, do not count the time that has passed since we stopped.}}
-\DoxyCodeLine{00022     \textcolor{comment}{// Moreover, if we previously already had a pause, the distance }}
-\DoxyCodeLine{00023     \textcolor{comment}{// mStopTime -\/ mBaseTime includes paused time, which we do not want to count.}}
-\DoxyCodeLine{00024     \textcolor{comment}{// To correct this, we can subtract the paused time from mStopTime:  }}
-\DoxyCodeLine{00025     \textcolor{comment}{//}}
-\DoxyCodeLine{00026     \textcolor{comment}{//                     |<-\/-\/paused time-\/-\/>|}}
-\DoxyCodeLine{00027     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/> time}}
-\DoxyCodeLine{00028     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     mStopTime    mCurrTime}}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00030     \textcolor{keywordflow}{if}( mStopped )}
-\DoxyCodeLine{00031     \{}
-\DoxyCodeLine{00032         \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})(((mStopTime -\/ mPausedTime)-\/mBaseTime)*mSecondsPerCount);}
-\DoxyCodeLine{00033     \}}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     \textcolor{comment}{// The distance mCurrTime -\/ mBaseTime includes paused time,}}
-\DoxyCodeLine{00036     \textcolor{comment}{// which we do not want to count.  To correct this, we can subtract }}
-\DoxyCodeLine{00037     \textcolor{comment}{// the paused time from mCurrTime:  }}
-\DoxyCodeLine{00038     \textcolor{comment}{//}}
-\DoxyCodeLine{00039     \textcolor{comment}{//  (mCurrTime -\/ mPausedTime) -\/ mBaseTime }}
-\DoxyCodeLine{00040     \textcolor{comment}{//}}
-\DoxyCodeLine{00041     \textcolor{comment}{//                     |<-\/-\/paused time-\/-\/>|}}
-\DoxyCodeLine{00042     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/> time}}
-\DoxyCodeLine{00043     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     mCurrTime}}
-\DoxyCodeLine{00044     }
-\DoxyCodeLine{00045     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00046     \{}
-\DoxyCodeLine{00047         \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})(((mCurrTime-\/mPausedTime)-\/mBaseTime)*mSecondsPerCount);}
-\DoxyCodeLine{00048     \}}
-\DoxyCodeLine{00049 \}}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051 \textcolor{keywordtype}{float} GameTimer::DeltaTime()\textcolor{keyword}{const}}
-\DoxyCodeLine{00052 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00053     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})mDeltaTime;}
-\DoxyCodeLine{00054 \}}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056 \textcolor{keywordtype}{void} GameTimer::Reset()}
-\DoxyCodeLine{00057 \{}
-\DoxyCodeLine{00058     \_\_int64 currTime;}
-\DoxyCodeLine{00059     QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
-\DoxyCodeLine{00060 }
-\DoxyCodeLine{00061     mBaseTime = currTime;}
-\DoxyCodeLine{00062     mPrevTime = currTime;}
-\DoxyCodeLine{00063     mStopTime = 0;}
-\DoxyCodeLine{00064     mStopped  = \textcolor{keyword}{false};}
-\DoxyCodeLine{00065 \}}
-\DoxyCodeLine{00066 }
-\DoxyCodeLine{00067 \textcolor{keywordtype}{void} GameTimer::Start()}
-\DoxyCodeLine{00068 \{}
-\DoxyCodeLine{00069     \_\_int64 startTime;}
-\DoxyCodeLine{00070     QueryPerformanceCounter((LARGE\_INTEGER*)\&startTime);}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072 }
-\DoxyCodeLine{00073     \textcolor{comment}{// Accumulate the time elapsed between stop and start pairs.}}
-\DoxyCodeLine{00074     \textcolor{comment}{//}}
-\DoxyCodeLine{00075     \textcolor{comment}{//                     |<-\/-\/-\/-\/-\/-\/-\/d-\/-\/-\/-\/-\/-\/-\/>|}}
-\DoxyCodeLine{00076     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> time}}
-\DoxyCodeLine{00077     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     }}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     \textcolor{keywordflow}{if}( mStopped )}
-\DoxyCodeLine{00080     \{}
-\DoxyCodeLine{00081         mPausedTime += (startTime -\/ mStopTime); }
-\DoxyCodeLine{00082 }
-\DoxyCodeLine{00083         mPrevTime = startTime;}
-\DoxyCodeLine{00084         mStopTime = 0;}
-\DoxyCodeLine{00085         mStopped  = \textcolor{keyword}{false};}
-\DoxyCodeLine{00086     \}}
-\DoxyCodeLine{00087 \}}
-\DoxyCodeLine{00088 }
-\DoxyCodeLine{00089 \textcolor{keywordtype}{void} GameTimer::Stop()}
-\DoxyCodeLine{00090 \{}
-\DoxyCodeLine{00091     \textcolor{keywordflow}{if}( !mStopped )}
-\DoxyCodeLine{00092     \{}
-\DoxyCodeLine{00093         \_\_int64 currTime;}
-\DoxyCodeLine{00094         QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
-\DoxyCodeLine{00095 }
-\DoxyCodeLine{00096         mStopTime = currTime;}
-\DoxyCodeLine{00097         mStopped  = \textcolor{keyword}{true};}
-\DoxyCodeLine{00098     \}}
-\DoxyCodeLine{00099 \}}
-\DoxyCodeLine{00100 }
-\DoxyCodeLine{00101 \textcolor{keywordtype}{void} GameTimer::Tick()}
-\DoxyCodeLine{00102 \{}
-\DoxyCodeLine{00103     \textcolor{keywordflow}{if}( mStopped )}
-\DoxyCodeLine{00104     \{}
-\DoxyCodeLine{00105         mDeltaTime = 0.0;}
-\DoxyCodeLine{00106         \textcolor{keywordflow}{return};}
-\DoxyCodeLine{00107     \}}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109     \_\_int64 currTime;}
-\DoxyCodeLine{00110     QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
-\DoxyCodeLine{00111     mCurrTime = currTime;}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     \textcolor{comment}{// Time difference between this frame and the previous.}}
-\DoxyCodeLine{00114     mDeltaTime = (mCurrTime -\/ mPrevTime)*mSecondsPerCount;}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116     \textcolor{comment}{// Prepare for next frame.}}
-\DoxyCodeLine{00117     mPrevTime = mCurrTime;}
-\DoxyCodeLine{00118 }
-\DoxyCodeLine{00119     \textcolor{comment}{// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the }}
-\DoxyCodeLine{00120     \textcolor{comment}{// processor goes into a power save mode or we get shuffled to another}}
-\DoxyCodeLine{00121     \textcolor{comment}{// processor, then mDeltaTime can be negative.}}
-\DoxyCodeLine{00122     \textcolor{keywordflow}{if}(mDeltaTime < 0.0)}
-\DoxyCodeLine{00123     \{}
-\DoxyCodeLine{00124         mDeltaTime = 0.0;}
-\DoxyCodeLine{00125     \}}
-\DoxyCodeLine{00126 \}}
-\DoxyCodeLine{00127 }
-\DoxyCodeLine{00128 }
-\DoxyCodeLine{00129 }
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131 }
-\DoxyCodeLine{00132 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00002}00002 \textcolor{comment}{// GameTimer.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include <windows.h>}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week3_2_week3-3-console-performancecounter_2_game_timer_8h}{GameTimer.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00008}00008 \mbox{\hyperlink{class_game_timer_a439d589144db6da4918453e6f2a3c412}{GameTimer::GameTimer}}()}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00009}00009 : mSecondsPerCount(0.0), mDeltaTime(-\/1.0), mBaseTime(0), }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00010}00010   mPausedTime(0), mPrevTime(0), mCurrTime(0), mStopped(false)}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00011}00011 \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00012}00012     \_\_int64 countsPerSec;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00013}00013     QueryPerformanceFrequency((LARGE\_INTEGER*)\&countsPerSec);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00014}00014     mSecondsPerCount = 1.0 / (double)countsPerSec;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00015}00015 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00017}00017 \textcolor{comment}{// Returns the total time elapsed since Reset() was called, NOT counting any}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00018}00018 \textcolor{comment}{// time when the clock is stopped.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00019}00019 \textcolor{keywordtype}{float} \mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{GameTimer::TotalTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00020}00020 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00021}00021     \textcolor{comment}{// If we are stopped, do not count the time that has passed since we stopped.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00022}00022     \textcolor{comment}{// Moreover, if we previously already had a pause, the distance }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00023}00023     \textcolor{comment}{// mStopTime -\/ mBaseTime includes paused time, which we do not want to count.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00024}00024     \textcolor{comment}{// To correct this, we can subtract the paused time from mStopTime:  }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00025}00025     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00026}00026     \textcolor{comment}{//                     |<-\/-\/paused time-\/-\/>|}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00027}00027     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/> time}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00028}00028     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     mStopTime    mCurrTime}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00030}00030     \textcolor{keywordflow}{if}( mStopped )}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00031}00031     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00032}00032         \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})(((mStopTime -\/ mPausedTime)-\/mBaseTime)*mSecondsPerCount);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00033}00033     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00035}00035     \textcolor{comment}{// The distance mCurrTime -\/ mBaseTime includes paused time,}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00036}00036     \textcolor{comment}{// which we do not want to count.  To correct this, we can subtract }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00037}00037     \textcolor{comment}{// the paused time from mCurrTime:  }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00038}00038     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00039}00039     \textcolor{comment}{//  (mCurrTime -\/ mPausedTime) -\/ mBaseTime }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00040}00040     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00041}00041     \textcolor{comment}{//                     |<-\/-\/paused time-\/-\/>|}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00042}00042     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/> time}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00043}00043     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     mCurrTime}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00044}00044     }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00045}00045     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00046}00046     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00047}00047         \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})(((mCurrTime-\/mPausedTime)-\/mBaseTime)*mSecondsPerCount);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00048}00048     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00049}00049 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00051}00051 \textcolor{keywordtype}{float} \mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{GameTimer::DeltaTime}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00052}00052 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00053}00053     \textcolor{keywordflow}{return} (\textcolor{keywordtype}{float})mDeltaTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00054}00054 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00056}00056 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_game_timer_af67b252c869cc649971b8cceefcb1eb8}{GameTimer::Reset}}()}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00057}00057 \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00058}00058     \_\_int64 currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00059}00059     QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00061}00061     mBaseTime = currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00062}00062     mPrevTime = currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00063}00063     mStopTime = 0;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00064}00064     mStopped  = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00065}00065 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00067}00067 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_game_timer_a4af503863ddee320c9e034dc2938c2e1}{GameTimer::Start}}()}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00068}00068 \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00069}00069     \_\_int64 startTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00070}00070     QueryPerformanceCounter((LARGE\_INTEGER*)\&startTime);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00073}00073     \textcolor{comment}{// Accumulate the time elapsed between stop and start pairs.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00074}00074     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00075}00075     \textcolor{comment}{//                     |<-\/-\/-\/-\/-\/-\/-\/d-\/-\/-\/-\/-\/-\/-\/>|}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00076}00076     \textcolor{comment}{// -\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/> time}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00077}00077     \textcolor{comment}{//  mBaseTime       mStopTime        startTime     }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00079}00079     \textcolor{keywordflow}{if}( mStopped )}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00080}00080     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00081}00081         mPausedTime += (startTime -\/ mStopTime); }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00082}00082 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00083}00083         mPrevTime = startTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00084}00084         mStopTime = 0;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00085}00085         mStopped  = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00086}00086     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00087}00087 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00088}00088 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00089}00089 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_game_timer_a61b1ecea219fbe2dfff86f9f9cab98b1}{GameTimer::Stop}}()}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00090}00090 \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00091}00091     \textcolor{keywordflow}{if}( !mStopped )}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00092}00092     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00093}00093         \_\_int64 currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00094}00094         QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00095}00095 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00096}00096         mStopTime = currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00097}00097         mStopped  = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00098}00098     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00099}00099 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00101}00101 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_game_timer_ac02f02b90ae1c2d6a2834abb5069f367}{GameTimer::Tick}}()}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00102}00102 \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00103}00103     \textcolor{keywordflow}{if}( mStopped )}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00104}00104     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00105}00105         mDeltaTime = 0.0;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00106}00106         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00107}00107     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00109}00109     \_\_int64 currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00110}00110     QueryPerformanceCounter((LARGE\_INTEGER*)\&currTime);}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00111}00111     mCurrTime = currTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00113}00113     \textcolor{comment}{// Time difference between this frame and the previous.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00114}00114     mDeltaTime = (mCurrTime -\/ mPrevTime)*mSecondsPerCount;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00116}00116     \textcolor{comment}{// Prepare for next frame.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00117}00117     mPrevTime = mCurrTime;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00119}00119     \textcolor{comment}{// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the }}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00120}00120     \textcolor{comment}{// processor goes into a power save mode or we get shuffled to another}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00121}00121     \textcolor{comment}{// processor, then mDeltaTime can be negative.}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00122}00122     \textcolor{keywordflow}{if}(mDeltaTime < 0.0)}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00123}00123     \{}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00124}00124         mDeltaTime = 0.0;}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00125}00125     \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00126}00126 \}}
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00128}00128 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00131}00131 }
+\DoxyCodeLine{\Hypertarget{_week3_2_week3-3-console-performancecounter_2_game_timer_8cpp_source_l00132}00132 }
 
 \end{DoxyCode}

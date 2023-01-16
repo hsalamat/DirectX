@@ -89,18 +89,5 @@ var class_waves =
     [ "Width", "class_waves.html#a40f19b6b0c1e2545f2c6be9fda099bd4", null ],
     [ "Width", "class_waves.html#a40f19b6b0c1e2545f2c6be9fda099bd4", null ],
     [ "Width", "class_waves.html#a40f19b6b0c1e2545f2c6be9fda099bd4", null ],
-    [ "Width", "class_waves.html#a40f19b6b0c1e2545f2c6be9fda099bd4", null ],
-    [ "mCurrSolution", "class_waves.html#a084cb5c856035f66dfca9e13eccc967e", null ],
-    [ "mK1", "class_waves.html#a23a51819eda7d4e504aee2d242ef45ec", null ],
-    [ "mK2", "class_waves.html#adb6810d7189db10ae11a4a7919c494d8", null ],
-    [ "mK3", "class_waves.html#a1bb7e7d104bede9e8b0dd9fc40418fa5", null ],
-    [ "mNormals", "class_waves.html#abf37ca1d1360f0da2c1f2396033795da", null ],
-    [ "mNumCols", "class_waves.html#a522d56b02200a3cc142b1bf2969d7bc5", null ],
-    [ "mNumRows", "class_waves.html#a7cf77bea4c44873f60cb1e151b8ad08a", null ],
-    [ "mPrevSolution", "class_waves.html#a945c5ef9d997baffa12738728eb7de22", null ],
-    [ "mSpatialStep", "class_waves.html#a5d5c82991fc15e6c17a3865c448622af", null ],
-    [ "mTangentX", "class_waves.html#af0c43af08c7047dcdc1bedc2ac21be03", null ],
-    [ "mTimeStep", "class_waves.html#ac7fd37a783aa9868c8655d5865c09408", null ],
-    [ "mTriangleCount", "class_waves.html#aec414c881a350e78eb2e7de2bcd8854f", null ],
-    [ "mVertexCount", "class_waves.html#abf6b6641219ba9bd06cd0ede552dfc19", null ]
+    [ "Width", "class_waves.html#a40f19b6b0c1e2545f2c6be9fda099bd4", null ]
 ];

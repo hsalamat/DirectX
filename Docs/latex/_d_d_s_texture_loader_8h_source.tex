@@ -1,178 +1,178 @@
-\doxysection{DDSTexture\+Loader.\+h}
+\hypertarget{_d_d_s_texture_loader_8h_source}{}\doxysection{DDSTexture\+Loader.\+h}
 \label{_d_d_s_texture_loader_8h_source}\index{Common/DDSTextureLoader.h@{Common/DDSTextureLoader.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_d_d_s_texture_loader_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00002 \textcolor{comment}{// File: DDSTextureLoader.h}}
-\DoxyCodeLine{00003 \textcolor{comment}{//}}
-\DoxyCodeLine{00004 \textcolor{comment}{// Functions for loading a DDS texture and creating a Direct3D 11 runtime resource for it}}
-\DoxyCodeLine{00005 \textcolor{comment}{//}}
-\DoxyCodeLine{00006 \textcolor{comment}{// Note these functions are useful as a light-\/weight runtime loader for DDS files. For}}
-\DoxyCodeLine{00007 \textcolor{comment}{// a full-\/featured DDS file reader, writer, and texture processing pipeline see}}
-\DoxyCodeLine{00008 \textcolor{comment}{// the 'Texconv' sample and the 'DirectXTex' library.}}
-\DoxyCodeLine{00009 \textcolor{comment}{//}}
-\DoxyCodeLine{00010 \textcolor{comment}{// THIS CODE AND INFORMATION IS PROVIDED "{}AS IS"{} WITHOUT WARRANTY OF}}
-\DoxyCodeLine{00011 \textcolor{comment}{// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO}}
-\DoxyCodeLine{00012 \textcolor{comment}{// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A}}
-\DoxyCodeLine{00013 \textcolor{comment}{// PARTICULAR PURPOSE.}}
-\DoxyCodeLine{00014 \textcolor{comment}{//}}
-\DoxyCodeLine{00015 \textcolor{comment}{// Copyright (c) Microsoft Corporation. All rights reserved.}}
-\DoxyCodeLine{00016 \textcolor{comment}{//}}
-\DoxyCodeLine{00017 \textcolor{comment}{// http://go.microsoft.com/fwlink/?LinkId=248926}}
-\DoxyCodeLine{00018 \textcolor{comment}{// http://go.microsoft.com/fwlink/?LinkId=248929}}
-\DoxyCodeLine{00019 \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00020 }
-\DoxyCodeLine{00021 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
-\DoxyCodeLine{00022 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00023 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025 \textcolor{preprocessor}{\#include <wrl.h>}}
-\DoxyCodeLine{00026 \textcolor{preprocessor}{\#include <d3d11\_1.h>}}
-\DoxyCodeLine{00027 \textcolor{preprocessor}{\#include "{}d3dx12.h"{}}}
-\DoxyCodeLine{00028 }
-\DoxyCodeLine{00029 \textcolor{preprocessor}{\#pragma warning(push)}}
-\DoxyCodeLine{00030 \textcolor{preprocessor}{\#pragma warning(disable : 4005)}}
-\DoxyCodeLine{00031 \textcolor{preprocessor}{\#include <stdint.h>}}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033 \textcolor{preprocessor}{\#pragma warning(pop)}}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035 \textcolor{preprocessor}{\#if defined(\_MSC\_VER) \&\& (\_MSC\_VER<1610) \&\& !defined(\_In\_reads\_)}}
-\DoxyCodeLine{00036 \textcolor{preprocessor}{\#define \_In\_reads\_(exp)}}
-\DoxyCodeLine{00037 \textcolor{preprocessor}{\#define \_Out\_writes\_(exp)}}
-\DoxyCodeLine{00038 \textcolor{preprocessor}{\#define \_In\_reads\_bytes\_(exp)}}
-\DoxyCodeLine{00039 \textcolor{preprocessor}{\#define \_In\_reads\_opt\_(exp)}}
-\DoxyCodeLine{00040 \textcolor{preprocessor}{\#define \_Outptr\_opt\_}}
-\DoxyCodeLine{00041 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043 \textcolor{preprocessor}{\#ifndef \_Use\_decl\_annotations\_}}
-\DoxyCodeLine{00044 \textcolor{preprocessor}{\#define \_Use\_decl\_annotations\_}}
-\DoxyCodeLine{00045 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047 \textcolor{keyword}{namespace }DirectX}
-\DoxyCodeLine{00048 \{}
-\DoxyCodeLine{00049     \textcolor{keyword}{enum} DDS\_ALPHA\_MODE}
-\DoxyCodeLine{00050     \{}
-\DoxyCodeLine{00051         DDS\_ALPHA\_MODE\_UNKNOWN       = 0,}
-\DoxyCodeLine{00052         DDS\_ALPHA\_MODE\_STRAIGHT      = 1,}
-\DoxyCodeLine{00053         DDS\_ALPHA\_MODE\_PREMULTIPLIED = 2,}
-\DoxyCodeLine{00054         DDS\_ALPHA\_MODE\_OPAQUE        = 3,}
-\DoxyCodeLine{00055         DDS\_ALPHA\_MODE\_CUSTOM        = 4,}
-\DoxyCodeLine{00056     \};}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058     \textcolor{comment}{// Standard version}}
-\DoxyCodeLine{00059     HRESULT CreateDDSTextureFromMemory( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00060                                         \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
-\DoxyCodeLine{00061                                         \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
-\DoxyCodeLine{00062                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00063                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00064                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00065                                         \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00066                                       );}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     HRESULT CreateDDSTextureFromMemory12(\_In\_ ID3D12Device* device,}
-\DoxyCodeLine{00069                                          \_In\_ ID3D12GraphicsCommandList* cmdList,}
-\DoxyCodeLine{00070                                          \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
-\DoxyCodeLine{00071                                          \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
-\DoxyCodeLine{00072                                          \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& texture,}
-\DoxyCodeLine{00073                                          \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& textureUploadHeap,}
-\DoxyCodeLine{00074                                          \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00075                                          \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00076                                          );}
-\DoxyCodeLine{00077 }
-\DoxyCodeLine{00078     HRESULT CreateDDSTextureFromFile( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00079                                       \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
-\DoxyCodeLine{00080                                       \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00081                                       \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00082                                       \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00083                                       \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00084                                     );}
-\DoxyCodeLine{00085 }
-\DoxyCodeLine{00086     HRESULT CreateDDSTextureFromFile12(\_In\_ ID3D12Device* device,}
-\DoxyCodeLine{00087                                        \_In\_ ID3D12GraphicsCommandList* cmdList,}
-\DoxyCodeLine{00088                                        \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
-\DoxyCodeLine{00089                                        \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& texture,}
-\DoxyCodeLine{00090                                        \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& textureUploadHeap,}
-\DoxyCodeLine{00091                                        \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00092                                        \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00093                                        );}
-\DoxyCodeLine{00094 }
-\DoxyCodeLine{00095     \textcolor{comment}{// Standard version with optional auto-\/gen mipmap support}}
-\DoxyCodeLine{00096     HRESULT CreateDDSTextureFromMemory( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00097                                         \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
-\DoxyCodeLine{00098                                         \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
-\DoxyCodeLine{00099                                         \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
-\DoxyCodeLine{00100                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00101                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00102                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00103                                         \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00104                                       );}
-\DoxyCodeLine{00105 }
-\DoxyCodeLine{00106     HRESULT CreateDDSTextureFromFile( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00107                                       \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
-\DoxyCodeLine{00108                                       \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
-\DoxyCodeLine{00109                                       \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00110                                       \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00111                                       \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
-\DoxyCodeLine{00112                                       \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00113                                     );}
-\DoxyCodeLine{00114 }
-\DoxyCodeLine{00115     \textcolor{comment}{// Extended version}}
-\DoxyCodeLine{00116     HRESULT CreateDDSTextureFromMemoryEx( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00117                                           \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
-\DoxyCodeLine{00118                                           \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
-\DoxyCodeLine{00119                                           \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
-\DoxyCodeLine{00120                                           \_In\_ D3D11\_USAGE usage,}
-\DoxyCodeLine{00121                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
-\DoxyCodeLine{00122                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
-\DoxyCodeLine{00123                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
-\DoxyCodeLine{00124                                           \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
-\DoxyCodeLine{00125                                           \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00126                                           \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00127                                           \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00128                                       );}
-\DoxyCodeLine{00129 }
-\DoxyCodeLine{00130     HRESULT CreateDDSTextureFromFileEx( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00131                                         \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
-\DoxyCodeLine{00132                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
-\DoxyCodeLine{00133                                         \_In\_ D3D11\_USAGE usage,}
-\DoxyCodeLine{00134                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
-\DoxyCodeLine{00135                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
-\DoxyCodeLine{00136                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
-\DoxyCodeLine{00137                                         \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
-\DoxyCodeLine{00138                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00139                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00140                                         \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00141                                     );}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     \textcolor{comment}{// Extended version with optional auto-\/gen mipmap support}}
-\DoxyCodeLine{00144     HRESULT CreateDDSTextureFromMemoryEx( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00145                                           \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
-\DoxyCodeLine{00146                                           \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
-\DoxyCodeLine{00147                                           \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
-\DoxyCodeLine{00148                                           \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
-\DoxyCodeLine{00149                                           \_In\_ D3D11\_USAGE usage,}
-\DoxyCodeLine{00150                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
-\DoxyCodeLine{00151                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
-\DoxyCodeLine{00152                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
-\DoxyCodeLine{00153                                           \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
-\DoxyCodeLine{00154                                           \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00155                                           \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00156                                           \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00157                                       );}
-\DoxyCodeLine{00158 }
-\DoxyCodeLine{00159     HRESULT CreateDDSTextureFromFileEx( \_In\_ ID3D11Device* d3dDevice,}
-\DoxyCodeLine{00160                                         \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
-\DoxyCodeLine{00161                                         \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
-\DoxyCodeLine{00162                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
-\DoxyCodeLine{00163                                         \_In\_ D3D11\_USAGE usage,}
-\DoxyCodeLine{00164                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
-\DoxyCodeLine{00165                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
-\DoxyCodeLine{00166                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
-\DoxyCodeLine{00167                                         \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
-\DoxyCodeLine{00168                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
-\DoxyCodeLine{00169                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
-\DoxyCodeLine{00170                                         \_Out\_opt\_ DDS\_ALPHA\_MODE* alphaMode = \textcolor{keyword}{nullptr}}
-\DoxyCodeLine{00171                                     );}
-\DoxyCodeLine{00172 \}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00001}00001 \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00002}00002 \textcolor{comment}{// File: DDSTextureLoader.h}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00003}00003 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00004}00004 \textcolor{comment}{// Functions for loading a DDS texture and creating a Direct3D 11 runtime resource for it}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00005}00005 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00006}00006 \textcolor{comment}{// Note these functions are useful as a light-\/weight runtime loader for DDS files. For}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00007}00007 \textcolor{comment}{// a full-\/featured DDS file reader, writer, and texture processing pipeline see}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00008}00008 \textcolor{comment}{// the 'Texconv' sample and the 'DirectXTex' library.}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00009}00009 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00010}00010 \textcolor{comment}{// THIS CODE AND INFORMATION IS PROVIDED "{}AS IS"{} WITHOUT WARRANTY OF}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00011}00011 \textcolor{comment}{// ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00012}00012 \textcolor{comment}{// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00013}00013 \textcolor{comment}{// PARTICULAR PURPOSE.}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00014}00014 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00015}00015 \textcolor{comment}{// Copyright (c) Microsoft Corporation. All rights reserved.}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00016}00016 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00017}00017 \textcolor{comment}{// http://go.microsoft.com/fwlink/?LinkId=248926}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00018}00018 \textcolor{comment}{// http://go.microsoft.com/fwlink/?LinkId=248929}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00019}00019 \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00021}00021 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00022}00022 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00023}00023 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00025}00025 \textcolor{preprocessor}{\#include <wrl.h>}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00026}00026 \textcolor{preprocessor}{\#include <d3d11\_1.h>}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00027}00027 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2_2_week2-7-_hello_01_world_2d3dx12_8h}{d3dx12.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00028}00028 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00029}00029 \textcolor{preprocessor}{\#pragma warning(push)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00030}00030 \textcolor{preprocessor}{\#pragma warning(disable : 4005)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00031}00031 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00033}00033 \textcolor{preprocessor}{\#pragma warning(pop)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00035}00035 \textcolor{preprocessor}{\#if defined(\_MSC\_VER) \&\& (\_MSC\_VER<1610) \&\& !defined(\_In\_reads\_)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00036}00036 \textcolor{preprocessor}{\#define \_In\_reads\_(exp)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00037}00037 \textcolor{preprocessor}{\#define \_Out\_writes\_(exp)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00038}00038 \textcolor{preprocessor}{\#define \_In\_reads\_bytes\_(exp)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00039}00039 \textcolor{preprocessor}{\#define \_In\_reads\_opt\_(exp)}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00040}00040 \textcolor{preprocessor}{\#define \_Outptr\_opt\_}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00041}00041 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00043}00043 \textcolor{preprocessor}{\#ifndef \_Use\_decl\_annotations\_}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00044}\mbox{\hyperlink{_d_d_s_texture_loader_8h_a3150346626fcea3ad7afe5dfb4ce27d8}{00044}} \textcolor{preprocessor}{\#define \_Use\_decl\_annotations\_}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00045}00045 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00047}\mbox{\hyperlink{namespace_direct_x}{00047}} \textcolor{keyword}{namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00048}00048 \{}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00049}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{00049}}     \textcolor{keyword}{enum} \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00050}00050     \{}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00051}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa9cfa0bbf0542b2d5da9da93e629f50ce}{00051}}         \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa9cfa0bbf0542b2d5da9da93e629f50ce}{DDS\_ALPHA\_MODE\_UNKNOWN}}       = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00052}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa3c462f8d7aff2a2590d933fb1dfd6136}{00052}}         \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa3c462f8d7aff2a2590d933fb1dfd6136}{DDS\_ALPHA\_MODE\_STRAIGHT}}      = 1,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00053}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1facdd00e8572344a8e6d3c4254607d7be8}{00053}}         \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1facdd00e8572344a8e6d3c4254607d7be8}{DDS\_ALPHA\_MODE\_PREMULTIPLIED}} = 2,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00054}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa8de87a525290e381f32102aa6a5be7c3}{00054}}         \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fa8de87a525290e381f32102aa6a5be7c3}{DDS\_ALPHA\_MODE\_OPAQUE}}        = 3,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00055}\mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fab78d94eee31a6d8a3b97427e0dddb55e}{00055}}         \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1fab78d94eee31a6d8a3b97427e0dddb55e}{DDS\_ALPHA\_MODE\_CUSTOM}}        = 4,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00056}00056     \};}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00058}00058     \textcolor{comment}{// Standard version}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00059}\mbox{\hyperlink{namespace_direct_x_a62a12ff7a57a36483e157b1fb1fe8dff}{00059}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a62a12ff7a57a36483e157b1fb1fe8dff}{CreateDDSTextureFromMemory}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00060}00060                                         \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00061}00061                                         \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00062}00062                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00063}00063                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00064}00064                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00065}00065                                         \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00066}00066                                       );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00068}\mbox{\hyperlink{namespace_direct_x_a4fc6a2671e5a4fd5e6abb20ab0f8d3eb}{00068}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a4fc6a2671e5a4fd5e6abb20ab0f8d3eb}{CreateDDSTextureFromMemory12}}(\_In\_ ID3D12Device* device,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00069}00069                                          \_In\_ ID3D12GraphicsCommandList* cmdList,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00070}00070                                          \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00071}00071                                          \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00072}00072                                          \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00073}00073                                          \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& textureUploadHeap,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00074}00074                                          \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00075}00075                                          \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00076}00076                                          );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00077}00077 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00078}\mbox{\hyperlink{namespace_direct_x_a72103949d0a30b4d1cf2c68fb4d0ec19}{00078}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a72103949d0a30b4d1cf2c68fb4d0ec19}{CreateDDSTextureFromFile}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00079}00079                                       \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00080}00080                                       \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00081}00081                                       \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00082}00082                                       \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00083}00083                                       \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00084}00084                                     );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00085}00085 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00086}\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{00086}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{CreateDDSTextureFromFile12}}(\_In\_ ID3D12Device* device,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00087}00087                                        \_In\_ ID3D12GraphicsCommandList* cmdList,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00088}00088                                        \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00089}00089                                        \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00090}00090                                        \_Out\_ Microsoft::WRL::ComPtr<ID3D12Resource>\& textureUploadHeap,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00091}00091                                        \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00092}00092                                        \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00093}00093                                        );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00095}00095     \textcolor{comment}{// Standard version with optional auto-\/gen mipmap support}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00096}\mbox{\hyperlink{namespace_direct_x_a597be68a8cd5caf647a21e3d54230a91}{00096}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a62a12ff7a57a36483e157b1fb1fe8dff}{CreateDDSTextureFromMemory}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00097}00097                                         \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00098}00098                                         \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00099}00099                                         \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00100}00100                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00101}00101                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00102}00102                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00103}00103                                         \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00104}00104                                       );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00106}\mbox{\hyperlink{namespace_direct_x_af625c91d9244b4829f140665e00acc57}{00106}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a72103949d0a30b4d1cf2c68fb4d0ec19}{CreateDDSTextureFromFile}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00107}00107                                       \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00108}00108                                       \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00109}00109                                       \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00110}00110                                       \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00111}00111                                       \_In\_ \textcolor{keywordtype}{size\_t} maxsize = 0,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00112}00112                                       \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00113}00113                                     );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00114}00114 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00115}00115     \textcolor{comment}{// Extended version}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00116}\mbox{\hyperlink{namespace_direct_x_a5839b6f2cb71965e2aeddef378e1fe6e}{00116}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a5839b6f2cb71965e2aeddef378e1fe6e}{CreateDDSTextureFromMemoryEx}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00117}00117                                           \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00118}00118                                           \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00119}00119                                           \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00120}00120                                           \_In\_ D3D11\_USAGE usage,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00121}00121                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00122}00122                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00123}00123                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00124}00124                                           \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00125}00125                                           \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00126}00126                                           \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00127}00127                                           \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00128}00128                                       );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00130}\mbox{\hyperlink{namespace_direct_x_a81c1bbdec904a0d0f5fcad4c5ea88525}{00130}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a81c1bbdec904a0d0f5fcad4c5ea88525}{CreateDDSTextureFromFileEx}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00131}00131                                         \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00132}00132                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00133}00133                                         \_In\_ D3D11\_USAGE usage,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00134}00134                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00135}00135                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00136}00136                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00137}00137                                         \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00138}00138                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00139}00139                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00140}00140                                         \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00141}00141                                     );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00143}00143     \textcolor{comment}{// Extended version with optional auto-\/gen mipmap support}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00144}\mbox{\hyperlink{namespace_direct_x_a13b4faa7bfb3a14bd408730a0ea05628}{00144}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a5839b6f2cb71965e2aeddef378e1fe6e}{CreateDDSTextureFromMemoryEx}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00145}00145                                           \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00146}00146                                           \_In\_reads\_bytes\_(ddsDataSize) \textcolor{keyword}{const} uint8\_t* ddsData,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00147}00147                                           \_In\_ \textcolor{keywordtype}{size\_t} ddsDataSize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00148}00148                                           \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00149}00149                                           \_In\_ D3D11\_USAGE usage,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00150}00150                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00151}00151                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00152}00152                                           \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00153}00153                                           \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00154}00154                                           \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00155}00155                                           \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00156}00156                                           \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00157}00157                                       );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00158}00158 }
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00159}\mbox{\hyperlink{namespace_direct_x_a3fe71d8982208e409bf9ea67dcb11e99}{00159}}     HRESULT \mbox{\hyperlink{namespace_direct_x_a81c1bbdec904a0d0f5fcad4c5ea88525}{CreateDDSTextureFromFileEx}}( \_In\_ ID3D11Device* d3dDevice,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00160}00160                                         \_In\_opt\_ ID3D11DeviceContext* d3dContext,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00161}00161                                         \_In\_z\_ \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* szFileName,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00162}00162                                         \_In\_ \textcolor{keywordtype}{size\_t} maxsize,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00163}00163                                         \_In\_ D3D11\_USAGE usage,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00164}00164                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} bindFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00165}00165                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} cpuAccessFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00166}00166                                         \_In\_ \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} miscFlags,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00167}00167                                         \_In\_ \textcolor{keywordtype}{bool} forceSRGB,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00168}00168                                         \_Outptr\_opt\_ ID3D11Resource** texture,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00169}00169                                         \_Outptr\_opt\_ ID3D11ShaderResourceView** textureView,}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00170}00170                                         \_Out\_opt\_ \mbox{\hyperlink{namespace_direct_x_a7cb48689d75471680c0bf7f79caaaf1f}{DDS\_ALPHA\_MODE}}* alphaMode = \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00171}00171                                     );}
+\DoxyCodeLine{\Hypertarget{_d_d_s_texture_loader_8h_source_l00172}00172 \}}
 
 \end{DoxyCode}

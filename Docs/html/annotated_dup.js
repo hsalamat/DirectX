@@ -1,6 +1,8 @@
 var annotated_dup =
 [
+    [ "A", "class_a.html", "class_a" ],
     [ "AnimationClip", "struct_animation_clip.html", "struct_animation_clip" ],
+    [ "B", "class_b.html", "class_b" ],
     [ "BasicTessellationApp", "class_basic_tessellation_app.html", "class_basic_tessellation_app" ],
     [ "BezierPatchApp", "class_bezier_patch_app.html", "class_bezier_patch_app" ],
     [ "BlendApp", "class_blend_app.html", "class_blend_app" ],
@@ -50,6 +52,7 @@ var annotated_dup =
     [ "MaterialData", "struct_material_data.html", "struct_material_data" ],
     [ "MathHelper", "class_math_helper.html", null ],
     [ "MeshGeometry", "struct_mesh_geometry.html", "struct_mesh_geometry" ],
+    [ "mystruct", "structmystruct.html", "structmystruct" ],
     [ "NormalMapApp", "class_normal_map_app.html", "class_normal_map_app" ],
     [ "ObjectConstant2", "struct_object_constant2.html", "struct_object_constant2" ],
     [ "ObjectConstants", "struct_object_constants.html", "struct_object_constants" ],

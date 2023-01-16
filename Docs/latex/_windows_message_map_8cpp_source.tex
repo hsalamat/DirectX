@@ -1,219 +1,219 @@
-\doxysection{Windows\+Message\+Map.\+cpp}
+\hypertarget{_windows_message_map_8cpp_source}{}\doxysection{Windows\+Message\+Map.\+cpp}
 \label{_windows_message_map_8cpp_source}\index{Week2/Win32Examples/WindowsMessageMap.cpp@{Week2/Win32Examples/WindowsMessageMap.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_windows_message_map_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}WindowsMessageMap.h"{}}}
-\DoxyCodeLine{00002 \textcolor{preprocessor}{\#include <string>}}
-\DoxyCodeLine{00003 \textcolor{preprocessor}{\#include <sstream>}}
-\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include <iomanip>}}
-\DoxyCodeLine{00005 }
-\DoxyCodeLine{00006 \textcolor{comment}{// secret messages}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#define WM\_UAHDESTROYWINDOW 0x0090}}
-\DoxyCodeLine{00008 \textcolor{preprocessor}{\#define WM\_UAHDRAWMENU 0x0091}}
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#define WM\_UAHDRAWMENUITEM 0x0092}}
-\DoxyCodeLine{00010 \textcolor{preprocessor}{\#define WM\_UAHINITMENU 0x0093}}
-\DoxyCodeLine{00011 \textcolor{preprocessor}{\#define WM\_UAHMEASUREMENUITEM 0x0094}}
-\DoxyCodeLine{00012 \textcolor{preprocessor}{\#define WM\_UAHNCPAINTMENUPOPUP 0x0095}}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#define REGISTER\_MESSAGE(msg)\{msg,\#msg\}}}
-\DoxyCodeLine{00015 }
-\DoxyCodeLine{00016 WindowsMessageMap::WindowsMessageMap() noexcept}
-\DoxyCodeLine{00017     :}
-\DoxyCodeLine{00018     map(\{}
-\DoxyCodeLine{00019         REGISTER\_MESSAGE(WM\_CREATE),}
-\DoxyCodeLine{00020         REGISTER\_MESSAGE(WM\_DESTROY),}
-\DoxyCodeLine{00021         REGISTER\_MESSAGE(WM\_MOVE),}
-\DoxyCodeLine{00022         REGISTER\_MESSAGE(WM\_SIZE),}
-\DoxyCodeLine{00023         REGISTER\_MESSAGE(WM\_ACTIVATE),}
-\DoxyCodeLine{00024         REGISTER\_MESSAGE(WM\_SETFOCUS),}
-\DoxyCodeLine{00025         REGISTER\_MESSAGE(WM\_KILLFOCUS),}
-\DoxyCodeLine{00026         REGISTER\_MESSAGE(WM\_ENABLE),}
-\DoxyCodeLine{00027         REGISTER\_MESSAGE(WM\_SETREDRAW),}
-\DoxyCodeLine{00028         REGISTER\_MESSAGE(WM\_SETTEXT),}
-\DoxyCodeLine{00029         REGISTER\_MESSAGE(WM\_GETTEXT),}
-\DoxyCodeLine{00030         REGISTER\_MESSAGE(WM\_GETTEXTLENGTH),}
-\DoxyCodeLine{00031         REGISTER\_MESSAGE(WM\_PAINT),}
-\DoxyCodeLine{00032         REGISTER\_MESSAGE(WM\_CLOSE),}
-\DoxyCodeLine{00033         REGISTER\_MESSAGE(WM\_QUERYENDSESSION),}
-\DoxyCodeLine{00034         REGISTER\_MESSAGE(WM\_QUIT),}
-\DoxyCodeLine{00035         REGISTER\_MESSAGE(WM\_QUERYOPEN),}
-\DoxyCodeLine{00036         REGISTER\_MESSAGE(WM\_ERASEBKGND),}
-\DoxyCodeLine{00037         REGISTER\_MESSAGE(WM\_SYSCOLORCHANGE),}
-\DoxyCodeLine{00038         REGISTER\_MESSAGE(WM\_ENDSESSION),}
-\DoxyCodeLine{00039         REGISTER\_MESSAGE(WM\_SHOWWINDOW),}
-\DoxyCodeLine{00040         REGISTER\_MESSAGE(WM\_CTLCOLORMSGBOX),}
-\DoxyCodeLine{00041         REGISTER\_MESSAGE(WM\_CTLCOLOREDIT),}
-\DoxyCodeLine{00042         REGISTER\_MESSAGE(WM\_CTLCOLORLISTBOX),}
-\DoxyCodeLine{00043         REGISTER\_MESSAGE(WM\_CTLCOLORBTN),}
-\DoxyCodeLine{00044         REGISTER\_MESSAGE(WM\_CTLCOLORDLG),}
-\DoxyCodeLine{00045         REGISTER\_MESSAGE(WM\_CTLCOLORSCROLLBAR),}
-\DoxyCodeLine{00046         REGISTER\_MESSAGE(WM\_CTLCOLORSTATIC),}
-\DoxyCodeLine{00047         REGISTER\_MESSAGE(WM\_WININICHANGE),}
-\DoxyCodeLine{00048         REGISTER\_MESSAGE(WM\_SETTINGCHANGE),}
-\DoxyCodeLine{00049         REGISTER\_MESSAGE(WM\_DEVMODECHANGE),}
-\DoxyCodeLine{00050         REGISTER\_MESSAGE(WM\_ACTIVATEAPP),}
-\DoxyCodeLine{00051         REGISTER\_MESSAGE(WM\_FONTCHANGE),}
-\DoxyCodeLine{00052         REGISTER\_MESSAGE(WM\_TIMECHANGE),}
-\DoxyCodeLine{00053         REGISTER\_MESSAGE(WM\_CANCELMODE),}
-\DoxyCodeLine{00054         REGISTER\_MESSAGE(WM\_SETCURSOR),}
-\DoxyCodeLine{00055         REGISTER\_MESSAGE(WM\_MOUSEACTIVATE),}
-\DoxyCodeLine{00056         REGISTER\_MESSAGE(WM\_CHILDACTIVATE),}
-\DoxyCodeLine{00057         REGISTER\_MESSAGE(WM\_QUEUESYNC),}
-\DoxyCodeLine{00058         REGISTER\_MESSAGE(WM\_GETMINMAXINFO),}
-\DoxyCodeLine{00059         REGISTER\_MESSAGE(WM\_ICONERASEBKGND),}
-\DoxyCodeLine{00060         REGISTER\_MESSAGE(WM\_NEXTDLGCTL),}
-\DoxyCodeLine{00061         REGISTER\_MESSAGE(WM\_SPOOLERSTATUS),}
-\DoxyCodeLine{00062         REGISTER\_MESSAGE(WM\_DRAWITEM),}
-\DoxyCodeLine{00063         REGISTER\_MESSAGE(WM\_MEASUREITEM),}
-\DoxyCodeLine{00064         REGISTER\_MESSAGE(WM\_DELETEITEM),}
-\DoxyCodeLine{00065         REGISTER\_MESSAGE(WM\_VKEYTOITEM),}
-\DoxyCodeLine{00066         REGISTER\_MESSAGE(WM\_CHARTOITEM),}
-\DoxyCodeLine{00067         REGISTER\_MESSAGE(WM\_SETFONT),}
-\DoxyCodeLine{00068         REGISTER\_MESSAGE(WM\_GETFONT),}
-\DoxyCodeLine{00069         REGISTER\_MESSAGE(WM\_QUERYDRAGICON),}
-\DoxyCodeLine{00070         REGISTER\_MESSAGE(WM\_COMPAREITEM),}
-\DoxyCodeLine{00071         REGISTER\_MESSAGE(WM\_COMPACTING),}
-\DoxyCodeLine{00072         REGISTER\_MESSAGE(WM\_NCCREATE),}
-\DoxyCodeLine{00073         REGISTER\_MESSAGE(WM\_NCDESTROY),}
-\DoxyCodeLine{00074         REGISTER\_MESSAGE(WM\_NCCALCSIZE),}
-\DoxyCodeLine{00075         REGISTER\_MESSAGE(WM\_NCHITTEST),}
-\DoxyCodeLine{00076         REGISTER\_MESSAGE(WM\_NCPAINT),}
-\DoxyCodeLine{00077         REGISTER\_MESSAGE(WM\_NCACTIVATE),}
-\DoxyCodeLine{00078         REGISTER\_MESSAGE(WM\_GETDLGCODE),}
-\DoxyCodeLine{00079         REGISTER\_MESSAGE(WM\_NCMOUSEMOVE),}
-\DoxyCodeLine{00080         REGISTER\_MESSAGE(WM\_NCLBUTTONDOWN),}
-\DoxyCodeLine{00081         REGISTER\_MESSAGE(WM\_NCLBUTTONUP),}
-\DoxyCodeLine{00082         REGISTER\_MESSAGE(WM\_NCLBUTTONDBLCLK),}
-\DoxyCodeLine{00083         REGISTER\_MESSAGE(WM\_NCRBUTTONDOWN),}
-\DoxyCodeLine{00084         REGISTER\_MESSAGE(WM\_NCRBUTTONUP),}
-\DoxyCodeLine{00085         REGISTER\_MESSAGE(WM\_NCRBUTTONDBLCLK),}
-\DoxyCodeLine{00086         REGISTER\_MESSAGE(WM\_NCMBUTTONDOWN),}
-\DoxyCodeLine{00087         REGISTER\_MESSAGE(WM\_NCMBUTTONUP),}
-\DoxyCodeLine{00088         REGISTER\_MESSAGE(WM\_NCMBUTTONDBLCLK),}
-\DoxyCodeLine{00089         REGISTER\_MESSAGE(WM\_KEYDOWN),}
-\DoxyCodeLine{00090         REGISTER\_MESSAGE(WM\_KEYUP),}
-\DoxyCodeLine{00091         REGISTER\_MESSAGE(WM\_CHAR),}
-\DoxyCodeLine{00092         REGISTER\_MESSAGE(WM\_DEADCHAR),}
-\DoxyCodeLine{00093         REGISTER\_MESSAGE(WM\_SYSKEYDOWN),}
-\DoxyCodeLine{00094         REGISTER\_MESSAGE(WM\_SYSKEYUP),}
-\DoxyCodeLine{00095         REGISTER\_MESSAGE(WM\_SYSCHAR),}
-\DoxyCodeLine{00096         REGISTER\_MESSAGE(WM\_SYSDEADCHAR),}
-\DoxyCodeLine{00097         REGISTER\_MESSAGE(WM\_KEYLAST),}
-\DoxyCodeLine{00098         REGISTER\_MESSAGE(WM\_INITDIALOG),}
-\DoxyCodeLine{00099         REGISTER\_MESSAGE(WM\_COMMAND),}
-\DoxyCodeLine{00100         REGISTER\_MESSAGE(WM\_SYSCOMMAND),}
-\DoxyCodeLine{00101         REGISTER\_MESSAGE(WM\_TIMER),}
-\DoxyCodeLine{00102         REGISTER\_MESSAGE(WM\_HSCROLL),}
-\DoxyCodeLine{00103         REGISTER\_MESSAGE(WM\_VSCROLL),}
-\DoxyCodeLine{00104         REGISTER\_MESSAGE(WM\_INITMENU),}
-\DoxyCodeLine{00105         REGISTER\_MESSAGE(WM\_INITMENUPOPUP),}
-\DoxyCodeLine{00106         REGISTER\_MESSAGE(WM\_MENUSELECT),}
-\DoxyCodeLine{00107         REGISTER\_MESSAGE(WM\_MENUCHAR),}
-\DoxyCodeLine{00108         REGISTER\_MESSAGE(WM\_ENTERIDLE),}
-\DoxyCodeLine{00109         REGISTER\_MESSAGE(WM\_MOUSEWHEEL),}
-\DoxyCodeLine{00110         REGISTER\_MESSAGE(WM\_MOUSEMOVE),}
-\DoxyCodeLine{00111         REGISTER\_MESSAGE(WM\_LBUTTONDOWN),}
-\DoxyCodeLine{00112         REGISTER\_MESSAGE(WM\_LBUTTONUP),}
-\DoxyCodeLine{00113         REGISTER\_MESSAGE(WM\_LBUTTONDBLCLK),}
-\DoxyCodeLine{00114         REGISTER\_MESSAGE(WM\_RBUTTONDOWN),}
-\DoxyCodeLine{00115         REGISTER\_MESSAGE(WM\_RBUTTONUP),}
-\DoxyCodeLine{00116         REGISTER\_MESSAGE(WM\_RBUTTONDBLCLK),}
-\DoxyCodeLine{00117         REGISTER\_MESSAGE(WM\_MBUTTONDOWN),}
-\DoxyCodeLine{00118         REGISTER\_MESSAGE(WM\_MBUTTONUP),}
-\DoxyCodeLine{00119         REGISTER\_MESSAGE(WM\_MBUTTONDBLCLK),}
-\DoxyCodeLine{00120         REGISTER\_MESSAGE(WM\_PARENTNOTIFY),}
-\DoxyCodeLine{00121         REGISTER\_MESSAGE(WM\_MDICREATE),}
-\DoxyCodeLine{00122         REGISTER\_MESSAGE(WM\_MDIDESTROY),}
-\DoxyCodeLine{00123         REGISTER\_MESSAGE(WM\_MDIACTIVATE),}
-\DoxyCodeLine{00124         REGISTER\_MESSAGE(WM\_MDIRESTORE),}
-\DoxyCodeLine{00125         REGISTER\_MESSAGE(WM\_MDINEXT),}
-\DoxyCodeLine{00126         REGISTER\_MESSAGE(WM\_MDIMAXIMIZE),}
-\DoxyCodeLine{00127         REGISTER\_MESSAGE(WM\_MDITILE),}
-\DoxyCodeLine{00128         REGISTER\_MESSAGE(WM\_MDICASCADE),}
-\DoxyCodeLine{00129         REGISTER\_MESSAGE(WM\_MDIICONARRANGE),}
-\DoxyCodeLine{00130         REGISTER\_MESSAGE(WM\_MDIGETACTIVE),}
-\DoxyCodeLine{00131         REGISTER\_MESSAGE(WM\_MDISETMENU),}
-\DoxyCodeLine{00132         REGISTER\_MESSAGE(WM\_CUT),}
-\DoxyCodeLine{00133         REGISTER\_MESSAGE(WM\_COPYDATA),}
-\DoxyCodeLine{00134         REGISTER\_MESSAGE(WM\_COPY),}
-\DoxyCodeLine{00135         REGISTER\_MESSAGE(WM\_PASTE),}
-\DoxyCodeLine{00136         REGISTER\_MESSAGE(WM\_CLEAR),}
-\DoxyCodeLine{00137         REGISTER\_MESSAGE(WM\_UNDO),}
-\DoxyCodeLine{00138         REGISTER\_MESSAGE(WM\_RENDERFORMAT),}
-\DoxyCodeLine{00139         REGISTER\_MESSAGE(WM\_RENDERALLFORMATS),}
-\DoxyCodeLine{00140         REGISTER\_MESSAGE(WM\_DESTROYCLIPBOARD),}
-\DoxyCodeLine{00141         REGISTER\_MESSAGE(WM\_DRAWCLIPBOARD),}
-\DoxyCodeLine{00142         REGISTER\_MESSAGE(WM\_PAINTCLIPBOARD),}
-\DoxyCodeLine{00143         REGISTER\_MESSAGE(WM\_VSCROLLCLIPBOARD),}
-\DoxyCodeLine{00144         REGISTER\_MESSAGE(WM\_SIZECLIPBOARD),}
-\DoxyCodeLine{00145         REGISTER\_MESSAGE(WM\_ASKCBFORMATNAME),}
-\DoxyCodeLine{00146         REGISTER\_MESSAGE(WM\_CHANGECBCHAIN),}
-\DoxyCodeLine{00147         REGISTER\_MESSAGE(WM\_HSCROLLCLIPBOARD),}
-\DoxyCodeLine{00148         REGISTER\_MESSAGE(WM\_QUERYNEWPALETTE),}
-\DoxyCodeLine{00149         REGISTER\_MESSAGE(WM\_PALETTEISCHANGING),}
-\DoxyCodeLine{00150         REGISTER\_MESSAGE(WM\_PALETTECHANGED),}
-\DoxyCodeLine{00151         REGISTER\_MESSAGE(WM\_DROPFILES),}
-\DoxyCodeLine{00152         REGISTER\_MESSAGE(WM\_POWER),}
-\DoxyCodeLine{00153         REGISTER\_MESSAGE(WM\_WINDOWPOSCHANGED),}
-\DoxyCodeLine{00154         REGISTER\_MESSAGE(WM\_WINDOWPOSCHANGING),}
-\DoxyCodeLine{00155         REGISTER\_MESSAGE(WM\_HELP),}
-\DoxyCodeLine{00156         REGISTER\_MESSAGE(WM\_NOTIFY),}
-\DoxyCodeLine{00157         REGISTER\_MESSAGE(WM\_CONTEXTMENU),}
-\DoxyCodeLine{00158         REGISTER\_MESSAGE(WM\_TCARD),}
-\DoxyCodeLine{00159         REGISTER\_MESSAGE(WM\_MDIREFRESHMENU),}
-\DoxyCodeLine{00160         REGISTER\_MESSAGE(WM\_MOVING),}
-\DoxyCodeLine{00161         REGISTER\_MESSAGE(WM\_STYLECHANGED),}
-\DoxyCodeLine{00162         REGISTER\_MESSAGE(WM\_STYLECHANGING),}
-\DoxyCodeLine{00163         REGISTER\_MESSAGE(WM\_SIZING),}
-\DoxyCodeLine{00164         REGISTER\_MESSAGE(WM\_SETHOTKEY),}
-\DoxyCodeLine{00165         REGISTER\_MESSAGE(WM\_PRINT),}
-\DoxyCodeLine{00166         REGISTER\_MESSAGE(WM\_PRINTCLIENT),}
-\DoxyCodeLine{00167         REGISTER\_MESSAGE(WM\_POWERBROADCAST),}
-\DoxyCodeLine{00168         REGISTER\_MESSAGE(WM\_HOTKEY),}
-\DoxyCodeLine{00169         REGISTER\_MESSAGE(WM\_GETICON),}
-\DoxyCodeLine{00170         REGISTER\_MESSAGE(WM\_EXITMENULOOP),}
-\DoxyCodeLine{00171         REGISTER\_MESSAGE(WM\_ENTERMENULOOP),}
-\DoxyCodeLine{00172         REGISTER\_MESSAGE(WM\_DISPLAYCHANGE),}
-\DoxyCodeLine{00173         REGISTER\_MESSAGE(WM\_STYLECHANGED),}
-\DoxyCodeLine{00174         REGISTER\_MESSAGE(WM\_STYLECHANGING),}
-\DoxyCodeLine{00175         REGISTER\_MESSAGE(WM\_GETICON),}
-\DoxyCodeLine{00176         REGISTER\_MESSAGE(WM\_SETICON),}
-\DoxyCodeLine{00177         REGISTER\_MESSAGE(WM\_SIZING),}
-\DoxyCodeLine{00178         REGISTER\_MESSAGE(WM\_MOVING),}
-\DoxyCodeLine{00179         REGISTER\_MESSAGE(WM\_CAPTURECHANGED),}
-\DoxyCodeLine{00180         REGISTER\_MESSAGE(WM\_DEVICECHANGE),}
-\DoxyCodeLine{00181         REGISTER\_MESSAGE(WM\_PRINT),}
-\DoxyCodeLine{00182         REGISTER\_MESSAGE(WM\_PRINTCLIENT),}
-\DoxyCodeLine{00183         REGISTER\_MESSAGE(WM\_IME\_SETCONTEXT),}
-\DoxyCodeLine{00184         REGISTER\_MESSAGE(WM\_IME\_NOTIFY),}
-\DoxyCodeLine{00185         REGISTER\_MESSAGE(WM\_NCMOUSELEAVE),}
-\DoxyCodeLine{00186         REGISTER\_MESSAGE(WM\_EXITSIZEMOVE),}
-\DoxyCodeLine{00187         REGISTER\_MESSAGE(WM\_UAHDESTROYWINDOW),}
-\DoxyCodeLine{00188         REGISTER\_MESSAGE(WM\_DWMNCRENDERINGCHANGED),}
-\DoxyCodeLine{00189         REGISTER\_MESSAGE(WM\_ENTERSIZEMOVE),}
-\DoxyCodeLine{00190         \})}
-\DoxyCodeLine{00191 \{\}}
-\DoxyCodeLine{00192 }
-\DoxyCodeLine{00193 std::string WindowsMessageMap::operator()(DWORD msg, LPARAM lp, WPARAM wp) \textcolor{keyword}{const} \textcolor{keyword}{noexcept}}
-\DoxyCodeLine{00194 \{}
-\DoxyCodeLine{00195     \textcolor{keyword}{constexpr} \textcolor{keywordtype}{int} firstColWidth = 25;}
-\DoxyCodeLine{00196     \textcolor{keyword}{const} \textcolor{keyword}{auto} i = map.find(msg);}
-\DoxyCodeLine{00197 }
-\DoxyCodeLine{00198     std::ostringstream oss;}
-\DoxyCodeLine{00199     \textcolor{keywordflow}{if} (i != map.end())}
-\DoxyCodeLine{00200     \{}
-\DoxyCodeLine{00201         oss << std::left << std::setw(firstColWidth) << i-\/>second << std::right;}
-\DoxyCodeLine{00202     \}}
-\DoxyCodeLine{00203     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00204     \{}
-\DoxyCodeLine{00205         std::ostringstream padss;}
-\DoxyCodeLine{00206         padss << \textcolor{stringliteral}{"{}Unknown message: 0x"{}} << std::hex << msg;}
-\DoxyCodeLine{00207         oss << std::left << std::setw(firstColWidth) << padss.str() << std::right;}
-\DoxyCodeLine{00208     \}}
-\DoxyCodeLine{00209     oss << \textcolor{stringliteral}{"{}   LP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << lp;}
-\DoxyCodeLine{00210     oss << \textcolor{stringliteral}{"{}   WP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << wp << std::endl;}
-\DoxyCodeLine{00211 }
-\DoxyCodeLine{00212     \textcolor{keywordflow}{return} oss.str();}
-\DoxyCodeLine{00213 \}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_windows_message_map_8h}{WindowsMessageMap.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00002}00002 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00003}00003 \textcolor{preprocessor}{\#include <sstream>}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00004}00004 \textcolor{preprocessor}{\#include <iomanip>}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00005}00005 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00006}00006 \textcolor{comment}{// secret messages}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00007}\mbox{\hyperlink{_windows_message_map_8cpp_ad63ff8c476f24d7835352371168a2a48}{00007}} \textcolor{preprocessor}{\#define WM\_UAHDESTROYWINDOW 0x0090}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00008}\mbox{\hyperlink{_windows_message_map_8cpp_a1deb8fe81172adaddacbf838804908d9}{00008}} \textcolor{preprocessor}{\#define WM\_UAHDRAWMENU 0x0091}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00009}\mbox{\hyperlink{_windows_message_map_8cpp_ab4e87c97a1b75d4130befec27fb3fe7b}{00009}} \textcolor{preprocessor}{\#define WM\_UAHDRAWMENUITEM 0x0092}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00010}\mbox{\hyperlink{_windows_message_map_8cpp_ab0091e4e6aa4147d231648d87b97059a}{00010}} \textcolor{preprocessor}{\#define WM\_UAHINITMENU 0x0093}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00011}\mbox{\hyperlink{_windows_message_map_8cpp_a1d27ec177d18bebb2f58f5c3f89aa448}{00011}} \textcolor{preprocessor}{\#define WM\_UAHMEASUREMENUITEM 0x0094}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00012}\mbox{\hyperlink{_windows_message_map_8cpp_a477bb809aa1b4c7e853dd6e552fc30d9}{00012}} \textcolor{preprocessor}{\#define WM\_UAHNCPAINTMENUPOPUP 0x0095}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00014}\mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{00014}} \textcolor{preprocessor}{\#define REGISTER\_MESSAGE(msg)\{msg,\#msg\}}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00016}\mbox{\hyperlink{class_windows_message_map_adc2cb5838ee2d220cbd905737b404327}{00016}} \mbox{\hyperlink{class_windows_message_map_adc2cb5838ee2d220cbd905737b404327}{WindowsMessageMap::WindowsMessageMap}}() noexcept}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00017}00017     :}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00018}00018     map(\{}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00019}00019         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CREATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00020}00020         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DESTROY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00021}00021         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00022}00022         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SIZE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00023}00023         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ACTIVATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00024}00024         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETFOCUS),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00025}00025         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_KILLFOCUS),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00026}00026         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ENABLE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00027}00027         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETREDRAW),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00028}00028         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETTEXT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00029}00029         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETTEXT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00030}00030         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETTEXTLENGTH),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00031}00031         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PAINT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00032}00032         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CLOSE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00033}00033         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUERYENDSESSION),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00034}00034         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUIT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00035}00035         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUERYOPEN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00036}00036         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ERASEBKGND),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00037}00037         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSCOLORCHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00038}00038         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ENDSESSION),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00039}00039         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SHOWWINDOW),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00040}00040         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORMSGBOX),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00041}00041         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLOREDIT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00042}00042         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORLISTBOX),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00043}00043         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORBTN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00044}00044         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORDLG),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00045}00045         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORSCROLLBAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00046}00046         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CTLCOLORSTATIC),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00047}00047         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_WININICHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00048}00048         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETTINGCHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00049}00049         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DEVMODECHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00050}00050         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ACTIVATEAPP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00051}00051         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_FONTCHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00052}00052         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_TIMECHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00053}00053         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CANCELMODE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00054}00054         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETCURSOR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00055}00055         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOUSEACTIVATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00056}00056         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CHILDACTIVATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00057}00057         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUEUESYNC),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00058}00058         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETMINMAXINFO),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00059}00059         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ICONERASEBKGND),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00060}00060         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NEXTDLGCTL),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00061}00061         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SPOOLERSTATUS),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00062}00062         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DRAWITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00063}00063         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MEASUREITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00064}00064         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DELETEITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00065}00065         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_VKEYTOITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00066}00066         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CHARTOITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00067}00067         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETFONT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00068}00068         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETFONT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00069}00069         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUERYDRAGICON),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00070}00070         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_COMPAREITEM),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00071}00071         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_COMPACTING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00072}00072         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCCREATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00073}00073         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCDESTROY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00074}00074         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCCALCSIZE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00075}00075         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCHITTEST),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00076}00076         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCPAINT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00077}00077         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCACTIVATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00078}00078         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETDLGCODE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00079}00079         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCMOUSEMOVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00080}00080         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCLBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00081}00081         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCLBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00082}00082         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCLBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00083}00083         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCRBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00084}00084         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCRBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00085}00085         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCRBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00086}00086         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCMBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00087}00087         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCMBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00088}00088         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCMBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00089}00089         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_KEYDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00090}00090         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_KEYUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00091}00091         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CHAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00092}00092         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DEADCHAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00093}00093         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSKEYDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00094}00094         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSKEYUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00095}00095         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSCHAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00096}00096         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSDEADCHAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00097}00097         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_KEYLAST),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00098}00098         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_INITDIALOG),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00099}00099         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_COMMAND),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00100}00100         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SYSCOMMAND),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00101}00101         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_TIMER),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00102}00102         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_HSCROLL),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00103}00103         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_VSCROLL),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00104}00104         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_INITMENU),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00105}00105         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_INITMENUPOPUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00106}00106         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MENUSELECT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00107}00107         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MENUCHAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00108}00108         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ENTERIDLE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00109}00109         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOUSEWHEEL),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00110}00110         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOUSEMOVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00111}00111         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_LBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00112}00112         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_LBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00113}00113         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_LBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00114}00114         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_RBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00115}00115         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_RBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00116}00116         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_RBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00117}00117         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MBUTTONDOWN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00118}00118         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MBUTTONUP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00119}00119         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MBUTTONDBLCLK),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00120}00120         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PARENTNOTIFY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00121}00121         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDICREATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00122}00122         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIDESTROY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00123}00123         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIACTIVATE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00124}00124         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIRESTORE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00125}00125         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDINEXT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00126}00126         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIMAXIMIZE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00127}00127         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDITILE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00128}00128         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDICASCADE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00129}00129         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIICONARRANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00130}00130         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIGETACTIVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00131}00131         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDISETMENU),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00132}00132         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CUT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00133}00133         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_COPYDATA),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00134}00134         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_COPY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00135}00135         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PASTE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00136}00136         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CLEAR),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00137}00137         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_UNDO),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00138}00138         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_RENDERFORMAT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00139}00139         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_RENDERALLFORMATS),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00140}00140         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DESTROYCLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00141}00141         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DRAWCLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00142}00142         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PAINTCLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00143}00143         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_VSCROLLCLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00144}00144         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SIZECLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00145}00145         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ASKCBFORMATNAME),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00146}00146         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CHANGECBCHAIN),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00147}00147         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_HSCROLLCLIPBOARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00148}00148         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_QUERYNEWPALETTE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00149}00149         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PALETTEISCHANGING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00150}00150         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PALETTECHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00151}00151         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DROPFILES),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00152}00152         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_POWER),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00153}00153         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_WINDOWPOSCHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00154}00154         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_WINDOWPOSCHANGING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00155}00155         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_HELP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00156}00156         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NOTIFY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00157}00157         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CONTEXTMENU),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00158}00158         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_TCARD),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00159}00159         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MDIREFRESHMENU),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00160}00160         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOVING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00161}00161         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_STYLECHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00162}00162         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_STYLECHANGING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00163}00163         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SIZING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00164}00164         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETHOTKEY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00165}00165         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PRINT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00166}00166         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PRINTCLIENT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00167}00167         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_POWERBROADCAST),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00168}00168         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_HOTKEY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00169}00169         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETICON),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00170}00170         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_EXITMENULOOP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00171}00171         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ENTERMENULOOP),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00172}00172         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DISPLAYCHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00173}00173         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_STYLECHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00174}00174         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_STYLECHANGING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00175}00175         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_GETICON),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00176}00176         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SETICON),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00177}00177         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_SIZING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00178}00178         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_MOVING),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00179}00179         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_CAPTURECHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00180}00180         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DEVICECHANGE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00181}00181         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PRINT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00182}00182         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_PRINTCLIENT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00183}00183         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_IME\_SETCONTEXT),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00184}00184         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_IME\_NOTIFY),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00185}00185         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_NCMOUSELEAVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00186}00186         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_EXITSIZEMOVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00187}00187         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(\mbox{\hyperlink{_windows_message_map_8cpp_ad63ff8c476f24d7835352371168a2a48}{WM\_UAHDESTROYWINDOW}}),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00188}00188         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_DWMNCRENDERINGCHANGED),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00189}00189         \mbox{\hyperlink{_windows_message_map_8cpp_afec810e348067e0dffeb1e324dceacfb}{REGISTER\_MESSAGE}}(WM\_ENTERSIZEMOVE),}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00190}00190         \})}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00191}00191 \{\}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00192}00192 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00193}\mbox{\hyperlink{class_windows_message_map_ac216ee109ba8c428e92acb3d64b6a648}{00193}} std::string \mbox{\hyperlink{class_windows_message_map_ac216ee109ba8c428e92acb3d64b6a648}{WindowsMessageMap::operator()}}(DWORD msg, LPARAM lp, WPARAM wp) \textcolor{keyword}{const} \textcolor{keyword}{noexcept}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00194}00194 \{}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00195}00195     \textcolor{keyword}{constexpr} \textcolor{keywordtype}{int} firstColWidth = 25;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00196}00196     \textcolor{keyword}{const} \textcolor{keyword}{auto} i = map.find(msg);}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00197}00197 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00198}00198     std::ostringstream oss;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00199}00199     \textcolor{keywordflow}{if} (i != map.end())}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00200}00200     \{}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00201}00201         oss << std::left << std::setw(firstColWidth) << i-\/>second << std::right;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00202}00202     \}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00203}00203     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00204}00204     \{}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00205}00205         std::ostringstream padss;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00206}00206         padss << \textcolor{stringliteral}{"{}Unknown message: 0x"{}} << std::hex << msg;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00207}00207         oss << std::left << std::setw(firstColWidth) << padss.str() << std::right;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00208}00208     \}}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00209}00209     oss << \textcolor{stringliteral}{"{}   LP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << lp;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00210}00210     oss << \textcolor{stringliteral}{"{}   WP: 0x"{}} << std::hex << std::setfill(\textcolor{charliteral}{'0'}) << std::setw(8) << wp << std::endl;}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00211}00211 }
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00212}00212     \textcolor{keywordflow}{return} oss.str();}
+\DoxyCodeLine{\Hypertarget{_windows_message_map_8cpp_source_l00213}00213 \}}
 
 \end{DoxyCode}

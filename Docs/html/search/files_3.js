@@ -11,11 +11,13 @@ var searchData=
   ['d3dx12_2eh_8',['d3dx12.h',['../_common_2d3dx12_8h.html',1,'(Global Namespace)'],['../_week2_2_week2-6-_hello_01_triangle_2d3dx12_8h.html',1,'(Global Namespace)'],['../_week2_2_week2-7-_hello_01_world_2d3dx12_8h.html',1,'(Global Namespace)']]],
   ['ddstextureloader_2ecpp_9',['DDSTextureLoader.cpp',['../_d_d_s_texture_loader_8cpp.html',1,'']]],
   ['ddstextureloader_2eh_10',['DDSTextureLoader.h',['../_d_d_s_texture_loader_8h.html',1,'']]],
-  ['dxapp_2ecpp_11',['DXApp.cpp',['../_week_012-1-_win32_app_2_d_x_app_8cpp.html',1,'(Global Namespace)'],['../_week2-5-_direct_x11sample_2_d_x_app_8cpp.html',1,'(Global Namespace)']]],
-  ['dxapp_2eh_12',['DXApp.h',['../_week_012-1-_win32_app_2_d_x_app_8h.html',1,'(Global Namespace)'],['../_week2-5-_direct_x11sample_2_d_x_app_8h.html',1,'(Global Namespace)']]],
-  ['dxsample_2ecpp_13',['DXSample.cpp',['../_week2-6-_hello_01_triangle_2_d_x_sample_8cpp.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_8cpp.html',1,'(Global Namespace)']]],
-  ['dxsample_2eh_14',['DXSample.h',['../_week2-6-_hello_01_triangle_2_d_x_sample_8h.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_8h.html',1,'(Global Namespace)']]],
-  ['dxsamplehelper_2eh_15',['DXSampleHelper.h',['../_week2-6-_hello_01_triangle_2_d_x_sample_helper_8h.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_helper_8h.html',1,'(Global Namespace)']]],
-  ['dxutil_2eh_16',['DXUtil.h',['../_d_x_util_8h.html',1,'']]],
-  ['dynamiccubemapapp_2ecpp_17',['DynamicCubeMapApp.cpp',['../_dynamic_cube_map_app_8cpp.html',1,'']]]
+  ['demo1_2dreinterpret_5fcast_2ecpp_11',['demo1-reinterpret_cast.cpp',['../demo1-reinterpret__cast_8cpp.html',1,'']]],
+  ['demo2_2dreinterpret_5fcast_2ecpp_12',['demo2-reinterpret_cast.cpp',['../demo2-reinterpret__cast_8cpp.html',1,'']]],
+  ['dxapp_2ecpp_13',['DXApp.cpp',['../_week_012-1-_win32_app_2_d_x_app_8cpp.html',1,'(Global Namespace)'],['../_week2-5-_direct_x11sample_2_d_x_app_8cpp.html',1,'(Global Namespace)']]],
+  ['dxapp_2eh_14',['DXApp.h',['../_week_012-1-_win32_app_2_d_x_app_8h.html',1,'(Global Namespace)'],['../_week2-5-_direct_x11sample_2_d_x_app_8h.html',1,'(Global Namespace)']]],
+  ['dxsample_2ecpp_15',['DXSample.cpp',['../_week2-6-_hello_01_triangle_2_d_x_sample_8cpp.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_8cpp.html',1,'(Global Namespace)']]],
+  ['dxsample_2eh_16',['DXSample.h',['../_week2-6-_hello_01_triangle_2_d_x_sample_8h.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_8h.html',1,'(Global Namespace)']]],
+  ['dxsamplehelper_2eh_17',['DXSampleHelper.h',['../_week2-6-_hello_01_triangle_2_d_x_sample_helper_8h.html',1,'(Global Namespace)'],['../_week2-7-_hello_01_world_2_d_x_sample_helper_8h.html',1,'(Global Namespace)']]],
+  ['dxutil_2eh_18',['DXUtil.h',['../_d_x_util_8h.html',1,'']]],
+  ['dynamiccubemapapp_2ecpp_19',['DynamicCubeMapApp.cpp',['../_dynamic_cube_map_app_8cpp.html',1,'']]]
 ];

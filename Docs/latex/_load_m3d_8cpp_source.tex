@@ -1,263 +1,263 @@
-\doxysection{Load\+M3d.\+cpp}
+\hypertarget{_load_m3d_8cpp_source}{}\doxysection{Load\+M3d.\+cpp}
 \label{_load_m3d_8cpp_source}\index{Week15/SkinnedMesh/LoadM3d.cpp@{Week15/SkinnedMesh/LoadM3d.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_load_m3d_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}LoadM3d.h"{}}}
-\DoxyCodeLine{00002  }
-\DoxyCodeLine{00003 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{keywordtype}{bool} M3DLoader::LoadM3d(\textcolor{keyword}{const} std::string\& filename, }
-\DoxyCodeLine{00006                         std::vector<Vertex>\& vertices,}
-\DoxyCodeLine{00007                         std::vector<USHORT>\& indices,}
-\DoxyCodeLine{00008                         std::vector<Subset>\& subsets,}
-\DoxyCodeLine{00009                         std::vector<M3dMaterial>\& mats)}
-\DoxyCodeLine{00010 \{}
-\DoxyCodeLine{00011     std::ifstream fin(filename);}
-\DoxyCodeLine{00012 }
-\DoxyCodeLine{00013     UINT numMaterials = 0;}
-\DoxyCodeLine{00014     UINT numVertices  = 0;}
-\DoxyCodeLine{00015     UINT numTriangles = 0;}
-\DoxyCodeLine{00016     UINT numBones     = 0;}
-\DoxyCodeLine{00017     UINT numAnimationClips = 0;}
-\DoxyCodeLine{00018 }
-\DoxyCodeLine{00019     std::string ignore;}
-\DoxyCodeLine{00020 }
-\DoxyCodeLine{00021     \textcolor{keywordflow}{if}( fin )}
-\DoxyCodeLine{00022     \{}
-\DoxyCodeLine{00023         fin >> ignore; \textcolor{comment}{// file header text}}
-\DoxyCodeLine{00024         fin >> ignore >> numMaterials;}
-\DoxyCodeLine{00025         fin >> ignore >> numVertices;}
-\DoxyCodeLine{00026         fin >> ignore >> numTriangles;}
-\DoxyCodeLine{00027         fin >> ignore >> numBones;}
-\DoxyCodeLine{00028         fin >> ignore >> numAnimationClips;}
-\DoxyCodeLine{00029  }
-\DoxyCodeLine{00030         ReadMaterials(fin, numMaterials, mats);}
-\DoxyCodeLine{00031         ReadSubsetTable(fin, numMaterials, subsets);}
-\DoxyCodeLine{00032         ReadVertices(fin, numVertices, vertices);}
-\DoxyCodeLine{00033         ReadTriangles(fin, numTriangles, indices);}
-\DoxyCodeLine{00034  }
-\DoxyCodeLine{00035         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00036      \}}
-\DoxyCodeLine{00037     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00038 \}}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040 \textcolor{keywordtype}{bool} M3DLoader::LoadM3d(\textcolor{keyword}{const} std::string\& filename, }
-\DoxyCodeLine{00041                         std::vector<SkinnedVertex>\& vertices,}
-\DoxyCodeLine{00042                         std::vector<USHORT>\& indices,}
-\DoxyCodeLine{00043                         std::vector<Subset>\& subsets,}
-\DoxyCodeLine{00044                         std::vector<M3dMaterial>\& mats,}
-\DoxyCodeLine{00045                         SkinnedData\& skinInfo)}
-\DoxyCodeLine{00046 \{}
-\DoxyCodeLine{00047     std::ifstream fin(filename);}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     UINT numMaterials = 0;}
-\DoxyCodeLine{00050     UINT numVertices  = 0;}
-\DoxyCodeLine{00051     UINT numTriangles = 0;}
-\DoxyCodeLine{00052     UINT numBones     = 0;}
-\DoxyCodeLine{00053     UINT numAnimationClips = 0;}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     std::string ignore;}
-\DoxyCodeLine{00056 }
-\DoxyCodeLine{00057     \textcolor{keywordflow}{if}( fin )}
-\DoxyCodeLine{00058     \{}
-\DoxyCodeLine{00059         fin >> ignore; \textcolor{comment}{// file header text}}
-\DoxyCodeLine{00060         fin >> ignore >> numMaterials;}
-\DoxyCodeLine{00061         fin >> ignore >> numVertices;}
-\DoxyCodeLine{00062         fin >> ignore >> numTriangles;}
-\DoxyCodeLine{00063         fin >> ignore >> numBones;}
-\DoxyCodeLine{00064         fin >> ignore >> numAnimationClips;}
-\DoxyCodeLine{00065  }
-\DoxyCodeLine{00066         std::vector<XMFLOAT4X4> boneOffsets;}
-\DoxyCodeLine{00067         std::vector<int> boneIndexToParentIndex;}
-\DoxyCodeLine{00068         std::unordered\_map<std::string, AnimationClip> animations;}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070         ReadMaterials(fin, numMaterials, mats);}
-\DoxyCodeLine{00071         ReadSubsetTable(fin, numMaterials, subsets);}
-\DoxyCodeLine{00072         ReadSkinnedVertices(fin, numVertices, vertices);}
-\DoxyCodeLine{00073         ReadTriangles(fin, numTriangles, indices);}
-\DoxyCodeLine{00074         ReadBoneOffsets(fin, numBones, boneOffsets);}
-\DoxyCodeLine{00075         ReadBoneHierarchy(fin, numBones, boneIndexToParentIndex);}
-\DoxyCodeLine{00076         ReadAnimationClips(fin, numBones, numAnimationClips, animations);}
-\DoxyCodeLine{00077  }
-\DoxyCodeLine{00078         skinInfo.Set(boneIndexToParentIndex, boneOffsets, animations);}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00081     \}}
-\DoxyCodeLine{00082     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00083 \}}
-\DoxyCodeLine{00084 }
-\DoxyCodeLine{00085 \textcolor{keywordtype}{void} M3DLoader::ReadMaterials(std::ifstream\& fin, UINT numMaterials, std::vector<M3dMaterial>\& mats)}
-\DoxyCodeLine{00086 \{}
-\DoxyCodeLine{00087      std::string ignore;}
-\DoxyCodeLine{00088      mats.resize(numMaterials);}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090      std::string diffuseMapName;}
-\DoxyCodeLine{00091      std::string normalMapName;}
-\DoxyCodeLine{00092 }
-\DoxyCodeLine{00093      fin >> ignore; \textcolor{comment}{// materials header text}}
-\DoxyCodeLine{00094      \textcolor{keywordflow}{for}(UINT i = 0; i < numMaterials; ++i)}
-\DoxyCodeLine{00095      \{}
-\DoxyCodeLine{00096          fin >> ignore >> mats[i].Name;}
-\DoxyCodeLine{00097          fin >> ignore >> mats[i].DiffuseAlbedo.x  >> mats[i].DiffuseAlbedo.y  >> mats[i].DiffuseAlbedo.z;}
-\DoxyCodeLine{00098          fin >> ignore >> mats[i].FresnelR0.x >> mats[i].FresnelR0.y >> mats[i].FresnelR0.z;}
-\DoxyCodeLine{00099          fin >> ignore >> mats[i].Roughness;}
-\DoxyCodeLine{00100          fin >> ignore >> mats[i].AlphaClip;}
-\DoxyCodeLine{00101          fin >> ignore >> mats[i].MaterialTypeName;}
-\DoxyCodeLine{00102          fin >> ignore >> mats[i].DiffuseMapName;}
-\DoxyCodeLine{00103          fin >> ignore >> mats[i].NormalMapName;}
-\DoxyCodeLine{00104         \}}
-\DoxyCodeLine{00105 \}}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107 \textcolor{keywordtype}{void} M3DLoader::ReadSubsetTable(std::ifstream\& fin, UINT numSubsets, std::vector<Subset>\& subsets)}
-\DoxyCodeLine{00108 \{}
-\DoxyCodeLine{00109     std::string ignore;}
-\DoxyCodeLine{00110     subsets.resize(numSubsets);}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     fin >> ignore; \textcolor{comment}{// subset header text}}
-\DoxyCodeLine{00113     \textcolor{keywordflow}{for}(UINT i = 0; i < numSubsets; ++i)}
-\DoxyCodeLine{00114     \{}
-\DoxyCodeLine{00115         fin >> ignore >> subsets[i].Id;}
-\DoxyCodeLine{00116         fin >> ignore >> subsets[i].VertexStart;}
-\DoxyCodeLine{00117         fin >> ignore >> subsets[i].VertexCount;}
-\DoxyCodeLine{00118         fin >> ignore >> subsets[i].FaceStart;}
-\DoxyCodeLine{00119         fin >> ignore >> subsets[i].FaceCount;}
-\DoxyCodeLine{00120     \}}
-\DoxyCodeLine{00121 \}}
-\DoxyCodeLine{00122 }
-\DoxyCodeLine{00123 \textcolor{keywordtype}{void} M3DLoader::ReadVertices(std::ifstream\& fin, UINT numVertices, std::vector<Vertex>\& vertices)}
-\DoxyCodeLine{00124 \{}
-\DoxyCodeLine{00125     std::string ignore;}
-\DoxyCodeLine{00126     vertices.resize(numVertices);}
-\DoxyCodeLine{00127 }
-\DoxyCodeLine{00128     fin >> ignore; \textcolor{comment}{// vertices header text}}
-\DoxyCodeLine{00129     \textcolor{keywordflow}{for}(UINT i = 0; i < numVertices; ++i)}
-\DoxyCodeLine{00130     \{}
-\DoxyCodeLine{00131         fin >> ignore >> vertices[i].Pos.x      >> vertices[i].Pos.y      >> vertices[i].Pos.z;}
-\DoxyCodeLine{00132         fin >> ignore >> vertices[i].TangentU.x >> vertices[i].TangentU.y >> vertices[i].TangentU.z >> vertices[i].TangentU.w;}
-\DoxyCodeLine{00133         fin >> ignore >> vertices[i].Normal.x   >> vertices[i].Normal.y   >> vertices[i].Normal.z;}
-\DoxyCodeLine{00134         fin >> ignore >> vertices[i].TexC.x     >> vertices[i].TexC.y;}
-\DoxyCodeLine{00135     \}}
-\DoxyCodeLine{00136 \}}
-\DoxyCodeLine{00137 }
-\DoxyCodeLine{00138 \textcolor{keywordtype}{void} M3DLoader::ReadSkinnedVertices(std::ifstream\& fin, UINT numVertices, std::vector<SkinnedVertex>\& vertices)}
-\DoxyCodeLine{00139 \{}
-\DoxyCodeLine{00140     std::string ignore;}
-\DoxyCodeLine{00141     vertices.resize(numVertices);}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     fin >> ignore; \textcolor{comment}{// vertices header text}}
-\DoxyCodeLine{00144     \textcolor{keywordtype}{int} boneIndices[4];}
-\DoxyCodeLine{00145     \textcolor{keywordtype}{float} weights[4];}
-\DoxyCodeLine{00146     \textcolor{keywordflow}{for}(UINT i = 0; i < numVertices; ++i)}
-\DoxyCodeLine{00147     \{}
-\DoxyCodeLine{00148         \textcolor{keywordtype}{float} blah;}
-\DoxyCodeLine{00149         fin >> ignore >> vertices[i].Pos.x        >> vertices[i].Pos.y          >> vertices[i].Pos.z;}
-\DoxyCodeLine{00150         fin >> ignore >> vertices[i].TangentU.x   >> vertices[i].TangentU.y     >> vertices[i].TangentU.z >> blah \textcolor{comment}{/*vertices[i].TangentU.w*/};}
-\DoxyCodeLine{00151         fin >> ignore >> vertices[i].Normal.x     >> vertices[i].Normal.y       >> vertices[i].Normal.z;}
-\DoxyCodeLine{00152         fin >> ignore >> vertices[i].TexC.x       >> vertices[i].TexC.y;}
-\DoxyCodeLine{00153         fin >> ignore >> weights[0]     >> weights[1]     >> weights[2]     >> weights[3];}
-\DoxyCodeLine{00154         fin >> ignore >> boneIndices[0] >> boneIndices[1] >> boneIndices[2] >> boneIndices[3];}
-\DoxyCodeLine{00155 }
-\DoxyCodeLine{00156         vertices[i].BoneWeights.x = weights[0];}
-\DoxyCodeLine{00157         vertices[i].BoneWeights.y = weights[1];}
-\DoxyCodeLine{00158         vertices[i].BoneWeights.z = weights[2];}
-\DoxyCodeLine{00159 }
-\DoxyCodeLine{00160         vertices[i].BoneIndices[0] = (BYTE)boneIndices[0]; }
-\DoxyCodeLine{00161         vertices[i].BoneIndices[1] = (BYTE)boneIndices[1]; }
-\DoxyCodeLine{00162         vertices[i].BoneIndices[2] = (BYTE)boneIndices[2]; }
-\DoxyCodeLine{00163         vertices[i].BoneIndices[3] = (BYTE)boneIndices[3]; }
-\DoxyCodeLine{00164     \}}
-\DoxyCodeLine{00165 \}}
-\DoxyCodeLine{00166 }
-\DoxyCodeLine{00167 \textcolor{keywordtype}{void} M3DLoader::ReadTriangles(std::ifstream\& fin, UINT numTriangles, std::vector<USHORT>\& indices)}
-\DoxyCodeLine{00168 \{}
-\DoxyCodeLine{00169     std::string ignore;}
-\DoxyCodeLine{00170     indices.resize(numTriangles*3);}
-\DoxyCodeLine{00171 }
-\DoxyCodeLine{00172     fin >> ignore; \textcolor{comment}{// triangles header text}}
-\DoxyCodeLine{00173     \textcolor{keywordflow}{for}(UINT i = 0; i < numTriangles; ++i)}
-\DoxyCodeLine{00174     \{}
-\DoxyCodeLine{00175         fin >> indices[i*3+0] >> indices[i*3+1] >> indices[i*3+2];}
-\DoxyCodeLine{00176     \}}
-\DoxyCodeLine{00177 \}}
-\DoxyCodeLine{00178  }
-\DoxyCodeLine{00179 \textcolor{keywordtype}{void} M3DLoader::ReadBoneOffsets(std::ifstream\& fin, UINT numBones, std::vector<XMFLOAT4X4>\& boneOffsets)}
-\DoxyCodeLine{00180 \{}
-\DoxyCodeLine{00181     std::string ignore;}
-\DoxyCodeLine{00182     boneOffsets.resize(numBones);}
-\DoxyCodeLine{00183 }
-\DoxyCodeLine{00184     fin >> ignore; \textcolor{comment}{// BoneOffsets header text}}
-\DoxyCodeLine{00185     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
-\DoxyCodeLine{00186     \{}
-\DoxyCodeLine{00187         fin >> ignore >> }
-\DoxyCodeLine{00188             boneOffsets[i](0,0) >> boneOffsets[i](0,1) >> boneOffsets[i](0,2) >> boneOffsets[i](0,3) >>}
-\DoxyCodeLine{00189             boneOffsets[i](1,0) >> boneOffsets[i](1,1) >> boneOffsets[i](1,2) >> boneOffsets[i](1,3) >>}
-\DoxyCodeLine{00190             boneOffsets[i](2,0) >> boneOffsets[i](2,1) >> boneOffsets[i](2,2) >> boneOffsets[i](2,3) >>}
-\DoxyCodeLine{00191             boneOffsets[i](3,0) >> boneOffsets[i](3,1) >> boneOffsets[i](3,2) >> boneOffsets[i](3,3);}
-\DoxyCodeLine{00192     \}}
-\DoxyCodeLine{00193 \}}
-\DoxyCodeLine{00194 }
-\DoxyCodeLine{00195 \textcolor{keywordtype}{void} M3DLoader::ReadBoneHierarchy(std::ifstream\& fin, UINT numBones, std::vector<int>\& boneIndexToParentIndex)}
-\DoxyCodeLine{00196 \{}
-\DoxyCodeLine{00197     std::string ignore;}
-\DoxyCodeLine{00198     boneIndexToParentIndex.resize(numBones);}
-\DoxyCodeLine{00199 }
-\DoxyCodeLine{00200     fin >> ignore; \textcolor{comment}{// BoneHierarchy header text}}
-\DoxyCodeLine{00201     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
-\DoxyCodeLine{00202     \{}
-\DoxyCodeLine{00203         fin >> ignore >> boneIndexToParentIndex[i];}
-\DoxyCodeLine{00204     \}}
-\DoxyCodeLine{00205 \}}
-\DoxyCodeLine{00206 }
-\DoxyCodeLine{00207 \textcolor{keywordtype}{void} M3DLoader::ReadAnimationClips(std::ifstream\& fin, UINT numBones, UINT numAnimationClips, }
-\DoxyCodeLine{00208                                    std::unordered\_map<std::string, AnimationClip>\& animations)}
-\DoxyCodeLine{00209 \{}
-\DoxyCodeLine{00210     std::string ignore;}
-\DoxyCodeLine{00211     fin >> ignore; \textcolor{comment}{// AnimationClips header text}}
-\DoxyCodeLine{00212     \textcolor{keywordflow}{for}(UINT clipIndex = 0; clipIndex < numAnimationClips; ++clipIndex)}
-\DoxyCodeLine{00213     \{}
-\DoxyCodeLine{00214         std::string clipName;}
-\DoxyCodeLine{00215         fin >> ignore >> clipName;}
-\DoxyCodeLine{00216         fin >> ignore; \textcolor{comment}{// \{}}
-\DoxyCodeLine{00217 }
-\DoxyCodeLine{00218         AnimationClip clip;}
-\DoxyCodeLine{00219         clip.BoneAnimations.resize(numBones);}
-\DoxyCodeLine{00220 }
-\DoxyCodeLine{00221         \textcolor{keywordflow}{for}(UINT boneIndex = 0; boneIndex < numBones; ++boneIndex)}
-\DoxyCodeLine{00222         \{}
-\DoxyCodeLine{00223             ReadBoneKeyframes(fin, numBones, clip.BoneAnimations[boneIndex]);}
-\DoxyCodeLine{00224         \}}
-\DoxyCodeLine{00225         fin >> ignore; \textcolor{comment}{// \}}}
-\DoxyCodeLine{00226 }
-\DoxyCodeLine{00227         animations[clipName] = clip;}
-\DoxyCodeLine{00228     \}}
-\DoxyCodeLine{00229 \}}
-\DoxyCodeLine{00230 }
-\DoxyCodeLine{00231 \textcolor{keywordtype}{void} M3DLoader::ReadBoneKeyframes(std::ifstream\& fin, UINT numBones, BoneAnimation\& boneAnimation)}
-\DoxyCodeLine{00232 \{}
-\DoxyCodeLine{00233     std::string ignore;}
-\DoxyCodeLine{00234     UINT numKeyframes = 0;}
-\DoxyCodeLine{00235     fin >> ignore >> ignore >> numKeyframes;}
-\DoxyCodeLine{00236     fin >> ignore; \textcolor{comment}{// \{}}
-\DoxyCodeLine{00237 }
-\DoxyCodeLine{00238     boneAnimation.Keyframes.resize(numKeyframes);}
-\DoxyCodeLine{00239     \textcolor{keywordflow}{for}(UINT i = 0; i < numKeyframes; ++i)}
-\DoxyCodeLine{00240     \{}
-\DoxyCodeLine{00241         \textcolor{keywordtype}{float} t    = 0.0f;}
-\DoxyCodeLine{00242         XMFLOAT3 p(0.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00243         XMFLOAT3 s(1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00244         XMFLOAT4 q(0.0f, 0.0f, 0.0f, 1.0f);}
-\DoxyCodeLine{00245         fin >> ignore >> t;}
-\DoxyCodeLine{00246         fin >> ignore >> p.x >> p.y >> p.z;}
-\DoxyCodeLine{00247         fin >> ignore >> s.x >> s.y >> s.z;}
-\DoxyCodeLine{00248         fin >> ignore >> q.x >> q.y >> q.z >> q.w;}
-\DoxyCodeLine{00249 }
-\DoxyCodeLine{00250         boneAnimation.Keyframes[i].TimePos      = t;}
-\DoxyCodeLine{00251         boneAnimation.Keyframes[i].Translation  = p;}
-\DoxyCodeLine{00252         boneAnimation.Keyframes[i].Scale        = s;}
-\DoxyCodeLine{00253         boneAnimation.Keyframes[i].RotationQuat = q;}
-\DoxyCodeLine{00254     \}}
-\DoxyCodeLine{00255 }
-\DoxyCodeLine{00256     fin >> ignore; \textcolor{comment}{// \}}}
-\DoxyCodeLine{00257 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_load_m3d_8h}{LoadM3d.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00002}00002  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00003}00003 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00005}\mbox{\hyperlink{class_m3_d_loader_af9dda42c582c7076793efd2cee059152}{00005}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_m3_d_loader_af9dda42c582c7076793efd2cee059152}{M3DLoader::LoadM3d}}(\textcolor{keyword}{const} std::string\& filename, }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00006}00006                         std::vector<Vertex>\& vertices,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00007}00007                         std::vector<USHORT>\& indices,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00008}00008                         std::vector<Subset>\& subsets,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00009}00009                         std::vector<M3dMaterial>\& mats)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00010}00010 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00011}00011     std::ifstream fin(filename);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00012}00012 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00013}00013     UINT numMaterials = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00014}00014     UINT numVertices  = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00015}00015     UINT numTriangles = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00016}00016     UINT numBones     = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00017}00017     UINT numAnimationClips = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00018}00018 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00019}00019     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00021}00021     \textcolor{keywordflow}{if}( fin )}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00022}00022     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00023}00023         fin >> ignore; \textcolor{comment}{// file header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00024}00024         fin >> ignore >> numMaterials;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00025}00025         fin >> ignore >> numVertices;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00026}00026         fin >> ignore >> numTriangles;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00027}00027         fin >> ignore >> numBones;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00028}00028         fin >> ignore >> numAnimationClips;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00029}00029  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00030}00030         ReadMaterials(fin, numMaterials, mats);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00031}00031         ReadSubsetTable(fin, numMaterials, subsets);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00032}00032         ReadVertices(fin, numVertices, vertices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00033}00033         ReadTriangles(fin, numTriangles, indices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00034}00034  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00035}00035         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00036}00036      \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00037}00037     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00038}00038 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00040}\mbox{\hyperlink{class_m3_d_loader_a44a9f14514440e48baf57346423bc038}{00040}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_m3_d_loader_af9dda42c582c7076793efd2cee059152}{M3DLoader::LoadM3d}}(\textcolor{keyword}{const} std::string\& filename, }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00041}00041                         std::vector<SkinnedVertex>\& vertices,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00042}00042                         std::vector<USHORT>\& indices,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00043}00043                         std::vector<Subset>\& subsets,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00044}00044                         std::vector<M3dMaterial>\& mats,}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00045}00045                         \mbox{\hyperlink{class_skinned_data}{SkinnedData}}\& skinInfo)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00046}00046 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00047}00047     std::ifstream fin(filename);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00049}00049     UINT numMaterials = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00050}00050     UINT numVertices  = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00051}00051     UINT numTriangles = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00052}00052     UINT numBones     = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00053}00053     UINT numAnimationClips = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00055}00055     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00057}00057     \textcolor{keywordflow}{if}( fin )}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00058}00058     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00059}00059         fin >> ignore; \textcolor{comment}{// file header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00060}00060         fin >> ignore >> numMaterials;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00061}00061         fin >> ignore >> numVertices;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00062}00062         fin >> ignore >> numTriangles;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00063}00063         fin >> ignore >> numBones;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00064}00064         fin >> ignore >> numAnimationClips;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00065}00065  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00066}00066         std::vector<XMFLOAT4X4> boneOffsets;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00067}00067         std::vector<int> boneIndexToParentIndex;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00068}00068         std::unordered\_map<std::string, AnimationClip> animations;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00070}00070         ReadMaterials(fin, numMaterials, mats);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00071}00071         ReadSubsetTable(fin, numMaterials, subsets);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00072}00072         ReadSkinnedVertices(fin, numVertices, vertices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00073}00073         ReadTriangles(fin, numTriangles, indices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00074}00074         ReadBoneOffsets(fin, numBones, boneOffsets);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00075}00075         ReadBoneHierarchy(fin, numBones, boneIndexToParentIndex);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00076}00076         ReadAnimationClips(fin, numBones, numAnimationClips, animations);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00077}00077  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00078}00078         skinInfo.\mbox{\hyperlink{class_skinned_data_a74d3a5029f01d49049135382d5f28045}{Set}}(boneIndexToParentIndex, boneOffsets, animations);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00080}00080         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00081}00081     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00082}00082     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00083}00083 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00084}00084 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00085}00085 \textcolor{keywordtype}{void} M3DLoader::ReadMaterials(std::ifstream\& fin, UINT numMaterials, std::vector<M3dMaterial>\& mats)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00086}00086 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00087}00087      std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00088}00088      mats.resize(numMaterials);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00090}00090      std::string diffuseMapName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00091}00091      std::string normalMapName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00092}00092 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00093}00093      fin >> ignore; \textcolor{comment}{// materials header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00094}00094      \textcolor{keywordflow}{for}(UINT i = 0; i < numMaterials; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00095}00095      \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00096}00096          fin >> ignore >> mats[i].Name;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00097}00097          fin >> ignore >> mats[i].DiffuseAlbedo.x  >> mats[i].DiffuseAlbedo.y  >> mats[i].DiffuseAlbedo.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00098}00098          fin >> ignore >> mats[i].FresnelR0.x >> mats[i].FresnelR0.y >> mats[i].FresnelR0.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00099}00099          fin >> ignore >> mats[i].Roughness;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00100}00100          fin >> ignore >> mats[i].AlphaClip;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00101}00101          fin >> ignore >> mats[i].MaterialTypeName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00102}00102          fin >> ignore >> mats[i].DiffuseMapName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00103}00103          fin >> ignore >> mats[i].NormalMapName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00104}00104         \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00105}00105 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00107}00107 \textcolor{keywordtype}{void} M3DLoader::ReadSubsetTable(std::ifstream\& fin, UINT numSubsets, std::vector<Subset>\& subsets)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00108}00108 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00109}00109     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00110}00110     subsets.resize(numSubsets);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00112}00112     fin >> ignore; \textcolor{comment}{// subset header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00113}00113     \textcolor{keywordflow}{for}(UINT i = 0; i < numSubsets; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00114}00114     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00115}00115         fin >> ignore >> subsets[i].Id;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00116}00116         fin >> ignore >> subsets[i].VertexStart;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00117}00117         fin >> ignore >> subsets[i].VertexCount;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00118}00118         fin >> ignore >> subsets[i].FaceStart;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00119}00119         fin >> ignore >> subsets[i].FaceCount;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00120}00120     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00121}00121 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00122}00122 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00123}00123 \textcolor{keywordtype}{void} M3DLoader::ReadVertices(std::ifstream\& fin, UINT numVertices, std::vector<Vertex>\& vertices)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00124}00124 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00125}00125     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00126}00126     vertices.resize(numVertices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00127}00127 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00128}00128     fin >> ignore; \textcolor{comment}{// vertices header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00129}00129     \textcolor{keywordflow}{for}(UINT i = 0; i < numVertices; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00130}00130     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00131}00131         fin >> ignore >> vertices[i].Pos.x      >> vertices[i].Pos.y      >> vertices[i].Pos.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00132}00132         fin >> ignore >> vertices[i].TangentU.x >> vertices[i].TangentU.y >> vertices[i].TangentU.z >> vertices[i].TangentU.w;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00133}00133         fin >> ignore >> vertices[i].Normal.x   >> vertices[i].Normal.y   >> vertices[i].Normal.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00134}00134         fin >> ignore >> vertices[i].TexC.x     >> vertices[i].TexC.y;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00135}00135     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00136}00136 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00137}00137 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00138}00138 \textcolor{keywordtype}{void} M3DLoader::ReadSkinnedVertices(std::ifstream\& fin, UINT numVertices, std::vector<SkinnedVertex>\& vertices)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00139}00139 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00140}00140     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00141}00141     vertices.resize(numVertices);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00143}00143     fin >> ignore; \textcolor{comment}{// vertices header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00144}00144     \textcolor{keywordtype}{int} boneIndices[4];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00145}00145     \textcolor{keywordtype}{float} weights[4];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00146}00146     \textcolor{keywordflow}{for}(UINT i = 0; i < numVertices; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00147}00147     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00148}00148         \textcolor{keywordtype}{float} blah;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00149}00149         fin >> ignore >> vertices[i].Pos.x        >> vertices[i].Pos.y          >> vertices[i].Pos.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00150}00150         fin >> ignore >> vertices[i].TangentU.x   >> vertices[i].TangentU.y     >> vertices[i].TangentU.z >> blah \textcolor{comment}{/*vertices[i].TangentU.w*/};}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00151}00151         fin >> ignore >> vertices[i].Normal.x     >> vertices[i].Normal.y       >> vertices[i].Normal.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00152}00152         fin >> ignore >> vertices[i].TexC.x       >> vertices[i].TexC.y;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00153}00153         fin >> ignore >> weights[0]     >> weights[1]     >> weights[2]     >> weights[3];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00154}00154         fin >> ignore >> boneIndices[0] >> boneIndices[1] >> boneIndices[2] >> boneIndices[3];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00156}00156         vertices[i].BoneWeights.x = weights[0];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00157}00157         vertices[i].BoneWeights.y = weights[1];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00158}00158         vertices[i].BoneWeights.z = weights[2];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00159}00159 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00160}00160         vertices[i].BoneIndices[0] = (BYTE)boneIndices[0]; }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00161}00161         vertices[i].BoneIndices[1] = (BYTE)boneIndices[1]; }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00162}00162         vertices[i].BoneIndices[2] = (BYTE)boneIndices[2]; }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00163}00163         vertices[i].BoneIndices[3] = (BYTE)boneIndices[3]; }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00164}00164     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00165}00165 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00167}00167 \textcolor{keywordtype}{void} M3DLoader::ReadTriangles(std::ifstream\& fin, UINT numTriangles, std::vector<USHORT>\& indices)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00168}00168 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00169}00169     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00170}00170     indices.resize(numTriangles*3);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00171}00171 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00172}00172     fin >> ignore; \textcolor{comment}{// triangles header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00173}00173     \textcolor{keywordflow}{for}(UINT i = 0; i < numTriangles; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00174}00174     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00175}00175         fin >> indices[i*3+0] >> indices[i*3+1] >> indices[i*3+2];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00176}00176     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00177}00177 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00178}00178  }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00179}00179 \textcolor{keywordtype}{void} M3DLoader::ReadBoneOffsets(std::ifstream\& fin, UINT numBones, std::vector<XMFLOAT4X4>\& boneOffsets)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00180}00180 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00181}00181     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00182}00182     boneOffsets.resize(numBones);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00183}00183 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00184}00184     fin >> ignore; \textcolor{comment}{// BoneOffsets header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00185}00185     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00186}00186     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00187}00187         fin >> ignore >> }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00188}00188             boneOffsets[i](0,0) >> boneOffsets[i](0,1) >> boneOffsets[i](0,2) >> boneOffsets[i](0,3) >>}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00189}00189             boneOffsets[i](1,0) >> boneOffsets[i](1,1) >> boneOffsets[i](1,2) >> boneOffsets[i](1,3) >>}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00190}00190             boneOffsets[i](2,0) >> boneOffsets[i](2,1) >> boneOffsets[i](2,2) >> boneOffsets[i](2,3) >>}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00191}00191             boneOffsets[i](3,0) >> boneOffsets[i](3,1) >> boneOffsets[i](3,2) >> boneOffsets[i](3,3);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00192}00192     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00193}00193 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00194}00194 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00195}00195 \textcolor{keywordtype}{void} M3DLoader::ReadBoneHierarchy(std::ifstream\& fin, UINT numBones, std::vector<int>\& boneIndexToParentIndex)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00196}00196 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00197}00197     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00198}00198     boneIndexToParentIndex.resize(numBones);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00199}00199 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00200}00200     fin >> ignore; \textcolor{comment}{// BoneHierarchy header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00201}00201     \textcolor{keywordflow}{for}(UINT i = 0; i < numBones; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00202}00202     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00203}00203         fin >> ignore >> boneIndexToParentIndex[i];}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00204}00204     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00205}00205 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00207}00207 \textcolor{keywordtype}{void} M3DLoader::ReadAnimationClips(std::ifstream\& fin, UINT numBones, UINT numAnimationClips, }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00208}00208                                    std::unordered\_map<std::string, AnimationClip>\& animations)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00209}00209 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00210}00210     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00211}00211     fin >> ignore; \textcolor{comment}{// AnimationClips header text}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00212}00212     \textcolor{keywordflow}{for}(UINT clipIndex = 0; clipIndex < numAnimationClips; ++clipIndex)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00213}00213     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00214}00214         std::string clipName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00215}00215         fin >> ignore >> clipName;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00216}00216         fin >> ignore; \textcolor{comment}{// \{}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00217}00217 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00218}00218         \mbox{\hyperlink{struct_animation_clip}{AnimationClip}} clip;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00219}00219         clip.\mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}.resize(numBones);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00220}00220 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00221}00221         \textcolor{keywordflow}{for}(UINT boneIndex = 0; boneIndex < numBones; ++boneIndex)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00222}00222         \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00223}00223             ReadBoneKeyframes(fin, numBones, clip.\mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}}[boneIndex]);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00224}00224         \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00225}00225         fin >> ignore; \textcolor{comment}{// \}}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00226}00226 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00227}00227         animations[clipName] = clip;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00228}00228     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00229}00229 \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00230}00230 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00231}00231 \textcolor{keywordtype}{void} M3DLoader::ReadBoneKeyframes(std::ifstream\& fin, UINT numBones, \mbox{\hyperlink{struct_bone_animation}{BoneAnimation}}\& boneAnimation)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00232}00232 \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00233}00233     std::string ignore;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00234}00234     UINT numKeyframes = 0;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00235}00235     fin >> ignore >> ignore >> numKeyframes;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00236}00236     fin >> ignore; \textcolor{comment}{// \{}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00237}00237 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00238}00238     boneAnimation.\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}.resize(numKeyframes);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00239}00239     \textcolor{keywordflow}{for}(UINT i = 0; i < numKeyframes; ++i)}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00240}00240     \{}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00241}00241         \textcolor{keywordtype}{float} t    = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00242}00242         XMFLOAT3 p(0.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00243}00243         XMFLOAT3 s(1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00244}00244         XMFLOAT4 q(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00245}00245         fin >> ignore >> t;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00246}00246         fin >> ignore >> p.x >> p.y >> p.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00247}00247         fin >> ignore >> s.x >> s.y >> s.z;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00248}00248         fin >> ignore >> q.x >> q.y >> q.z >> q.w;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00249}00249 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00250}00250         boneAnimation.\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].TimePos      = t;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00251}00251         boneAnimation.\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Translation  = p;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00252}00252         boneAnimation.\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].Scale        = s;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00253}00253         boneAnimation.\mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}}[i].RotationQuat = q;}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00254}00254     \}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00255}00255 }
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00256}00256     fin >> ignore; \textcolor{comment}{// \}}}
+\DoxyCodeLine{\Hypertarget{_load_m3d_8cpp_source_l00257}00257 \}}
 
 \end{DoxyCode}

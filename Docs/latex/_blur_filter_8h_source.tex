@@ -1,76 +1,76 @@
-\doxysection{Blur\+Filter.\+h}
+\hypertarget{_blur_filter_8h_source}{}\doxysection{Blur\+Filter.\+h}
 \label{_blur_filter_8h_source}\index{Week8/Blur/BlurFilter.h@{Week8/Blur/BlurFilter.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_blur_filter_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// BlurFilter.h by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//}}
-\DoxyCodeLine{00004 \textcolor{comment}{// Performs a blur operation on the topmost mip level of an input texture.}}
-\DoxyCodeLine{00005 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{class }BlurFilter}
-\DoxyCodeLine{00012 \{}
-\DoxyCodeLine{00013 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00018     BlurFilter(ID3D12Device* device, }
-\DoxyCodeLine{00019         UINT width, UINT height,}
-\DoxyCodeLine{00020         DXGI\_FORMAT format);}
-\DoxyCodeLine{00021         }
-\DoxyCodeLine{00022     BlurFilter(\textcolor{keyword}{const} BlurFilter\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{00023     BlurFilter\& operator=(\textcolor{keyword}{const} BlurFilter\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{00024     \string~BlurFilter()=\textcolor{keywordflow}{default};}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026     ID3D12Resource* Output();}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028     \textcolor{keywordtype}{void} BuildDescriptors(}
-\DoxyCodeLine{00029         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDescriptor, }
-\DoxyCodeLine{00030         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuDescriptor,}
-\DoxyCodeLine{00031         UINT descriptorSize);}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{keywordtype}{void} OnResize(UINT newWidth, UINT newHeight);}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00038     \textcolor{keywordtype}{void} Execute(}
-\DoxyCodeLine{00039         ID3D12GraphicsCommandList* cmdList, }
-\DoxyCodeLine{00040         ID3D12RootSignature* rootSig,}
-\DoxyCodeLine{00041         ID3D12PipelineState* horzBlurPSO,}
-\DoxyCodeLine{00042         ID3D12PipelineState* vertBlurPSO,}
-\DoxyCodeLine{00043         ID3D12Resource* input,      }
-\DoxyCodeLine{00044         \textcolor{keywordtype}{int} blurCount);}
-\DoxyCodeLine{00045 }
-\DoxyCodeLine{00046 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00047     std::vector<float> CalcGaussWeights(\textcolor{keywordtype}{float} sigma);}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     \textcolor{keywordtype}{void} BuildDescriptors();}
-\DoxyCodeLine{00050     \textcolor{keywordtype}{void} BuildResources();}
-\DoxyCodeLine{00051 }
-\DoxyCodeLine{00052 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054     \textcolor{keyword}{const} \textcolor{keywordtype}{int} MaxBlurRadius = 5;}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058     UINT mWidth = 0;}
-\DoxyCodeLine{00059     UINT mHeight = 0;}
-\DoxyCodeLine{00060     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur0CpuSrv;}
-\DoxyCodeLine{00063     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur0CpuUav;}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur1CpuSrv;}
-\DoxyCodeLine{00066     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur1CpuUav;}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur0GpuSrv;}
-\DoxyCodeLine{00069     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur0GpuUav;}
-\DoxyCodeLine{00070 }
-\DoxyCodeLine{00071     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur1GpuSrv;}
-\DoxyCodeLine{00072     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur1GpuUav;}
-\DoxyCodeLine{00073 }
-\DoxyCodeLine{00074     \textcolor{comment}{// Two for ping-\/ponging the textures.}}
-\DoxyCodeLine{00075     Microsoft::WRL::ComPtr<ID3D12Resource> mBlurMap0 = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00076     Microsoft::WRL::ComPtr<ID3D12Resource> mBlurMap1 = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00077 \};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00002}00002 \textcolor{comment}{// BlurFilter.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00003}00003 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00004}00004 \textcolor{comment}{// Performs a blur operation on the topmost mip level of an input texture.}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00005}00005 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00007}00007 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00009}00009 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00011}\mbox{\hyperlink{class_blur_filter}{00011}} \textcolor{keyword}{class }\mbox{\hyperlink{class_blur_filter}{BlurFilter}}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00012}00012 \{}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00013}00013 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00018}00018     \mbox{\hyperlink{class_blur_filter_af3d1a8846c5db741cd11f30f29212955}{BlurFilter}}(ID3D12Device* device, }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00019}00019         UINT width, UINT height,}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00020}00020         DXGI\_FORMAT format);}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00021}00021         }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00022}\mbox{\hyperlink{class_blur_filter_a95994493b1dca5b67e6178deb2f3f7bd}{00022}}     \mbox{\hyperlink{class_blur_filter_a95994493b1dca5b67e6178deb2f3f7bd}{BlurFilter}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_blur_filter}{BlurFilter}}\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00023}\mbox{\hyperlink{class_blur_filter_ae1f90fe55b1c8ec13a84d33b9b30d9ab}{00023}}     \mbox{\hyperlink{class_blur_filter}{BlurFilter}}\& \mbox{\hyperlink{class_blur_filter_ae1f90fe55b1c8ec13a84d33b9b30d9ab}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_blur_filter}{BlurFilter}}\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00024}\mbox{\hyperlink{class_blur_filter_ab757c339039121ddde640f60ea26a049}{00024}}     \mbox{\hyperlink{class_blur_filter_ab757c339039121ddde640f60ea26a049}{\string~BlurFilter}}()=\textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00026}00026     ID3D12Resource* \mbox{\hyperlink{class_blur_filter_a37e5c50fdd2162f3e40bc63278c325a9}{Output}}();}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00028}00028     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_blur_filter_a75cd4def3c0fbeb07c95e4be310a44b0}{BuildDescriptors}}(}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00029}00029         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDescriptor, }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00030}00030         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuDescriptor,}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00031}00031         UINT descriptorSize);}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00033}00033     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_blur_filter_ae367bda37755d83b297ed1dee05ec2f8}{OnResize}}(UINT newWidth, UINT newHeight);}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00038}00038     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_blur_filter_ab1a4c5db44140f12bcf13b10157c472b}{Execute}}(}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00039}00039         ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00040}00040         ID3D12RootSignature* rootSig,}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00041}00041         ID3D12PipelineState* horzBlurPSO,}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00042}00042         ID3D12PipelineState* vertBlurPSO,}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00043}00043         ID3D12Resource* input,      }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00044}00044         \textcolor{keywordtype}{int} blurCount);}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00045}00045 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00046}00046 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00047}00047     std::vector<float> CalcGaussWeights(\textcolor{keywordtype}{float} sigma);}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00049}00049     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_blur_filter_a75cd4def3c0fbeb07c95e4be310a44b0}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00050}00050     \textcolor{keywordtype}{void} BuildResources();}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00051}00051 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00052}00052 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00054}00054     \textcolor{keyword}{const} \textcolor{keywordtype}{int} MaxBlurRadius = 5;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00056}00056     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00058}00058     UINT mWidth = 0;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00059}00059     UINT mHeight = 0;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00060}00060     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00062}00062     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur0CpuSrv;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00063}00063     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur0CpuUav;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00065}00065     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur1CpuSrv;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00066}00066     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mBlur1CpuUav;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00068}00068     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur0GpuSrv;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00069}00069     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur0GpuUav;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00071}00071     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur1GpuSrv;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00072}00072     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mBlur1GpuUav;}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00073}00073 }
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00074}00074     \textcolor{comment}{// Two for ping-\/ponging the textures.}}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00075}00075     Microsoft::WRL::ComPtr<ID3D12Resource> mBlurMap0 = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00076}00076     Microsoft::WRL::ComPtr<ID3D12Resource> mBlurMap1 = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_blur_filter_8h_source_l00077}00077 \};}
 
 \end{DoxyCode}

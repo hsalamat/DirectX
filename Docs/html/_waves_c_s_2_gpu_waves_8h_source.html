@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DirectX: Week8/WavesCS/GpuWaves.h Source File</title>
+<title>GAME3111: Week8/WavesCS/GpuWaves.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">DirectX
+   <div id="projectname">GAME3111
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -152,76 +152,57 @@ $(document).ready(function(){initNavTree('_waves_c_s_2_gpu_waves_8h_source.html'
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    UINT <a class="code hl_variable" href="class_gpu_waves.html#a07afd2906fdfc0dbdce2cf01311d7458">mNumRows</a>;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    UINT <a class="code hl_variable" href="class_gpu_waves.html#ac928366bbec52ce0cea8d799484b09c1">mNumCols</a>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    UINT mNumRows;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    UINT mNumCols;</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    UINT <a class="code hl_variable" href="class_gpu_waves.html#ae018b85d9671926524fa2569e0b18b8b">mVertexCount</a>;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    UINT <a class="code hl_variable" href="class_gpu_waves.html#ae0bdf26ea38119a8d6747cc3a00d9bac">mTriangleCount</a>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    UINT mVertexCount;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    UINT mTriangleCount;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">// Simulation constants we can precompute.</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_gpu_waves.html#a7c33ed3c1d0a476b62d74989c2b76628">mK</a>[3];</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">float</span> mK[3];</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_gpu_waves.html#ab3fb3e03505dc0209c43d19562b52862">mTimeStep</a>;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_gpu_waves.html#abfb35386d0606bb5a0ce02a35120a3ee">mSpatialStep</a>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">float</span> mTimeStep;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">float</span> mSpatialStep;</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    ID3D12Device* <a class="code hl_variable" href="class_gpu_waves.html#a2f0113f724d4cb9142407bd802abe11e">md3dDevice</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    ID3D12Device* md3dDevice = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#a09c3a75481933a3a4ba5b8bc6e197ad9">mPrevSolSrv</a>;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#afd268de45afff2dc44dc10615902feb5">mCurrSolSrv</a>;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#a62588697cf9a09491e19f0301929b0ac">mNextSolSrv</a>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mPrevSolSrv;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mCurrSolSrv;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mNextSolSrv;</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#aad6d2e10b480c1ca6888d4931786a802">mPrevSolUav</a>;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#ac6149e0e9ef1c6b19891478295a44b03">mCurrSolUav</a>;</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE <a class="code hl_variable" href="class_gpu_waves.html#a12b99744c08ff43bdb57794a5622bbbb">mNextSolUav</a>;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mPrevSolUav;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mCurrSolUav;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    CD3DX12_GPU_DESCRIPTOR_HANDLE mNextSolUav;</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">// Two for ping-ponging the textures.</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; <a class="code hl_variable" href="class_gpu_waves.html#a3b6d79ca72ace6eb2f6123834255061d">mPrevSol</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; <a class="code hl_variable" href="class_gpu_waves.html#ae3f90f8069a891066c4576bd9729c105">mCurrSol</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; <a class="code hl_variable" href="class_gpu_waves.html#afb810c387d2fea8b27ae98a9d538cbe0">mNextSol</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; mPrevSol = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; mCurrSol = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; mNextSol = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; <a class="code hl_variable" href="class_gpu_waves.html#a5447a01bb89a90ba6d73a8025af66ecf">mPrevUploadBuffer</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; <a class="code hl_variable" href="class_gpu_waves.html#aeffe9db249c1fb9d98e8f88a6fae7cdf">mCurrUploadBuffer</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; mPrevUploadBuffer = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    Microsoft::WRL::ComPtr&lt;ID3D12Resource&gt; mCurrUploadBuffer = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>};</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#endif </span><span class="comment">// GPUWAVES_H</span></div>
 <div class="ttc" id="aclass_game_timer_html"><div class="ttname"><a href="class_game_timer.html">GameTimer</a></div><div class="ttdef"><b>Definition:</b> <a href="_common_2_game_timer_8h_source.html#l00008">GameTimer.h:9</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html"><div class="ttname"><a href="class_gpu_waves.html">GpuWaves</a></div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00015">GpuWaves.h:16</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a07afd2906fdfc0dbdce2cf01311d7458"><div class="ttname"><a href="class_gpu_waves.html#a07afd2906fdfc0dbdce2cf01311d7458">GpuWaves::mNumRows</a></div><div class="ttdeci">UINT mNumRows</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00059">GpuWaves.h:59</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a09c3a75481933a3a4ba5b8bc6e197ad9"><div class="ttname"><a href="class_gpu_waves.html#a09c3a75481933a3a4ba5b8bc6e197ad9">GpuWaves::mPrevSolSrv</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mPrevSolSrv</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00073">GpuWaves.h:73</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a12b99744c08ff43bdb57794a5622bbbb"><div class="ttname"><a href="class_gpu_waves.html#a12b99744c08ff43bdb57794a5622bbbb">GpuWaves::mNextSolUav</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mNextSolUav</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00079">GpuWaves.h:79</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a14eb7b5c2bcef1792148ca4720df5d58"><div class="ttname"><a href="class_gpu_waves.html#a14eb7b5c2bcef1792148ca4720df5d58">GpuWaves::BuildDescriptors</a></div><div class="ttdeci">void BuildDescriptors(CD3DX12_CPU_DESCRIPTOR_HANDLE hCpuDescriptor, CD3DX12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor, UINT descriptorSize)</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a16bd4867b148acaabbde05fa491a3e51"><div class="ttname"><a href="class_gpu_waves.html#a16bd4867b148acaabbde05fa491a3e51">GpuWaves::SpatialStep</a></div><div class="ttdeci">float SpatialStep() const</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a2358a99643fa9f038c0b15a61fb8744c"><div class="ttname"><a href="class_gpu_waves.html#a2358a99643fa9f038c0b15a61fb8744c">GpuWaves::DisplacementMap</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE DisplacementMap() const</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a2548b9758ce6c2dcfb4f8188633d2ec8"><div class="ttname"><a href="class_gpu_waves.html#a2548b9758ce6c2dcfb4f8188633d2ec8">GpuWaves::Update</a></div><div class="ttdeci">void Update(const GameTimer &amp;gt, ID3D12GraphicsCommandList *cmdList, ID3D12RootSignature *rootSig, ID3D12PipelineState *pso)</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a25655d61a9b3db14932aba74927289fa"><div class="ttname"><a href="class_gpu_waves.html#a25655d61a9b3db14932aba74927289fa">GpuWaves::GpuWaves</a></div><div class="ttdeci">GpuWaves(const GpuWaves &amp;rhs)=delete</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a2f0113f724d4cb9142407bd802abe11e"><div class="ttname"><a href="class_gpu_waves.html#a2f0113f724d4cb9142407bd802abe11e">GpuWaves::md3dDevice</a></div><div class="ttdeci">ID3D12Device * md3dDevice</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00071">GpuWaves.h:71</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a2f371b11109e17f9b78840e9d123d3a0"><div class="ttname"><a href="class_gpu_waves.html#a2f371b11109e17f9b78840e9d123d3a0">GpuWaves::VertexCount</a></div><div class="ttdeci">UINT VertexCount() const</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a371b36b990579ef35295d628933e50b6"><div class="ttname"><a href="class_gpu_waves.html#a371b36b990579ef35295d628933e50b6">GpuWaves::Depth</a></div><div class="ttdeci">float Depth() const</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a3b6d79ca72ace6eb2f6123834255061d"><div class="ttname"><a href="class_gpu_waves.html#a3b6d79ca72ace6eb2f6123834255061d">GpuWaves::mPrevSol</a></div><div class="ttdeci">Microsoft::WRL::ComPtr&lt; ID3D12Resource &gt; mPrevSol</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00082">GpuWaves.h:82</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a3df039351d3e20447dc7f5b67926baa2"><div class="ttname"><a href="class_gpu_waves.html#a3df039351d3e20447dc7f5b67926baa2">GpuWaves::DescriptorCount</a></div><div class="ttdeci">UINT DescriptorCount() const</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a5447a01bb89a90ba6d73a8025af66ecf"><div class="ttname"><a href="class_gpu_waves.html#a5447a01bb89a90ba6d73a8025af66ecf">GpuWaves::mPrevUploadBuffer</a></div><div class="ttdeci">Microsoft::WRL::ComPtr&lt; ID3D12Resource &gt; mPrevUploadBuffer</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00086">GpuWaves.h:86</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a59d7d270d236cb8f9a32242c82eb85aa"><div class="ttname"><a href="class_gpu_waves.html#a59d7d270d236cb8f9a32242c82eb85aa">GpuWaves::Disturb</a></div><div class="ttdeci">void Disturb(ID3D12GraphicsCommandList *cmdList, ID3D12RootSignature *rootSig, ID3D12PipelineState *pso, UINT i, UINT j, float magnitude)</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a62588697cf9a09491e19f0301929b0ac"><div class="ttname"><a href="class_gpu_waves.html#a62588697cf9a09491e19f0301929b0ac">GpuWaves::mNextSolSrv</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mNextSolSrv</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00075">GpuWaves.h:75</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a662021f18057d8ae8034cd8a3089745c"><div class="ttname"><a href="class_gpu_waves.html#a662021f18057d8ae8034cd8a3089745c">GpuWaves::ColumnCount</a></div><div class="ttdeci">UINT ColumnCount() const</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_a7c33ed3c1d0a476b62d74989c2b76628"><div class="ttname"><a href="class_gpu_waves.html#a7c33ed3c1d0a476b62d74989c2b76628">GpuWaves::mK</a></div><div class="ttdeci">float mK[3]</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00066">GpuWaves.h:66</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a84d04cbbb718c58e12d0f2f4bfda2649"><div class="ttname"><a href="class_gpu_waves.html#a84d04cbbb718c58e12d0f2f4bfda2649">GpuWaves::RowCount</a></div><div class="ttdeci">UINT RowCount() const</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a890f37be78dbbd942f49b2345f32750d"><div class="ttname"><a href="class_gpu_waves.html#a890f37be78dbbd942f49b2345f32750d">GpuWaves::Width</a></div><div class="ttdeci">float Width() const</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a8fd56fdcb898818bdcec48294f71ce5a"><div class="ttname"><a href="class_gpu_waves.html#a8fd56fdcb898818bdcec48294f71ce5a">GpuWaves::BuildResources</a></div><div class="ttdeci">void BuildResources(ID3D12GraphicsCommandList *cmdList)</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a9487783e430ef97348ae52b5797c3402"><div class="ttname"><a href="class_gpu_waves.html#a9487783e430ef97348ae52b5797c3402">GpuWaves::GpuWaves</a></div><div class="ttdeci">GpuWaves(ID3D12Device *device, ID3D12GraphicsCommandList *cmdList, int m, int n, float dx, float dt, float speed, float damping)</div></div>
 <div class="ttc" id="aclass_gpu_waves_html_a953f0c3269b5069119c962137d437f33"><div class="ttname"><a href="class_gpu_waves.html#a953f0c3269b5069119c962137d437f33">GpuWaves::~GpuWaves</a></div><div class="ttdeci">~GpuWaves()=default</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_aad6d2e10b480c1ca6888d4931786a802"><div class="ttname"><a href="class_gpu_waves.html#aad6d2e10b480c1ca6888d4931786a802">GpuWaves::mPrevSolUav</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mPrevSolUav</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00077">GpuWaves.h:77</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_ab1bfc201e6840fd32b4039ecc6df611f"><div class="ttname"><a href="class_gpu_waves.html#ab1bfc201e6840fd32b4039ecc6df611f">GpuWaves::operator=</a></div><div class="ttdeci">GpuWaves &amp; operator=(const GpuWaves &amp;rhs)=delete</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ab3fb3e03505dc0209c43d19562b52862"><div class="ttname"><a href="class_gpu_waves.html#ab3fb3e03505dc0209c43d19562b52862">GpuWaves::mTimeStep</a></div><div class="ttdeci">float mTimeStep</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00068">GpuWaves.h:68</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_abfb35386d0606bb5a0ce02a35120a3ee"><div class="ttname"><a href="class_gpu_waves.html#abfb35386d0606bb5a0ce02a35120a3ee">GpuWaves::mSpatialStep</a></div><div class="ttdeci">float mSpatialStep</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00069">GpuWaves.h:69</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ac6149e0e9ef1c6b19891478295a44b03"><div class="ttname"><a href="class_gpu_waves.html#ac6149e0e9ef1c6b19891478295a44b03">GpuWaves::mCurrSolUav</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mCurrSolUav</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00078">GpuWaves.h:78</a></div></div>
 <div class="ttc" id="aclass_gpu_waves_html_ac8e3846846ae096017fc6ba74c76c4c4"><div class="ttname"><a href="class_gpu_waves.html#ac8e3846846ae096017fc6ba74c76c4c4">GpuWaves::TriangleCount</a></div><div class="ttdeci">UINT TriangleCount() const</div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ac928366bbec52ce0cea8d799484b09c1"><div class="ttname"><a href="class_gpu_waves.html#ac928366bbec52ce0cea8d799484b09c1">GpuWaves::mNumCols</a></div><div class="ttdeci">UINT mNumCols</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00060">GpuWaves.h:60</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ae018b85d9671926524fa2569e0b18b8b"><div class="ttname"><a href="class_gpu_waves.html#ae018b85d9671926524fa2569e0b18b8b">GpuWaves::mVertexCount</a></div><div class="ttdeci">UINT mVertexCount</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00062">GpuWaves.h:62</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ae0bdf26ea38119a8d6747cc3a00d9bac"><div class="ttname"><a href="class_gpu_waves.html#ae0bdf26ea38119a8d6747cc3a00d9bac">GpuWaves::mTriangleCount</a></div><div class="ttdeci">UINT mTriangleCount</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00063">GpuWaves.h:63</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_ae3f90f8069a891066c4576bd9729c105"><div class="ttname"><a href="class_gpu_waves.html#ae3f90f8069a891066c4576bd9729c105">GpuWaves::mCurrSol</a></div><div class="ttdeci">Microsoft::WRL::ComPtr&lt; ID3D12Resource &gt; mCurrSol</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00083">GpuWaves.h:83</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_aeffe9db249c1fb9d98e8f88a6fae7cdf"><div class="ttname"><a href="class_gpu_waves.html#aeffe9db249c1fb9d98e8f88a6fae7cdf">GpuWaves::mCurrUploadBuffer</a></div><div class="ttdeci">Microsoft::WRL::ComPtr&lt; ID3D12Resource &gt; mCurrUploadBuffer</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00087">GpuWaves.h:87</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_afb810c387d2fea8b27ae98a9d538cbe0"><div class="ttname"><a href="class_gpu_waves.html#afb810c387d2fea8b27ae98a9d538cbe0">GpuWaves::mNextSol</a></div><div class="ttdeci">Microsoft::WRL::ComPtr&lt; ID3D12Resource &gt; mNextSol</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00084">GpuWaves.h:84</a></div></div>
-<div class="ttc" id="aclass_gpu_waves_html_afd268de45afff2dc44dc10615902feb5"><div class="ttname"><a href="class_gpu_waves.html#afd268de45afff2dc44dc10615902feb5">GpuWaves::mCurrSolSrv</a></div><div class="ttdeci">CD3DX12_GPU_DESCRIPTOR_HANDLE mCurrSolSrv</div><div class="ttdef"><b>Definition:</b> <a href="_sobel_filter_2_gpu_waves_8h_source.html#l00074">GpuWaves.h:74</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

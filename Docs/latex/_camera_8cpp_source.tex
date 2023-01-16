@@ -1,306 +1,306 @@
-\doxysection{Camera.\+cpp}
+\hypertarget{_camera_8cpp_source}{}\doxysection{Camera.\+cpp}
 \label{_camera_8cpp_source}\index{Common/Camera.cpp@{Common/Camera.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_camera_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// Camera.h by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}Camera.h"{}}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009 Camera::Camera()}
-\DoxyCodeLine{00010 \{}
-\DoxyCodeLine{00011     SetLens(0.25f*MathHelper::Pi, 1.0f, 1.0f, 1000.0f);}
-\DoxyCodeLine{00012 \}}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014 Camera::\string~Camera()}
-\DoxyCodeLine{00015 \{}
-\DoxyCodeLine{00016 \}}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 XMVECTOR Camera::GetPosition()\textcolor{keyword}{const}}
-\DoxyCodeLine{00019 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00020     \textcolor{keywordflow}{return} XMLoadFloat3(\&mPosition);}
-\DoxyCodeLine{00021 \}}
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 XMFLOAT3 Camera::GetPosition3f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00024 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00025     \textcolor{keywordflow}{return} mPosition;}
-\DoxyCodeLine{00026 \}}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028 \textcolor{keywordtype}{void} Camera::SetPosition(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y, \textcolor{keywordtype}{float} z)}
-\DoxyCodeLine{00029 \{}
-\DoxyCodeLine{00030     mPosition = XMFLOAT3(x, y, z);}
-\DoxyCodeLine{00031     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00032 \}}
-\DoxyCodeLine{00033 }
-\DoxyCodeLine{00034 \textcolor{keywordtype}{void} Camera::SetPosition(\textcolor{keyword}{const} XMFLOAT3\& v)}
-\DoxyCodeLine{00035 \{}
-\DoxyCodeLine{00036     mPosition = v;}
-\DoxyCodeLine{00037     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00038 \}}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040 XMVECTOR Camera::GetRight()\textcolor{keyword}{const}}
-\DoxyCodeLine{00041 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{return} XMLoadFloat3(\&mRight);}
-\DoxyCodeLine{00043 \}}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045 XMFLOAT3 Camera::GetRight3f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00046 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00047     \textcolor{keywordflow}{return} mRight;}
-\DoxyCodeLine{00048 \}}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050 XMVECTOR Camera::GetUp()\textcolor{keyword}{const}}
-\DoxyCodeLine{00051 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00052     \textcolor{keywordflow}{return} XMLoadFloat3(\&mUp);}
-\DoxyCodeLine{00053 \}}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055 XMFLOAT3 Camera::GetUp3f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00056 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00057     \textcolor{keywordflow}{return} mUp;}
-\DoxyCodeLine{00058 \}}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060 XMVECTOR Camera::GetLook()\textcolor{keyword}{const}}
-\DoxyCodeLine{00061 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00062     \textcolor{keywordflow}{return} XMLoadFloat3(\&mLook);}
-\DoxyCodeLine{00063 \}}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065 XMFLOAT3 Camera::GetLook3f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00066 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00067     \textcolor{keywordflow}{return} mLook;}
-\DoxyCodeLine{00068 \}}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070 \textcolor{keywordtype}{float} Camera::GetNearZ()\textcolor{keyword}{const}}
-\DoxyCodeLine{00071 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00072     \textcolor{keywordflow}{return} mNearZ;}
-\DoxyCodeLine{00073 \}}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075 \textcolor{keywordtype}{float} Camera::GetFarZ()\textcolor{keyword}{const}}
-\DoxyCodeLine{00076 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00077     \textcolor{keywordflow}{return} mFarZ;}
-\DoxyCodeLine{00078 \}}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080 \textcolor{keywordtype}{float} Camera::GetAspect()\textcolor{keyword}{const}}
-\DoxyCodeLine{00081 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00082     \textcolor{keywordflow}{return} mAspect;}
-\DoxyCodeLine{00083 \}}
-\DoxyCodeLine{00084 }
-\DoxyCodeLine{00085 \textcolor{keywordtype}{float} Camera::GetFovY()\textcolor{keyword}{const}}
-\DoxyCodeLine{00086 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00087     \textcolor{keywordflow}{return} mFovY;}
-\DoxyCodeLine{00088 \}}
-\DoxyCodeLine{00089 }
-\DoxyCodeLine{00090 \textcolor{keywordtype}{float} Camera::GetFovX()\textcolor{keyword}{const}}
-\DoxyCodeLine{00091 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{float} halfWidth = 0.5f*GetNearWindowWidth();}
-\DoxyCodeLine{00093     \textcolor{keywordflow}{return} 2.0f*atan(halfWidth / mNearZ);}
-\DoxyCodeLine{00094 \}}
-\DoxyCodeLine{00095 }
-\DoxyCodeLine{00096 \textcolor{keywordtype}{float} Camera::GetNearWindowWidth()\textcolor{keyword}{const}}
-\DoxyCodeLine{00097 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00098     \textcolor{keywordflow}{return} mAspect * mNearWindowHeight;}
-\DoxyCodeLine{00099 \}}
-\DoxyCodeLine{00100 }
-\DoxyCodeLine{00101 \textcolor{keywordtype}{float} Camera::GetNearWindowHeight()\textcolor{keyword}{const}}
-\DoxyCodeLine{00102 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00103     \textcolor{keywordflow}{return} mNearWindowHeight;}
-\DoxyCodeLine{00104 \}}
-\DoxyCodeLine{00105 }
-\DoxyCodeLine{00106 \textcolor{keywordtype}{float} Camera::GetFarWindowWidth()\textcolor{keyword}{const}}
-\DoxyCodeLine{00107 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00108     \textcolor{keywordflow}{return} mAspect * mFarWindowHeight;}
-\DoxyCodeLine{00109 \}}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111 \textcolor{keywordtype}{float} Camera::GetFarWindowHeight()\textcolor{keyword}{const}}
-\DoxyCodeLine{00112 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00113     \textcolor{keywordflow}{return} mFarWindowHeight;}
-\DoxyCodeLine{00114 \}}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116 \textcolor{keywordtype}{void} Camera::SetLens(\textcolor{keywordtype}{float} fovY, \textcolor{keywordtype}{float} aspect, \textcolor{keywordtype}{float} zn, \textcolor{keywordtype}{float} zf)}
-\DoxyCodeLine{00117 \{}
-\DoxyCodeLine{00118     \textcolor{comment}{// cache properties}}
-\DoxyCodeLine{00119     mFovY = fovY;}
-\DoxyCodeLine{00120     mAspect = aspect;}
-\DoxyCodeLine{00121     mNearZ = zn;}
-\DoxyCodeLine{00122     mFarZ = zf;}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124     mNearWindowHeight = 2.0f * mNearZ * tanf( 0.5f*mFovY );}
-\DoxyCodeLine{00125     mFarWindowHeight  = 2.0f * mFarZ * tanf( 0.5f*mFovY );}
-\DoxyCodeLine{00126 }
-\DoxyCodeLine{00127     XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);}
-\DoxyCodeLine{00128     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00129 \}}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131 \textcolor{keywordtype}{void} Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)}
-\DoxyCodeLine{00132 \{}
-\DoxyCodeLine{00133     XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));}
-\DoxyCodeLine{00134     XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));}
-\DoxyCodeLine{00135     XMVECTOR U = XMVector3Cross(L, R);}
-\DoxyCodeLine{00136 }
-\DoxyCodeLine{00137     XMStoreFloat3(\&mPosition, pos);}
-\DoxyCodeLine{00138     XMStoreFloat3(\&mLook, L);}
-\DoxyCodeLine{00139     XMStoreFloat3(\&mRight, R);}
-\DoxyCodeLine{00140     XMStoreFloat3(\&mUp, U);}
-\DoxyCodeLine{00141 }
-\DoxyCodeLine{00142     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00143 \}}
-\DoxyCodeLine{00144 }
-\DoxyCodeLine{00145 \textcolor{keywordtype}{void} Camera::LookAt(\textcolor{keyword}{const} XMFLOAT3\& pos, \textcolor{keyword}{const} XMFLOAT3\& target, \textcolor{keyword}{const} XMFLOAT3\& up)}
-\DoxyCodeLine{00146 \{}
-\DoxyCodeLine{00147     XMVECTOR P = XMLoadFloat3(\&pos);}
-\DoxyCodeLine{00148     XMVECTOR T = XMLoadFloat3(\&target);}
-\DoxyCodeLine{00149     XMVECTOR U = XMLoadFloat3(\&up);}
-\DoxyCodeLine{00150 }
-\DoxyCodeLine{00151     LookAt(P, T, U);}
-\DoxyCodeLine{00152 }
-\DoxyCodeLine{00153     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00154 \}}
-\DoxyCodeLine{00155 }
-\DoxyCodeLine{00156 XMMATRIX Camera::GetView()\textcolor{keyword}{const}}
-\DoxyCodeLine{00157 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00158     assert(!mViewDirty);}
-\DoxyCodeLine{00159     \textcolor{keywordflow}{return} XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00160 \}}
-\DoxyCodeLine{00161 }
-\DoxyCodeLine{00162 XMMATRIX Camera::GetProj()\textcolor{keyword}{const}}
-\DoxyCodeLine{00163 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00164     \textcolor{keywordflow}{return} XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00165 \}}
-\DoxyCodeLine{00166 }
-\DoxyCodeLine{00167 }
-\DoxyCodeLine{00168 XMFLOAT4X4 Camera::GetView4x4f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00169 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00170     assert(!mViewDirty);}
-\DoxyCodeLine{00171     \textcolor{keywordflow}{return} mView;}
-\DoxyCodeLine{00172 \}}
-\DoxyCodeLine{00173 }
-\DoxyCodeLine{00174 XMFLOAT4X4 Camera::GetProj4x4f()\textcolor{keyword}{const}}
-\DoxyCodeLine{00175 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00176     \textcolor{keywordflow}{return} mProj;}
-\DoxyCodeLine{00177 \}}
-\DoxyCodeLine{00178 }
-\DoxyCodeLine{00179 \textcolor{keywordtype}{void} Camera::Strafe(\textcolor{keywordtype}{float} d)}
-\DoxyCodeLine{00180 \{}
-\DoxyCodeLine{00181     \textcolor{comment}{// mPosition += d*mRight}}
-\DoxyCodeLine{00182     XMVECTOR s = XMVectorReplicate(d);}
-\DoxyCodeLine{00183     XMVECTOR r = XMLoadFloat3(\&mRight);}
-\DoxyCodeLine{00184     XMVECTOR p = XMLoadFloat3(\&mPosition);}
-\DoxyCodeLine{00185     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, r, p));}
-\DoxyCodeLine{00186 }
-\DoxyCodeLine{00187     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00188 \}}
-\DoxyCodeLine{00189 }
-\DoxyCodeLine{00190 \textcolor{keywordtype}{void} Camera::Walk(\textcolor{keywordtype}{float} d)}
-\DoxyCodeLine{00191 \{}
-\DoxyCodeLine{00192     \textcolor{comment}{// mPosition += d*mLook}}
-\DoxyCodeLine{00193     XMVECTOR s = XMVectorReplicate(d);}
-\DoxyCodeLine{00194     XMVECTOR l = XMLoadFloat3(\&mLook);}
-\DoxyCodeLine{00195     XMVECTOR p = XMLoadFloat3(\&mPosition);}
-\DoxyCodeLine{00196     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, l, p));}
-\DoxyCodeLine{00197 }
-\DoxyCodeLine{00198     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00199 \}}
-\DoxyCodeLine{00200 }
-\DoxyCodeLine{00201 }
-\DoxyCodeLine{00202 \textcolor{keywordtype}{void} Camera::Pedestal(\textcolor{keywordtype}{float} d)}
-\DoxyCodeLine{00203 \{}
-\DoxyCodeLine{00204     \textcolor{comment}{// mPosition += d*mUp}}
-\DoxyCodeLine{00205     XMVECTOR s = XMVectorReplicate(d);}
-\DoxyCodeLine{00206     XMVECTOR u = XMLoadFloat3(\&mUp);}
-\DoxyCodeLine{00207     XMVECTOR p = XMLoadFloat3(\&mPosition);}
-\DoxyCodeLine{00208     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, u, p));}
-\DoxyCodeLine{00209 }
-\DoxyCodeLine{00210     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00211 \}}
-\DoxyCodeLine{00212 }
-\DoxyCodeLine{00213 \textcolor{keywordtype}{void} Camera::Pitch(\textcolor{keywordtype}{float} angle)}
-\DoxyCodeLine{00214 \{}
-\DoxyCodeLine{00215     \textcolor{comment}{// Rotate up and look vector about the right vector.}}
-\DoxyCodeLine{00216 }
-\DoxyCodeLine{00217     XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(\&mRight), angle);}
-\DoxyCodeLine{00218 }
-\DoxyCodeLine{00219     XMStoreFloat3(\&mUp,   XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
-\DoxyCodeLine{00220     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
-\DoxyCodeLine{00221 }
-\DoxyCodeLine{00222     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00223 \}}
-\DoxyCodeLine{00224 }
-\DoxyCodeLine{00225 \textcolor{keywordtype}{void} Camera::RotateY(\textcolor{keywordtype}{float} angle)}
-\DoxyCodeLine{00226 \{}
-\DoxyCodeLine{00227     \textcolor{comment}{// Rotate the basis vectors about the world y-\/axis.}}
-\DoxyCodeLine{00228 }
-\DoxyCodeLine{00229     XMMATRIX R = XMMatrixRotationY(angle);}
-\DoxyCodeLine{00230 }
-\DoxyCodeLine{00231     XMStoreFloat3(\&mRight,   XMVector3TransformNormal(XMLoadFloat3(\&mRight), R));}
-\DoxyCodeLine{00232     XMStoreFloat3(\&mUp, XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
-\DoxyCodeLine{00233     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
-\DoxyCodeLine{00234 }
-\DoxyCodeLine{00235     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00236 \}}
-\DoxyCodeLine{00237 }
-\DoxyCodeLine{00238 \textcolor{keywordtype}{void} Camera::Roll(\textcolor{keywordtype}{float} angle)}
-\DoxyCodeLine{00239 \{}
-\DoxyCodeLine{00240     \textcolor{comment}{// Rotate the basis vectors about the world y-\/axis.}}
-\DoxyCodeLine{00241 }
-\DoxyCodeLine{00242     XMMATRIX R = XMMatrixRotationZ(angle);}
-\DoxyCodeLine{00243 }
-\DoxyCodeLine{00244     XMStoreFloat3(\&mRight, XMVector3TransformNormal(XMLoadFloat3(\&mRight), R));}
-\DoxyCodeLine{00245     XMStoreFloat3(\&mUp, XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
-\DoxyCodeLine{00246     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
-\DoxyCodeLine{00247 }
-\DoxyCodeLine{00248     mViewDirty = \textcolor{keyword}{true};}
-\DoxyCodeLine{00249 \}}
-\DoxyCodeLine{00250 }
-\DoxyCodeLine{00251 \textcolor{keywordtype}{void} Camera::UpdateViewMatrix()}
-\DoxyCodeLine{00252 \{}
-\DoxyCodeLine{00253     \textcolor{keywordflow}{if}(mViewDirty)}
-\DoxyCodeLine{00254     \{}
-\DoxyCodeLine{00255         XMVECTOR R = XMLoadFloat3(\&mRight);}
-\DoxyCodeLine{00256         XMVECTOR U = XMLoadFloat3(\&mUp);}
-\DoxyCodeLine{00257         XMVECTOR L = XMLoadFloat3(\&mLook);}
-\DoxyCodeLine{00258         XMVECTOR P = XMLoadFloat3(\&mPosition);}
-\DoxyCodeLine{00259 }
-\DoxyCodeLine{00260         \textcolor{comment}{// Keep camera's axes orthogonal to each other and of unit length.}}
-\DoxyCodeLine{00261         L = XMVector3Normalize(L);}
-\DoxyCodeLine{00262         U = XMVector3Normalize(XMVector3Cross(L, R));}
-\DoxyCodeLine{00263 }
-\DoxyCodeLine{00264         \textcolor{comment}{// U, L already ortho-\/normal, so no need to normalize cross product.}}
-\DoxyCodeLine{00265         R = XMVector3Cross(U, L);}
-\DoxyCodeLine{00266 }
-\DoxyCodeLine{00267         \textcolor{comment}{// Fill in the view matrix entries.}}
-\DoxyCodeLine{00268         \textcolor{keywordtype}{float} x = -\/XMVectorGetX(XMVector3Dot(P, R));}
-\DoxyCodeLine{00269         \textcolor{keywordtype}{float} y = -\/XMVectorGetX(XMVector3Dot(P, U));}
-\DoxyCodeLine{00270         \textcolor{keywordtype}{float} z = -\/XMVectorGetX(XMVector3Dot(P, L));}
-\DoxyCodeLine{00271 }
-\DoxyCodeLine{00272         XMStoreFloat3(\&mRight, R);}
-\DoxyCodeLine{00273         XMStoreFloat3(\&mUp, U);}
-\DoxyCodeLine{00274         XMStoreFloat3(\&mLook, L);}
-\DoxyCodeLine{00275 }
-\DoxyCodeLine{00276         mView(0, 0) = mRight.x;}
-\DoxyCodeLine{00277         mView(1, 0) = mRight.y;}
-\DoxyCodeLine{00278         mView(2, 0) = mRight.z;}
-\DoxyCodeLine{00279         mView(3, 0) = x;}
-\DoxyCodeLine{00280 }
-\DoxyCodeLine{00281         mView(0, 1) = mUp.x;}
-\DoxyCodeLine{00282         mView(1, 1) = mUp.y;}
-\DoxyCodeLine{00283         mView(2, 1) = mUp.z;}
-\DoxyCodeLine{00284         mView(3, 1) = y;}
-\DoxyCodeLine{00285 }
-\DoxyCodeLine{00286         mView(0, 2) = mLook.x;}
-\DoxyCodeLine{00287         mView(1, 2) = mLook.y;}
-\DoxyCodeLine{00288         mView(2, 2) = mLook.z;}
-\DoxyCodeLine{00289         mView(3, 2) = z;}
-\DoxyCodeLine{00290 }
-\DoxyCodeLine{00291         mView(0, 3) = 0.0f;}
-\DoxyCodeLine{00292         mView(1, 3) = 0.0f;}
-\DoxyCodeLine{00293         mView(2, 3) = 0.0f;}
-\DoxyCodeLine{00294         mView(3, 3) = 1.0f;}
-\DoxyCodeLine{00295 }
-\DoxyCodeLine{00296         mViewDirty = \textcolor{keyword}{false};}
-\DoxyCodeLine{00297     \}}
-\DoxyCodeLine{00298 \}}
-\DoxyCodeLine{00299 }
-\DoxyCodeLine{00300 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00002}00002 \textcolor{comment}{// Camera.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_camera_8h}{Camera.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00007}00007 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00009}\mbox{\hyperlink{class_camera_a01f94c3543f56ede7af49dc778f19331}{00009}} \mbox{\hyperlink{class_camera_a01f94c3543f56ede7af49dc778f19331}{Camera::Camera}}()}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00010}00010 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00011}00011     \mbox{\hyperlink{class_camera_a5619188052108689a7a3171597fca7b6}{SetLens}}(0.25f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, 1.0f, 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00012}00012 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00014}\mbox{\hyperlink{class_camera_ad1897942d0ccf91052386388a497349f}{00014}} \mbox{\hyperlink{class_camera_ad1897942d0ccf91052386388a497349f}{Camera::\string~Camera}}()}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00015}00015 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00016}00016 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00018}\mbox{\hyperlink{class_camera_ae0ab9e078951eb38b2eb8aa8f104f7be}{00018}} XMVECTOR \mbox{\hyperlink{class_camera_ae0ab9e078951eb38b2eb8aa8f104f7be}{Camera::GetPosition}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00019}00019 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00020}00020     \textcolor{keywordflow}{return} XMLoadFloat3(\&mPosition);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00021}00021 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00022}00022 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00023}\mbox{\hyperlink{class_camera_aa31bf00611e3c8b06fb35ff14d197d6b}{00023}} XMFLOAT3 \mbox{\hyperlink{class_camera_aa31bf00611e3c8b06fb35ff14d197d6b}{Camera::GetPosition3f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00024}00024 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00025}00025     \textcolor{keywordflow}{return} mPosition;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00026}00026 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00028}\mbox{\hyperlink{class_camera_af2a973276a03c6822cfc8dd0b763d938}{00028}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_af2a973276a03c6822cfc8dd0b763d938}{Camera::SetPosition}}(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y, \textcolor{keywordtype}{float} z)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00029}00029 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00030}00030     mPosition = XMFLOAT3(x, y, z);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00031}00031     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00032}00032 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00034}00034 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_af2a973276a03c6822cfc8dd0b763d938}{Camera::SetPosition}}(\textcolor{keyword}{const} XMFLOAT3\& v)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00035}00035 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00036}00036     mPosition = v;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00037}00037     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00038}00038 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00040}\mbox{\hyperlink{class_camera_a3f8ceb34e97429096aa890d68bcb3505}{00040}} XMVECTOR \mbox{\hyperlink{class_camera_a3f8ceb34e97429096aa890d68bcb3505}{Camera::GetRight}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00041}00041 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00042}00042     \textcolor{keywordflow}{return} XMLoadFloat3(\&mRight);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00043}00043 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00045}\mbox{\hyperlink{class_camera_a3b300a8b3e9e764130f78a92855a7f7f}{00045}} XMFLOAT3 \mbox{\hyperlink{class_camera_a3b300a8b3e9e764130f78a92855a7f7f}{Camera::GetRight3f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00046}00046 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00047}00047     \textcolor{keywordflow}{return} mRight;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00048}00048 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00050}\mbox{\hyperlink{class_camera_a2e8ea59c0de5ddecd9f56e6ee6bc8c86}{00050}} XMVECTOR \mbox{\hyperlink{class_camera_a2e8ea59c0de5ddecd9f56e6ee6bc8c86}{Camera::GetUp}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00051}00051 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00052}00052     \textcolor{keywordflow}{return} XMLoadFloat3(\&mUp);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00053}00053 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00055}\mbox{\hyperlink{class_camera_aa3dfbc7581522adaf315a0ec1c070626}{00055}} XMFLOAT3 \mbox{\hyperlink{class_camera_aa3dfbc7581522adaf315a0ec1c070626}{Camera::GetUp3f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00056}00056 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00057}00057     \textcolor{keywordflow}{return} mUp;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00058}00058 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00060}\mbox{\hyperlink{class_camera_a8bb5ce432fba09d5f961983d00462cc9}{00060}} XMVECTOR \mbox{\hyperlink{class_camera_a8bb5ce432fba09d5f961983d00462cc9}{Camera::GetLook}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00061}00061 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00062}00062     \textcolor{keywordflow}{return} XMLoadFloat3(\&mLook);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00063}00063 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00065}\mbox{\hyperlink{class_camera_ae83490510afaf47b6bf76db5468a1d14}{00065}} XMFLOAT3 \mbox{\hyperlink{class_camera_ae83490510afaf47b6bf76db5468a1d14}{Camera::GetLook3f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00066}00066 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00067}00067     \textcolor{keywordflow}{return} mLook;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00068}00068 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00070}\mbox{\hyperlink{class_camera_a669afc19005aa68218af9d7d926b8cd9}{00070}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a669afc19005aa68218af9d7d926b8cd9}{Camera::GetNearZ}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00071}00071 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00072}00072     \textcolor{keywordflow}{return} mNearZ;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00073}00073 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00075}\mbox{\hyperlink{class_camera_a77c4061b9d8c536b1f1aff68579b68fd}{00075}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a77c4061b9d8c536b1f1aff68579b68fd}{Camera::GetFarZ}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00076}00076 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00077}00077     \textcolor{keywordflow}{return} mFarZ;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00078}00078 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00080}\mbox{\hyperlink{class_camera_a9f1d5eab517b40faea05dc0f23ed81e9}{00080}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a9f1d5eab517b40faea05dc0f23ed81e9}{Camera::GetAspect}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00081}00081 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00082}00082     \textcolor{keywordflow}{return} mAspect;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00083}00083 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00084}00084 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00085}\mbox{\hyperlink{class_camera_a213af70204775de4b2b76866a8cebe86}{00085}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a213af70204775de4b2b76866a8cebe86}{Camera::GetFovY}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00086}00086 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00087}00087     \textcolor{keywordflow}{return} mFovY;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00088}00088 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00089}00089 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00090}\mbox{\hyperlink{class_camera_ac1c5f6bda65618b41b4950b2c2535ecb}{00090}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_ac1c5f6bda65618b41b4950b2c2535ecb}{Camera::GetFovX}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00091}00091 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00092}00092     \textcolor{keywordtype}{float} halfWidth = 0.5f*\mbox{\hyperlink{class_camera_ad8880b98ae1ef335e8e6b7c67736332e}{GetNearWindowWidth}}();}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00093}00093     \textcolor{keywordflow}{return} 2.0f*atan(halfWidth / mNearZ);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00094}00094 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00095}00095 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00096}\mbox{\hyperlink{class_camera_ad8880b98ae1ef335e8e6b7c67736332e}{00096}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_ad8880b98ae1ef335e8e6b7c67736332e}{Camera::GetNearWindowWidth}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00097}00097 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00098}00098     \textcolor{keywordflow}{return} mAspect * mNearWindowHeight;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00099}00099 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00101}\mbox{\hyperlink{class_camera_a270cdecfb40a76b75842b50fb4f21598}{00101}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a270cdecfb40a76b75842b50fb4f21598}{Camera::GetNearWindowHeight}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00102}00102 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00103}00103     \textcolor{keywordflow}{return} mNearWindowHeight;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00104}00104 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00105}00105 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00106}\mbox{\hyperlink{class_camera_adee00dacfd714502e45b6888065d367b}{00106}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_adee00dacfd714502e45b6888065d367b}{Camera::GetFarWindowWidth}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00107}00107 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00108}00108     \textcolor{keywordflow}{return} mAspect * mFarWindowHeight;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00109}00109 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00111}\mbox{\hyperlink{class_camera_a3d4555346525b9ebf11eca1ae9d8da21}{00111}} \textcolor{keywordtype}{float} \mbox{\hyperlink{class_camera_a3d4555346525b9ebf11eca1ae9d8da21}{Camera::GetFarWindowHeight}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00112}00112 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00113}00113     \textcolor{keywordflow}{return} mFarWindowHeight;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00114}00114 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00116}\mbox{\hyperlink{class_camera_a5619188052108689a7a3171597fca7b6}{00116}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a5619188052108689a7a3171597fca7b6}{Camera::SetLens}}(\textcolor{keywordtype}{float} fovY, \textcolor{keywordtype}{float} aspect, \textcolor{keywordtype}{float} zn, \textcolor{keywordtype}{float} zf)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00117}00117 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00118}00118     \textcolor{comment}{// cache properties}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00119}00119     mFovY = fovY;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00120}00120     mAspect = aspect;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00121}00121     mNearZ = zn;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00122}00122     mFarZ = zf;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00124}00124     mNearWindowHeight = 2.0f * mNearZ * tanf( 0.5f*mFovY );}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00125}00125     mFarWindowHeight  = 2.0f * mFarZ * tanf( 0.5f*mFovY );}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00127}00127     XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00128}00128     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00129}00129 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00131}00131 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a34d7f37c11a8e47788cd360940076874}{Camera::LookAt}}(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00132}00132 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00133}00133     XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00134}00134     XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00135}00135     XMVECTOR U = XMVector3Cross(L, R);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00136}00136 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00137}00137     XMStoreFloat3(\&mPosition, pos);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00138}00138     XMStoreFloat3(\&mLook, L);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00139}00139     XMStoreFloat3(\&mRight, R);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00140}00140     XMStoreFloat3(\&mUp, U);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00141}00141 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00142}00142     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00143}00143 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00144}00144 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00145}00145 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a34d7f37c11a8e47788cd360940076874}{Camera::LookAt}}(\textcolor{keyword}{const} XMFLOAT3\& pos, \textcolor{keyword}{const} XMFLOAT3\& target, \textcolor{keyword}{const} XMFLOAT3\& up)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00146}00146 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00147}00147     XMVECTOR P = XMLoadFloat3(\&pos);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00148}00148     XMVECTOR T = XMLoadFloat3(\&target);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00149}00149     XMVECTOR U = XMLoadFloat3(\&up);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00150}00150 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00151}00151     \mbox{\hyperlink{class_camera_a34d7f37c11a8e47788cd360940076874}{LookAt}}(P, T, U);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00152}00152 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00153}00153     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00154}00154 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00156}\mbox{\hyperlink{class_camera_a1fd5fe11e349b4c4c2112cf21a63f0d1}{00156}} XMMATRIX \mbox{\hyperlink{class_camera_a1fd5fe11e349b4c4c2112cf21a63f0d1}{Camera::GetView}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00157}00157 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00158}00158     assert(!mViewDirty);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00159}00159     \textcolor{keywordflow}{return} XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00160}00160 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00162}\mbox{\hyperlink{class_camera_a894128e9e9714a662ef29d1f12d67ccc}{00162}} XMMATRIX \mbox{\hyperlink{class_camera_a894128e9e9714a662ef29d1f12d67ccc}{Camera::GetProj}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00163}00163 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00164}00164     \textcolor{keywordflow}{return} XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00165}00165 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00166}00166 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00167}00167 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00168}\mbox{\hyperlink{class_camera_a5da6e7ccf91fa2c5e90cf5ce36586c6c}{00168}} XMFLOAT4X4 \mbox{\hyperlink{class_camera_a5da6e7ccf91fa2c5e90cf5ce36586c6c}{Camera::GetView4x4f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00169}00169 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00170}00170     assert(!mViewDirty);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00171}00171     \textcolor{keywordflow}{return} mView;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00172}00172 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00173}00173 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00174}\mbox{\hyperlink{class_camera_a74f31f018d738c7035c59c2e443d2265}{00174}} XMFLOAT4X4 \mbox{\hyperlink{class_camera_a74f31f018d738c7035c59c2e443d2265}{Camera::GetProj4x4f}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00175}00175 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00176}00176     \textcolor{keywordflow}{return} mProj;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00177}00177 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00178}00178 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00179}\mbox{\hyperlink{class_camera_a9b3e0ff70f8d5119a837391170bcfa2f}{00179}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a9b3e0ff70f8d5119a837391170bcfa2f}{Camera::Strafe}}(\textcolor{keywordtype}{float} d)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00180}00180 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00181}00181     \textcolor{comment}{// mPosition += d*mRight}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00182}00182     XMVECTOR s = XMVectorReplicate(d);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00183}00183     XMVECTOR r = XMLoadFloat3(\&mRight);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00184}00184     XMVECTOR p = XMLoadFloat3(\&mPosition);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00185}00185     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, r, p));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00186}00186 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00187}00187     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00188}00188 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00189}00189 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00190}\mbox{\hyperlink{class_camera_a05cfb8c4c4e3a9bccaaad6ee0eb5af1f}{00190}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a05cfb8c4c4e3a9bccaaad6ee0eb5af1f}{Camera::Walk}}(\textcolor{keywordtype}{float} d)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00191}00191 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00192}00192     \textcolor{comment}{// mPosition += d*mLook}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00193}00193     XMVECTOR s = XMVectorReplicate(d);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00194}00194     XMVECTOR l = XMLoadFloat3(\&mLook);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00195}00195     XMVECTOR p = XMLoadFloat3(\&mPosition);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00196}00196     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, l, p));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00197}00197 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00198}00198     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00199}00199 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00200}00200 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00201}00201 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00202}\mbox{\hyperlink{class_camera_ade74bfe828379aeb864cddf10cada486}{00202}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_ade74bfe828379aeb864cddf10cada486}{Camera::Pedestal}}(\textcolor{keywordtype}{float} d)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00203}00203 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00204}00204     \textcolor{comment}{// mPosition += d*mUp}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00205}00205     XMVECTOR s = XMVectorReplicate(d);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00206}00206     XMVECTOR u = XMLoadFloat3(\&mUp);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00207}00207     XMVECTOR p = XMLoadFloat3(\&mPosition);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00208}00208     XMStoreFloat3(\&mPosition, XMVectorMultiplyAdd(s, u, p));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00209}00209 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00210}00210     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00211}00211 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00212}00212 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00213}\mbox{\hyperlink{class_camera_ac2c337aac22466da2222ab79370db27b}{00213}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_ac2c337aac22466da2222ab79370db27b}{Camera::Pitch}}(\textcolor{keywordtype}{float} angle)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00214}00214 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00215}00215     \textcolor{comment}{// Rotate up and look vector about the right vector.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00217}00217     XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(\&mRight), angle);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00218}00218 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00219}00219     XMStoreFloat3(\&mUp,   XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00220}00220     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00221}00221 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00222}00222     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00223}00223 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00224}00224 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00225}\mbox{\hyperlink{class_camera_a3444462b0aac89dd9d3fa1619efe171c}{00225}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a3444462b0aac89dd9d3fa1619efe171c}{Camera::RotateY}}(\textcolor{keywordtype}{float} angle)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00226}00226 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00227}00227     \textcolor{comment}{// Rotate the basis vectors about the world y-\/axis.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00229}00229     XMMATRIX R = XMMatrixRotationY(angle);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00230}00230 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00231}00231     XMStoreFloat3(\&mRight,   XMVector3TransformNormal(XMLoadFloat3(\&mRight), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00232}00232     XMStoreFloat3(\&mUp, XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00233}00233     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00234}00234 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00235}00235     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00236}00236 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00237}00237 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00238}\mbox{\hyperlink{class_camera_a9dc807ac3d65ffe6ad50ffa555a5b904}{00238}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a9dc807ac3d65ffe6ad50ffa555a5b904}{Camera::Roll}}(\textcolor{keywordtype}{float} angle)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00239}00239 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00240}00240     \textcolor{comment}{// Rotate the basis vectors about the world y-\/axis.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00241}00241 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00242}00242     XMMATRIX R = XMMatrixRotationZ(angle);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00243}00243 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00244}00244     XMStoreFloat3(\&mRight, XMVector3TransformNormal(XMLoadFloat3(\&mRight), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00245}00245     XMStoreFloat3(\&mUp, XMVector3TransformNormal(XMLoadFloat3(\&mUp), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00246}00246     XMStoreFloat3(\&mLook, XMVector3TransformNormal(XMLoadFloat3(\&mLook), R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00247}00247 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00248}00248     mViewDirty = \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00249}00249 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00250}00250 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00251}\mbox{\hyperlink{class_camera_a69369efae2a33da50510cc8c43c58bc5}{00251}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_camera_a69369efae2a33da50510cc8c43c58bc5}{Camera::UpdateViewMatrix}}()}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00252}00252 \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00253}00253     \textcolor{keywordflow}{if}(mViewDirty)}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00254}00254     \{}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00255}00255         XMVECTOR R = XMLoadFloat3(\&mRight);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00256}00256         XMVECTOR U = XMLoadFloat3(\&mUp);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00257}00257         XMVECTOR L = XMLoadFloat3(\&mLook);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00258}00258         XMVECTOR P = XMLoadFloat3(\&mPosition);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00259}00259 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00260}00260         \textcolor{comment}{// Keep camera's axes orthogonal to each other and of unit length.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00261}00261         L = XMVector3Normalize(L);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00262}00262         U = XMVector3Normalize(XMVector3Cross(L, R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00263}00263 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00264}00264         \textcolor{comment}{// U, L already ortho-\/normal, so no need to normalize cross product.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00265}00265         R = XMVector3Cross(U, L);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00266}00266 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00267}00267         \textcolor{comment}{// Fill in the view matrix entries.}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00268}00268         \textcolor{keywordtype}{float} x = -\/XMVectorGetX(XMVector3Dot(P, R));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00269}00269         \textcolor{keywordtype}{float} y = -\/XMVectorGetX(XMVector3Dot(P, U));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00270}00270         \textcolor{keywordtype}{float} z = -\/XMVectorGetX(XMVector3Dot(P, L));}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00271}00271 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00272}00272         XMStoreFloat3(\&mRight, R);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00273}00273         XMStoreFloat3(\&mUp, U);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00274}00274         XMStoreFloat3(\&mLook, L);}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00275}00275 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00276}00276         mView(0, 0) = mRight.x;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00277}00277         mView(1, 0) = mRight.y;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00278}00278         mView(2, 0) = mRight.z;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00279}00279         mView(3, 0) = x;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00280}00280 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00281}00281         mView(0, 1) = mUp.x;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00282}00282         mView(1, 1) = mUp.y;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00283}00283         mView(2, 1) = mUp.z;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00284}00284         mView(3, 1) = y;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00285}00285 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00286}00286         mView(0, 2) = mLook.x;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00287}00287         mView(1, 2) = mLook.y;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00288}00288         mView(2, 2) = mLook.z;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00289}00289         mView(3, 2) = z;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00290}00290 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00291}00291         mView(0, 3) = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00292}00292         mView(1, 3) = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00293}00293         mView(2, 3) = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00294}00294         mView(3, 3) = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00295}00295 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00296}00296         mViewDirty = \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00297}00297     \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00298}00298 \}}
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00299}00299 }
+\DoxyCodeLine{\Hypertarget{_camera_8cpp_source_l00300}00300 }
 
 \end{DoxyCode}

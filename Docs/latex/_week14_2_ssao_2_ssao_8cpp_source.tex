@@ -1,473 +1,473 @@
-\doxysection{Ssao.\+cpp}
+\hypertarget{_week14_2_ssao_2_ssao_8cpp_source}{}\doxysection{Ssao.\+cpp}
 \label{_week14_2_ssao_2_ssao_8cpp_source}\index{Week14/Ssao/Ssao.cpp@{Week14/Ssao/Ssao.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week14_2_ssao_2_ssao_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// Ssao.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}Ssao.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
-\DoxyCodeLine{00007 }
-\DoxyCodeLine{00008 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00009 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00010 \textcolor{keyword}{using namespace }Microsoft::WRL;}
-\DoxyCodeLine{00011 }
-\DoxyCodeLine{00012 Ssao::Ssao(}
-\DoxyCodeLine{00013     ID3D12Device* device,}
-\DoxyCodeLine{00014     ID3D12GraphicsCommandList* cmdList, }
-\DoxyCodeLine{00015     UINT width, UINT height)}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017 \{}
-\DoxyCodeLine{00018     md3dDevice = device;}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020     OnResize(width, height);}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00022     BuildOffsetVectors();}
-\DoxyCodeLine{00023     BuildRandomVectorTexture(cmdList);}
-\DoxyCodeLine{00024 \}}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026 UINT Ssao::SsaoMapWidth()\textcolor{keyword}{const}}
-\DoxyCodeLine{00027 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00028     \textcolor{keywordflow}{return} mRenderTargetWidth / 2;}
-\DoxyCodeLine{00029 \}}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031 UINT Ssao::SsaoMapHeight()\textcolor{keyword}{const}}
-\DoxyCodeLine{00032 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00033     \textcolor{keywordflow}{return} mRenderTargetHeight / 2;}
-\DoxyCodeLine{00034 \}}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 \textcolor{keywordtype}{void} Ssao::GetOffsetVectors(DirectX::XMFLOAT4 offsets[14])}
-\DoxyCodeLine{00037 \{}
-\DoxyCodeLine{00038     std::copy(\&mOffsets[0], \&mOffsets[14], \&offsets[0]);}
-\DoxyCodeLine{00039 \}}
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041 std::vector<float> Ssao::CalcGaussWeights(\textcolor{keywordtype}{float} sigma)}
-\DoxyCodeLine{00042 \{}
-\DoxyCodeLine{00043     \textcolor{keywordtype}{float} twoSigma2 = 2.0f*sigma*sigma;}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045     \textcolor{comment}{// Estimate the blur radius based on sigma since sigma controls the "{}width"{} of the bell curve.}}
-\DoxyCodeLine{00046     \textcolor{comment}{// For example, for sigma = 3, the width of the bell curve is }}
-\DoxyCodeLine{00047     \textcolor{keywordtype}{int} blurRadius = (int)ceil(2.0f * sigma);}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     assert(blurRadius <= MaxBlurRadius);}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051     std::vector<float> weights;}
-\DoxyCodeLine{00052     weights.resize(2 * blurRadius + 1);}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054     \textcolor{keywordtype}{float} weightSum = 0.0f;}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = -\/blurRadius; i <= blurRadius; ++i)}
-\DoxyCodeLine{00057     \{}
-\DoxyCodeLine{00058         \textcolor{keywordtype}{float} x = (float)i;}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060         weights[i + blurRadius] = expf(-\/x*x / twoSigma2);}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062         weightSum += weights[i + blurRadius];}
-\DoxyCodeLine{00063     \}}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     \textcolor{comment}{// Divide by the sum so all the weights add up to 1.0.}}
-\DoxyCodeLine{00066     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < weights.size(); ++i)}
-\DoxyCodeLine{00067     \{}
-\DoxyCodeLine{00068         weights[i] /= weightSum;}
-\DoxyCodeLine{00069     \}}
-\DoxyCodeLine{00070 }
-\DoxyCodeLine{00071     \textcolor{keywordflow}{return} weights;}
-\DoxyCodeLine{00072 \}}
-\DoxyCodeLine{00073 }
-\DoxyCodeLine{00074 ID3D12Resource* Ssao::NormalMap()}
-\DoxyCodeLine{00075 \{}
-\DoxyCodeLine{00076     \textcolor{keywordflow}{return} mNormalMap.Get();}
-\DoxyCodeLine{00077 \}}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079 ID3D12Resource* Ssao::AmbientMap()}
-\DoxyCodeLine{00080 \{}
-\DoxyCodeLine{00081     \textcolor{keywordflow}{return} mAmbientMap0.Get();}
-\DoxyCodeLine{00082 \}}
-\DoxyCodeLine{00083 }
-\DoxyCodeLine{00084 CD3DX12\_CPU\_DESCRIPTOR\_HANDLE Ssao::NormalMapRtv()\textcolor{keyword}{const}}
-\DoxyCodeLine{00085 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00086     \textcolor{keywordflow}{return} mhNormalMapCpuRtv;}
-\DoxyCodeLine{00087 \}}
-\DoxyCodeLine{00088 }
-\DoxyCodeLine{00089 CD3DX12\_GPU\_DESCRIPTOR\_HANDLE Ssao::NormalMapSrv()\textcolor{keyword}{const}}
-\DoxyCodeLine{00090 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00091     \textcolor{keywordflow}{return} mhNormalMapGpuSrv;}
-\DoxyCodeLine{00092 \}}
-\DoxyCodeLine{00093 }
-\DoxyCodeLine{00094 CD3DX12\_GPU\_DESCRIPTOR\_HANDLE Ssao::AmbientMapSrv()\textcolor{keyword}{const}}
-\DoxyCodeLine{00095 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00096     \textcolor{keywordflow}{return} mhAmbientMap0GpuSrv;}
-\DoxyCodeLine{00097 \}}
-\DoxyCodeLine{00098 }
-\DoxyCodeLine{00099 \textcolor{keywordtype}{void} Ssao::BuildDescriptors(}
-\DoxyCodeLine{00100     ID3D12Resource* depthStencilBuffer,}
-\DoxyCodeLine{00101     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{00102     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{00103     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv,}
-\DoxyCodeLine{00104     UINT cbvSrvUavDescriptorSize,}
-\DoxyCodeLine{00105     UINT rtvDescriptorSize)}
-\DoxyCodeLine{00106 \{}
-\DoxyCodeLine{00107     \textcolor{comment}{// Save references to the descriptors.  The Ssao reserves heap space}}
-\DoxyCodeLine{00108     \textcolor{comment}{// for 5 contiguous Srvs.}}
-\DoxyCodeLine{00109 }
-\DoxyCodeLine{00110     mhAmbientMap0CpuSrv = hCpuSrv;}
-\DoxyCodeLine{00111     mhAmbientMap1CpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00112     mhNormalMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00113     mhDepthMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00114     mhRandomVectorMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00115 }
-\DoxyCodeLine{00116     mhAmbientMap0GpuSrv = hGpuSrv;}
-\DoxyCodeLine{00117     mhAmbientMap1GpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00118     mhNormalMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00119     mhDepthMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00120     mhRandomVectorMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
-\DoxyCodeLine{00121 }
-\DoxyCodeLine{00122     mhNormalMapCpuRtv = hCpuRtv;}
-\DoxyCodeLine{00123     mhAmbientMap0CpuRtv = hCpuRtv.Offset(1, rtvDescriptorSize);}
-\DoxyCodeLine{00124     mhAmbientMap1CpuRtv = hCpuRtv.Offset(1, rtvDescriptorSize);}
-\DoxyCodeLine{00125 }
-\DoxyCodeLine{00126     \textcolor{comment}{//  Create the descriptors}}
-\DoxyCodeLine{00127     RebuildDescriptors(depthStencilBuffer);}
-\DoxyCodeLine{00128 \}}
-\DoxyCodeLine{00129 }
-\DoxyCodeLine{00130 \textcolor{keywordtype}{void} Ssao::RebuildDescriptors(ID3D12Resource* depthStencilBuffer)}
-\DoxyCodeLine{00131 \{}
-\DoxyCodeLine{00132     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00133     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00134     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00135     srvDesc.Format = NormalMapFormat;}
-\DoxyCodeLine{00136     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00137     srvDesc.Texture2D.MipLevels = 1;}
-\DoxyCodeLine{00138     md3dDevice-\/>CreateShaderResourceView(mNormalMap.Get(), \&srvDesc, mhNormalMapCpuSrv);}
-\DoxyCodeLine{00139 }
-\DoxyCodeLine{00140     srvDesc.Format = DXGI\_FORMAT\_R24\_UNORM\_X8\_TYPELESS;}
-\DoxyCodeLine{00141     md3dDevice-\/>CreateShaderResourceView(depthStencilBuffer, \&srvDesc, mhDepthMapCpuSrv);}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     srvDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{00144     md3dDevice-\/>CreateShaderResourceView(mRandomVectorMap.Get(), \&srvDesc, mhRandomVectorMapCpuSrv);}
-\DoxyCodeLine{00145 }
-\DoxyCodeLine{00146     srvDesc.Format = AmbientMapFormat;}
-\DoxyCodeLine{00147     md3dDevice-\/>CreateShaderResourceView(mAmbientMap0.Get(), \&srvDesc, mhAmbientMap0CpuSrv);}
-\DoxyCodeLine{00148     md3dDevice-\/>CreateShaderResourceView(mAmbientMap1.Get(), \&srvDesc, mhAmbientMap1CpuSrv);}
-\DoxyCodeLine{00149 }
-\DoxyCodeLine{00150     D3D12\_RENDER\_TARGET\_VIEW\_DESC rtvDesc = \{\};}
-\DoxyCodeLine{00151     rtvDesc.ViewDimension = D3D12\_RTV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00152     rtvDesc.Format = NormalMapFormat;}
-\DoxyCodeLine{00153     rtvDesc.Texture2D.MipSlice = 0;}
-\DoxyCodeLine{00154     rtvDesc.Texture2D.PlaneSlice = 0;}
-\DoxyCodeLine{00155     md3dDevice-\/>CreateRenderTargetView(mNormalMap.Get(), \&rtvDesc, mhNormalMapCpuRtv);}
-\DoxyCodeLine{00156 }
-\DoxyCodeLine{00157     rtvDesc.Format = AmbientMapFormat;}
-\DoxyCodeLine{00158     md3dDevice-\/>CreateRenderTargetView(mAmbientMap0.Get(), \&rtvDesc, mhAmbientMap0CpuRtv);}
-\DoxyCodeLine{00159     md3dDevice-\/>CreateRenderTargetView(mAmbientMap1.Get(), \&rtvDesc, mhAmbientMap1CpuRtv);}
-\DoxyCodeLine{00160 \}}
-\DoxyCodeLine{00161 }
-\DoxyCodeLine{00162 \textcolor{keywordtype}{void} Ssao::SetPSOs(ID3D12PipelineState* ssaoPso, ID3D12PipelineState* ssaoBlurPso)}
-\DoxyCodeLine{00163 \{}
-\DoxyCodeLine{00164     mSsaoPso = ssaoPso;}
-\DoxyCodeLine{00165     mBlurPso = ssaoBlurPso;}
-\DoxyCodeLine{00166 \}}
-\DoxyCodeLine{00167 }
-\DoxyCodeLine{00168 \textcolor{keywordtype}{void} Ssao::OnResize(UINT newWidth, UINT newHeight)}
-\DoxyCodeLine{00169 \{}
-\DoxyCodeLine{00170     \textcolor{keywordflow}{if}(mRenderTargetWidth != newWidth || mRenderTargetHeight != newHeight)}
-\DoxyCodeLine{00171     \{}
-\DoxyCodeLine{00172         mRenderTargetWidth = newWidth;}
-\DoxyCodeLine{00173         mRenderTargetHeight = newHeight;}
-\DoxyCodeLine{00174 }
-\DoxyCodeLine{00175         \textcolor{comment}{// We render to ambient map at half the resolution.}}
-\DoxyCodeLine{00176         mViewport.TopLeftX = 0.0f;}
-\DoxyCodeLine{00177         mViewport.TopLeftY = 0.0f;}
-\DoxyCodeLine{00178         mViewport.Width = mRenderTargetWidth / 2.0f;}
-\DoxyCodeLine{00179         mViewport.Height = mRenderTargetHeight / 2.0f;}
-\DoxyCodeLine{00180         mViewport.MinDepth = 0.0f;}
-\DoxyCodeLine{00181         mViewport.MaxDepth = 1.0f;}
-\DoxyCodeLine{00182 }
-\DoxyCodeLine{00183         mScissorRect = \{ 0, 0, (int)mRenderTargetWidth / 2, (\textcolor{keywordtype}{int})mRenderTargetHeight / 2 \};}
-\DoxyCodeLine{00184 }
-\DoxyCodeLine{00185         BuildResources();}
-\DoxyCodeLine{00186     \}}
-\DoxyCodeLine{00187 \}}
-\DoxyCodeLine{00188 }
-\DoxyCodeLine{00189 \textcolor{keywordtype}{void} Ssao::ComputeSsao(}
-\DoxyCodeLine{00190     ID3D12GraphicsCommandList* cmdList,}
-\DoxyCodeLine{00191     FrameResource* currFrame, }
-\DoxyCodeLine{00192     \textcolor{keywordtype}{int} blurCount)}
-\DoxyCodeLine{00193 \{}
-\DoxyCodeLine{00194     cmdList-\/>RSSetViewports(1, \&mViewport);}
-\DoxyCodeLine{00195     cmdList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00196 }
-\DoxyCodeLine{00197     \textcolor{comment}{// We compute the initial SSAO to AmbientMap0.}}
-\DoxyCodeLine{00198 }
-\DoxyCodeLine{00199     \textcolor{comment}{// Change to RENDER\_TARGET.}}
-\DoxyCodeLine{00200     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mAmbientMap0.Get(),}
-\DoxyCodeLine{00201         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00202   }
-\DoxyCodeLine{00203     \textcolor{keywordtype}{float} clearValue[] = \{1.0f, 1.0f, 1.0f, 1.0f\};}
-\DoxyCodeLine{00204     cmdList-\/>ClearRenderTargetView(mhAmbientMap0CpuRtv, clearValue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00205      }
-\DoxyCodeLine{00206     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00207     cmdList-\/>OMSetRenderTargets(1, \&mhAmbientMap0CpuRtv, \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00208 }
-\DoxyCodeLine{00209     \textcolor{comment}{// Bind the constant buffer for this pass.}}
-\DoxyCodeLine{00210     \textcolor{keyword}{auto} ssaoCBAddress = currFrame-\/>SsaoCB-\/>Resource()-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{00211     cmdList-\/>SetGraphicsRootConstantBufferView(0, ssaoCBAddress);}
-\DoxyCodeLine{00212     cmdList-\/>SetGraphicsRoot32BitConstant(1, 0, 0);}
-\DoxyCodeLine{00213 }
-\DoxyCodeLine{00214     \textcolor{comment}{// Bind the normal and depth maps.}}
-\DoxyCodeLine{00215     cmdList-\/>SetGraphicsRootDescriptorTable(2, mhNormalMapGpuSrv);}
-\DoxyCodeLine{00216 }
-\DoxyCodeLine{00217     \textcolor{comment}{// Bind the random vector map.}}
-\DoxyCodeLine{00218     cmdList-\/>SetGraphicsRootDescriptorTable(3, mhRandomVectorMapGpuSrv);}
-\DoxyCodeLine{00219 }
-\DoxyCodeLine{00220     cmdList-\/>SetPipelineState(mSsaoPso);}
-\DoxyCodeLine{00221 }
-\DoxyCodeLine{00222     \textcolor{comment}{// Draw fullscreen quad.}}
-\DoxyCodeLine{00223     cmdList-\/>IASetVertexBuffers(0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00224     cmdList-\/>IASetIndexBuffer(\textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00225     cmdList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
-\DoxyCodeLine{00226     cmdList-\/>DrawInstanced(6, 1, 0, 0);}
-\DoxyCodeLine{00227    }
-\DoxyCodeLine{00228     \textcolor{comment}{// Change back to GENERIC\_READ so we can read the texture in a shader.}}
-\DoxyCodeLine{00229     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mAmbientMap0.Get(),}
-\DoxyCodeLine{00230         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
-\DoxyCodeLine{00231 }
-\DoxyCodeLine{00232     BlurAmbientMap(cmdList, currFrame, blurCount);}
-\DoxyCodeLine{00233 \}}
-\DoxyCodeLine{00234  }
-\DoxyCodeLine{00235 \textcolor{keywordtype}{void} Ssao::BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, FrameResource* currFrame, \textcolor{keywordtype}{int} blurCount)}
-\DoxyCodeLine{00236 \{}
-\DoxyCodeLine{00237     cmdList-\/>SetPipelineState(mBlurPso);}
-\DoxyCodeLine{00238 }
-\DoxyCodeLine{00239     \textcolor{keyword}{auto} ssaoCBAddress = currFrame-\/>SsaoCB-\/>Resource()-\/>GetGPUVirtualAddress();}
-\DoxyCodeLine{00240     cmdList-\/>SetGraphicsRootConstantBufferView(0, ssaoCBAddress);}
-\DoxyCodeLine{00241  }
-\DoxyCodeLine{00242     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < blurCount; ++i)}
-\DoxyCodeLine{00243     \{}
-\DoxyCodeLine{00244         BlurAmbientMap(cmdList, \textcolor{keyword}{true});}
-\DoxyCodeLine{00245         BlurAmbientMap(cmdList, \textcolor{keyword}{false});}
-\DoxyCodeLine{00246     \}}
-\DoxyCodeLine{00247 \}}
-\DoxyCodeLine{00248 }
-\DoxyCodeLine{00249 \textcolor{keywordtype}{void} Ssao::BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, \textcolor{keywordtype}{bool} horzBlur)}
-\DoxyCodeLine{00250 \{}
-\DoxyCodeLine{00251     ID3D12Resource* output = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00252     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE inputSrv;}
-\DoxyCodeLine{00253     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE outputRtv;}
-\DoxyCodeLine{00254     }
-\DoxyCodeLine{00255     \textcolor{comment}{// Ping-\/pong the two ambient map textures as we apply}}
-\DoxyCodeLine{00256     \textcolor{comment}{// horizontal and vertical blur passes.}}
-\DoxyCodeLine{00257     \textcolor{keywordflow}{if}(horzBlur == \textcolor{keyword}{true})}
-\DoxyCodeLine{00258     \{}
-\DoxyCodeLine{00259         output = mAmbientMap1.Get();}
-\DoxyCodeLine{00260         inputSrv = mhAmbientMap0GpuSrv;}
-\DoxyCodeLine{00261         outputRtv = mhAmbientMap1CpuRtv;}
-\DoxyCodeLine{00262         cmdList-\/>SetGraphicsRoot32BitConstant(1, 1, 0);}
-\DoxyCodeLine{00263     \}}
-\DoxyCodeLine{00264     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00265     \{}
-\DoxyCodeLine{00266         output = mAmbientMap0.Get();}
-\DoxyCodeLine{00267         inputSrv = mhAmbientMap1GpuSrv;}
-\DoxyCodeLine{00268         outputRtv = mhAmbientMap0CpuRtv;}
-\DoxyCodeLine{00269         cmdList-\/>SetGraphicsRoot32BitConstant(1, 0, 0);}
-\DoxyCodeLine{00270     \}}
-\DoxyCodeLine{00271  }
-\DoxyCodeLine{00272     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(output,}
-\DoxyCodeLine{00273         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00274 }
-\DoxyCodeLine{00275     \textcolor{keywordtype}{float} clearValue[] = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
-\DoxyCodeLine{00276     cmdList-\/>ClearRenderTargetView(outputRtv, clearValue, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00277  }
-\DoxyCodeLine{00278     cmdList-\/>OMSetRenderTargets(1, \&outputRtv, \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00279     }
-\DoxyCodeLine{00280     \textcolor{comment}{// Normal/depth map still bound.}}
-\DoxyCodeLine{00281 }
-\DoxyCodeLine{00282 }
-\DoxyCodeLine{00283     \textcolor{comment}{// Bind the normal and depth maps.}}
-\DoxyCodeLine{00284     cmdList-\/>SetGraphicsRootDescriptorTable(2, mhNormalMapGpuSrv);}
-\DoxyCodeLine{00285 }
-\DoxyCodeLine{00286     \textcolor{comment}{// Bind the input ambient map to second texture table.}}
-\DoxyCodeLine{00287     cmdList-\/>SetGraphicsRootDescriptorTable(3, inputSrv);}
-\DoxyCodeLine{00288     }
-\DoxyCodeLine{00289     \textcolor{comment}{// Draw fullscreen quad.}}
-\DoxyCodeLine{00290     cmdList-\/>IASetVertexBuffers(0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00291     cmdList-\/>IASetIndexBuffer(\textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00292     cmdList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
-\DoxyCodeLine{00293     cmdList-\/>DrawInstanced(6, 1, 0, 0);}
-\DoxyCodeLine{00294    }
-\DoxyCodeLine{00295     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(output,}
-\DoxyCodeLine{00296         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
-\DoxyCodeLine{00297 \}}
-\DoxyCodeLine{00298  }
-\DoxyCodeLine{00299 \textcolor{keywordtype}{void} Ssao::BuildResources()}
-\DoxyCodeLine{00300 \{}
-\DoxyCodeLine{00301     \textcolor{comment}{// Free the old resources if they exist.}}
-\DoxyCodeLine{00302     mNormalMap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00303     mAmbientMap0 = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00304     mAmbientMap1 = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00305 }
-\DoxyCodeLine{00306     D3D12\_RESOURCE\_DESC texDesc;}
-\DoxyCodeLine{00307     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
-\DoxyCodeLine{00308     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00309     texDesc.Alignment = 0;}
-\DoxyCodeLine{00310     texDesc.Width = mRenderTargetWidth;}
-\DoxyCodeLine{00311     texDesc.Height = mRenderTargetHeight;}
-\DoxyCodeLine{00312     texDesc.DepthOrArraySize = 1;}
-\DoxyCodeLine{00313     texDesc.MipLevels = 1;}
-\DoxyCodeLine{00314     texDesc.Format = Ssao::NormalMapFormat;}
-\DoxyCodeLine{00315     texDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{00316     texDesc.SampleDesc.Quality = 0;}
-\DoxyCodeLine{00317     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
-\DoxyCodeLine{00318     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_RENDER\_TARGET;}
-\DoxyCodeLine{00319 }
-\DoxyCodeLine{00320 }
-\DoxyCodeLine{00321     \textcolor{keywordtype}{float} normalClearColor[] = \{ 0.0f, 0.0f, 1.0f, 0.0f \};}
-\DoxyCodeLine{00322     CD3DX12\_CLEAR\_VALUE optClear(NormalMapFormat, normalClearColor);}
-\DoxyCodeLine{00323     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00324         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00325         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00326         \&texDesc,}
-\DoxyCodeLine{00327         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00328         \&optClear,}
-\DoxyCodeLine{00329         IID\_PPV\_ARGS(\&mNormalMap)));}
-\DoxyCodeLine{00330 }
-\DoxyCodeLine{00331     \textcolor{comment}{// Ambient occlusion maps are at half resolution.}}
-\DoxyCodeLine{00332     texDesc.Width = mRenderTargetWidth / 2;}
-\DoxyCodeLine{00333     texDesc.Height = mRenderTargetHeight / 2;}
-\DoxyCodeLine{00334     texDesc.Format = Ssao::AmbientMapFormat;}
-\DoxyCodeLine{00335 }
-\DoxyCodeLine{00336     \textcolor{keywordtype}{float} ambientClearColor[] = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
-\DoxyCodeLine{00337     optClear = CD3DX12\_CLEAR\_VALUE(AmbientMapFormat, ambientClearColor);}
-\DoxyCodeLine{00338 }
-\DoxyCodeLine{00339     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00340         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00341         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00342         \&texDesc,}
-\DoxyCodeLine{00343         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00344         \&optClear,}
-\DoxyCodeLine{00345         IID\_PPV\_ARGS(\&mAmbientMap0)));}
-\DoxyCodeLine{00346 }
-\DoxyCodeLine{00347     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00348         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00349         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00350         \&texDesc,}
-\DoxyCodeLine{00351         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00352         \&optClear,}
-\DoxyCodeLine{00353         IID\_PPV\_ARGS(\&mAmbientMap1)));}
-\DoxyCodeLine{00354 \}}
-\DoxyCodeLine{00355 }
-\DoxyCodeLine{00356 \textcolor{keywordtype}{void} Ssao::BuildRandomVectorTexture(ID3D12GraphicsCommandList* cmdList)}
-\DoxyCodeLine{00357 \{}
-\DoxyCodeLine{00358     D3D12\_RESOURCE\_DESC texDesc;}
-\DoxyCodeLine{00359     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
-\DoxyCodeLine{00360     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00361     texDesc.Alignment = 0;}
-\DoxyCodeLine{00362     texDesc.Width = 256;}
-\DoxyCodeLine{00363     texDesc.Height = 256;}
-\DoxyCodeLine{00364     texDesc.DepthOrArraySize = 1;}
-\DoxyCodeLine{00365     texDesc.MipLevels = 1;}
-\DoxyCodeLine{00366     texDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{00367     texDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{00368     texDesc.SampleDesc.Quality = 0;}
-\DoxyCodeLine{00369     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
-\DoxyCodeLine{00370     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_NONE;}
-\DoxyCodeLine{00371 }
-\DoxyCodeLine{00372     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00373         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00374         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00375         \&texDesc,}
-\DoxyCodeLine{00376         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00377         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00378         IID\_PPV\_ARGS(\&mRandomVectorMap)));}
-\DoxyCodeLine{00379 }
-\DoxyCodeLine{00380     \textcolor{comment}{//}}
-\DoxyCodeLine{00381     \textcolor{comment}{// In order to copy CPU memory data into our default buffer, we need to create}}
-\DoxyCodeLine{00382     \textcolor{comment}{// an intermediate upload heap. }}
-\DoxyCodeLine{00383     \textcolor{comment}{//}}
-\DoxyCodeLine{00384 }
-\DoxyCodeLine{00385     \textcolor{keyword}{const} UINT num2DSubresources = texDesc.DepthOrArraySize * texDesc.MipLevels;}
-\DoxyCodeLine{00386     \textcolor{keyword}{const} UINT64 uploadBufferSize = GetRequiredIntermediateSize(mRandomVectorMap.Get(), 0, num2DSubresources);}
-\DoxyCodeLine{00387 }
-\DoxyCodeLine{00388     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00389         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
-\DoxyCodeLine{00390         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00391         \&CD3DX12\_RESOURCE\_DESC::Buffer(uploadBufferSize),}
-\DoxyCodeLine{00392         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00393         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00394         IID\_PPV\_ARGS(mRandomVectorMapUploadBuffer.GetAddressOf())));}
-\DoxyCodeLine{00395 }
-\DoxyCodeLine{00396     XMCOLOR initData[256 * 256];}
-\DoxyCodeLine{00397     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 256; ++i)}
-\DoxyCodeLine{00398     \{}
-\DoxyCodeLine{00399         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < 256; ++j)}
-\DoxyCodeLine{00400         \{}
-\DoxyCodeLine{00401             \textcolor{comment}{// Random vector in [0,1].  We will decompress in shader to [-\/1,1].}}
-\DoxyCodeLine{00402             XMFLOAT3 v(MathHelper::RandF(), MathHelper::RandF(), MathHelper::RandF());}
-\DoxyCodeLine{00403 }
-\DoxyCodeLine{00404             initData[i * 256 + j] = XMCOLOR(v.x, v.y, v.z, 0.0f);}
-\DoxyCodeLine{00405         \}}
-\DoxyCodeLine{00406     \}}
-\DoxyCodeLine{00407 }
-\DoxyCodeLine{00408     D3D12\_SUBRESOURCE\_DATA subResourceData = \{\};}
-\DoxyCodeLine{00409     subResourceData.pData = initData;}
-\DoxyCodeLine{00410     subResourceData.RowPitch = 256 * \textcolor{keyword}{sizeof}(XMCOLOR);}
-\DoxyCodeLine{00411     subResourceData.SlicePitch = subResourceData.RowPitch * 256;}
-\DoxyCodeLine{00412 }
-\DoxyCodeLine{00413     \textcolor{comment}{//}}
-\DoxyCodeLine{00414     \textcolor{comment}{// Schedule to copy the data to the default resource, and change states.}}
-\DoxyCodeLine{00415     \textcolor{comment}{// Note that mCurrSol is put in the GENERIC\_READ state so it can be }}
-\DoxyCodeLine{00416     \textcolor{comment}{// read by a shader.}}
-\DoxyCodeLine{00417     \textcolor{comment}{//}}
-\DoxyCodeLine{00418 }
-\DoxyCodeLine{00419     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mRandomVectorMap.Get(),}
-\DoxyCodeLine{00420         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_COPY\_DEST));}
-\DoxyCodeLine{00421     UpdateSubresources(cmdList, mRandomVectorMap.Get(), mRandomVectorMapUploadBuffer.Get(),}
-\DoxyCodeLine{00422         0, 0, num2DSubresources, \&subResourceData);}
-\DoxyCodeLine{00423     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mRandomVectorMap.Get(),}
-\DoxyCodeLine{00424         D3D12\_RESOURCE\_STATE\_COPY\_DEST, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
-\DoxyCodeLine{00425 \}}
-\DoxyCodeLine{00426  }
-\DoxyCodeLine{00427 \textcolor{keywordtype}{void} Ssao::BuildOffsetVectors()}
-\DoxyCodeLine{00428 \{}
-\DoxyCodeLine{00429     \textcolor{comment}{// Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube}}
-\DoxyCodeLine{00430     \textcolor{comment}{// and the 6 center points along each cube face.  We always alternate the points on }}
-\DoxyCodeLine{00431     \textcolor{comment}{// opposites sides of the cubes.  This way we still get the vectors spread out even}}
-\DoxyCodeLine{00432     \textcolor{comment}{// if we choose to use less than 14 samples.}}
-\DoxyCodeLine{00433     }
-\DoxyCodeLine{00434     \textcolor{comment}{// 8 cube corners}}
-\DoxyCodeLine{00435     mOffsets[0] = XMFLOAT4(+1.0f, +1.0f, +1.0f, 0.0f);}
-\DoxyCodeLine{00436     mOffsets[1] = XMFLOAT4(-\/1.0f, -\/1.0f, -\/1.0f, 0.0f);}
-\DoxyCodeLine{00437 }
-\DoxyCodeLine{00438     mOffsets[2] = XMFLOAT4(-\/1.0f, +1.0f, +1.0f, 0.0f);}
-\DoxyCodeLine{00439     mOffsets[3] = XMFLOAT4(+1.0f, -\/1.0f, -\/1.0f, 0.0f);}
-\DoxyCodeLine{00440 }
-\DoxyCodeLine{00441     mOffsets[4] = XMFLOAT4(+1.0f, +1.0f, -\/1.0f, 0.0f);}
-\DoxyCodeLine{00442     mOffsets[5] = XMFLOAT4(-\/1.0f, -\/1.0f, +1.0f, 0.0f);}
-\DoxyCodeLine{00443 }
-\DoxyCodeLine{00444     mOffsets[6] = XMFLOAT4(-\/1.0f, +1.0f, -\/1.0f, 0.0f);}
-\DoxyCodeLine{00445     mOffsets[7] = XMFLOAT4(+1.0f, -\/1.0f, +1.0f, 0.0f);}
-\DoxyCodeLine{00446 }
-\DoxyCodeLine{00447     \textcolor{comment}{// 6 centers of cube faces}}
-\DoxyCodeLine{00448     mOffsets[8] = XMFLOAT4(-\/1.0f, 0.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00449     mOffsets[9] = XMFLOAT4(+1.0f, 0.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00450 }
-\DoxyCodeLine{00451     mOffsets[10] = XMFLOAT4(0.0f, -\/1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00452     mOffsets[11] = XMFLOAT4(0.0f, +1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00453 }
-\DoxyCodeLine{00454     mOffsets[12] = XMFLOAT4(0.0f, 0.0f, -\/1.0f, 0.0f);}
-\DoxyCodeLine{00455     mOffsets[13] = XMFLOAT4(0.0f, 0.0f, +1.0f, 0.0f);}
-\DoxyCodeLine{00456 }
-\DoxyCodeLine{00457     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 14; ++i)}
-\DoxyCodeLine{00458     \{}
-\DoxyCodeLine{00459         \textcolor{comment}{// Create random lengths in [0.25, 1.0].}}
-\DoxyCodeLine{00460         \textcolor{keywordtype}{float} s = MathHelper::RandF(0.25f, 1.0f);}
-\DoxyCodeLine{00461         }
-\DoxyCodeLine{00462         XMVECTOR v = s * XMVector4Normalize(XMLoadFloat4(\&mOffsets[i]));}
-\DoxyCodeLine{00463         }
-\DoxyCodeLine{00464         XMStoreFloat4(\&mOffsets[i], v);}
-\DoxyCodeLine{00465     \}}
-\DoxyCodeLine{00466 \}}
-\DoxyCodeLine{00467 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00002}00002 \textcolor{comment}{// Ssao.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week15_2_skinned_mesh_2_ssao_8h}{Ssao.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00007}00007 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00008}00008 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00009}00009 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00010}00010 \textcolor{keyword}{using namespace }Microsoft::WRL;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00012}\mbox{\hyperlink{class_ssao_a14a8ef7ccdbd9291196bcb4af93bc0f1}{00012}} \mbox{\hyperlink{class_ssao_a14a8ef7ccdbd9291196bcb4af93bc0f1}{Ssao::Ssao}}(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00013}00013     ID3D12Device* device,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00014}00014     ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00015}00015     UINT width, UINT height)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00017}00017 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00018}00018     md3dDevice = device;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00020}00020     \mbox{\hyperlink{class_ssao_aa9f4e87df9c426c090b958a1a0c909ee}{OnResize}}(width, height);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00022}00022     BuildOffsetVectors();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00023}00023     BuildRandomVectorTexture(cmdList);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00024}00024 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00026}\mbox{\hyperlink{class_ssao_a697f758e284645083ca1a510c4cb19f2}{00026}} UINT \mbox{\hyperlink{class_ssao_a697f758e284645083ca1a510c4cb19f2}{Ssao::SsaoMapWidth}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00027}00027 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00028}00028     \textcolor{keywordflow}{return} mRenderTargetWidth / 2;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00029}00029 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00031}\mbox{\hyperlink{class_ssao_aab471ef4cb2718b0eaea02a3474a75b5}{00031}} UINT \mbox{\hyperlink{class_ssao_aab471ef4cb2718b0eaea02a3474a75b5}{Ssao::SsaoMapHeight}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00032}00032 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00033}00033     \textcolor{keywordflow}{return} mRenderTargetHeight / 2;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00034}00034 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00036}\mbox{\hyperlink{class_ssao_adc51142a4883e3fc56e983535b8de661}{00036}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_adc51142a4883e3fc56e983535b8de661}{Ssao::GetOffsetVectors}}(DirectX::XMFLOAT4 offsets[14])}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00037}00037 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00038}00038     std::copy(\&mOffsets[0], \&mOffsets[14], \&offsets[0]);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00039}00039 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00041}\mbox{\hyperlink{class_ssao_a42dbb8761b84183eb9ca24f598b13c1a}{00041}} std::vector<float> \mbox{\hyperlink{class_ssao_a42dbb8761b84183eb9ca24f598b13c1a}{Ssao::CalcGaussWeights}}(\textcolor{keywordtype}{float} sigma)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00042}00042 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00043}00043     \textcolor{keywordtype}{float} twoSigma2 = 2.0f*sigma*sigma;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00045}00045     \textcolor{comment}{// Estimate the blur radius based on sigma since sigma controls the "{}width"{} of the bell curve.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00046}00046     \textcolor{comment}{// For example, for sigma = 3, the width of the bell curve is }}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00047}00047     \textcolor{keywordtype}{int} blurRadius = (int)ceil(2.0f * sigma);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00049}00049     assert(blurRadius <= \mbox{\hyperlink{class_ssao_ae1e8c25695919496eda5f871f86eafc2}{MaxBlurRadius}});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00051}00051     std::vector<float> weights;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00052}00052     weights.resize(2 * blurRadius + 1);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00054}00054     \textcolor{keywordtype}{float} weightSum = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00056}00056     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = -\/blurRadius; i <= blurRadius; ++i)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00057}00057     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00058}00058         \textcolor{keywordtype}{float} x = (float)i;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00060}00060         weights[i + blurRadius] = expf(-\/x*x / twoSigma2);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00062}00062         weightSum += weights[i + blurRadius];}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00063}00063     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00065}00065     \textcolor{comment}{// Divide by the sum so all the weights add up to 1.0.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00066}00066     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < weights.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00067}00067     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00068}00068         weights[i] /= weightSum;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00069}00069     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00071}00071     \textcolor{keywordflow}{return} weights;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00072}00072 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00073}00073 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00074}\mbox{\hyperlink{class_ssao_af7b5ed7a77f738f3cbe8c8f6c9c7bef8}{00074}} ID3D12Resource* \mbox{\hyperlink{class_ssao_af7b5ed7a77f738f3cbe8c8f6c9c7bef8}{Ssao::NormalMap}}()}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00075}00075 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00076}00076     \textcolor{keywordflow}{return} mNormalMap.Get();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00077}00077 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00079}\mbox{\hyperlink{class_ssao_a197603dffeda5c75eb28579589de5f1c}{00079}} ID3D12Resource* \mbox{\hyperlink{class_ssao_a197603dffeda5c75eb28579589de5f1c}{Ssao::AmbientMap}}()}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00080}00080 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00081}00081     \textcolor{keywordflow}{return} mAmbientMap0.Get();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00082}00082 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00083}00083 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00084}\mbox{\hyperlink{class_ssao_a284be8575c8a58748b80b68850dfdbe5}{00084}} CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a284be8575c8a58748b80b68850dfdbe5}{Ssao::NormalMapRtv}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00085}00085 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00086}00086     \textcolor{keywordflow}{return} mhNormalMapCpuRtv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00087}00087 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00088}00088 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00089}\mbox{\hyperlink{class_ssao_acc88ef583a965ed32cf89d85ee2ef4ee}{00089}} CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_acc88ef583a965ed32cf89d85ee2ef4ee}{Ssao::NormalMapSrv}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00090}00090 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00091}00091     \textcolor{keywordflow}{return} mhNormalMapGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00092}00092 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00093}00093 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00094}\mbox{\hyperlink{class_ssao_a7e4559e1298c7146672a60ed5653764d}{00094}} CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_ssao_a7e4559e1298c7146672a60ed5653764d}{Ssao::AmbientMapSrv}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00095}00095 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00096}00096     \textcolor{keywordflow}{return} mhAmbientMap0GpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00097}00097 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00098}00098 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00099}\mbox{\hyperlink{class_ssao_aac4ba845ad15b35c0b0577501091b4fd}{00099}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_aac4ba845ad15b35c0b0577501091b4fd}{Ssao::BuildDescriptors}}(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00100}00100     ID3D12Resource* depthStencilBuffer,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00101}00101     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00102}00102     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00103}00103     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuRtv,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00104}00104     UINT cbvSrvUavDescriptorSize,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00105}00105     UINT rtvDescriptorSize)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00106}00106 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00107}00107     \textcolor{comment}{// Save references to the descriptors.  The Ssao reserves heap space}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00108}00108     \textcolor{comment}{// for 5 contiguous Srvs.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00109}00109 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00110}00110     mhAmbientMap0CpuSrv = hCpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00111}00111     mhAmbientMap1CpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00112}00112     mhNormalMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00113}00113     mhDepthMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00114}00114     mhRandomVectorMapCpuSrv = hCpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00115}00115 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00116}00116     mhAmbientMap0GpuSrv = hGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00117}00117     mhAmbientMap1GpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00118}00118     mhNormalMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00119}00119     mhDepthMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00120}00120     mhRandomVectorMapGpuSrv = hGpuSrv.Offset(1, cbvSrvUavDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00121}00121 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00122}00122     mhNormalMapCpuRtv = hCpuRtv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00123}00123     mhAmbientMap0CpuRtv = hCpuRtv.Offset(1, rtvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00124}00124     mhAmbientMap1CpuRtv = hCpuRtv.Offset(1, rtvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00126}00126     \textcolor{comment}{//  Create the descriptors}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00127}00127     \mbox{\hyperlink{class_ssao_a995052098cb12252f7185a529be8159f}{RebuildDescriptors}}(depthStencilBuffer);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00128}00128 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00130}\mbox{\hyperlink{class_ssao_a995052098cb12252f7185a529be8159f}{00130}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a995052098cb12252f7185a529be8159f}{Ssao::RebuildDescriptors}}(ID3D12Resource* depthStencilBuffer)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00131}00131 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00132}00132     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00133}00133     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00134}00134     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00135}00135     srvDesc.Format = \mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{NormalMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00136}00136     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00137}00137     srvDesc.Texture2D.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00138}00138     md3dDevice-\/>CreateShaderResourceView(mNormalMap.Get(), \&srvDesc, mhNormalMapCpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00139}00139 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00140}00140     srvDesc.Format = DXGI\_FORMAT\_R24\_UNORM\_X8\_TYPELESS;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00141}00141     md3dDevice-\/>CreateShaderResourceView(depthStencilBuffer, \&srvDesc, mhDepthMapCpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00143}00143     srvDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00144}00144     md3dDevice-\/>CreateShaderResourceView(mRandomVectorMap.Get(), \&srvDesc, mhRandomVectorMapCpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00145}00145 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00146}00146     srvDesc.Format = \mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{AmbientMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00147}00147     md3dDevice-\/>CreateShaderResourceView(mAmbientMap0.Get(), \&srvDesc, mhAmbientMap0CpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00148}00148     md3dDevice-\/>CreateShaderResourceView(mAmbientMap1.Get(), \&srvDesc, mhAmbientMap1CpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00149}00149 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00150}00150     D3D12\_RENDER\_TARGET\_VIEW\_DESC rtvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00151}00151     rtvDesc.ViewDimension = D3D12\_RTV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00152}00152     rtvDesc.Format = \mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{NormalMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00153}00153     rtvDesc.Texture2D.MipSlice = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00154}00154     rtvDesc.Texture2D.PlaneSlice = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00155}00155     md3dDevice-\/>CreateRenderTargetView(mNormalMap.Get(), \&rtvDesc, mhNormalMapCpuRtv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00156}00156 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00157}00157     rtvDesc.Format = \mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{AmbientMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00158}00158     md3dDevice-\/>CreateRenderTargetView(mAmbientMap0.Get(), \&rtvDesc, mhAmbientMap0CpuRtv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00159}00159     md3dDevice-\/>CreateRenderTargetView(mAmbientMap1.Get(), \&rtvDesc, mhAmbientMap1CpuRtv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00160}00160 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00161}00161 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00162}\mbox{\hyperlink{class_ssao_a977e0f0d8f6aaa1a9195b9f7609d83f5}{00162}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a977e0f0d8f6aaa1a9195b9f7609d83f5}{Ssao::SetPSOs}}(ID3D12PipelineState* ssaoPso, ID3D12PipelineState* ssaoBlurPso)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00163}00163 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00164}00164     mSsaoPso = ssaoPso;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00165}00165     mBlurPso = ssaoBlurPso;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00166}00166 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00167}00167 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00168}\mbox{\hyperlink{class_ssao_aa9f4e87df9c426c090b958a1a0c909ee}{00168}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_aa9f4e87df9c426c090b958a1a0c909ee}{Ssao::OnResize}}(UINT newWidth, UINT newHeight)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00169}00169 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00170}00170     \textcolor{keywordflow}{if}(mRenderTargetWidth != newWidth || mRenderTargetHeight != newHeight)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00171}00171     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00172}00172         mRenderTargetWidth = newWidth;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00173}00173         mRenderTargetHeight = newHeight;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00174}00174 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00175}00175         \textcolor{comment}{// We render to ambient map at half the resolution.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00176}00176         mViewport.TopLeftX = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00177}00177         mViewport.TopLeftY = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00178}00178         mViewport.Width = mRenderTargetWidth / 2.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00179}00179         mViewport.Height = mRenderTargetHeight / 2.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00180}00180         mViewport.MinDepth = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00181}00181         mViewport.MaxDepth = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00183}00183         mScissorRect = \{ 0, 0, (int)mRenderTargetWidth / 2, (\textcolor{keywordtype}{int})mRenderTargetHeight / 2 \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00184}00184 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00185}00185         BuildResources();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00186}00186     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00187}00187 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00188}00188 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00189}\mbox{\hyperlink{class_ssao_a168b159b8c2df8ef76203e26b14da78b}{00189}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_ssao_a168b159b8c2df8ef76203e26b14da78b}{Ssao::ComputeSsao}}(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00190}00190     ID3D12GraphicsCommandList* cmdList,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00191}00191     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* currFrame, }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00192}00192     \textcolor{keywordtype}{int} blurCount)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00193}00193 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00194}00194     cmdList-\/>RSSetViewports(1, \&mViewport);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00195}00195     cmdList-\/>RSSetScissorRects(1, \&mScissorRect);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00196}00196 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00197}00197     \textcolor{comment}{// We compute the initial SSAO to AmbientMap0.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00198}00198 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00199}00199     \textcolor{comment}{// Change to RENDER\_TARGET.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00200}00200     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mAmbientMap0.Get(),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00201}00201         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00202}00202   }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00203}00203     \textcolor{keywordtype}{float} clearValue[] = \{1.0f, 1.0f, 1.0f, 1.0f\};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00204}00204     cmdList-\/>ClearRenderTargetView(mhAmbientMap0CpuRtv, clearValue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00205}00205      }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00206}00206     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00207}00207     cmdList-\/>OMSetRenderTargets(1, \&mhAmbientMap0CpuRtv, \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00208}00208 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00209}00209     \textcolor{comment}{// Bind the constant buffer for this pass.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00210}00210     \textcolor{keyword}{auto} ssaoCBAddress = currFrame-\/>\mbox{\hyperlink{struct_frame_resource_acbd138f70a1e51af6acc4dcec6017b35}{SsaoCB}}-\/>Resource()-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00211}00211     cmdList-\/>SetGraphicsRootConstantBufferView(0, ssaoCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00212}00212     cmdList-\/>SetGraphicsRoot32BitConstant(1, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00213}00213 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00214}00214     \textcolor{comment}{// Bind the normal and depth maps.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00215}00215     cmdList-\/>SetGraphicsRootDescriptorTable(2, mhNormalMapGpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00217}00217     \textcolor{comment}{// Bind the random vector map.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00218}00218     cmdList-\/>SetGraphicsRootDescriptorTable(3, mhRandomVectorMapGpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00219}00219 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00220}00220     cmdList-\/>SetPipelineState(mSsaoPso);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00221}00221 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00222}00222     \textcolor{comment}{// Draw fullscreen quad.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00223}00223     cmdList-\/>IASetVertexBuffers(0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00224}00224     cmdList-\/>IASetIndexBuffer(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00225}00225     cmdList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00226}00226     cmdList-\/>DrawInstanced(6, 1, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00227}00227    }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00228}00228     \textcolor{comment}{// Change back to GENERIC\_READ so we can read the texture in a shader.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00229}00229     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mAmbientMap0.Get(),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00230}00230         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00231}00231 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00232}00232     BlurAmbientMap(cmdList, currFrame, blurCount);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00233}00233 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00234}00234  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00235}00235 \textcolor{keywordtype}{void} Ssao::BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* currFrame, \textcolor{keywordtype}{int} blurCount)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00236}00236 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00237}00237     cmdList-\/>SetPipelineState(mBlurPso);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00238}00238 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00239}00239     \textcolor{keyword}{auto} ssaoCBAddress = currFrame-\/>\mbox{\hyperlink{struct_frame_resource_acbd138f70a1e51af6acc4dcec6017b35}{SsaoCB}}-\/>Resource()-\/>GetGPUVirtualAddress();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00240}00240     cmdList-\/>SetGraphicsRootConstantBufferView(0, ssaoCBAddress);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00241}00241  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00242}00242     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < blurCount; ++i)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00243}00243     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00244}00244         BlurAmbientMap(cmdList, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00245}00245         BlurAmbientMap(cmdList, \textcolor{keyword}{false});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00246}00246     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00247}00247 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00248}00248 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00249}00249 \textcolor{keywordtype}{void} Ssao::BlurAmbientMap(ID3D12GraphicsCommandList* cmdList, \textcolor{keywordtype}{bool} horzBlur)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00250}00250 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00251}00251     ID3D12Resource* output = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00252}00252     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE inputSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00253}00253     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE outputRtv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00254}00254     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00255}00255     \textcolor{comment}{// Ping-\/pong the two ambient map textures as we apply}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00256}00256     \textcolor{comment}{// horizontal and vertical blur passes.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00257}00257     \textcolor{keywordflow}{if}(horzBlur == \textcolor{keyword}{true})}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00258}00258     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00259}00259         output = mAmbientMap1.Get();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00260}00260         inputSrv = mhAmbientMap0GpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00261}00261         outputRtv = mhAmbientMap1CpuRtv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00262}00262         cmdList-\/>SetGraphicsRoot32BitConstant(1, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00263}00263     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00264}00264     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00265}00265     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00266}00266         output = mAmbientMap0.Get();}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00267}00267         inputSrv = mhAmbientMap1GpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00268}00268         outputRtv = mhAmbientMap0CpuRtv;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00269}00269         cmdList-\/>SetGraphicsRoot32BitConstant(1, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00270}00270     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00271}00271  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00272}00272     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(output,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00273}00273         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00274}00274 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00275}00275     \textcolor{keywordtype}{float} clearValue[] = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00276}00276     cmdList-\/>ClearRenderTargetView(outputRtv, clearValue, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00277}00277  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00278}00278     cmdList-\/>OMSetRenderTargets(1, \&outputRtv, \textcolor{keyword}{true}, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00279}00279     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00280}00280     \textcolor{comment}{// Normal/depth map still bound.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00281}00281 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00282}00282 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00283}00283     \textcolor{comment}{// Bind the normal and depth maps.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00284}00284     cmdList-\/>SetGraphicsRootDescriptorTable(2, mhNormalMapGpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00285}00285 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00286}00286     \textcolor{comment}{// Bind the input ambient map to second texture table.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00287}00287     cmdList-\/>SetGraphicsRootDescriptorTable(3, inputSrv);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00288}00288     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00289}00289     \textcolor{comment}{// Draw fullscreen quad.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00290}00290     cmdList-\/>IASetVertexBuffers(0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00291}00291     cmdList-\/>IASetIndexBuffer(\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00292}00292     cmdList-\/>IASetPrimitiveTopology(D3D\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00293}00293     cmdList-\/>DrawInstanced(6, 1, 0, 0);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00294}00294    }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00295}00295     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(output,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00296}00296         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00297}00297 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00298}00298  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00299}00299 \textcolor{keywordtype}{void} Ssao::BuildResources()}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00300}00300 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00301}00301     \textcolor{comment}{// Free the old resources if they exist.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00302}00302     mNormalMap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00303}00303     mAmbientMap0 = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00304}00304     mAmbientMap1 = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00305}00305 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00306}00306     D3D12\_RESOURCE\_DESC texDesc;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00307}00307     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00308}00308     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00309}00309     texDesc.Alignment = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00310}00310     texDesc.Width = mRenderTargetWidth;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00311}00311     texDesc.Height = mRenderTargetHeight;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00312}00312     texDesc.DepthOrArraySize = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00313}00313     texDesc.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00314}00314     texDesc.Format = \mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{Ssao::NormalMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00315}00315     texDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00316}00316     texDesc.SampleDesc.Quality = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00317}00317     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00318}00318     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_RENDER\_TARGET;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00319}00319 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00320}00320 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00321}00321     \textcolor{keywordtype}{float} normalClearColor[] = \{ 0.0f, 0.0f, 1.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00322}00322     CD3DX12\_CLEAR\_VALUE optClear(\mbox{\hyperlink{class_ssao_aad22a735be32ee79b6e708a44e853980}{NormalMapFormat}}, normalClearColor);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00323}00323     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00324}00324         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00325}00325         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00326}00326         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00327}00327         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00328}00328         \&optClear,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00329}00329         IID\_PPV\_ARGS(\&mNormalMap)));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00330}00330 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00331}00331     \textcolor{comment}{// Ambient occlusion maps are at half resolution.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00332}00332     texDesc.Width = mRenderTargetWidth / 2;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00333}00333     texDesc.Height = mRenderTargetHeight / 2;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00334}00334     texDesc.Format = \mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{Ssao::AmbientMapFormat}};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00335}00335 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00336}00336     \textcolor{keywordtype}{float} ambientClearColor[] = \{ 1.0f, 1.0f, 1.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00337}00337     optClear = CD3DX12\_CLEAR\_VALUE(\mbox{\hyperlink{class_ssao_adf18b76d8428864f1b3cf0dcdccb39f3}{AmbientMapFormat}}, ambientClearColor);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00338}00338 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00339}00339     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00340}00340         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00341}00341         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00342}00342         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00343}00343         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00344}00344         \&optClear,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00345}00345         IID\_PPV\_ARGS(\&mAmbientMap0)));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00346}00346 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00347}00347     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00348}00348         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00349}00349         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00350}00350         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00351}00351         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00352}00352         \&optClear,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00353}00353         IID\_PPV\_ARGS(\&mAmbientMap1)));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00354}00354 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00355}00355 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00356}00356 \textcolor{keywordtype}{void} Ssao::BuildRandomVectorTexture(ID3D12GraphicsCommandList* cmdList)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00357}00357 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00358}00358     D3D12\_RESOURCE\_DESC texDesc;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00359}00359     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00360}00360     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00361}00361     texDesc.Alignment = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00362}00362     texDesc.Width = 256;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00363}00363     texDesc.Height = 256;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00364}00364     texDesc.DepthOrArraySize = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00365}00365     texDesc.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00366}00366     texDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00367}00367     texDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00368}00368     texDesc.SampleDesc.Quality = 0;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00369}00369     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00370}00370     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00371}00371 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00372}00372     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00373}00373         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00374}00374         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00375}00375         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00376}00376         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00377}00377         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00378}00378         IID\_PPV\_ARGS(\&mRandomVectorMap)));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00379}00379 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00380}00380     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00381}00381     \textcolor{comment}{// In order to copy CPU memory data into our default buffer, we need to create}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00382}00382     \textcolor{comment}{// an intermediate upload heap. }}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00383}00383     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00384}00384 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00385}00385     \textcolor{keyword}{const} UINT num2DSubresources = texDesc.DepthOrArraySize * texDesc.MipLevels;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00386}00386     \textcolor{keyword}{const} UINT64 uploadBufferSize = GetRequiredIntermediateSize(mRandomVectorMap.Get(), 0, num2DSubresources);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00387}00387 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00388}00388     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00389}00389         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_UPLOAD),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00390}00390         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00391}00391         \&CD3DX12\_RESOURCE\_DESC::Buffer(uploadBufferSize),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00392}00392         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00393}00393         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00394}00394         IID\_PPV\_ARGS(mRandomVectorMapUploadBuffer.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00395}00395 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00396}00396     XMCOLOR initData[256 * 256];}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00397}00397     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 256; ++i)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00398}00398     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00399}00399         \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} j = 0; j < 256; ++j)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00400}00400         \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00401}00401             \textcolor{comment}{// Random vector in [0,1].  We will decompress in shader to [-\/1,1].}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00402}00402             XMFLOAT3 v(\mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(), \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}());}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00403}00403 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00404}00404             initData[i * 256 + j] = XMCOLOR(v.x, v.y, v.z, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00405}00405         \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00406}00406     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00407}00407 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00408}00408     D3D12\_SUBRESOURCE\_DATA subResourceData = \{\};}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00409}00409     subResourceData.pData = initData;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00410}00410     subResourceData.RowPitch = 256 * \textcolor{keyword}{sizeof}(XMCOLOR);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00411}00411     subResourceData.SlicePitch = subResourceData.RowPitch * 256;}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00412}00412 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00413}00413     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00414}00414     \textcolor{comment}{// Schedule to copy the data to the default resource, and change states.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00415}00415     \textcolor{comment}{// Note that mCurrSol is put in the GENERIC\_READ state so it can be }}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00416}00416     \textcolor{comment}{// read by a shader.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00417}00417     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00418}00418 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00419}00419     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mRandomVectorMap.Get(),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00420}00420         D3D12\_RESOURCE\_STATE\_GENERIC\_READ, D3D12\_RESOURCE\_STATE\_COPY\_DEST));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00421}00421     UpdateSubresources(cmdList, mRandomVectorMap.Get(), mRandomVectorMapUploadBuffer.Get(),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00422}00422         0, 0, num2DSubresources, \&subResourceData);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00423}00423     cmdList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(mRandomVectorMap.Get(),}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00424}00424         D3D12\_RESOURCE\_STATE\_COPY\_DEST, D3D12\_RESOURCE\_STATE\_GENERIC\_READ));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00425}00425 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00426}00426  }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00427}00427 \textcolor{keywordtype}{void} Ssao::BuildOffsetVectors()}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00428}00428 \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00429}00429     \textcolor{comment}{// Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00430}00430     \textcolor{comment}{// and the 6 center points along each cube face.  We always alternate the points on }}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00431}00431     \textcolor{comment}{// opposites sides of the cubes.  This way we still get the vectors spread out even}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00432}00432     \textcolor{comment}{// if we choose to use less than 14 samples.}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00433}00433     }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00434}00434     \textcolor{comment}{// 8 cube corners}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00435}00435     mOffsets[0] = XMFLOAT4(+1.0f, +1.0f, +1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00436}00436     mOffsets[1] = XMFLOAT4(-\/1.0f, -\/1.0f, -\/1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00437}00437 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00438}00438     mOffsets[2] = XMFLOAT4(-\/1.0f, +1.0f, +1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00439}00439     mOffsets[3] = XMFLOAT4(+1.0f, -\/1.0f, -\/1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00440}00440 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00441}00441     mOffsets[4] = XMFLOAT4(+1.0f, +1.0f, -\/1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00442}00442     mOffsets[5] = XMFLOAT4(-\/1.0f, -\/1.0f, +1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00443}00443 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00444}00444     mOffsets[6] = XMFLOAT4(-\/1.0f, +1.0f, -\/1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00445}00445     mOffsets[7] = XMFLOAT4(+1.0f, -\/1.0f, +1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00446}00446 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00447}00447     \textcolor{comment}{// 6 centers of cube faces}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00448}00448     mOffsets[8] = XMFLOAT4(-\/1.0f, 0.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00449}00449     mOffsets[9] = XMFLOAT4(+1.0f, 0.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00450}00450 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00451}00451     mOffsets[10] = XMFLOAT4(0.0f, -\/1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00452}00452     mOffsets[11] = XMFLOAT4(0.0f, +1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00453}00453 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00454}00454     mOffsets[12] = XMFLOAT4(0.0f, 0.0f, -\/1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00455}00455     mOffsets[13] = XMFLOAT4(0.0f, 0.0f, +1.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00456}00456 }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00457}00457     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < 14; ++i)}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00458}00458     \{}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00459}00459         \textcolor{comment}{// Create random lengths in [0.25, 1.0].}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00460}00460         \textcolor{keywordtype}{float} s = \mbox{\hyperlink{class_math_helper_ad50130c776aee103e24d7170adcd13a3}{MathHelper::RandF}}(0.25f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00461}00461         }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00462}00462         XMVECTOR v = s * XMVector4Normalize(XMLoadFloat4(\&mOffsets[i]));}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00463}00463         }
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00464}00464         XMStoreFloat4(\&mOffsets[i], v);}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00465}00465     \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00466}00466 \}}
+\DoxyCodeLine{\Hypertarget{_week14_2_ssao_2_ssao_8cpp_source_l00467}00467 }
 
 \end{DoxyCode}

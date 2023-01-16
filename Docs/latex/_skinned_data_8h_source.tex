@@ -1,73 +1,73 @@
-\doxysection{Skinned\+Data.\+h}
+\hypertarget{_skinned_data_8h_source}{}\doxysection{Skinned\+Data.\+h}
 \label{_skinned_data_8h_source}\index{Week15/SkinnedMesh/SkinnedData.h@{Week15/SkinnedMesh/SkinnedData.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_skinned_data_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#ifndef SKINNEDDATA\_H}}
-\DoxyCodeLine{00002 \textcolor{preprocessor}{\#define SKINNEDDATA\_H}}
-\DoxyCodeLine{00003 }
-\DoxyCodeLine{00004 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00010 \textcolor{keyword}{struct }Keyframe}
-\DoxyCodeLine{00011 \{}
-\DoxyCodeLine{00012     Keyframe();}
-\DoxyCodeLine{00013     \string~Keyframe();}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015     \textcolor{keywordtype}{float} TimePos;}
-\DoxyCodeLine{00016     DirectX::XMFLOAT3 Translation;}
-\DoxyCodeLine{00017     DirectX::XMFLOAT3 Scale;}
-\DoxyCodeLine{00018     DirectX::XMFLOAT4 RotationQuat;}
-\DoxyCodeLine{00019 \};}
-\DoxyCodeLine{00020 }
-\DoxyCodeLine{00028 \textcolor{keyword}{struct }BoneAnimation}
-\DoxyCodeLine{00029 \{}
-\DoxyCodeLine{00030     \textcolor{keywordtype}{float} GetStartTime()\textcolor{keyword}{const};}
-\DoxyCodeLine{00031     \textcolor{keywordtype}{float} GetEndTime()\textcolor{keyword}{const};}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{keywordtype}{void} Interpolate(\textcolor{keywordtype}{float} t, DirectX::XMFLOAT4X4\& M)\textcolor{keyword}{const};}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     std::vector<Keyframe> Keyframes;   }
-\DoxyCodeLine{00036 \};}
-\DoxyCodeLine{00037 }
-\DoxyCodeLine{00043 \textcolor{keyword}{struct }AnimationClip}
-\DoxyCodeLine{00044 \{}
-\DoxyCodeLine{00045     \textcolor{keywordtype}{float} GetClipStartTime()\textcolor{keyword}{const};}
-\DoxyCodeLine{00046     \textcolor{keywordtype}{float} GetClipEndTime()\textcolor{keyword}{const};}
-\DoxyCodeLine{00047 }
-\DoxyCodeLine{00048     \textcolor{keywordtype}{void} Interpolate(\textcolor{keywordtype}{float} t, std::vector<DirectX::XMFLOAT4X4>\& boneTransforms)\textcolor{keyword}{const};}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050     std::vector<BoneAnimation> BoneAnimations;    }
-\DoxyCodeLine{00051 \};}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053 \textcolor{keyword}{class }SkinnedData}
-\DoxyCodeLine{00054 \{}
-\DoxyCodeLine{00055 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00056 }
-\DoxyCodeLine{00057     UINT BoneCount()\textcolor{keyword}{const};}
-\DoxyCodeLine{00058 }
-\DoxyCodeLine{00059     \textcolor{keywordtype}{float} GetClipStartTime(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const};}
-\DoxyCodeLine{00060     \textcolor{keywordtype}{float} GetClipEndTime(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const};}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062     \textcolor{keywordtype}{void} Set(}
-\DoxyCodeLine{00063         std::vector<int>\& boneHierarchy, }
-\DoxyCodeLine{00064         std::vector<DirectX::XMFLOAT4X4>\& boneOffsets,}
-\DoxyCodeLine{00065         std::unordered\_map<std::string, AnimationClip>\& animations);}
-\DoxyCodeLine{00066 }
-\DoxyCodeLine{00067      \textcolor{comment}{// In a real project, you'd want to cache the result if there was a chance}}
-\DoxyCodeLine{00068      \textcolor{comment}{// that you were calling this several times with the same clipName at }}
-\DoxyCodeLine{00069      \textcolor{comment}{// the same timePos.}}
-\DoxyCodeLine{00070     \textcolor{keywordtype}{void} GetFinalTransforms(\textcolor{keyword}{const} std::string\& clipName, \textcolor{keywordtype}{float} timePos, }
-\DoxyCodeLine{00071          std::vector<DirectX::XMFLOAT4X4>\& finalTransforms)\textcolor{keyword}{const};}
-\DoxyCodeLine{00072 }
-\DoxyCodeLine{00073 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00074     \textcolor{comment}{// Gives parentIndex of ith bone.}}
-\DoxyCodeLine{00075     std::vector<int> mBoneHierarchy;}
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077     std::vector<DirectX::XMFLOAT4X4> mBoneOffsets;}
-\DoxyCodeLine{00078    }
-\DoxyCodeLine{00079     std::unordered\_map<std::string, AnimationClip> mAnimations;}
-\DoxyCodeLine{00080 \};}
-\DoxyCodeLine{00081  }
-\DoxyCodeLine{00082 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// SKINNEDDATA\_H}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00001}00001 \textcolor{preprocessor}{\#ifndef SKINNEDDATA\_H}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00002}00002 \textcolor{preprocessor}{\#define SKINNEDDATA\_H}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00003}00003 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00004}00004 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00010}00010 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_keyframe}{Keyframe}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00011}00011 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00012}\mbox{\hyperlink{struct_keyframe_ac9546775756767dc481259b8bea2fc9b}{00012}}     \mbox{\hyperlink{struct_keyframe_ac9546775756767dc481259b8bea2fc9b}{Keyframe}}();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00013}\mbox{\hyperlink{struct_keyframe_a24445f11306b884c02cdaa26ff8b7fbc}{00013}}     \mbox{\hyperlink{struct_keyframe_a24445f11306b884c02cdaa26ff8b7fbc}{\string~Keyframe}}();}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00015}00015     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_keyframe_a59a732270b956fe090503124f857d66b}{TimePos}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00016}00016     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_keyframe_a2389d28067c2b6b5aa26e1273aaee0ad}{Translation}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00017}00017     DirectX::XMFLOAT3 \mbox{\hyperlink{struct_keyframe_adff2f57e06e144077d5e6adcd7aadfe2}{Scale}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00018}00018     DirectX::XMFLOAT4 \mbox{\hyperlink{struct_keyframe_a2988b03873f0a8779c0798e7cd45beb0}{RotationQuat}};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00019}00019 \};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00020}00020 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00028}00028 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_bone_animation}{BoneAnimation}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00029}00029 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00030}\mbox{\hyperlink{struct_bone_animation_a8f43e68c209680d9535bc7b271422ef2}{00030}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a8f43e68c209680d9535bc7b271422ef2}{GetStartTime}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00031}\mbox{\hyperlink{struct_bone_animation_a5fa4fa3799bc996c82b8766b8a25e2bd}{00031}}     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_bone_animation_a5fa4fa3799bc996c82b8766b8a25e2bd}{GetEndTime}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00033}\mbox{\hyperlink{struct_bone_animation_a7693e2077a4a30877ed1c22e81272199}{00033}}     \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_bone_animation_a7693e2077a4a30877ed1c22e81272199}{Interpolate}}(\textcolor{keywordtype}{float} t, DirectX::XMFLOAT4X4\& M)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00035}00035     std::vector<Keyframe> \mbox{\hyperlink{struct_bone_animation_a81e985237a6baf5c3545634651df055a}{Keyframes}};   }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00036}00036 \};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00043}\mbox{\hyperlink{struct_animation_clip}{00043}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct_animation_clip}{AnimationClip}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00044}00044 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00045}00045     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_animation_clip_aafa7add8250d7dfb911555a20db72773}{GetClipStartTime}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00046}00046     \textcolor{keywordtype}{float} \mbox{\hyperlink{struct_animation_clip_a4037dec2ddce4903197c30cada77d660}{GetClipEndTime}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00048}00048     \textcolor{keywordtype}{void} \mbox{\hyperlink{struct_animation_clip_a99c701eadc60064b0c495dd2e5f5c8d7}{Interpolate}}(\textcolor{keywordtype}{float} t, std::vector<DirectX::XMFLOAT4X4>\& boneTransforms)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00050}\mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{00050}}     std::vector<BoneAnimation> \mbox{\hyperlink{struct_animation_clip_acd53e690312cafca9a0bc7e2d9f47a42}{BoneAnimations}};    }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00051}00051 \};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00053}\mbox{\hyperlink{class_skinned_data}{00053}} \textcolor{keyword}{class }\mbox{\hyperlink{class_skinned_data}{SkinnedData}}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00054}00054 \{}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00055}00055 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00056}00056 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00057}00057     UINT \mbox{\hyperlink{class_skinned_data_ad409154fea38f0c8e3a20d6171c71d99}{BoneCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00059}00059     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_skinned_data_aff2e1811bc77e2616767fd7035645df6}{GetClipStartTime}}(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00060}00060     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_skinned_data_a4cdf1e2114eb1847b5c591a29ee1618e}{GetClipEndTime}}(\textcolor{keyword}{const} std::string\& clipName)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00062}00062     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_skinned_data_a74d3a5029f01d49049135382d5f28045}{Set}}(}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00063}00063         std::vector<int>\& boneHierarchy, }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00064}00064         std::vector<DirectX::XMFLOAT4X4>\& boneOffsets,}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00065}00065         std::unordered\_map<std::string, AnimationClip>\& animations);}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00067}00067      \textcolor{comment}{// In a real project, you'd want to cache the result if there was a chance}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00068}00068      \textcolor{comment}{// that you were calling this several times with the same clipName at }}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00069}00069      \textcolor{comment}{// the same timePos.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00070}00070     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_skinned_data_aa64c311a31db347043a14c1c2f83835c}{GetFinalTransforms}}(\textcolor{keyword}{const} std::string\& clipName, \textcolor{keywordtype}{float} timePos, }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00071}00071          std::vector<DirectX::XMFLOAT4X4>\& finalTransforms)\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00072}00072 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00073}00073 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00074}00074     \textcolor{comment}{// Gives parentIndex of ith bone.}}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00075}00075     std::vector<int> mBoneHierarchy;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00077}00077     std::vector<DirectX::XMFLOAT4X4> mBoneOffsets;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00078}00078    }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00079}00079     std::unordered\_map<std::string, AnimationClip> mAnimations;}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00080}00080 \};}
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00081}00081  }
+\DoxyCodeLine{\Hypertarget{_skinned_data_8h_source_l00082}00082 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// SKINNEDDATA\_H}}
 
 \end{DoxyCode}

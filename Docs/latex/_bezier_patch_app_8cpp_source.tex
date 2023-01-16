@@ -1,847 +1,847 @@
-\doxysection{Bezier\+Patch\+App.\+cpp}
+\hypertarget{_bezier_patch_app_8cpp_source}{}\doxysection{Bezier\+Patch\+App.\+cpp}
 \label{_bezier_patch_app_8cpp_source}\index{Week9/BezierPatch/BezierPatchApp.cpp@{Week9/BezierPatch/BezierPatchApp.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_bezier_patch_app_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// BezierPatchApp.cpp by Frank Luna (C) 2015 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
-\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
-\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00012 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
-\DoxyCodeLine{00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
-\DoxyCodeLine{00017 }
-\DoxyCodeLine{00018 \textcolor{keyword}{const} \textcolor{keywordtype}{int} gNumFrameResources = 3;}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
-\DoxyCodeLine{00021 \textcolor{comment}{// vary from app-\/to-\/app.}}
-\DoxyCodeLine{00022 \textcolor{keyword}{struct }RenderItem}
-\DoxyCodeLine{00023 \{}
-\DoxyCodeLine{00024     RenderItem() = \textcolor{keywordflow}{default};}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
-\DoxyCodeLine{00027     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
-\DoxyCodeLine{00028     \textcolor{comment}{// and scale of the object in the world.}}
-\DoxyCodeLine{00029     XMFLOAT4X4 World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00030 }
-\DoxyCodeLine{00031     XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
-\DoxyCodeLine{00034     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
-\DoxyCodeLine{00035     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
-\DoxyCodeLine{00036     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
-\DoxyCodeLine{00037     \textcolor{keywordtype}{int} NumFramesDirty = gNumFrameResources;}
-\DoxyCodeLine{00038 }
-\DoxyCodeLine{00039     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
-\DoxyCodeLine{00040     UINT ObjCBIndex = -\/1;}
-\DoxyCodeLine{00041 }
-\DoxyCodeLine{00042     Material* Mat = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00043     MeshGeometry* Geo = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045     \textcolor{comment}{// Primitive topology.}}
-\DoxyCodeLine{00046     D3D12\_PRIMITIVE\_TOPOLOGY PrimitiveType = D3D11\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
-\DoxyCodeLine{00047 }
-\DoxyCodeLine{00048     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
-\DoxyCodeLine{00049     UINT IndexCount = 0;}
-\DoxyCodeLine{00050     UINT StartIndexLocation = 0;}
-\DoxyCodeLine{00051     \textcolor{keywordtype}{int} BaseVertexLocation = 0;}
-\DoxyCodeLine{00052 \};}
-\DoxyCodeLine{00053 }
-\DoxyCodeLine{00054 \textcolor{keyword}{enum class} RenderLayer : int}
-\DoxyCodeLine{00055 \{}
-\DoxyCodeLine{00056     Opaque = 0,}
-\DoxyCodeLine{00057     Count}
-\DoxyCodeLine{00058 \};}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060 \textcolor{keyword}{class }BezierPatchApp : \textcolor{keyword}{public} D3DApp}
-\DoxyCodeLine{00061 \{}
-\DoxyCodeLine{00062 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00063     BezierPatchApp(HINSTANCE hInstance);}
-\DoxyCodeLine{00064     BezierPatchApp(\textcolor{keyword}{const} BezierPatchApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00065     BezierPatchApp\& operator=(\textcolor{keyword}{const} BezierPatchApp\& rhs) = \textcolor{keyword}{delete};}
-\DoxyCodeLine{00066     \string~BezierPatchApp();}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} Initialize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00069 }
-\DoxyCodeLine{00070 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00071     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
-\DoxyCodeLine{00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} GameTimer\& gt)\textcolor{keyword}{override};}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00080     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00081     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00082     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00083     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt);}
-\DoxyCodeLine{00085 }
-\DoxyCodeLine{00086     \textcolor{keywordtype}{void} LoadTextures();}
-\DoxyCodeLine{00087     \textcolor{keywordtype}{void} BuildRootSignature();}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
-\DoxyCodeLine{00090     \textcolor{keywordtype}{void} BuildQuadPatchGeometry();}
-\DoxyCodeLine{00091     \textcolor{keywordtype}{void} BuildPSOs();}
-\DoxyCodeLine{00092     \textcolor{keywordtype}{void} BuildFrameResources();}
-\DoxyCodeLine{00093     \textcolor{keywordtype}{void} BuildMaterials();}
-\DoxyCodeLine{00094     \textcolor{keywordtype}{void} BuildRenderItems();}
-\DoxyCodeLine{00095     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
-\DoxyCodeLine{00096 }
-\DoxyCodeLine{00097     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
-\DoxyCodeLine{00098 }
-\DoxyCodeLine{00099 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00100 }
-\DoxyCodeLine{00101     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
-\DoxyCodeLine{00102     FrameResource* mCurrFrameResource = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00103     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
-\DoxyCodeLine{00104 }
-\DoxyCodeLine{00105     UINT mCbvSrvDescriptorSize = 0;}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00108 }
-\DoxyCodeLine{00109     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
-\DoxyCodeLine{00112     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
-\DoxyCodeLine{00113     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
-\DoxyCodeLine{00114     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
-\DoxyCodeLine{00115     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
-\DoxyCodeLine{00116 }
-\DoxyCodeLine{00117     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
-\DoxyCodeLine{00118 }
-\DoxyCodeLine{00119     \textcolor{comment}{// Cache render items of interest.}}
-\DoxyCodeLine{00120     RenderItem* mSkullRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00121     RenderItem* mReflectedSkullRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00122     RenderItem* mShadowedSkullRitem = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00123 }
-\DoxyCodeLine{00124     \textcolor{comment}{// List of all the render items.}}
-\DoxyCodeLine{00125     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
-\DoxyCodeLine{00126 }
-\DoxyCodeLine{00127     \textcolor{comment}{// Render items divided by PSO.}}
-\DoxyCodeLine{00128     std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];}
-\DoxyCodeLine{00129 }
-\DoxyCodeLine{00130     PassConstants mMainPassCB;}
-\DoxyCodeLine{00131     PassConstants mReflectedPassCB;}
-\DoxyCodeLine{00132 }
-\DoxyCodeLine{00133     XMFLOAT3 mSkullTranslation = \{ 0.0f, 1.0f, -\/5.0f \};}
-\DoxyCodeLine{00134 }
-\DoxyCodeLine{00135     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
-\DoxyCodeLine{00136     XMFLOAT4X4 mView = MathHelper::Identity4x4();}
-\DoxyCodeLine{00137     XMFLOAT4X4 mProj = MathHelper::Identity4x4();}
-\DoxyCodeLine{00138 }
-\DoxyCodeLine{00139     \textcolor{keywordtype}{float} mTheta = 1.24f*XM\_PI;}
-\DoxyCodeLine{00140     \textcolor{keywordtype}{float} mPhi = 0.42f*XM\_PI;}
-\DoxyCodeLine{00141     \textcolor{keywordtype}{float} mRadius = 12.0f;}
-\DoxyCodeLine{00142 }
-\DoxyCodeLine{00143     POINT mLastMousePos;}
-\DoxyCodeLine{00144 \};}
-\DoxyCodeLine{00145 }
-\DoxyCodeLine{00146 \textcolor{keywordtype}{int} WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,}
-\DoxyCodeLine{00147     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
-\DoxyCodeLine{00148 \{}
-\DoxyCodeLine{00149     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
-\DoxyCodeLine{00150 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
-\DoxyCodeLine{00151     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
-\DoxyCodeLine{00152 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00153 }
-\DoxyCodeLine{00154     \textcolor{keywordflow}{try}}
-\DoxyCodeLine{00155     \{}
-\DoxyCodeLine{00156         BezierPatchApp theApp(hInstance);}
-\DoxyCodeLine{00157         \textcolor{keywordflow}{if}(!theApp.Initialize())}
-\DoxyCodeLine{00158             \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00159 }
-\DoxyCodeLine{00160         \textcolor{keywordflow}{return} theApp.Run();}
-\DoxyCodeLine{00161     \}}
-\DoxyCodeLine{00162     \textcolor{keywordflow}{catch}(DxException\& e)}
-\DoxyCodeLine{00163     \{}
-\DoxyCodeLine{00164         MessageBox(\textcolor{keyword}{nullptr}, e.ToString().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
-\DoxyCodeLine{00165         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00166     \}}
-\DoxyCodeLine{00167 \}}
-\DoxyCodeLine{00168 }
-\DoxyCodeLine{00169 BezierPatchApp::BezierPatchApp(HINSTANCE hInstance)}
-\DoxyCodeLine{00170     : D3DApp(hInstance)}
-\DoxyCodeLine{00171 \{}
-\DoxyCodeLine{00172 \}}
-\DoxyCodeLine{00173 }
-\DoxyCodeLine{00174 BezierPatchApp::\string~BezierPatchApp()}
-\DoxyCodeLine{00175 \{}
-\DoxyCodeLine{00176     \textcolor{keywordflow}{if}(md3dDevice != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00177         FlushCommandQueue();}
-\DoxyCodeLine{00178 \}}
-\DoxyCodeLine{00179 }
-\DoxyCodeLine{00180 \textcolor{keywordtype}{bool} BezierPatchApp::Initialize()}
-\DoxyCodeLine{00181 \{}
-\DoxyCodeLine{00182     \textcolor{keywordflow}{if}(!D3DApp::Initialize())}
-\DoxyCodeLine{00183         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{00184 }
-\DoxyCodeLine{00185     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
-\DoxyCodeLine{00186     ThrowIfFailed(mCommandList-\/>Reset(mDirectCmdListAlloc.Get(), \textcolor{keyword}{nullptr}));}
-\DoxyCodeLine{00187 }
-\DoxyCodeLine{00188     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
-\DoxyCodeLine{00189     \textcolor{comment}{// so we have to query this information.}}
-\DoxyCodeLine{00190     mCbvSrvDescriptorSize = md3dDevice-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
-\DoxyCodeLine{00191 }
-\DoxyCodeLine{00192     LoadTextures();}
-\DoxyCodeLine{00193     BuildRootSignature();}
-\DoxyCodeLine{00194     BuildDescriptorHeaps();}
-\DoxyCodeLine{00195     BuildShadersAndInputLayout();}
-\DoxyCodeLine{00196     BuildQuadPatchGeometry();}
-\DoxyCodeLine{00197     BuildMaterials();}
-\DoxyCodeLine{00198     BuildRenderItems();}
-\DoxyCodeLine{00199     BuildFrameResources();}
-\DoxyCodeLine{00200     BuildPSOs();}
-\DoxyCodeLine{00201 }
-\DoxyCodeLine{00202     \textcolor{comment}{// Execute the initialization commands.}}
-\DoxyCodeLine{00203     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00204     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00205     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00206 }
-\DoxyCodeLine{00207     \textcolor{comment}{// Wait until initialization is complete.}}
-\DoxyCodeLine{00208     FlushCommandQueue();}
-\DoxyCodeLine{00209 }
-\DoxyCodeLine{00210     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{00211 \}}
-\DoxyCodeLine{00212  }
-\DoxyCodeLine{00213 \textcolor{keywordtype}{void} BezierPatchApp::OnResize()}
-\DoxyCodeLine{00214 \{}
-\DoxyCodeLine{00215     D3DApp::OnResize();}
-\DoxyCodeLine{00216 }
-\DoxyCodeLine{00217     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
-\DoxyCodeLine{00218     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);}
-\DoxyCodeLine{00219     XMStoreFloat4x4(\&mProj, P);}
-\DoxyCodeLine{00220 \}}
-\DoxyCodeLine{00221 }
-\DoxyCodeLine{00222 \textcolor{keywordtype}{void} BezierPatchApp::Update(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00223 \{}
-\DoxyCodeLine{00224     OnKeyboardInput(gt);}
-\DoxyCodeLine{00225     UpdateCamera(gt);}
-\DoxyCodeLine{00226 }
-\DoxyCodeLine{00227     \textcolor{comment}{// Cycle through the circular frame resource array.}}
-\DoxyCodeLine{00228     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% gNumFrameResources;}
-\DoxyCodeLine{00229     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
-\DoxyCodeLine{00230 }
-\DoxyCodeLine{00231     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
-\DoxyCodeLine{00232     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
-\DoxyCodeLine{00233     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>Fence != 0 \&\& mFence-\/>GetCompletedValue() < mCurrFrameResource-\/>Fence)}
-\DoxyCodeLine{00234     \{}
-\DoxyCodeLine{00235         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
-\DoxyCodeLine{00236         ThrowIfFailed(mFence-\/>SetEventOnCompletion(mCurrFrameResource-\/>Fence, eventHandle));}
-\DoxyCodeLine{00237         WaitForSingleObject(eventHandle, INFINITE);}
-\DoxyCodeLine{00238         CloseHandle(eventHandle);}
-\DoxyCodeLine{00239     \}}
-\DoxyCodeLine{00240 }
-\DoxyCodeLine{00241     AnimateMaterials(gt);}
-\DoxyCodeLine{00242     UpdateObjectCBs(gt);}
-\DoxyCodeLine{00243     UpdateMaterialCBs(gt);}
-\DoxyCodeLine{00244     UpdateMainPassCB(gt);}
-\DoxyCodeLine{00245 \}}
-\DoxyCodeLine{00246 }
-\DoxyCodeLine{00247 \textcolor{keywordtype}{void} BezierPatchApp::Draw(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00248 \{}
-\DoxyCodeLine{00249     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>CmdListAlloc;}
-\DoxyCodeLine{00250 }
-\DoxyCodeLine{00251     \textcolor{comment}{// Reuse the memory associated with command recording.}}
-\DoxyCodeLine{00252     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
-\DoxyCodeLine{00253     ThrowIfFailed(cmdListAlloc-\/>Reset());}
-\DoxyCodeLine{00254 }
-\DoxyCodeLine{00255     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
-\DoxyCodeLine{00256     \textcolor{comment}{// Reusing the command list reuses memory.}}
-\DoxyCodeLine{00257     ThrowIfFailed(mCommandList-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
-\DoxyCodeLine{00258 }
-\DoxyCodeLine{00259     mCommandList-\/>RSSetViewports(1, \&mScreenViewport);}
-\DoxyCodeLine{00260     mCommandList-\/>RSSetScissorRects(1, \&mScissorRect);}
-\DoxyCodeLine{00261 }
-\DoxyCodeLine{00262     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00263     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00264         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00265 }
-\DoxyCodeLine{00266     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
-\DoxyCodeLine{00267     mCommandList-\/>ClearRenderTargetView(CurrentBackBufferView(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.FogColor, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00268     mCommandList-\/>ClearDepthStencilView(DepthStencilView(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00269 }
-\DoxyCodeLine{00270     \textcolor{comment}{// Specify the buffers we are going to render to.}}
-\DoxyCodeLine{00271     mCommandList-\/>OMSetRenderTargets(1, \&CurrentBackBufferView(), \textcolor{keyword}{true}, \&DepthStencilView());}
-\DoxyCodeLine{00272 }
-\DoxyCodeLine{00273     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
-\DoxyCodeLine{00274     mCommandList-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
-\DoxyCodeLine{00275 }
-\DoxyCodeLine{00276     mCommandList-\/>SetGraphicsRootSignature(mRootSignature.Get());}
-\DoxyCodeLine{00277 }
-\DoxyCodeLine{00278     UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(PassConstants));}
-\DoxyCodeLine{00279 }
-\DoxyCodeLine{00280     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>PassCB-\/>Resource();}
-\DoxyCodeLine{00281     mCommandList-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
-\DoxyCodeLine{00282     }
-\DoxyCodeLine{00283     DrawRenderItems(mCommandList.Get(), mRitemLayer[(\textcolor{keywordtype}{int})RenderLayer::Opaque]);}
-\DoxyCodeLine{00284         }
-\DoxyCodeLine{00285     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
-\DoxyCodeLine{00286     mCommandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(CurrentBackBuffer(),}
-\DoxyCodeLine{00287         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00288 }
-\DoxyCodeLine{00289     \textcolor{comment}{// Done recording commands.}}
-\DoxyCodeLine{00290     ThrowIfFailed(mCommandList-\/>Close());}
-\DoxyCodeLine{00291 }
-\DoxyCodeLine{00292     \textcolor{comment}{// Add the command list to the queue for execution.}}
-\DoxyCodeLine{00293     ID3D12CommandList* cmdsLists[] = \{ mCommandList.Get() \};}
-\DoxyCodeLine{00294     mCommandQueue-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
-\DoxyCodeLine{00295 }
-\DoxyCodeLine{00296     \textcolor{comment}{// Swap the back and front buffers}}
-\DoxyCodeLine{00297     ThrowIfFailed(mSwapChain-\/>Present(0, 0));}
-\DoxyCodeLine{00298     mCurrBackBuffer = (mCurrBackBuffer + 1) \% SwapChainBufferCount;}
-\DoxyCodeLine{00299 }
-\DoxyCodeLine{00300     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
-\DoxyCodeLine{00301     mCurrFrameResource-\/>Fence = ++mCurrentFence;}
-\DoxyCodeLine{00302 }
-\DoxyCodeLine{00303     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
-\DoxyCodeLine{00304     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
-\DoxyCodeLine{00305     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
-\DoxyCodeLine{00306     mCommandQueue-\/>Signal(mFence.Get(), mCurrentFence);}
-\DoxyCodeLine{00307 \}}
-\DoxyCodeLine{00308 }
-\DoxyCodeLine{00309 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00310 \{}
-\DoxyCodeLine{00311     mLastMousePos.x = x;}
-\DoxyCodeLine{00312     mLastMousePos.y = y;}
-\DoxyCodeLine{00313 }
-\DoxyCodeLine{00314     SetCapture(mhMainWnd);}
-\DoxyCodeLine{00315 \}}
-\DoxyCodeLine{00316 }
-\DoxyCodeLine{00317 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00318 \{}
-\DoxyCodeLine{00319     ReleaseCapture();}
-\DoxyCodeLine{00320 \}}
-\DoxyCodeLine{00321 }
-\DoxyCodeLine{00322 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
-\DoxyCodeLine{00323 \{}
-\DoxyCodeLine{00324     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
-\DoxyCodeLine{00325     \{}
-\DoxyCodeLine{00326         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
-\DoxyCodeLine{00327         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
-\DoxyCodeLine{00328         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
-\DoxyCodeLine{00329 }
-\DoxyCodeLine{00330         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
-\DoxyCodeLine{00331         mTheta += dx;}
-\DoxyCodeLine{00332         mPhi += dy;}
-\DoxyCodeLine{00333 }
-\DoxyCodeLine{00334         \textcolor{comment}{// Restrict the angle mPhi.}}
-\DoxyCodeLine{00335         mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi -\/ 0.1f);}
-\DoxyCodeLine{00336     \}}
-\DoxyCodeLine{00337     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
-\DoxyCodeLine{00338     \{}
-\DoxyCodeLine{00339         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
-\DoxyCodeLine{00340         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
-\DoxyCodeLine{00341         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
-\DoxyCodeLine{00342 }
-\DoxyCodeLine{00343         \textcolor{comment}{// Update the camera radius based on input.}}
-\DoxyCodeLine{00344         mRadius += dx -\/ dy;}
-\DoxyCodeLine{00345 }
-\DoxyCodeLine{00346         \textcolor{comment}{// Restrict the radius.}}
-\DoxyCodeLine{00347         mRadius = MathHelper::Clamp(mRadius, 5.0f, 150.0f);}
-\DoxyCodeLine{00348     \}}
-\DoxyCodeLine{00349 }
-\DoxyCodeLine{00350     mLastMousePos.x = x;}
-\DoxyCodeLine{00351     mLastMousePos.y = y;}
-\DoxyCodeLine{00352 \}}
-\DoxyCodeLine{00353  }
-\DoxyCodeLine{00354 \textcolor{keywordtype}{void} BezierPatchApp::OnKeyboardInput(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00355 \{}
-\DoxyCodeLine{00356 \}}
-\DoxyCodeLine{00357  }
-\DoxyCodeLine{00358 \textcolor{keywordtype}{void} BezierPatchApp::UpdateCamera(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00359 \{}
-\DoxyCodeLine{00360     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
-\DoxyCodeLine{00361     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
-\DoxyCodeLine{00362     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
-\DoxyCodeLine{00363     mEyePos.y = mRadius*cosf(mPhi);}
-\DoxyCodeLine{00364 }
-\DoxyCodeLine{00365     \textcolor{comment}{// Build the view matrix.}}
-\DoxyCodeLine{00366     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
-\DoxyCodeLine{00367     XMVECTOR target = XMVectorZero();}
-\DoxyCodeLine{00368     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00369 }
-\DoxyCodeLine{00370     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
-\DoxyCodeLine{00371     XMStoreFloat4x4(\&mView, view);}
-\DoxyCodeLine{00372 \}}
-\DoxyCodeLine{00373 }
-\DoxyCodeLine{00374 \textcolor{keywordtype}{void} BezierPatchApp::AnimateMaterials(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00375 \{}
-\DoxyCodeLine{00376 }
-\DoxyCodeLine{00377 \}}
-\DoxyCodeLine{00378 }
-\DoxyCodeLine{00379 \textcolor{keywordtype}{void} BezierPatchApp::UpdateObjectCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00380 \{}
-\DoxyCodeLine{00381     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>ObjectCB.get();}
-\DoxyCodeLine{00382     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
-\DoxyCodeLine{00383     \{}
-\DoxyCodeLine{00384         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
-\DoxyCodeLine{00385         \textcolor{comment}{// This needs to be tracked per frame resource.}}
-\DoxyCodeLine{00386         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00387         \{}
-\DoxyCodeLine{00388             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
-\DoxyCodeLine{00389             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
-\DoxyCodeLine{00390 }
-\DoxyCodeLine{00391             ObjectConstants objConstants;}
-\DoxyCodeLine{00392             XMStoreFloat4x4(\&objConstants.World, XMMatrixTranspose(world));}
-\DoxyCodeLine{00393             XMStoreFloat4x4(\&objConstants.TexTransform, XMMatrixTranspose(texTransform));}
-\DoxyCodeLine{00394 }
-\DoxyCodeLine{00395             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
-\DoxyCodeLine{00396 }
-\DoxyCodeLine{00397             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00398             e-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00399         \}}
-\DoxyCodeLine{00400     \}}
-\DoxyCodeLine{00401 \}}
-\DoxyCodeLine{00402 }
-\DoxyCodeLine{00403 \textcolor{keywordtype}{void} BezierPatchApp::UpdateMaterialCBs(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00404 \{}
-\DoxyCodeLine{00405     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>MaterialCB.get();}
-\DoxyCodeLine{00406     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
-\DoxyCodeLine{00407     \{}
-\DoxyCodeLine{00408         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
-\DoxyCodeLine{00409         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
-\DoxyCodeLine{00410         Material* mat = e.second.get();}
-\DoxyCodeLine{00411         \textcolor{keywordflow}{if}(mat-\/>NumFramesDirty > 0)}
-\DoxyCodeLine{00412         \{}
-\DoxyCodeLine{00413             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>MatTransform);}
-\DoxyCodeLine{00414 }
-\DoxyCodeLine{00415             MaterialConstants matConstants;}
-\DoxyCodeLine{00416             matConstants.DiffuseAlbedo = mat-\/>DiffuseAlbedo;}
-\DoxyCodeLine{00417             matConstants.FresnelR0 = mat-\/>FresnelR0;}
-\DoxyCodeLine{00418             matConstants.Roughness = mat-\/>Roughness;}
-\DoxyCodeLine{00419             XMStoreFloat4x4(\&matConstants.MatTransform, XMMatrixTranspose(matTransform));}
-\DoxyCodeLine{00420 }
-\DoxyCodeLine{00421             currMaterialCB-\/>CopyData(mat-\/>MatCBIndex, matConstants);}
-\DoxyCodeLine{00422 }
-\DoxyCodeLine{00423             \textcolor{comment}{// Next FrameResource need to be updated too.}}
-\DoxyCodeLine{00424             mat-\/>NumFramesDirty-\/-\/;}
-\DoxyCodeLine{00425         \}}
-\DoxyCodeLine{00426     \}}
-\DoxyCodeLine{00427 \}}
-\DoxyCodeLine{00428 }
-\DoxyCodeLine{00429 \textcolor{keywordtype}{void} BezierPatchApp::UpdateMainPassCB(\textcolor{keyword}{const} GameTimer\& gt)}
-\DoxyCodeLine{00430 \{}
-\DoxyCodeLine{00431     XMMATRIX view = XMLoadFloat4x4(\&mView);}
-\DoxyCodeLine{00432     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
-\DoxyCodeLine{00433 }
-\DoxyCodeLine{00434     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
-\DoxyCodeLine{00435     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
-\DoxyCodeLine{00436     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
-\DoxyCodeLine{00437     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
-\DoxyCodeLine{00438 }
-\DoxyCodeLine{00439     XMStoreFloat4x4(\&mMainPassCB.View, XMMatrixTranspose(view));}
-\DoxyCodeLine{00440     XMStoreFloat4x4(\&mMainPassCB.InvView, XMMatrixTranspose(invView));}
-\DoxyCodeLine{00441     XMStoreFloat4x4(\&mMainPassCB.Proj, XMMatrixTranspose(proj));}
-\DoxyCodeLine{00442     XMStoreFloat4x4(\&mMainPassCB.InvProj, XMMatrixTranspose(invProj));}
-\DoxyCodeLine{00443     XMStoreFloat4x4(\&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));}
-\DoxyCodeLine{00444     XMStoreFloat4x4(\&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));}
-\DoxyCodeLine{00445     mMainPassCB.EyePosW = mEyePos;}
-\DoxyCodeLine{00446     mMainPassCB.RenderTargetSize = XMFLOAT2((\textcolor{keywordtype}{float})mClientWidth, (\textcolor{keywordtype}{float})mClientHeight);}
-\DoxyCodeLine{00447     mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);}
-\DoxyCodeLine{00448     mMainPassCB.NearZ = 1.0f;}
-\DoxyCodeLine{00449     mMainPassCB.FarZ = 1000.0f;}
-\DoxyCodeLine{00450     mMainPassCB.TotalTime = gt.TotalTime();}
-\DoxyCodeLine{00451     mMainPassCB.DeltaTime = gt.DeltaTime();}
-\DoxyCodeLine{00452     mMainPassCB.AmbientLight = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
-\DoxyCodeLine{00453     mMainPassCB.Lights[0].Direction = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00454     mMainPassCB.Lights[0].Strength = \{ 0.6f, 0.6f, 0.6f \};}
-\DoxyCodeLine{00455     mMainPassCB.Lights[1].Direction = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
-\DoxyCodeLine{00456     mMainPassCB.Lights[1].Strength = \{ 0.3f, 0.3f, 0.3f \};}
-\DoxyCodeLine{00457     mMainPassCB.Lights[2].Direction = \{ 0.0f, -\/0.707f, -\/0.707f \};}
-\DoxyCodeLine{00458     mMainPassCB.Lights[2].Strength = \{ 0.15f, 0.15f, 0.15f \};}
-\DoxyCodeLine{00459 }
-\DoxyCodeLine{00460     \textcolor{comment}{// Main pass stored in index 2}}
-\DoxyCodeLine{00461     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>PassCB.get();}
-\DoxyCodeLine{00462     currPassCB-\/>CopyData(0, mMainPassCB);}
-\DoxyCodeLine{00463 \}}
-\DoxyCodeLine{00464 }
-\DoxyCodeLine{00465 \textcolor{keywordtype}{void} BezierPatchApp::LoadTextures()}
-\DoxyCodeLine{00466 \{}
-\DoxyCodeLine{00467     \textcolor{keyword}{auto} bricksTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00468     bricksTex-\/>Name = \textcolor{stringliteral}{"{}bricksTex"{}};}
-\DoxyCodeLine{00469     bricksTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/bricks.dds"{}};}
-\DoxyCodeLine{00470     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00471         mCommandList.Get(), bricksTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00472         bricksTex-\/>Resource, bricksTex-\/>UploadHeap));}
-\DoxyCodeLine{00473 }
-\DoxyCodeLine{00474     \textcolor{keyword}{auto} checkboardTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00475     checkboardTex-\/>Name = \textcolor{stringliteral}{"{}checkboardTex"{}};}
-\DoxyCodeLine{00476     checkboardTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/checkboard.dds"{}};}
-\DoxyCodeLine{00477     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00478         mCommandList.Get(), checkboardTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00479         checkboardTex-\/>Resource, checkboardTex-\/>UploadHeap));}
-\DoxyCodeLine{00480 }
-\DoxyCodeLine{00481     \textcolor{keyword}{auto} iceTex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00482     iceTex-\/>Name = \textcolor{stringliteral}{"{}iceTex"{}};}
-\DoxyCodeLine{00483     iceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/ice.dds"{}};}
-\DoxyCodeLine{00484     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00485         mCommandList.Get(), iceTex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00486         iceTex-\/>Resource, iceTex-\/>UploadHeap));}
-\DoxyCodeLine{00487 }
-\DoxyCodeLine{00488     \textcolor{keyword}{auto} white1x1Tex = std::make\_unique<Texture>();}
-\DoxyCodeLine{00489     white1x1Tex-\/>Name = \textcolor{stringliteral}{"{}white1x1Tex"{}};}
-\DoxyCodeLine{00490     white1x1Tex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/white1x1.dds"{}};}
-\DoxyCodeLine{00491     ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),}
-\DoxyCodeLine{00492         mCommandList.Get(), white1x1Tex-\/>Filename.c\_str(),}
-\DoxyCodeLine{00493         white1x1Tex-\/>Resource, white1x1Tex-\/>UploadHeap));}
-\DoxyCodeLine{00494 }
-\DoxyCodeLine{00495     mTextures[bricksTex-\/>Name] = std::move(bricksTex);}
-\DoxyCodeLine{00496     mTextures[checkboardTex-\/>Name] = std::move(checkboardTex);}
-\DoxyCodeLine{00497     mTextures[iceTex-\/>Name] = std::move(iceTex);}
-\DoxyCodeLine{00498     mTextures[white1x1Tex-\/>Name] = std::move(white1x1Tex);}
-\DoxyCodeLine{00499 \}}
-\DoxyCodeLine{00500 }
-\DoxyCodeLine{00501 \textcolor{keywordtype}{void} BezierPatchApp::BuildRootSignature()}
-\DoxyCodeLine{00502 \{}
-\DoxyCodeLine{00503     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
-\DoxyCodeLine{00504     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
-\DoxyCodeLine{00505 }
-\DoxyCodeLine{00506     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
-\DoxyCodeLine{00507     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
-\DoxyCodeLine{00508 }
-\DoxyCodeLine{00509     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
-\DoxyCodeLine{00510     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
-\DoxyCodeLine{00511     slotRootParameter[1].InitAsConstantBufferView(0);}
-\DoxyCodeLine{00512     slotRootParameter[2].InitAsConstantBufferView(1);}
-\DoxyCodeLine{00513     slotRootParameter[3].InitAsConstantBufferView(2);}
-\DoxyCodeLine{00514 }
-\DoxyCodeLine{00515     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
-\DoxyCodeLine{00516 }
-\DoxyCodeLine{00517     \textcolor{comment}{// A root signature is an array of root parameters.}}
-\DoxyCodeLine{00518     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
-\DoxyCodeLine{00519         (UINT)staticSamplers.size(), staticSamplers.data(),}
-\DoxyCodeLine{00520         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
-\DoxyCodeLine{00521 }
-\DoxyCodeLine{00522     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
-\DoxyCodeLine{00523     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00524     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00525     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
-\DoxyCodeLine{00526         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
-\DoxyCodeLine{00527 }
-\DoxyCodeLine{00528     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00529     \{}
-\DoxyCodeLine{00530         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
-\DoxyCodeLine{00531     \}}
-\DoxyCodeLine{00532     ThrowIfFailed(hr);}
-\DoxyCodeLine{00533 }
-\DoxyCodeLine{00534     ThrowIfFailed(md3dDevice-\/>CreateRootSignature(}
-\DoxyCodeLine{00535         0,}
-\DoxyCodeLine{00536         serializedRootSig-\/>GetBufferPointer(),}
-\DoxyCodeLine{00537         serializedRootSig-\/>GetBufferSize(),}
-\DoxyCodeLine{00538         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
-\DoxyCodeLine{00539 \}}
-\DoxyCodeLine{00540 }
-\DoxyCodeLine{00541 \textcolor{keywordtype}{void} BezierPatchApp::BuildDescriptorHeaps()}
-\DoxyCodeLine{00542 \{}
-\DoxyCodeLine{00543     \textcolor{comment}{//}}
-\DoxyCodeLine{00544     \textcolor{comment}{// Create the SRV heap.}}
-\DoxyCodeLine{00545     \textcolor{comment}{//}}
-\DoxyCodeLine{00546     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
-\DoxyCodeLine{00547     srvHeapDesc.NumDescriptors = 4;}
-\DoxyCodeLine{00548     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
-\DoxyCodeLine{00549     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
-\DoxyCodeLine{00550     ThrowIfFailed(md3dDevice-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
-\DoxyCodeLine{00551 }
-\DoxyCodeLine{00552     \textcolor{comment}{//}}
-\DoxyCodeLine{00553     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
-\DoxyCodeLine{00554     \textcolor{comment}{//}}
-\DoxyCodeLine{00555     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00556 }
-\DoxyCodeLine{00557     \textcolor{keyword}{auto} bricksTex = mTextures[\textcolor{stringliteral}{"{}bricksTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00558     \textcolor{keyword}{auto} checkboardTex = mTextures[\textcolor{stringliteral}{"{}checkboardTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00559     \textcolor{keyword}{auto} iceTex = mTextures[\textcolor{stringliteral}{"{}iceTex"{}}]-\/>Resource;}
-\DoxyCodeLine{00560     \textcolor{keyword}{auto} white1x1Tex = mTextures[\textcolor{stringliteral}{"{}white1x1Tex"{}}]-\/>Resource;}
-\DoxyCodeLine{00561 }
-\DoxyCodeLine{00562     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00563     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00564     srvDesc.Format = bricksTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00565     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00566     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00567     srvDesc.Texture2D.MipLevels = -\/1;}
-\DoxyCodeLine{00568     md3dDevice-\/>CreateShaderResourceView(bricksTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00569 }
-\DoxyCodeLine{00570     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00571     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00572 }
-\DoxyCodeLine{00573     srvDesc.Format = checkboardTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00574     md3dDevice-\/>CreateShaderResourceView(checkboardTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00575 }
-\DoxyCodeLine{00576     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00577     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00578 }
-\DoxyCodeLine{00579     srvDesc.Format = iceTex-\/>GetDesc().Format;}
-\DoxyCodeLine{00580     md3dDevice-\/>CreateShaderResourceView(iceTex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00581 }
-\DoxyCodeLine{00582     \textcolor{comment}{// next descriptor}}
-\DoxyCodeLine{00583     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00584 }
-\DoxyCodeLine{00585     srvDesc.Format = white1x1Tex-\/>GetDesc().Format;}
-\DoxyCodeLine{00586     md3dDevice-\/>CreateShaderResourceView(white1x1Tex.Get(), \&srvDesc, hDescriptor);}
-\DoxyCodeLine{00587 \}}
-\DoxyCodeLine{00588 }
-\DoxyCodeLine{00589 \textcolor{keywordtype}{void} BezierPatchApp::BuildShadersAndInputLayout()}
-\DoxyCodeLine{00590 \{}
-\DoxyCodeLine{00591     mShaders[\textcolor{stringliteral}{"{}tessVS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
-\DoxyCodeLine{00592     mShaders[\textcolor{stringliteral}{"{}tessHS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}HS"{}}, \textcolor{stringliteral}{"{}hs\_5\_0"{}});}
-\DoxyCodeLine{00593     mShaders[\textcolor{stringliteral}{"{}tessDS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}DS"{}}, \textcolor{stringliteral}{"{}ds\_5\_0"{}});}
-\DoxyCodeLine{00594     mShaders[\textcolor{stringliteral}{"{}tessPS"{}}] = d3dUtil::CompileShader(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
-\DoxyCodeLine{00595     }
-\DoxyCodeLine{00596     mInputLayout =}
-\DoxyCodeLine{00597     \{}
-\DoxyCodeLine{00598         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \}}
-\DoxyCodeLine{00599     \};}
-\DoxyCodeLine{00600 \}}
-\DoxyCodeLine{00601 }
-\DoxyCodeLine{00602 \textcolor{keywordtype}{void} BezierPatchApp::BuildQuadPatchGeometry()}
-\DoxyCodeLine{00603 \{}
-\DoxyCodeLine{00604     std::array<XMFLOAT3,16> vertices =}
-\DoxyCodeLine{00605     \{}
-\DoxyCodeLine{00606         \textcolor{comment}{// Row 0}}
-\DoxyCodeLine{00607         XMFLOAT3(-\/10.0f, -\/10.0f, +15.0f),}
-\DoxyCodeLine{00608         XMFLOAT3(-\/5.0f,  0.0f, +15.0f),}
-\DoxyCodeLine{00609         XMFLOAT3(+5.0f,  0.0f, +15.0f),}
-\DoxyCodeLine{00610         XMFLOAT3(+10.0f, 0.0f, +15.0f),}
-\DoxyCodeLine{00611 }
-\DoxyCodeLine{00612         \textcolor{comment}{// Row 1}}
-\DoxyCodeLine{00613         XMFLOAT3(-\/15.0f, 0.0f, +5.0f),}
-\DoxyCodeLine{00614         XMFLOAT3(-\/5.0f,  0.0f, +5.0f),}
-\DoxyCodeLine{00615         XMFLOAT3(+5.0f,  20.0f, +5.0f),}
-\DoxyCodeLine{00616         XMFLOAT3(+15.0f, 0.0f, +5.0f),}
-\DoxyCodeLine{00617 }
-\DoxyCodeLine{00618         \textcolor{comment}{// Row 2}}
-\DoxyCodeLine{00619         XMFLOAT3(-\/15.0f, 0.0f, -\/5.0f),}
-\DoxyCodeLine{00620         XMFLOAT3(-\/5.0f,  0.0f, -\/5.0f),}
-\DoxyCodeLine{00621         XMFLOAT3(+5.0f,  0.0f, -\/5.0f),}
-\DoxyCodeLine{00622         XMFLOAT3(+15.0f, 0.0f, -\/5.0f),}
-\DoxyCodeLine{00623 }
-\DoxyCodeLine{00624         \textcolor{comment}{// Row 3}}
-\DoxyCodeLine{00625         XMFLOAT3(-\/10.0f, 10.0f, -\/15.0f),}
-\DoxyCodeLine{00626         XMFLOAT3(-\/5.0f,  0.0f, -\/15.0f),}
-\DoxyCodeLine{00627         XMFLOAT3(+5.0f,  0.0f, -\/15.0f),}
-\DoxyCodeLine{00628         XMFLOAT3(+25.0f, 10.0f, -\/15.0f)}
-\DoxyCodeLine{00629     \};}
-\DoxyCodeLine{00630 }
-\DoxyCodeLine{00631     std::array<std::int16\_t, 16> indices = }
-\DoxyCodeLine{00632     \{ }
-\DoxyCodeLine{00633         0, 1, 2, 3,}
-\DoxyCodeLine{00634         4, 5, 6, 7,}
-\DoxyCodeLine{00635         8, 9, 10, 11, }
-\DoxyCodeLine{00636         12, 13, 14, 15}
-\DoxyCodeLine{00637     \};}
-\DoxyCodeLine{00638 }
-\DoxyCodeLine{00639     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(Vertex);}
-\DoxyCodeLine{00640     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
-\DoxyCodeLine{00641 }
-\DoxyCodeLine{00642     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
-\DoxyCodeLine{00643     geo-\/>Name = \textcolor{stringliteral}{"{}quadpatchGeo"{}};}
-\DoxyCodeLine{00644 }
-\DoxyCodeLine{00645     ThrowIfFailed(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
-\DoxyCodeLine{00646     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
-\DoxyCodeLine{00647 }
-\DoxyCodeLine{00648     ThrowIfFailed(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
-\DoxyCodeLine{00649     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
-\DoxyCodeLine{00650 }
-\DoxyCodeLine{00651     geo-\/>VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00652         mCommandList.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
-\DoxyCodeLine{00653 }
-\DoxyCodeLine{00654     geo-\/>IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(),}
-\DoxyCodeLine{00655         mCommandList.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
-\DoxyCodeLine{00656 }
-\DoxyCodeLine{00657     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(XMFLOAT3);}
-\DoxyCodeLine{00658     geo-\/>VertexBufferByteSize = vbByteSize;}
-\DoxyCodeLine{00659     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
-\DoxyCodeLine{00660     geo-\/>IndexBufferByteSize = ibByteSize;}
-\DoxyCodeLine{00661 }
-\DoxyCodeLine{00662     SubmeshGeometry quadSubmesh;}
-\DoxyCodeLine{00663     quadSubmesh.IndexCount = (UINT)indices.size();}
-\DoxyCodeLine{00664     quadSubmesh.StartIndexLocation = 0;}
-\DoxyCodeLine{00665     quadSubmesh.BaseVertexLocation = 0;}
-\DoxyCodeLine{00666 }
-\DoxyCodeLine{00667     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}] = quadSubmesh;}
-\DoxyCodeLine{00668 }
-\DoxyCodeLine{00669     mGeometries[geo-\/>Name] = std::move(geo);}
-\DoxyCodeLine{00670 \}}
-\DoxyCodeLine{00671 }
-\DoxyCodeLine{00672 \textcolor{keywordtype}{void} BezierPatchApp::BuildPSOs()}
-\DoxyCodeLine{00673 \{}
-\DoxyCodeLine{00674     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
-\DoxyCodeLine{00675 }
-\DoxyCodeLine{00676     \textcolor{comment}{//}}
-\DoxyCodeLine{00677     \textcolor{comment}{// PSO for opaque objects.}}
-\DoxyCodeLine{00678     \textcolor{comment}{//}}
-\DoxyCodeLine{00679     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
-\DoxyCodeLine{00680     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
-\DoxyCodeLine{00681     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
-\DoxyCodeLine{00682     opaquePsoDesc.VS = }
-\DoxyCodeLine{00683     \{ }
-\DoxyCodeLine{00684         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessVS"{}}]-\/>GetBufferPointer()), }
-\DoxyCodeLine{00685         mShaders[\textcolor{stringliteral}{"{}tessVS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00686     \};}
-\DoxyCodeLine{00687     opaquePsoDesc.HS =}
-\DoxyCodeLine{00688     \{}
-\DoxyCodeLine{00689         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00690         mShaders[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00691     \};}
-\DoxyCodeLine{00692     opaquePsoDesc.DS =}
-\DoxyCodeLine{00693     \{}
-\DoxyCodeLine{00694         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00695         mShaders[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00696     \};}
-\DoxyCodeLine{00697     opaquePsoDesc.PS = }
-\DoxyCodeLine{00698     \{ }
-\DoxyCodeLine{00699         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessPS"{}}]-\/>GetBufferPointer()),}
-\DoxyCodeLine{00700         mShaders[\textcolor{stringliteral}{"{}tessPS"{}}]-\/>GetBufferSize()}
-\DoxyCodeLine{00701     \};}
-\DoxyCodeLine{00702     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00703     opaquePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
-\DoxyCodeLine{00704     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00705     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
-\DoxyCodeLine{00706     opaquePsoDesc.SampleMask = UINT\_MAX;}
-\DoxyCodeLine{00707     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_PATCH;}
-\DoxyCodeLine{00708     opaquePsoDesc.NumRenderTargets = 1;}
-\DoxyCodeLine{00709     opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;}
-\DoxyCodeLine{00710     opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;}
-\DoxyCodeLine{00711     opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality -\/ 1) : 0;}
-\DoxyCodeLine{00712     opaquePsoDesc.DSVFormat = mDepthStencilFormat;}
-\DoxyCodeLine{00713     ThrowIfFailed(md3dDevice-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
-\DoxyCodeLine{00714 \}}
-\DoxyCodeLine{00715 }
-\DoxyCodeLine{00716 \textcolor{keywordtype}{void} BezierPatchApp::BuildFrameResources()}
-\DoxyCodeLine{00717 \{}
-\DoxyCodeLine{00718     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < gNumFrameResources; ++i)}
-\DoxyCodeLine{00719     \{}
-\DoxyCodeLine{00720         mFrameResources.push\_back(std::make\_unique<FrameResource>(md3dDevice.Get(),}
-\DoxyCodeLine{00721             2, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
-\DoxyCodeLine{00722     \}}
-\DoxyCodeLine{00723 \}}
-\DoxyCodeLine{00724 }
-\DoxyCodeLine{00725 \textcolor{keywordtype}{void} BezierPatchApp::BuildMaterials()}
-\DoxyCodeLine{00726 \{}
-\DoxyCodeLine{00727     \textcolor{keyword}{auto} whiteMat = std::make\_unique<Material>();}
-\DoxyCodeLine{00728     whiteMat-\/>Name = \textcolor{stringliteral}{"{}quadMat"{}};}
-\DoxyCodeLine{00729     whiteMat-\/>MatCBIndex = 0;}
-\DoxyCodeLine{00730     whiteMat-\/>DiffuseSrvHeapIndex = 3;}
-\DoxyCodeLine{00731     whiteMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
-\DoxyCodeLine{00732     whiteMat-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
-\DoxyCodeLine{00733     whiteMat-\/>Roughness = 0.5f;}
-\DoxyCodeLine{00734 }
-\DoxyCodeLine{00735     mMaterials[\textcolor{stringliteral}{"{}whiteMat"{}}] = std::move(whiteMat);}
-\DoxyCodeLine{00736 \}}
-\DoxyCodeLine{00737 }
-\DoxyCodeLine{00738 \textcolor{keywordtype}{void} BezierPatchApp::BuildRenderItems()}
-\DoxyCodeLine{00739 \{}
-\DoxyCodeLine{00740     \textcolor{keyword}{auto} quadPatchRitem = std::make\_unique<RenderItem>();}
-\DoxyCodeLine{00741     quadPatchRitem-\/>World = MathHelper::Identity4x4();}
-\DoxyCodeLine{00742     quadPatchRitem-\/>TexTransform = MathHelper::Identity4x4();}
-\DoxyCodeLine{00743     quadPatchRitem-\/>ObjCBIndex = 0;}
-\DoxyCodeLine{00744     quadPatchRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}whiteMat"{}}].get();}
-\DoxyCodeLine{00745     quadPatchRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}quadpatchGeo"{}}].get();}
-\DoxyCodeLine{00746     quadPatchRitem-\/>PrimitiveType = D3D11\_PRIMITIVE\_TOPOLOGY\_16\_CONTROL\_POINT\_PATCHLIST;}
-\DoxyCodeLine{00747     quadPatchRitem-\/>IndexCount = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].IndexCount;}
-\DoxyCodeLine{00748     quadPatchRitem-\/>StartIndexLocation = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].StartIndexLocation;}
-\DoxyCodeLine{00749     quadPatchRitem-\/>BaseVertexLocation = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].BaseVertexLocation;}
-\DoxyCodeLine{00750     mRitemLayer[(int)RenderLayer::Opaque].push\_back(quadPatchRitem.get());}
-\DoxyCodeLine{00751     }
-\DoxyCodeLine{00752     mAllRitems.push\_back(std::move(quadPatchRitem));}
-\DoxyCodeLine{00753 \}}
-\DoxyCodeLine{00754 }
-\DoxyCodeLine{00755 \textcolor{keywordtype}{void} BezierPatchApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
-\DoxyCodeLine{00756 \{}
-\DoxyCodeLine{00757     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(ObjectConstants));}
-\DoxyCodeLine{00758     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(\textcolor{keyword}{sizeof}(MaterialConstants));}
-\DoxyCodeLine{00759 }
-\DoxyCodeLine{00760     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>ObjectCB-\/>Resource();}
-\DoxyCodeLine{00761     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>MaterialCB-\/>Resource();}
-\DoxyCodeLine{00762 }
-\DoxyCodeLine{00763     \textcolor{comment}{// For each render item...}}
-\DoxyCodeLine{00764     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
-\DoxyCodeLine{00765     \{}
-\DoxyCodeLine{00766         \textcolor{keyword}{auto} ri = ritems[i];}
-\DoxyCodeLine{00767 }
-\DoxyCodeLine{00768         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
-\DoxyCodeLine{00769         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
-\DoxyCodeLine{00770         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
-\DoxyCodeLine{00771 }
-\DoxyCodeLine{00772         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00773         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
-\DoxyCodeLine{00774 }
-\DoxyCodeLine{00775         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
-\DoxyCodeLine{00776         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
-\DoxyCodeLine{00777 }
-\DoxyCodeLine{00778         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
-\DoxyCodeLine{00779         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
-\DoxyCodeLine{00780         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
-\DoxyCodeLine{00781 }
-\DoxyCodeLine{00782         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
-\DoxyCodeLine{00783     \}}
-\DoxyCodeLine{00784 \}}
-\DoxyCodeLine{00785 }
-\DoxyCodeLine{00786 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> BezierPatchApp::GetStaticSamplers()}
-\DoxyCodeLine{00787 \{}
-\DoxyCodeLine{00788     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
-\DoxyCodeLine{00789     \textcolor{comment}{// and keep them available as part of the root signature.  }}
-\DoxyCodeLine{00790 }
-\DoxyCodeLine{00791     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
-\DoxyCodeLine{00792         0, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00793         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00794         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00795         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00796         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00797 }
-\DoxyCodeLine{00798     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
-\DoxyCodeLine{00799         1, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00800         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00801         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00802         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00803         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00804 }
-\DoxyCodeLine{00805     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
-\DoxyCodeLine{00806         2, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00807         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00808         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00809         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00810         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00811 }
-\DoxyCodeLine{00812     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
-\DoxyCodeLine{00813         3, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00814         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00815         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00816         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00817         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00818 }
-\DoxyCodeLine{00819     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
-\DoxyCodeLine{00820         4, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00821         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00822         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00823         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00824         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00825         0.0f,                             \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{00826         8);                               \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{00827 }
-\DoxyCodeLine{00828     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
-\DoxyCodeLine{00829         5, \textcolor{comment}{// shaderRegister}}
-\DoxyCodeLine{00830         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
-\DoxyCodeLine{00831         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
-\DoxyCodeLine{00832         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
-\DoxyCodeLine{00833         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
-\DoxyCodeLine{00834         0.0f,                              \textcolor{comment}{// mipLODBias}}
-\DoxyCodeLine{00835         8);                                \textcolor{comment}{// maxAnisotropy}}
-\DoxyCodeLine{00836 }
-\DoxyCodeLine{00837     \textcolor{keywordflow}{return} \{ }
-\DoxyCodeLine{00838         pointWrap, pointClamp,}
-\DoxyCodeLine{00839         linearWrap, linearClamp, }
-\DoxyCodeLine{00840         anisotropicWrap, anisotropicClamp \};}
-\DoxyCodeLine{00841 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00002}00002 \textcolor{comment}{// BezierPatchApp.cpp by Frank Luna (C) 2015 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}../../Common/d3dApp.h"{}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00006}00006 \textcolor{preprocessor}{\#include "{}../../Common/MathHelper.h"{}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00007}00007 \textcolor{preprocessor}{\#include "{}../../Common/UploadBuffer.h"{}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00008}00008 \textcolor{preprocessor}{\#include "{}../../Common/GeometryGenerator.h"{}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00009}00009 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00011}00011 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00012}00012 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00013}00013 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00015}00015 \textcolor{preprocessor}{\#pragma comment(lib, "{}d3dcompiler.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00016}00016 \textcolor{preprocessor}{\#pragma comment(lib, "{}D3D12.lib"{}})}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00017}00017 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00018}\mbox{\hyperlink{_bezier_patch_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{00018}} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{_bezier_patch_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}} = 3;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00020}00020 \textcolor{comment}{// Lightweight structure stores parameters to draw a shape.  This will}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00021}00021 \textcolor{comment}{// vary from app-\/to-\/app.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00022}00022 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_render_item}{RenderItem}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00023}00023 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00024}\mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{00024}}     \mbox{\hyperlink{struct_render_item_ad6c4cbd7fea14ab4b71bd3be38208487}{RenderItem}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00026}00026     \textcolor{comment}{// World matrix of the shape that describes the object's local space}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00027}00027     \textcolor{comment}{// relative to the world space, which defines the position, orientation,}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00028}00028     \textcolor{comment}{// and scale of the object in the world.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00029}00029     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_a2e0a651d0ad4ba7975455e22fbde1a28}{World}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00030}00030 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00031}00031     XMFLOAT4X4 \mbox{\hyperlink{struct_render_item_ac6799548474209d172cbb3d337f56074}{TexTransform}} = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00033}00033     \textcolor{comment}{// Dirty flag indicating the object data has changed and we need to update the constant buffer.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00034}00034     \textcolor{comment}{// Because we have an object cbuffer for each FrameResource, we have to apply the}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00035}00035     \textcolor{comment}{// update to each FrameResource.  Thus, when we modify obect data we should set }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00036}00036     \textcolor{comment}{// NumFramesDirty = gNumFrameResources so that each frame resource gets the update.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00037}00037     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_aca6ae2de91638af530fd5ce91fea3306}{NumFramesDirty}} = \mbox{\hyperlink{_bezier_patch_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00038}00038 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00039}00039     \textcolor{comment}{// Index into GPU constant buffer corresponding to the ObjectCB for this render item.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00040}00040     UINT \mbox{\hyperlink{struct_render_item_a4a4015284acd79469b70c358b6c1c2a1}{ObjCBIndex}} = -\/1;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00041}00041 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00042}00042     \mbox{\hyperlink{struct_material}{Material}}* \mbox{\hyperlink{struct_render_item_a47f9e6fad8619fccc9caa92e3c7c9793}{Mat}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00043}00043     \mbox{\hyperlink{struct_mesh_geometry}{MeshGeometry}}* \mbox{\hyperlink{struct_render_item_a61681a415ceebcbc0b8f07d616124deb}{Geo}} = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00045}00045     \textcolor{comment}{// Primitive topology.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00046}00046     D3D12\_PRIMITIVE\_TOPOLOGY \mbox{\hyperlink{struct_render_item_ab3aad9050526250c4877956789e50b3a}{PrimitiveType}} = D3D11\_PRIMITIVE\_TOPOLOGY\_TRIANGLELIST;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00048}00048     \textcolor{comment}{// DrawIndexedInstanced parameters.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00049}00049     UINT \mbox{\hyperlink{struct_render_item_ad95fafa012c0d99c216b998f11207e38}{IndexCount}} = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00050}00050     UINT \mbox{\hyperlink{struct_render_item_a979179c6dd354cd329563e3599245463}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00051}00051     \textcolor{keywordtype}{int} \mbox{\hyperlink{struct_render_item_a3750ef7b2791ea922df46e222649f3dc}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00052}00052 \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00053}00053 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00054}\mbox{\hyperlink{_bezier_patch_app_8cpp_aa63ede3e7371d4bc358f651428d23159}{00054}} \textcolor{keyword}{enum class} \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159}{RenderLayer}} : int}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00055}00055 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00056}00056     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{Opaque}} = 0,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00057}00057     \mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{Count}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00058}00058 \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00060}\mbox{\hyperlink{class_bezier_patch_app}{00060}} \textcolor{keyword}{class }\mbox{\hyperlink{class_bezier_patch_app}{BezierPatchApp}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d3_d_app}{D3DApp}}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00061}00061 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00062}00062 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00063}00063     \mbox{\hyperlink{class_bezier_patch_app_a3fa61303f0d150ad217b0a49f615d06c}{BezierPatchApp}}(HINSTANCE hInstance);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00064}\mbox{\hyperlink{class_bezier_patch_app_ac90dd63bf38d2a78ff07eda97af63747}{00064}}     \mbox{\hyperlink{class_bezier_patch_app_ac90dd63bf38d2a78ff07eda97af63747}{BezierPatchApp}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_bezier_patch_app}{BezierPatchApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00065}\mbox{\hyperlink{class_bezier_patch_app_a7951fbd2b155fee84a680137227bf548}{00065}}     \mbox{\hyperlink{class_bezier_patch_app}{BezierPatchApp}}\& \mbox{\hyperlink{class_bezier_patch_app_a7951fbd2b155fee84a680137227bf548}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_bezier_patch_app}{BezierPatchApp}}\& rhs) = \textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00066}00066     \mbox{\hyperlink{class_bezier_patch_app_a81f50ded7372c496248e6197a77a81c1}{\string~BezierPatchApp}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00068}00068     \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_bezier_patch_app_ac1dcd3d6e8ee802de4a48e6df1948dbc}{Initialize}}()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00069}00069 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00070}00070 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00071}00071     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnResize()\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00072}00072     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00073}00073     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00075}00075     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00076}00076     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00077}00077     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)\textcolor{keyword}{override};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00079}00079     \textcolor{keywordtype}{void} OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00080}00080     \textcolor{keywordtype}{void} UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00081}00081     \textcolor{keywordtype}{void} AnimateMaterials(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00082}00082     \textcolor{keywordtype}{void} UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00083}00083     \textcolor{keywordtype}{void} UpdateMaterialCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00084}00084     \textcolor{keywordtype}{void} UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00085}00085 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00086}00086     \textcolor{keywordtype}{void} LoadTextures();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00087}00087     \textcolor{keywordtype}{void} BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00088}00088     \textcolor{keywordtype}{void} BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00089}00089     \textcolor{keywordtype}{void} BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00090}00090     \textcolor{keywordtype}{void} BuildQuadPatchGeometry();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00091}00091     \textcolor{keywordtype}{void} BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00092}00092     \textcolor{keywordtype}{void} BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00093}00093     \textcolor{keywordtype}{void} BuildMaterials();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00094}00094     \textcolor{keywordtype}{void} BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00095}00095     \textcolor{keywordtype}{void} DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00097}00097     std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> GetStaticSamplers();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00098}00098 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00099}00099 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00100}00100 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00101}00101     std::vector<std::unique\_ptr<FrameResource>> mFrameResources;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00102}00102     \mbox{\hyperlink{struct_frame_resource}{FrameResource}}* mCurrFrameResource = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00103}00103     \textcolor{keywordtype}{int} mCurrFrameResourceIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00104}00104 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00105}00105     UINT mCbvSrvDescriptorSize = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00107}00107     ComPtr<ID3D12RootSignature> mRootSignature = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00108}00108 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00109}00109     ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00111}00111     std::unordered\_map<std::string, std::unique\_ptr<MeshGeometry>> mGeometries;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00112}00112     std::unordered\_map<std::string, std::unique\_ptr<Material>> mMaterials;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00113}00113     std::unordered\_map<std::string, std::unique\_ptr<Texture>> mTextures;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00114}00114     std::unordered\_map<std::string, ComPtr<ID3DBlob>> mShaders;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00115}00115     std::unordered\_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00116}00116 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00117}00117     std::vector<D3D12\_INPUT\_ELEMENT\_DESC> mInputLayout;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00118}00118 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00119}00119     \textcolor{comment}{// Cache render items of interest.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00120}00120     \mbox{\hyperlink{struct_render_item}{RenderItem}}* mSkullRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00121}00121     \mbox{\hyperlink{struct_render_item}{RenderItem}}* mReflectedSkullRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00122}00122     \mbox{\hyperlink{struct_render_item}{RenderItem}}* mShadowedSkullRitem = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00123}00123 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00124}00124     \textcolor{comment}{// List of all the render items.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00125}00125     std::vector<std::unique\_ptr<RenderItem>> mAllRitems;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00126}00126 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00127}00127     \textcolor{comment}{// Render items divided by PSO.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00128}00128     std::vector<RenderItem*> mRitemLayer[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159ae93f994f01c537c4e2f7d8528c3eb5e9}{RenderLayer::Count}}];}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00129}00129 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00130}00130     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} mMainPassCB;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00131}00131     \mbox{\hyperlink{struct_pass_constants}{PassConstants}} mReflectedPassCB;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00132}00132 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00133}00133     XMFLOAT3 mSkullTranslation = \{ 0.0f, 1.0f, -\/5.0f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00134}00134 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00135}00135     XMFLOAT3 mEyePos = \{ 0.0f, 0.0f, 0.0f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00136}00136     XMFLOAT4X4 mView = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00137}00137     XMFLOAT4X4 mProj = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00138}00138 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00139}00139     \textcolor{keywordtype}{float} mTheta = 1.24f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00140}00140     \textcolor{keywordtype}{float} mPhi = 0.42f*XM\_PI;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00141}00141     \textcolor{keywordtype}{float} mRadius = 12.0f;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00142}00142 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00143}00143     POINT mLastMousePos;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00144}00144 \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00145}00145 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00146}\mbox{\hyperlink{_bezier_patch_app_8cpp_aabcda87589d774901aa87061b8fd0176}{00146}} \textcolor{keywordtype}{int} WINAPI \mbox{\hyperlink{_bezier_patch_app_8cpp_aabcda87589d774901aa87061b8fd0176}{WinMain}}(HINSTANCE hInstance, HINSTANCE prevInstance,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00147}00147     PSTR cmdLine, \textcolor{keywordtype}{int} showCmd)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00148}00148 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00149}00149     \textcolor{comment}{// Enable run-\/time memory check for debug builds.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00150}00150 \textcolor{preprocessor}{\#if defined(DEBUG) | defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00151}00151     \_CrtSetDbgFlag(\_CRTDBG\_ALLOC\_MEM\_DF | \_CRTDBG\_LEAK\_CHECK\_DF);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00152}00152 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00153}00153 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00154}00154     \textcolor{keywordflow}{try}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00155}00155     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00156}00156         \mbox{\hyperlink{class_bezier_patch_app}{BezierPatchApp}} theApp(hInstance);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00157}00157         \textcolor{keywordflow}{if}(!theApp.\mbox{\hyperlink{class_bezier_patch_app_ac1dcd3d6e8ee802de4a48e6df1948dbc}{Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00158}00158             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00159}00159 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00160}00160         \textcolor{keywordflow}{return} theApp.\mbox{\hyperlink{class_d3_d_app_a0a2ed8f09bb1ae3a97f3b9a5067c905f}{Run}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00161}00161     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00162}00162     \textcolor{keywordflow}{catch}(\mbox{\hyperlink{class_dx_exception}{DxException}}\& e)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00163}00163     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00164}00164         MessageBox(\textcolor{keyword}{nullptr}, e.\mbox{\hyperlink{class_dx_exception_a031a5ff549f043decbe96093e73dac27}{ToString}}().c\_str(), L\textcolor{stringliteral}{"{}HR Failed"{}}, MB\_OK);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00165}00165         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00166}00166     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00167}00167 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00168}00168 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00169}\mbox{\hyperlink{class_bezier_patch_app_a3fa61303f0d150ad217b0a49f615d06c}{00169}} \mbox{\hyperlink{class_bezier_patch_app_a3fa61303f0d150ad217b0a49f615d06c}{BezierPatchApp::BezierPatchApp}}(HINSTANCE hInstance)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00170}00170     : \mbox{\hyperlink{class_d3_d_app}{D3DApp}}(hInstance)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00171}00171 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00172}00172 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00173}00173 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00174}\mbox{\hyperlink{class_bezier_patch_app_a81f50ded7372c496248e6197a77a81c1}{00174}} \mbox{\hyperlink{class_bezier_patch_app_a81f50ded7372c496248e6197a77a81c1}{BezierPatchApp::\string~BezierPatchApp}}()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00175}00175 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00176}00176     \textcolor{keywordflow}{if}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}} != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00177}00177         \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00178}00178 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00180}\mbox{\hyperlink{class_bezier_patch_app_ac1dcd3d6e8ee802de4a48e6df1948dbc}{00180}} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_bezier_patch_app_ac1dcd3d6e8ee802de4a48e6df1948dbc}{BezierPatchApp::Initialize}}()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00181}00181 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00182}00182     \textcolor{keywordflow}{if}(!\mbox{\hyperlink{class_d3_d_app_a961fa79170dcbde858923a5250c322be}{D3DApp::Initialize}}())}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00183}00183         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00184}00184 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00185}00185     \textcolor{comment}{// Reset the command list to prep for initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00186}00186     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(\mbox{\hyperlink{class_d3_d_app_ae00420d2e3d8305821a1a95ebc1b00bb}{mDirectCmdListAlloc}}.Get(), \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00187}00187 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00188}00188     \textcolor{comment}{// Get the increment size of a descriptor in this heap type.  This is hardware specific, }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00189}00189     \textcolor{comment}{// so we have to query this information.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00190}00190     mCbvSrvDescriptorSize = \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00191}00191 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00192}00192     LoadTextures();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00193}00193     BuildRootSignature();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00194}00194     BuildDescriptorHeaps();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00195}00195     BuildShadersAndInputLayout();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00196}00196     BuildQuadPatchGeometry();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00197}00197     BuildMaterials();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00198}00198     BuildRenderItems();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00199}00199     BuildFrameResources();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00200}00200     BuildPSOs();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00201}00201 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00202}00202     \textcolor{comment}{// Execute the initialization commands.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00203}00203     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00204}00204     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00205}00205     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00207}00207     \textcolor{comment}{// Wait until initialization is complete.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00208}00208     \mbox{\hyperlink{class_d3_d_app_afd141907db51f0c177ab89955e9d5de9}{FlushCommandQueue}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00209}00209 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00210}00210     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00211}00211 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00212}00212  }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00213}00213 \textcolor{keywordtype}{void} BezierPatchApp::OnResize()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00214}00214 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00215}00215     \mbox{\hyperlink{class_d3_d_app_a4c1b99cd01576c413d3a50d1435f1b8a}{D3DApp::OnResize}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00216}00216 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00217}00217     \textcolor{comment}{// The window resized, so update the aspect ratio and recompute the projection matrix.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00218}00218     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*\mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}}, \mbox{\hyperlink{class_d3_d_app_ab8cf74904b14c4a2072fc020c9bc4d22}{AspectRatio}}(), 1.0f, 1000.0f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00219}00219     XMStoreFloat4x4(\&mProj, P);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00220}00220 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00221}00221 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00222}00222 \textcolor{keywordtype}{void} BezierPatchApp::Update(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00223}00223 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00224}00224     OnKeyboardInput(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00225}00225     UpdateCamera(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00226}00226 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00227}00227     \textcolor{comment}{// Cycle through the circular frame resource array.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00228}00228     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) \% \mbox{\hyperlink{_bezier_patch_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00229}00229     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00230}00230 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00231}00231     \textcolor{comment}{// Has the GPU finished processing the commands of the current frame resource?}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00232}00232     \textcolor{comment}{// If not, wait until the GPU has completed commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00233}00233     \textcolor{keywordflow}{if}(mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} != 0 \&\& \mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>GetCompletedValue() < mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}})}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00234}00234     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00235}00235         HANDLE eventHandle = CreateEventEx(\textcolor{keyword}{nullptr}, \textcolor{keyword}{nullptr}, \textcolor{keyword}{false}, EVENT\_ALL\_ACCESS);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00236}00236         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}-\/>SetEventOnCompletion(mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}}, eventHandle));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00237}00237         WaitForSingleObject(eventHandle, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00238}00238         CloseHandle(eventHandle);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00239}00239     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00240}00240 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00241}00241     AnimateMaterials(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00242}00242     UpdateObjectCBs(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00243}00243     UpdateMaterialCBs(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00244}00244     UpdateMainPassCB(gt);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00245}00245 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00246}00246 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00247}00247 \textcolor{keywordtype}{void} BezierPatchApp::Draw(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00248}00248 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00249}00249     \textcolor{keyword}{auto} cmdListAlloc = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00250}00250 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00251}00251     \textcolor{comment}{// Reuse the memory associated with command recording.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00252}00252     \textcolor{comment}{// We can only reset when the associated command lists have finished execution on the GPU.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00253}00253     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(cmdListAlloc-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00254}00254 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00255}00255     \textcolor{comment}{// A command list can be reset after it has been added to the command queue via ExecuteCommandList.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00256}00256     \textcolor{comment}{// Reusing the command list reuses memory.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00257}00257     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Reset(cmdListAlloc.Get(), mPSOs[\textcolor{stringliteral}{"{}opaque"{}}].Get()));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00258}00258 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00259}00259     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetViewports(1, \&\mbox{\hyperlink{class_d3_d_app_ab86744c66c883d3815c5d08107b16408}{mScreenViewport}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00260}00260     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>RSSetScissorRects(1, \&\mbox{\hyperlink{class_d3_d_app_adbf6e2922df9e6545390049968715547}{mScissorRect}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00261}00261 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00262}00262     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00263}00263     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00264}00264         D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00265}00265 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00266}00266     \textcolor{comment}{// Clear the back buffer and depth buffer.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00267}00267     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearRenderTargetView(\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), (\textcolor{keywordtype}{float}*)\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_ae11238594ce3968e848ce2ad8cf9fd03}{FogColor}}, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00268}00268     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ClearDepthStencilView(\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}(), D3D12\_CLEAR\_FLAG\_DEPTH | D3D12\_CLEAR\_FLAG\_STENCIL, 1.0f, 0, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00269}00269 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00270}00270     \textcolor{comment}{// Specify the buffers we are going to render to.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00271}00271     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>OMSetRenderTargets(1, \&\mbox{\hyperlink{class_d3_d_app_ac796a8fcd1a1af0e4665e221af6981d4}{CurrentBackBufferView}}(), \textcolor{keyword}{true}, \&\mbox{\hyperlink{class_d3_d_app_a2d2bfecf16e881f1d65f464767d38c12}{DepthStencilView}}());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00272}00272 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00273}00273     ID3D12DescriptorHeap* descriptorHeaps[] = \{ mSrvDescriptorHeap.Get() \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00274}00274     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetDescriptorHeaps(\_countof(descriptorHeaps), descriptorHeaps);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00275}00275 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00276}00276     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootSignature(mRootSignature.Get());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00277}00277 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00278}00278     UINT passCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_pass_constants}{PassConstants}}));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00279}00279 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00280}00280     \textcolor{keyword}{auto} passCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00281}00281     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>SetGraphicsRootConstantBufferView(2, passCB-\/>GetGPUVirtualAddress());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00282}00282     }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00283}00283     DrawRenderItems(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), mRitemLayer[(\textcolor{keywordtype}{int})\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}]);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00284}00284         }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00285}00285     \textcolor{comment}{// Indicate a state transition on the resource usage.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00286}00286     \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(\mbox{\hyperlink{class_d3_d_app_a851376059fec11e3a6d7535785c5d8cd}{CurrentBackBuffer}}(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00287}00287         D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00288}00288 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00289}00289     \textcolor{comment}{// Done recording commands.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00290}00290     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00291}00291 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00292}00292     \textcolor{comment}{// Add the command list to the queue for execution.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00293}00293     ID3D12CommandList* cmdsLists[] = \{ \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get() \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00294}00294     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>ExecuteCommandLists(\_countof(cmdsLists), cmdsLists);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00295}00295 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00296}00296     \textcolor{comment}{// Swap the back and front buffers}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00297}00297     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_adac97bdf38a37003abbbd7d39c2a75fb}{mSwapChain}}-\/>Present(0, 0));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00298}00298     \mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} = (\mbox{\hyperlink{class_d3_d_app_ab0ef1ea8fcb85251dcd6d603a4090d62}{mCurrBackBuffer}} + 1) \% \mbox{\hyperlink{class_d3_d_app_af4cd47b4bb3b28e1013e861355baf8e8}{SwapChainBufferCount}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00299}00299 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00300}00300     \textcolor{comment}{// Advance the fence value to mark commands up to this fence point.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00301}00301     mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_aa90bdd44edbdbebf156b7cdb01437b8a}{Fence}} = ++\mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00302}00302 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00303}00303     \textcolor{comment}{// Add an instruction to the command queue to set a new fence point. }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00304}00304     \textcolor{comment}{// Because we are on the GPU timeline, the new fence point won't be }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00305}00305     \textcolor{comment}{// set until the GPU finishes processing all the commands prior to this Signal().}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00306}00306     \mbox{\hyperlink{class_d3_d_app_a96ae78a6cf93ec91272032890ef65440}{mCommandQueue}}-\/>Signal(\mbox{\hyperlink{class_d3_d_app_a90597e8c2902073536b6609864eaf160}{mFence}}.Get(), \mbox{\hyperlink{class_d3_d_app_acc7041db5dcaaa0d76ed263c55d1c6b2}{mCurrentFence}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00307}00307 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00308}00308 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00309}00309 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseDown(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00310}00310 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00311}00311     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00312}00312     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00313}00313 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00314}00314     SetCapture(\mbox{\hyperlink{class_d3_d_app_ae68879f7a2cf2b770b1015ab9c0f14e5}{mhMainWnd}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00315}00315 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00316}00316 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00317}00317 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseUp(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00318}00318 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00319}00319     ReleaseCapture();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00320}00320 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00321}00321 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00322}00322 \textcolor{keywordtype}{void} BezierPatchApp::OnMouseMove(WPARAM btnState, \textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00323}00323 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00324}00324     \textcolor{keywordflow}{if}((btnState \& MK\_LBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00325}00325     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00326}00326         \textcolor{comment}{// Make each pixel correspond to a quarter of a degree.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00327}00327         \textcolor{keywordtype}{float} dx = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00328}00328         \textcolor{keywordtype}{float} dy = XMConvertToRadians(0.25f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00329}00329 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00330}00330         \textcolor{comment}{// Update angles based on input to orbit camera around box.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00331}00331         mTheta += dx;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00332}00332         mPhi += dy;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00333}00333 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00334}00334         \textcolor{comment}{// Restrict the angle mPhi.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00335}00335         mPhi = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mPhi, 0.1f, \mbox{\hyperlink{class_math_helper_a11e988eb2e34337e333972e5fd3b5dba}{MathHelper::Pi}} -\/ 0.1f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00336}00336     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00337}00337     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}((btnState \& MK\_RBUTTON) != 0)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00338}00338     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00339}00339         \textcolor{comment}{// Make each pixel correspond to 0.2 unit in the scene.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00340}00340         \textcolor{keywordtype}{float} dx = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(x -\/ mLastMousePos.x);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00341}00341         \textcolor{keywordtype}{float} dy = 0.2f*\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(y -\/ mLastMousePos.y);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00342}00342 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00343}00343         \textcolor{comment}{// Update the camera radius based on input.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00344}00344         mRadius += dx -\/ dy;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00345}00345 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00346}00346         \textcolor{comment}{// Restrict the radius.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00347}00347         mRadius = \mbox{\hyperlink{class_math_helper_af659fe642c374ff42247e25e887ae816}{MathHelper::Clamp}}(mRadius, 5.0f, 150.0f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00348}00348     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00349}00349 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00350}00350     mLastMousePos.x = x;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00351}00351     mLastMousePos.y = y;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00352}00352 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00353}00353  }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00354}00354 \textcolor{keywordtype}{void} BezierPatchApp::OnKeyboardInput(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00355}00355 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00356}00356 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00357}00357  }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00358}00358 \textcolor{keywordtype}{void} BezierPatchApp::UpdateCamera(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00359}00359 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00360}00360     \textcolor{comment}{// Convert Spherical to Cartesian coordinates.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00361}00361     mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00362}00362     mEyePos.z = mRadius*sinf(mPhi)*sinf(mTheta);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00363}00363     mEyePos.y = mRadius*cosf(mPhi);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00364}00364 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00365}00365     \textcolor{comment}{// Build the view matrix.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00366}00366     XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00367}00367     XMVECTOR target = XMVectorZero();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00368}00368     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00369}00369 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00370}00370     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00371}00371     XMStoreFloat4x4(\&mView, view);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00372}00372 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00373}00373 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00374}00374 \textcolor{keywordtype}{void} BezierPatchApp::AnimateMaterials(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00375}00375 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00376}00376 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00377}00377 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00378}00378 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00379}00379 \textcolor{keywordtype}{void} BezierPatchApp::UpdateObjectCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00380}00380 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00381}00381     \textcolor{keyword}{auto} currObjectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00382}00382     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mAllRitems)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00383}00383     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00384}00384         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00385}00385         \textcolor{comment}{// This needs to be tracked per frame resource.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00386}00386         \textcolor{keywordflow}{if}(e-\/>NumFramesDirty > 0)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00387}00387         \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00388}00388             XMMATRIX world = XMLoadFloat4x4(\&e-\/>World);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00389}00389             XMMATRIX texTransform = XMLoadFloat4x4(\&e-\/>TexTransform);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00390}00390 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00391}00391             \mbox{\hyperlink{struct_object_constants}{ObjectConstants}} objConstants;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00392}00392             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_ac2a0621da4e0ef99d7c8100ed64359ff}{World}}, XMMatrixTranspose(world));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00393}00393             XMStoreFloat4x4(\&objConstants.\mbox{\hyperlink{struct_object_constants_a0a7f8e4817a18595707569b307060a42}{TexTransform}}, XMMatrixTranspose(texTransform));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00394}00394 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00395}00395             currObjectCB-\/>CopyData(e-\/>ObjCBIndex, objConstants);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00396}00396 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00397}00397             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00398}00398             e-\/>NumFramesDirty-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00399}00399         \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00400}00400     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00401}00401 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00402}00402 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00403}00403 \textcolor{keywordtype}{void} BezierPatchApp::UpdateMaterialCBs(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00404}00404 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00405}00405     \textcolor{keyword}{auto} currMaterialCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00406}00406     \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\& e : mMaterials)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00407}00407     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00408}00408         \textcolor{comment}{// Only update the cbuffer data if the constants have changed.  If the cbuffer}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00409}00409         \textcolor{comment}{// data changes, it needs to be updated for each FrameResource.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00410}00410         \mbox{\hyperlink{struct_material}{Material}}* mat = e.second.get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00411}00411         \textcolor{keywordflow}{if}(mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}} > 0)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00412}00412         \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00413}00413             XMMATRIX matTransform = XMLoadFloat4x4(\&mat-\/>\mbox{\hyperlink{struct_material_a3fd206fc6ecb51634475f22ff17528d0}{MatTransform}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00414}00414 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00415}00415             \mbox{\hyperlink{struct_material_constants}{MaterialConstants}} matConstants;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00416}00416             matConstants.\mbox{\hyperlink{struct_material_constants_a83cf6d979493301808d0e4b350c3e0a4}{DiffuseAlbedo}} = mat-\/>\mbox{\hyperlink{struct_material_a35fea10a83b154ec1e16d083e2d4e41f}{DiffuseAlbedo}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00417}00417             matConstants.\mbox{\hyperlink{struct_material_constants_a7b2282a2a351b4327324fc7456a1cd85}{FresnelR0}} = mat-\/>\mbox{\hyperlink{struct_material_afa0eeacfe7ed75af247eb08edb14d7b8}{FresnelR0}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00418}00418             matConstants.\mbox{\hyperlink{struct_material_constants_ab931870a28dc4f2afdf7d6f565d06659}{Roughness}} = mat-\/>\mbox{\hyperlink{struct_material_a909d7c43062f35668676364d3873449d}{Roughness}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00419}00419             XMStoreFloat4x4(\&matConstants.\mbox{\hyperlink{struct_material_constants_a5d631fb90e1b2557008841d059c322c8}{MatTransform}}, XMMatrixTranspose(matTransform));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00420}00420 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00421}00421             currMaterialCB-\/>CopyData(mat-\/>\mbox{\hyperlink{struct_material_a7bafa2db0678ffe18c5e51f3d0e45df9}{MatCBIndex}}, matConstants);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00422}00422 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00423}00423             \textcolor{comment}{// Next FrameResource need to be updated too.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00424}00424             mat-\/>\mbox{\hyperlink{struct_material_aacbebebfe577cd18d8652a01e8fae8c0}{NumFramesDirty}}-\/-\/;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00425}00425         \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00426}00426     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00427}00427 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00428}00428 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00429}00429 \textcolor{keywordtype}{void} BezierPatchApp::UpdateMainPassCB(\textcolor{keyword}{const} \mbox{\hyperlink{class_game_timer}{GameTimer}}\& gt)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00430}00430 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00431}00431     XMMATRIX view = XMLoadFloat4x4(\&mView);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00432}00432     XMMATRIX proj = XMLoadFloat4x4(\&mProj);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00433}00433 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00434}00434     XMMATRIX viewProj = XMMatrixMultiply(view, proj);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00435}00435     XMMATRIX invView = XMMatrixInverse(\&XMMatrixDeterminant(view), view);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00436}00436     XMMATRIX invProj = XMMatrixInverse(\&XMMatrixDeterminant(proj), proj);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00437}00437     XMMATRIX invViewProj = XMMatrixInverse(\&XMMatrixDeterminant(viewProj), viewProj);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00438}00438 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00439}00439     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a31fec7617b89727cc44c9802c57bb57a}{View}}, XMMatrixTranspose(view));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00440}00440     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a4c0b015fa6bc9623ccfa4be6a16a4da9}{InvView}}, XMMatrixTranspose(invView));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00441}00441     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8af99b882f26e3507717dacc0c957521}{Proj}}, XMMatrixTranspose(proj));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00442}00442     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a9a1ac0a0421d54bf40c9749ec1d1537c}{InvProj}}, XMMatrixTranspose(invProj));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00443}00443     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa44b7dd1a9692065876bd8d2d6efb76c}{ViewProj}}, XMMatrixTranspose(viewProj));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00444}00444     XMStoreFloat4x4(\&mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a54f008edf338ad532633c2bb797fca88}{InvViewProj}}, XMMatrixTranspose(invViewProj));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00445}00445     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aa902cc9c84da7a58dd0302624e58bfc3}{EyePosW}} = mEyePos;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00446}00446     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_aca6c8d20f6c92f8a117ef21bd7666687}{RenderTargetSize}} = XMFLOAT2((\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, (\textcolor{keywordtype}{float})\mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00447}00447     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_af25015138bf3b92384560ec1eed1e6aa}{InvRenderTargetSize}} = XMFLOAT2(1.0f / \mbox{\hyperlink{class_d3_d_app_a3f9dae9800854a7aae8a9ca8677a4d4f}{mClientWidth}}, 1.0f / \mbox{\hyperlink{class_d3_d_app_ad54b6af44b0c13b645f363d849230d51}{mClientHeight}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00448}00448     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_affe3124795eccdba77dae8cef5399e7d}{NearZ}} = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00449}00449     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_acff44014fa749b6cc636c0ed3516bab7}{FarZ}} = 1000.0f;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00450}00450     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a8b7dc8578d216518bff83264bc85d34c}{TotalTime}} = gt.\mbox{\hyperlink{class_game_timer_a4d51c259eeb170d1841f84f41779592d}{TotalTime}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00451}00451     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_afd52d73d793299a6ad6a68bc137bd841}{DeltaTime}} = gt.\mbox{\hyperlink{class_game_timer_a67d0ce60fa40d5ff728d101fc31e30f6}{DeltaTime}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00452}00452     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a23503802ae007eb1b745843257371878}{AmbientLight}} = \{ 0.25f, 0.25f, 0.35f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00453}00453     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00454}00454     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[0].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.6f, 0.6f, 0.6f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00455}00455     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ -\/0.57735f, -\/0.57735f, 0.57735f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00456}00456     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[1].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.3f, 0.3f, 0.3f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00457}00457     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_afd9b6884af30b8fdc7fee9a982572a0f}{Direction}} = \{ 0.0f, -\/0.707f, -\/0.707f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00458}00458     mMainPassCB.\mbox{\hyperlink{struct_pass_constants_a832164253e0bd4d47c4526d05a692bf4}{Lights}}[2].\mbox{\hyperlink{struct_light_a015096e9847bd33050b73a13c200a4c1}{Strength}} = \{ 0.15f, 0.15f, 0.15f \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00459}00459 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00460}00460     \textcolor{comment}{// Main pass stored in index 2}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00461}00461     \textcolor{keyword}{auto} currPassCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}}.get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00462}00462     currPassCB-\/>CopyData(0, mMainPassCB);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00463}00463 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00464}00464 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00465}00465 \textcolor{keywordtype}{void} BezierPatchApp::LoadTextures()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00466}00466 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00467}00467     \textcolor{keyword}{auto} bricksTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00468}00468     bricksTex-\/>Name = \textcolor{stringliteral}{"{}bricksTex"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00469}00469     bricksTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/bricks.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00470}00470     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00471}00471         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), bricksTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00472}00472         bricksTex-\/>Resource, bricksTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00473}00473 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00474}00474     \textcolor{keyword}{auto} checkboardTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00475}00475     checkboardTex-\/>Name = \textcolor{stringliteral}{"{}checkboardTex"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00476}00476     checkboardTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/checkboard.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00477}00477     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00478}00478         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), checkboardTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00479}00479         checkboardTex-\/>Resource, checkboardTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00480}00480 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00481}00481     \textcolor{keyword}{auto} iceTex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00482}00482     iceTex-\/>Name = \textcolor{stringliteral}{"{}iceTex"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00483}00483     iceTex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/ice.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00484}00484     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00485}00485         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), iceTex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00486}00486         iceTex-\/>Resource, iceTex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00487}00487 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00488}00488     \textcolor{keyword}{auto} white1x1Tex = std::make\_unique<Texture>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00489}00489     white1x1Tex-\/>Name = \textcolor{stringliteral}{"{}white1x1Tex"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00490}00490     white1x1Tex-\/>Filename = L\textcolor{stringliteral}{"{}../../Textures/white1x1.dds"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00491}00491     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{namespace_direct_x_a256abd853d439601f0990802d1465da7}{DirectX::CreateDDSTextureFromFile12}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00492}00492         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), white1x1Tex-\/>Filename.c\_str(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00493}00493         white1x1Tex-\/>Resource, white1x1Tex-\/>UploadHeap));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00494}00494 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00495}00495     mTextures[bricksTex-\/>Name] = std::move(bricksTex);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00496}00496     mTextures[checkboardTex-\/>Name] = std::move(checkboardTex);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00497}00497     mTextures[iceTex-\/>Name] = std::move(iceTex);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00498}00498     mTextures[white1x1Tex-\/>Name] = std::move(white1x1Tex);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00499}00499 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00500}00500 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00501}00501 \textcolor{keywordtype}{void} BezierPatchApp::BuildRootSignature()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00502}00502 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00503}00503     CD3DX12\_DESCRIPTOR\_RANGE texTable;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00504}00504     texTable.Init(D3D12\_DESCRIPTOR\_RANGE\_TYPE\_SRV, 1, 0);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00505}00505 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00506}00506     \textcolor{comment}{// Root parameter can be a table, root descriptor or root constants.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00507}00507     CD3DX12\_ROOT\_PARAMETER slotRootParameter[4];}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00508}00508 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00509}00509     \textcolor{comment}{// Perfomance TIP: Order from most frequent to least frequent.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00510}00510     slotRootParameter[0].InitAsDescriptorTable(1, \&texTable, D3D12\_SHADER\_VISIBILITY\_PIXEL);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00511}00511     slotRootParameter[1].InitAsConstantBufferView(0);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00512}00512     slotRootParameter[2].InitAsConstantBufferView(1);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00513}00513     slotRootParameter[3].InitAsConstantBufferView(2);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00514}00514 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00515}00515     \textcolor{keyword}{auto} staticSamplers = GetStaticSamplers();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00516}00516 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00517}00517     \textcolor{comment}{// A root signature is an array of root parameters.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00518}00518     CD3DX12\_ROOT\_SIGNATURE\_DESC rootSigDesc(4, slotRootParameter,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00519}00519         (UINT)staticSamplers.size(), staticSamplers.data(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00520}00520         D3D12\_ROOT\_SIGNATURE\_FLAG\_ALLOW\_INPUT\_ASSEMBLER\_INPUT\_LAYOUT);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00521}00521 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00522}00522     \textcolor{comment}{// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00523}00523     ComPtr<ID3DBlob> serializedRootSig = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00524}00524     ComPtr<ID3DBlob> errorBlob = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00525}00525     HRESULT hr = D3D12SerializeRootSignature(\&rootSigDesc, D3D\_ROOT\_SIGNATURE\_VERSION\_1,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00526}00526         serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00527}00527 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00528}00528     \textcolor{keywordflow}{if}(errorBlob != \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00529}00529     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00530}00530         ::OutputDebugStringA((\textcolor{keywordtype}{char}*)errorBlob-\/>GetBufferPointer());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00531}00531     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00532}00532     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(hr);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00533}00533 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00534}00534     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateRootSignature(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00535}00535         0,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00536}00536         serializedRootSig-\/>GetBufferPointer(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00537}00537         serializedRootSig-\/>GetBufferSize(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00538}00538         IID\_PPV\_ARGS(mRootSignature.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00539}00539 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00540}00540 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00541}00541 \textcolor{keywordtype}{void} BezierPatchApp::BuildDescriptorHeaps()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00542}00542 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00543}00543     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00544}00544     \textcolor{comment}{// Create the SRV heap.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00545}00545     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00546}00546     D3D12\_DESCRIPTOR\_HEAP\_DESC srvHeapDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00547}00547     srvHeapDesc.NumDescriptors = 4;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00548}00548     srvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_CBV\_SRV\_UAV;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00549}00549     srvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_SHADER\_VISIBLE;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00550}00550     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateDescriptorHeap(\&srvHeapDesc, IID\_PPV\_ARGS(\&mSrvDescriptorHeap)));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00551}00551 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00552}00552     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00553}00553     \textcolor{comment}{// Fill out the heap with actual descriptors.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00554}00554     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00555}00555     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hDescriptor(mSrvDescriptorHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00556}00556 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00557}00557     \textcolor{keyword}{auto} bricksTex = mTextures[\textcolor{stringliteral}{"{}bricksTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00558}00558     \textcolor{keyword}{auto} checkboardTex = mTextures[\textcolor{stringliteral}{"{}checkboardTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00559}00559     \textcolor{keyword}{auto} iceTex = mTextures[\textcolor{stringliteral}{"{}iceTex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00560}00560     \textcolor{keyword}{auto} white1x1Tex = mTextures[\textcolor{stringliteral}{"{}white1x1Tex"{}}]-\/>Resource;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00561}00561 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00562}00562     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00563}00563     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00564}00564     srvDesc.Format = bricksTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00565}00565     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00566}00566     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00567}00567     srvDesc.Texture2D.MipLevels = -\/1;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00568}00568     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(bricksTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00569}00569 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00570}00570     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00571}00571     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00572}00572 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00573}00573     srvDesc.Format = checkboardTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00574}00574     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(checkboardTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00575}00575 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00576}00576     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00577}00577     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00578}00578 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00579}00579     srvDesc.Format = iceTex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00580}00580     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(iceTex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00581}00581 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00582}00582     \textcolor{comment}{// next descriptor}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00583}00583     hDescriptor.Offset(1, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00584}00584 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00585}00585     srvDesc.Format = white1x1Tex-\/>GetDesc().Format;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00586}00586     \mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateShaderResourceView(white1x1Tex.Get(), \&srvDesc, hDescriptor);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00587}00587 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00588}00588 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00589}00589 \textcolor{keywordtype}{void} BezierPatchApp::BuildShadersAndInputLayout()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00590}00590 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00591}00591     mShaders[\textcolor{stringliteral}{"{}tessVS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}VS"{}}, \textcolor{stringliteral}{"{}vs\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00592}00592     mShaders[\textcolor{stringliteral}{"{}tessHS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}HS"{}}, \textcolor{stringliteral}{"{}hs\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00593}00593     mShaders[\textcolor{stringliteral}{"{}tessDS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}DS"{}}, \textcolor{stringliteral}{"{}ds\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00594}00594     mShaders[\textcolor{stringliteral}{"{}tessPS"{}}] = \mbox{\hyperlink{classd3d_util_acac6acd838913d63466e4f0159bfe8b0}{d3dUtil::CompileShader}}(L\textcolor{stringliteral}{"{}Shaders\(\backslash\)\(\backslash\)BezierTessellation.hlsl"{}}, \textcolor{keyword}{nullptr}, \textcolor{stringliteral}{"{}PS"{}}, \textcolor{stringliteral}{"{}ps\_5\_0"{}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00595}00595     }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00596}00596     mInputLayout =}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00597}00597     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00598}00598         \{ \textcolor{stringliteral}{"{}POSITION"{}}, 0, DXGI\_FORMAT\_R32G32B32\_FLOAT, 0, 0, D3D12\_INPUT\_CLASSIFICATION\_PER\_VERTEX\_DATA, 0 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00599}00599     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00600}00600 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00601}00601 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00602}00602 \textcolor{keywordtype}{void} BezierPatchApp::BuildQuadPatchGeometry()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00603}00603 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00604}00604     std::array<XMFLOAT3,16> vertices =}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00605}00605     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00606}00606         \textcolor{comment}{// Row 0}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00607}00607         XMFLOAT3(-\/10.0f, -\/10.0f, +15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00608}00608         XMFLOAT3(-\/5.0f,  0.0f, +15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00609}00609         XMFLOAT3(+5.0f,  0.0f, +15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00610}00610         XMFLOAT3(+10.0f, 0.0f, +15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00611}00611 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00612}00612         \textcolor{comment}{// Row 1}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00613}00613         XMFLOAT3(-\/15.0f, 0.0f, +5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00614}00614         XMFLOAT3(-\/5.0f,  0.0f, +5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00615}00615         XMFLOAT3(+5.0f,  20.0f, +5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00616}00616         XMFLOAT3(+15.0f, 0.0f, +5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00617}00617 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00618}00618         \textcolor{comment}{// Row 2}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00619}00619         XMFLOAT3(-\/15.0f, 0.0f, -\/5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00620}00620         XMFLOAT3(-\/5.0f,  0.0f, -\/5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00621}00621         XMFLOAT3(+5.0f,  0.0f, -\/5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00622}00622         XMFLOAT3(+15.0f, 0.0f, -\/5.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00623}00623 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00624}00624         \textcolor{comment}{// Row 3}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00625}00625         XMFLOAT3(-\/10.0f, 10.0f, -\/15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00626}00626         XMFLOAT3(-\/5.0f,  0.0f, -\/15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00627}00627         XMFLOAT3(+5.0f,  0.0f, -\/15.0f),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00628}00628         XMFLOAT3(+25.0f, 10.0f, -\/15.0f)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00629}00629     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00630}00630 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00631}00631     std::array<std::int16\_t, 16> indices = }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00632}00632     \{ }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00633}00633         0, 1, 2, 3,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00634}00634         4, 5, 6, 7,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00635}00635         8, 9, 10, 11, }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00636}00636         12, 13, 14, 15}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00637}00637     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00638}00638 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00639}00639     \textcolor{keyword}{const} UINT vbByteSize = (UINT)vertices.size() * \textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_vertex}{Vertex}});}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00640}00640     \textcolor{keyword}{const} UINT ibByteSize = (UINT)indices.size() * \textcolor{keyword}{sizeof}(std::uint16\_t);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00641}00641 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00642}00642     \textcolor{keyword}{auto} geo = std::make\_unique<MeshGeometry>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00643}00643     geo-\/>Name = \textcolor{stringliteral}{"{}quadpatchGeo"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00644}00644 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00645}00645     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(vbByteSize, \&geo-\/>VertexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00646}00646     CopyMemory(geo-\/>VertexBufferCPU-\/>GetBufferPointer(), vertices.data(), vbByteSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00647}00647 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00648}00648     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3DCreateBlob(ibByteSize, \&geo-\/>IndexBufferCPU));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00649}00649     CopyMemory(geo-\/>IndexBufferCPU-\/>GetBufferPointer(), indices.data(), ibByteSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00650}00650 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00651}00651     geo-\/>VertexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00652}00652         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), vertices.data(), vbByteSize, geo-\/>VertexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00653}00653 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00654}00654     geo-\/>IndexBufferGPU = \mbox{\hyperlink{classd3d_util_ae4a68e5b73f032619ee5c2db64f57899}{d3dUtil::CreateDefaultBuffer}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00655}00655         \mbox{\hyperlink{class_d3_d_app_a3d515a557287c1a8f8fcc60abc839e84}{mCommandList}}.Get(), indices.data(), ibByteSize, geo-\/>IndexBufferUploader);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00656}00656 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00657}00657     geo-\/>VertexByteStride = \textcolor{keyword}{sizeof}(XMFLOAT3);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00658}00658     geo-\/>VertexBufferByteSize = vbByteSize;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00659}00659     geo-\/>IndexFormat = DXGI\_FORMAT\_R16\_UINT;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00660}00660     geo-\/>IndexBufferByteSize = ibByteSize;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00661}00661 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00662}00662     \mbox{\hyperlink{struct_submesh_geometry}{SubmeshGeometry}} quadSubmesh;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00663}00663     quadSubmesh.\mbox{\hyperlink{struct_submesh_geometry_ab28b180ab73cabb07553c76f3f32c180}{IndexCount}} = (UINT)indices.size();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00664}00664     quadSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a56f8aee51b11ee61a229679000a1aeb6}{StartIndexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00665}00665     quadSubmesh.\mbox{\hyperlink{struct_submesh_geometry_a95e805e2c8022aea5826d7343ee7dc20}{BaseVertexLocation}} = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00666}00666 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00667}00667     geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}] = quadSubmesh;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00668}00668 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00669}00669     mGeometries[geo-\/>Name] = std::move(geo);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00670}00670 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00671}00671 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00672}00672 \textcolor{keywordtype}{void} BezierPatchApp::BuildPSOs()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00673}00673 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00674}00674     D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC opaquePsoDesc;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00675}00675 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00676}00676     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00677}00677     \textcolor{comment}{// PSO for opaque objects.}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00678}00678     \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00679}00679     ZeroMemory(\&opaquePsoDesc, \textcolor{keyword}{sizeof}(D3D12\_GRAPHICS\_PIPELINE\_STATE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00680}00680     opaquePsoDesc.InputLayout = \{ mInputLayout.data(), (UINT)mInputLayout.size() \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00681}00681     opaquePsoDesc.pRootSignature = mRootSignature.Get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00682}00682     opaquePsoDesc.VS = }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00683}00683     \{ }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00684}00684         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessVS"{}}]-\/>GetBufferPointer()), }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00685}00685         mShaders[\textcolor{stringliteral}{"{}tessVS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00686}00686     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00687}00687     opaquePsoDesc.HS =}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00688}00688     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00689}00689         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00690}00690         mShaders[\textcolor{stringliteral}{"{}tessHS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00691}00691     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00692}00692     opaquePsoDesc.DS =}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00693}00693     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00694}00694         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00695}00695         mShaders[\textcolor{stringliteral}{"{}tessDS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00696}00696     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00697}00697     opaquePsoDesc.PS = }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00698}00698     \{ }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00699}00699         \textcolor{keyword}{reinterpret\_cast<}BYTE*\textcolor{keyword}{>}(mShaders[\textcolor{stringliteral}{"{}tessPS"{}}]-\/>GetBufferPointer()),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00700}00700         mShaders[\textcolor{stringliteral}{"{}tessPS"{}}]-\/>GetBufferSize()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00701}00701     \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00702}00702     opaquePsoDesc.RasterizerState = CD3DX12\_RASTERIZER\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00703}00703     opaquePsoDesc.RasterizerState.FillMode = D3D12\_FILL\_MODE\_WIREFRAME;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00704}00704     opaquePsoDesc.BlendState = CD3DX12\_BLEND\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00705}00705     opaquePsoDesc.DepthStencilState = CD3DX12\_DEPTH\_STENCIL\_DESC(D3D12\_DEFAULT);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00706}00706     opaquePsoDesc.SampleMask = UINT\_MAX;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00707}00707     opaquePsoDesc.PrimitiveTopologyType = D3D12\_PRIMITIVE\_TOPOLOGY\_TYPE\_PATCH;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00708}00708     opaquePsoDesc.NumRenderTargets = 1;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00709}00709     opaquePsoDesc.RTVFormats[0] = \mbox{\hyperlink{class_d3_d_app_a025509339d4e0ec2781a8deb9d4218cc}{mBackBufferFormat}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00710}00710     opaquePsoDesc.SampleDesc.Count = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? 4 : 1;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00711}00711     opaquePsoDesc.SampleDesc.Quality = \mbox{\hyperlink{class_d3_d_app_a6cbfb6c8fcc5edec4fb82aacaadf7fbb}{m4xMsaaState}} ? (\mbox{\hyperlink{class_d3_d_app_afb28a606eca768c1bb6cdc2109683dc7}{m4xMsaaQuality}} -\/ 1) : 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00712}00712     opaquePsoDesc.DSVFormat = \mbox{\hyperlink{class_d3_d_app_af2441a306c7f369256983c4f5f43395a}{mDepthStencilFormat}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00713}00713     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}-\/>CreateGraphicsPipelineState(\&opaquePsoDesc, IID\_PPV\_ARGS(\&mPSOs[\textcolor{stringliteral}{"{}opaque"{}}])));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00714}00714 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00715}00715 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00716}00716 \textcolor{keywordtype}{void} BezierPatchApp::BuildFrameResources()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00717}00717 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00718}00718     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int} i = 0; i < \mbox{\hyperlink{_bezier_patch_app_8cpp_a7c82b7821d2662eb6e0cfdc08a6c4bd4}{gNumFrameResources}}; ++i)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00719}00719     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00720}00720         mFrameResources.push\_back(std::make\_unique<FrameResource>(\mbox{\hyperlink{class_d3_d_app_a15b84b7e76f6c705196dd6b4b5ad418d}{md3dDevice}}.Get(),}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00721}00721             2, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00722}00722     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00723}00723 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00724}00724 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00725}00725 \textcolor{keywordtype}{void} BezierPatchApp::BuildMaterials()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00726}00726 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00727}00727     \textcolor{keyword}{auto} whiteMat = std::make\_unique<Material>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00728}00728     whiteMat-\/>Name = \textcolor{stringliteral}{"{}quadMat"{}};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00729}00729     whiteMat-\/>MatCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00730}00730     whiteMat-\/>DiffuseSrvHeapIndex = 3;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00731}00731     whiteMat-\/>DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00732}00732     whiteMat-\/>FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00733}00733     whiteMat-\/>Roughness = 0.5f;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00734}00734 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00735}00735     mMaterials[\textcolor{stringliteral}{"{}whiteMat"{}}] = std::move(whiteMat);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00736}00736 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00737}00737 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00738}00738 \textcolor{keywordtype}{void} BezierPatchApp::BuildRenderItems()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00739}00739 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00740}00740     \textcolor{keyword}{auto} quadPatchRitem = std::make\_unique<RenderItem>();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00741}00741     quadPatchRitem-\/>World = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00742}00742     quadPatchRitem-\/>TexTransform = \mbox{\hyperlink{class_math_helper_a68b4e9af95b1a36aad30ea80839f6b19}{MathHelper::Identity4x4}}();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00743}00743     quadPatchRitem-\/>ObjCBIndex = 0;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00744}00744     quadPatchRitem-\/>Mat = mMaterials[\textcolor{stringliteral}{"{}whiteMat"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00745}00745     quadPatchRitem-\/>Geo = mGeometries[\textcolor{stringliteral}{"{}quadpatchGeo"{}}].get();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00746}00746     quadPatchRitem-\/>PrimitiveType = D3D11\_PRIMITIVE\_TOPOLOGY\_16\_CONTROL\_POINT\_PATCHLIST;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00747}00747     quadPatchRitem-\/>IndexCount = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].IndexCount;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00748}00748     quadPatchRitem-\/>StartIndexLocation = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].StartIndexLocation;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00749}00749     quadPatchRitem-\/>BaseVertexLocation = quadPatchRitem-\/>Geo-\/>DrawArgs[\textcolor{stringliteral}{"{}quadpatch"{}}].BaseVertexLocation;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00750}00750     mRitemLayer[(int)\mbox{\hyperlink{_picking_app_8cpp_aa63ede3e7371d4bc358f651428d23159afaa90538de35640e4b1e31ccf35b6eb5}{RenderLayer::Opaque}}].push\_back(quadPatchRitem.get());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00751}00751     }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00752}00752     mAllRitems.push\_back(std::move(quadPatchRitem));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00753}00753 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00754}00754 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00755}00755 \textcolor{keywordtype}{void} BezierPatchApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, \textcolor{keyword}{const} std::vector<RenderItem*>\& ritems)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00756}00756 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00757}00757     UINT objCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_object_constants}{ObjectConstants}}));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00758}00758     UINT matCBByteSize = \mbox{\hyperlink{classd3d_util_a0883e0848cae813b2bc71570f3303e92}{d3dUtil::CalcConstantBufferByteSize}}(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{struct_material_constants}{MaterialConstants}}));}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00759}00759 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00760}00760     \textcolor{keyword}{auto} objectCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00761}00761     \textcolor{keyword}{auto} matCB = mCurrFrameResource-\/>\mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}}-\/>Resource();}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00762}00762 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00763}00763     \textcolor{comment}{// For each render item...}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00764}00764     \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t} i = 0; i < ritems.size(); ++i)}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00765}00765     \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00766}00766         \textcolor{keyword}{auto} ri = ritems[i];}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00767}00767 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00768}00768         cmdList-\/>IASetVertexBuffers(0, 1, \&ri-\/>Geo-\/>VertexBufferView());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00769}00769         cmdList-\/>IASetIndexBuffer(\&ri-\/>Geo-\/>IndexBufferView());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00770}00770         cmdList-\/>IASetPrimitiveTopology(ri-\/>PrimitiveType);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00771}00771 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00772}00772         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE tex(mSrvDescriptorHeap-\/>GetGPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00773}00773         tex.Offset(ri-\/>Mat-\/>DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00774}00774 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00775}00775         D3D12\_GPU\_VIRTUAL\_ADDRESS objCBAddress = objectCB-\/>GetGPUVirtualAddress() + ri-\/>ObjCBIndex*objCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00776}00776         D3D12\_GPU\_VIRTUAL\_ADDRESS matCBAddress = matCB-\/>GetGPUVirtualAddress() + ri-\/>Mat-\/>MatCBIndex*matCBByteSize;}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00777}00777 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00778}00778         cmdList-\/>SetGraphicsRootDescriptorTable(0, tex);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00779}00779         cmdList-\/>SetGraphicsRootConstantBufferView(1, objCBAddress);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00780}00780         cmdList-\/>SetGraphicsRootConstantBufferView(3, matCBAddress);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00781}00781 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00782}00782         cmdList-\/>DrawIndexedInstanced(ri-\/>IndexCount, 1, ri-\/>StartIndexLocation, ri-\/>BaseVertexLocation, 0);}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00783}00783     \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00784}00784 \}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00785}00785 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00786}00786 std::array<const CD3DX12\_STATIC\_SAMPLER\_DESC, 6> BezierPatchApp::GetStaticSamplers()}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00787}00787 \{}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00788}00788     \textcolor{comment}{// Applications usually only need a handful of samplers.  So just define them all up front}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00789}00789     \textcolor{comment}{// and keep them available as part of the root signature.  }}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00790}00790 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00791}00791     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointWrap(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00792}00792         0, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00793}00793         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00794}00794         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00795}00795         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00796}00796         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00797}00797 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00798}00798     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC pointClamp(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00799}00799         1, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00800}00800         D3D12\_FILTER\_MIN\_MAG\_MIP\_POINT, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00801}00801         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00802}00802         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00803}00803         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00804}00804 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00805}00805     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearWrap(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00806}00806         2, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00807}00807         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00808}00808         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00809}00809         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00810}00810         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00811}00811 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00812}00812     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC linearClamp(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00813}00813         3, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00814}00814         D3D12\_FILTER\_MIN\_MAG\_MIP\_LINEAR, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00815}00815         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00816}00816         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00817}00817         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP); \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00818}00818 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00819}00819     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicWrap(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00820}00820         4, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00821}00821         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00822}00822         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00823}00823         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00824}00824         D3D12\_TEXTURE\_ADDRESS\_MODE\_WRAP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00825}00825         0.0f,                             \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00826}00826         8);                               \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00827}00827 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00828}00828     \textcolor{keyword}{const} CD3DX12\_STATIC\_SAMPLER\_DESC anisotropicClamp(}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00829}00829         5, \textcolor{comment}{// shaderRegister}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00830}00830         D3D12\_FILTER\_ANISOTROPIC, \textcolor{comment}{// filter}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00831}00831         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressU}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00832}00832         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressV}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00833}00833         D3D12\_TEXTURE\_ADDRESS\_MODE\_CLAMP,  \textcolor{comment}{// addressW}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00834}00834         0.0f,                              \textcolor{comment}{// mipLODBias}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00835}00835         8);                                \textcolor{comment}{// maxAnisotropy}}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00836}00836 }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00837}00837     \textcolor{keywordflow}{return} \{ }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00838}00838         pointWrap, pointClamp,}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00839}00839         linearWrap, linearClamp, }
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00840}00840         anisotropicWrap, anisotropicClamp \};}
+\DoxyCodeLine{\Hypertarget{_bezier_patch_app_8cpp_source_l00841}00841 \}}
 
 \end{DoxyCode}

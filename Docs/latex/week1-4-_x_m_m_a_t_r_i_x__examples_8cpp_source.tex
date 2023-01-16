@@ -1,78 +1,78 @@
-\doxysection{week1-\/4-\/\+XMMATRIX\+\_\+examples.cpp}
+\hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source}{}\doxysection{week1-\/4-\/\+XMMATRIX\+\_\+examples.cpp}
 \label{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source}\index{Week1/DirectXMath Examples/week1-\/4-\/XMMATRIX\_examples.cpp@{Week1/DirectXMath Examples/week1-\/4-\/XMMATRIX\_examples.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
-\DoxyCodeLine{00020 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
-\DoxyCodeLine{00021 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
-\DoxyCodeLine{00022 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{00023 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{00024 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00025 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00026 }
-\DoxyCodeLine{00027 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
-\DoxyCodeLine{00028 \textcolor{comment}{// output XMVECTOR and XMMATRIX objects.}}
-\DoxyCodeLine{00029 ostream\& XM\_CALLCONV operator << (ostream\& os, FXMVECTOR v)}
-\DoxyCodeLine{00030 \{}
-\DoxyCodeLine{00031     XMFLOAT4 dest;}
-\DoxyCodeLine{00032     XMStoreFloat4(\&dest, v);}
-\DoxyCodeLine{00033 }
-\DoxyCodeLine{00034     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{}, "{}} << dest.w << \textcolor{stringliteral}{"{})"{}};}
-\DoxyCodeLine{00035     \textcolor{keywordflow}{return} os;}
-\DoxyCodeLine{00036 \}}
-\DoxyCodeLine{00037 }
-\DoxyCodeLine{00038 ostream\& XM\_CALLCONV operator << (ostream\& os, FXMMATRIX m)}
-\DoxyCodeLine{00039 \{}
-\DoxyCodeLine{00040     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 4; ++i)}
-\DoxyCodeLine{00041     \{}
-\DoxyCodeLine{00042         os << XMVectorGetX(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
-\DoxyCodeLine{00043         os << XMVectorGetY(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
-\DoxyCodeLine{00044         os << XMVectorGetZ(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
-\DoxyCodeLine{00045         os << XMVectorGetW(m.r[i]);}
-\DoxyCodeLine{00046         os << endl;}
-\DoxyCodeLine{00047     \}}
-\DoxyCodeLine{00048     \textcolor{keywordflow}{return} os;}
-\DoxyCodeLine{00049 \}}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051 \textcolor{keywordtype}{int} main()}
-\DoxyCodeLine{00052 \{}
-\DoxyCodeLine{00053     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
-\DoxyCodeLine{00054     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
-\DoxyCodeLine{00055     \{}
-\DoxyCodeLine{00056         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
-\DoxyCodeLine{00057         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00058     \}}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060     XMMATRIX A(1.0f, 0.0f, 0.0f, 0.0f,}
-\DoxyCodeLine{00061         0.0f, 2.0f, 0.0f, 0.0f,}
-\DoxyCodeLine{00062         0.0f, 0.0f, 4.0f, 0.0f,}
-\DoxyCodeLine{00063         1.0f, 2.0f, 3.0f, 1.0f);}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     XMMATRIX B = XMMatrixIdentity();}
-\DoxyCodeLine{00066 }
-\DoxyCodeLine{00067     XMMATRIX C = A * B;}
-\DoxyCodeLine{00068 }
-\DoxyCodeLine{00069     \textcolor{comment}{//or you can call xmmultiply}}
-\DoxyCodeLine{00070     XMMATRIX C1 = XMMatrixMultiply(A, B);}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072     XMMATRIX D = XMMatrixTranspose(A);}
-\DoxyCodeLine{00073 }
-\DoxyCodeLine{00074     XMVECTOR det = XMMatrixDeterminant(A);}
-\DoxyCodeLine{00075     XMMATRIX E = XMMatrixInverse(\&det, A);}
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077     XMMATRIX F = A * E;}
-\DoxyCodeLine{00078 }
-\DoxyCodeLine{00079     cout << \textcolor{stringliteral}{"{}A = "{}} << endl << A << endl;}
-\DoxyCodeLine{00080     cout << \textcolor{stringliteral}{"{}B = "{}} << endl << B << endl;}
-\DoxyCodeLine{00081     cout << \textcolor{stringliteral}{"{}C = A*B = "{}} << endl << C << endl;}
-\DoxyCodeLine{00082     cout << \textcolor{stringliteral}{"{}C1 = XMMatrixMultiply(A,B) = "{}} << endl << C1 << endl;}
-\DoxyCodeLine{00083     cout << \textcolor{stringliteral}{"{}D = transpose(A) = "{}} << endl << D << endl;}
-\DoxyCodeLine{00084     cout << \textcolor{stringliteral}{"{}det = determinant(A) = "{}} << det << endl << endl;}
-\DoxyCodeLine{00085     cout << \textcolor{stringliteral}{"{}E = inverse(A) = "{}} << endl << E << endl;}
-\DoxyCodeLine{00086     cout << \textcolor{stringliteral}{"{}F = A*E = "{}} << endl << F << endl;}
-\DoxyCodeLine{00087 }
-\DoxyCodeLine{00088     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00089 \}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00019}00019 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00020}00020 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00021}00021 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00022}00022 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00023}00023 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00024}00024 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00025}00025 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00026}00026 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00027}00027 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00028}00028 \textcolor{comment}{// output XMVECTOR and XMMATRIX objects.}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00029}\mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{00029}} ostream\& XM\_CALLCONV \mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMVECTOR v)}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00030}00030 \{}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00031}00031     XMFLOAT4 dest;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00032}00032     XMStoreFloat4(\&dest, v);}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00034}00034     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{}, "{}} << dest.w << \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00035}00035     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00036}00036 \}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00037}00037 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00038}\mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_a930dd2922807652f1babff30313137f6}{00038}} ostream\& XM\_CALLCONV \mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMMATRIX m)}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00039}00039 \{}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00040}00040     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 4; ++i)}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00041}00041     \{}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00042}00042         os << XMVectorGetX(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00043}00043         os << XMVectorGetY(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00044}00044         os << XMVectorGetZ(m.r[i]) << \textcolor{stringliteral}{"{}\(\backslash\)t"{}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00045}00045         os << XMVectorGetW(m.r[i]);}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00046}00046         os << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00047}00047     \}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00048}00048     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00049}00049 \}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00051}\mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00051}} \textcolor{keywordtype}{int} \mbox{\hyperlink{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00052}00052 \{}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00053}00053     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00054}00054     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00055}00055     \{}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00056}00056         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00057}00057         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00058}00058     \}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00060}00060     XMMATRIX \mbox{\hyperlink{class_a}{A}}(1.0f, 0.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00061}00061         0.0f, 2.0f, 0.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00062}00062         0.0f, 0.0f, 4.0f, 0.0f,}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00063}00063         1.0f, 2.0f, 3.0f, 1.0f);}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00065}00065     XMMATRIX \mbox{\hyperlink{class_b}{B}} = XMMatrixIdentity();}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00066}00066 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00067}00067     XMMATRIX C = \mbox{\hyperlink{class_a}{A}} * \mbox{\hyperlink{class_b}{B}};}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00068}00068 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00069}00069     \textcolor{comment}{//or you can call xmmultiply}}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00070}00070     XMMATRIX C1 = XMMatrixMultiply(\mbox{\hyperlink{class_a}{A}}, \mbox{\hyperlink{class_b}{B}});}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00072}00072     XMMATRIX D = XMMatrixTranspose(\mbox{\hyperlink{class_a}{A}});}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00073}00073 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00074}00074     XMVECTOR det = XMMatrixDeterminant(\mbox{\hyperlink{class_a}{A}});}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00075}00075     XMMATRIX E = XMMatrixInverse(\&det, \mbox{\hyperlink{class_a}{A}});}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00077}00077     XMMATRIX F = \mbox{\hyperlink{class_a}{A}} * E;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00078}00078 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00079}00079     cout << \textcolor{stringliteral}{"{}A = "{}} << endl << \mbox{\hyperlink{class_a}{A}} << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00080}00080     cout << \textcolor{stringliteral}{"{}B = "{}} << endl << \mbox{\hyperlink{class_b}{B}} << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00081}00081     cout << \textcolor{stringliteral}{"{}C = A*B = "{}} << endl << C << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00082}00082     cout << \textcolor{stringliteral}{"{}C1 = XMMatrixMultiply(A,B) = "{}} << endl << C1 << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00083}00083     cout << \textcolor{stringliteral}{"{}D = transpose(A) = "{}} << endl << D << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00084}00084     cout << \textcolor{stringliteral}{"{}det = determinant(A) = "{}} << det << endl << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00085}00085     cout << \textcolor{stringliteral}{"{}E = inverse(A) = "{}} << endl << E << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00086}00086     cout << \textcolor{stringliteral}{"{}F = A*E = "{}} << endl << F << endl;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00087}00087 }
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00088}00088     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{week1-4-_x_m_m_a_t_r_i_x__examples_8cpp_source_l00089}00089 \}}
 
 \end{DoxyCode}

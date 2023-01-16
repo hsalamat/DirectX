@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['b_0',['b',['../struct_object_constant2.html#a819eed858fde67a5534ce160928d3666',1,'ObjectConstant2']]],
+  ['b_0',['b',['../structmystruct.html#aec23bb30e7a1661a5351cc5c9a3655a0',1,'mystruct::b()'],['../struct_object_constant2.html#a819eed858fde67a5534ce160928d3666',1,'ObjectConstant2::b()']]],
   ['basevertexlocation_1',['BaseVertexLocation',['../struct_submesh_geometry.html#a95e805e2c8022aea5826d7343ee7dc20',1,'SubmeshGeometry::BaseVertexLocation()'],['../struct_render_item.html#a3750ef7b2791ea922df46e222649f3dc',1,'RenderItem::BaseVertexLocation()']]],
   ['bbitmask_2',['BBitMask',['../struct_d_d_s___p_i_x_e_l_f_o_r_m_a_t.html#a94e8f580b6c716d600be37525b3ebf44',1,'DDS_PIXELFORMAT']]],
   ['blurweights_3',['BlurWeights',['../struct_ssao_constants.html#add06c2f7e2307dbec383ef3d7f3e2077',1,'SsaoConstants']]],

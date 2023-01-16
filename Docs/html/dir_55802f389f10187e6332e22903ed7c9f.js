@@ -1,5 +1,6 @@
 var dir_55802f389f10187e6332e22903ed7c9f =
 [
+    [ "cplusplusdemo", "dir_59fa0cf19c6e7e582a60e5720853e4e6.html", "dir_59fa0cf19c6e7e582a60e5720853e4e6" ],
     [ "Week 2-0-myfirstwin32", "dir_e5b9dc2f9bcd39803fc54904eff64c54.html", "dir_e5b9dc2f9bcd39803fc54904eff64c54" ],
     [ "Week 2-1-Win32App", "dir_8dc936a6a8b883a8d213c66a827568b5.html", "dir_8dc936a6a8b883a8d213c66a827568b5" ],
     [ "Week2-2-InitializeDirect3D", "dir_de0ce7fc8295e591d8a670c64a9edcde.html", "dir_de0ce7fc8295e591d8a670c64a9edcde" ],

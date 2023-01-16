@@ -1,26 +1,26 @@
-\doxysection{Frame\+Resource.\+cpp}
+\hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source}{}\doxysection{Frame\+Resource.\+cpp}
 \label{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source}\index{Week6/2 -\/ BlendingDemo/FrameResource.cpp@{Week6/2 -\/ BlendingDemo/FrameResource.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{preprocessor}{\#include "{}FrameResource.h"{}}}
-\DoxyCodeLine{00002 }
-\DoxyCodeLine{00003 FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount)}
-\DoxyCodeLine{00004 \{}
-\DoxyCodeLine{00005     ThrowIfFailed(device-\/>CreateCommandAllocator(}
-\DoxyCodeLine{00006         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
-\DoxyCodeLine{00007         IID\_PPV\_ARGS(CmdListAlloc.GetAddressOf())));}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009   \textcolor{comment}{//  FrameCB = std::make\_unique<UploadBuffer<FrameConstants>>(device, 1, true);}}
-\DoxyCodeLine{00010     PassCB = std::make\_unique<UploadBuffer<PassConstants>>(device, passCount, \textcolor{keyword}{true});}
-\DoxyCodeLine{00011     MaterialCB = std::make\_unique<UploadBuffer<MaterialConstants>>(device, materialCount, \textcolor{keyword}{true});}
-\DoxyCodeLine{00012     ObjectCB = std::make\_unique<UploadBuffer<ObjectConstants>>(device, objectCount, \textcolor{keyword}{true});}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014     WavesVB = std::make\_unique<UploadBuffer<Vertex>>(device, waveVertCount, \textcolor{keyword}{false});}
-\DoxyCodeLine{00015 \}}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017 FrameResource::\string~FrameResource()}
-\DoxyCodeLine{00018 \{}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00001}00001 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week9_2_trinagle_tessellation_2_frame_resource_8h}{FrameResource.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00002}00002 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00003}00003 \mbox{\hyperlink{struct_frame_resource_a496fdce5ab50522a3dcbf9260be6e86c}{FrameResource::FrameResource}}(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount)}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00004}00004 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00005}00005     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(device-\/>CreateCommandAllocator(}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00006}00006         D3D12\_COMMAND\_LIST\_TYPE\_DIRECT,}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00007}00007         IID\_PPV\_ARGS(\mbox{\hyperlink{struct_frame_resource_a291715f4e38eed237d9799daee6d062b}{CmdListAlloc}}.GetAddressOf())));}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00009}00009   \textcolor{comment}{//  FrameCB = std::make\_unique<UploadBuffer<FrameConstants>>(device, 1, true);}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00010}00010     \mbox{\hyperlink{struct_frame_resource_a9a85cb113dec7553de94ae579bd0b770}{PassCB}} = std::make\_unique<UploadBuffer<PassConstants>>(device, passCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00011}00011     \mbox{\hyperlink{struct_frame_resource_af1498412e7d7a99e438b4a189f499c76}{MaterialCB}} = std::make\_unique<UploadBuffer<MaterialConstants>>(device, materialCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00012}00012     \mbox{\hyperlink{struct_frame_resource_ad1c8bf68d9fe27c0bf5224057fe42b14}{ObjectCB}} = std::make\_unique<UploadBuffer<ObjectConstants>>(device, objectCount, \textcolor{keyword}{true});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00014}00014     \mbox{\hyperlink{struct_frame_resource_a36a43467f17b51ef358f55084a5fb132}{WavesVB}} = std::make\_unique<UploadBuffer<Vertex>>(device, waveVertCount, \textcolor{keyword}{false});}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00015}00015 \}}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00017}00017 \mbox{\hyperlink{struct_frame_resource_a93d669d1d4db3b4ed5cd6f0f6b921809}{FrameResource::\string~FrameResource}}()}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00018}00018 \{}
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week6_22_01-_01_blending_demo_2_frame_resource_8cpp_source_l00020}00020 \}}
 
 \end{DoxyCode}

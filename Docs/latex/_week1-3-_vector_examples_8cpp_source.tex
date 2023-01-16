@@ -1,102 +1,102 @@
-\doxysection{Week1-\/3-\/\+Vector\+Examples.cpp}
+\hypertarget{_week1-3-_vector_examples_8cpp_source}{}\doxysection{Week1-\/3-\/\+Vector\+Examples.cpp}
 \label{_week1-3-_vector_examples_8cpp_source}\index{Week1/DirectXMath Examples/Week1-\/3-\/VectorExamples.cpp@{Week1/DirectXMath Examples/Week1-\/3-\/VectorExamples.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week1-3-_vector_examples_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 }
-\DoxyCodeLine{00017 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
-\DoxyCodeLine{00018 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
-\DoxyCodeLine{00019 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
-\DoxyCodeLine{00020 \textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{00021 \textcolor{keyword}{using namespace }std;}
-\DoxyCodeLine{00022 \textcolor{keyword}{using namespace }DirectX;}
-\DoxyCodeLine{00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
-\DoxyCodeLine{00026 \textcolor{comment}{// output XMVECTOR objects.}}
-\DoxyCodeLine{00027 ostream\& XM\_CALLCONV operator << (ostream\& os, FXMVECTOR v)}
-\DoxyCodeLine{00028 \{}
-\DoxyCodeLine{00029     XMFLOAT3 dest;}
-\DoxyCodeLine{00030     XMStoreFloat3(\&dest, v);}
-\DoxyCodeLine{00031 }
-\DoxyCodeLine{00032     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{})"{}};}
-\DoxyCodeLine{00033     \textcolor{keywordflow}{return} os;}
-\DoxyCodeLine{00034 \}}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036 \textcolor{keywordtype}{int} main()}
-\DoxyCodeLine{00037 \{}
-\DoxyCodeLine{00038     \textcolor{comment}{//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values}}
-\DoxyCodeLine{00039     cout.setf(ios\_base::boolalpha);}
-\DoxyCodeLine{00040 }
-\DoxyCodeLine{00041     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
-\DoxyCodeLine{00043     \{}
-\DoxyCodeLine{00044         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
-\DoxyCodeLine{00045         \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00046     \}}
-\DoxyCodeLine{00047 }
-\DoxyCodeLine{00048     XMVECTOR n = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);}
-\DoxyCodeLine{00049     XMVECTOR u = XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);}
-\DoxyCodeLine{00050     XMVECTOR v = XMVectorSet(-\/2.0f, 1.0f, -\/3.0f, 0.0f);}
-\DoxyCodeLine{00051     XMVECTOR w = XMVectorSet(0.707f, 0.707f, 0.0f, 0.0f);}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053     \textcolor{comment}{// Vector addition: XMVECTOR operator + }}
-\DoxyCodeLine{00054     XMVECTOR a = u + v;}
-\DoxyCodeLine{00055 }
-\DoxyCodeLine{00056     \textcolor{comment}{// Vector subtraction: XMVECTOR operator -\/ }}
-\DoxyCodeLine{00057     XMVECTOR b = u -\/ v;}
-\DoxyCodeLine{00058 }
-\DoxyCodeLine{00059     \textcolor{comment}{// Scalar multiplication: XMVECTOR operator * }}
-\DoxyCodeLine{00060     XMVECTOR c = 10.0f * u;}
-\DoxyCodeLine{00061 }
-\DoxyCodeLine{00062     \textcolor{comment}{// ||u||}}
-\DoxyCodeLine{00063     XMVECTOR L = XMVector3Length(u);}
-\DoxyCodeLine{00064 }
-\DoxyCodeLine{00065     \textcolor{comment}{// d = u / ||u||}}
-\DoxyCodeLine{00066     XMVECTOR d = XMVector3Normalize(u);}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068     \textcolor{comment}{// s = u dot v}}
-\DoxyCodeLine{00069     XMVECTOR s = XMVector3Dot(u, v);}
-\DoxyCodeLine{00070 }
-\DoxyCodeLine{00071     \textcolor{comment}{// e = u x v}}
-\DoxyCodeLine{00072     XMVECTOR e = XMVector3Cross(u, v);}
-\DoxyCodeLine{00073 }
-\DoxyCodeLine{00074     \textcolor{comment}{// Find proj\_n(w) and perp\_n(w)}}
-\DoxyCodeLine{00075     \textcolor{comment}{// If we interpret w as a force, projW can be thought of as the portion of the force w that acts in}}
-\DoxyCodeLine{00076     \textcolor{comment}{// the direction n.Likewise, the vector perpW = perpn(w) = w – p is the portion of the force v that}}
-\DoxyCodeLine{00077     \textcolor{comment}{// acts orthogonal to the direction n}}
-\DoxyCodeLine{00078     XMVECTOR projW;  \textcolor{comment}{//projW the orthogonal projection of w on n,}}
-\DoxyCodeLine{00079     XMVECTOR perpW;}
-\DoxyCodeLine{00080     XMVector3ComponentsFromNormal(\&projW, \&perpW, w, n);}
-\DoxyCodeLine{00081 }
-\DoxyCodeLine{00082     \textcolor{comment}{// Does projW + perpW == w?}}
-\DoxyCodeLine{00083     \textcolor{keywordtype}{bool} equal = XMVector3Equal(projW + perpW, w) != 0;}
-\DoxyCodeLine{00084     \textcolor{keywordtype}{bool} notEqual = XMVector3NotEqual(projW + perpW, w) != 0;}
-\DoxyCodeLine{00085 }
-\DoxyCodeLine{00086     \textcolor{comment}{// The angle between projW and perpW should be 90 degrees.}}
-\DoxyCodeLine{00087     XMVECTOR angleVec = XMVector3AngleBetweenVectors(projW, perpW);}
-\DoxyCodeLine{00088     \textcolor{keywordtype}{float} angleRadians = XMVectorGetX(angleVec);}
-\DoxyCodeLine{00089     \textcolor{keywordtype}{float} angleDegrees = XMConvertToDegrees(angleRadians);}
-\DoxyCodeLine{00090 }
-\DoxyCodeLine{00091     cout << \textcolor{stringliteral}{"{}u                   = "{}} << u << endl;}
-\DoxyCodeLine{00092     cout << \textcolor{stringliteral}{"{}v                   = "{}} << v << endl;}
-\DoxyCodeLine{00093     cout << \textcolor{stringliteral}{"{}w                   = "{}} << w << endl;}
-\DoxyCodeLine{00094     cout << \textcolor{stringliteral}{"{}n                   = "{}} << n << endl;}
-\DoxyCodeLine{00095     cout << \textcolor{stringliteral}{"{}a = u + v           = "{}} << a << endl;}
-\DoxyCodeLine{00096     cout << \textcolor{stringliteral}{"{}b = u -\/ v           = "{}} << b << endl;}
-\DoxyCodeLine{00097     cout << \textcolor{stringliteral}{"{}c = 10 * u          = "{}} << c << endl;}
-\DoxyCodeLine{00098     cout << \textcolor{stringliteral}{"{}d = u / ||u||       = "{}} << d << endl;}
-\DoxyCodeLine{00099     cout << \textcolor{stringliteral}{"{}e = u x v           = "{}} << e << endl;}
-\DoxyCodeLine{00100     cout << \textcolor{stringliteral}{"{}L  = ||u||          = "{}} << L << endl;}
-\DoxyCodeLine{00101     cout << \textcolor{stringliteral}{"{}s = u.v             = "{}} << s << endl;}
-\DoxyCodeLine{00102     cout << \textcolor{stringliteral}{"{}projW               = "{}} << projW << endl;}
-\DoxyCodeLine{00103     cout << \textcolor{stringliteral}{"{}perpW               = "{}} << perpW << endl;}
-\DoxyCodeLine{00104     cout << \textcolor{stringliteral}{"{}projW + perpW == w  = "{}} << equal << endl;}
-\DoxyCodeLine{00105     cout << \textcolor{stringliteral}{"{}projW + perpW != w  = "{}} << notEqual << endl;}
-\DoxyCodeLine{00106     cout << \textcolor{stringliteral}{"{}angle               = "{}} << angleDegrees << endl;}
-\DoxyCodeLine{00107 }
-\DoxyCodeLine{00108     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{00109 \}}
-\DoxyCodeLine{00110 }
-\DoxyCodeLine{00111 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00001}00001 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00017}00017 \textcolor{preprocessor}{\#include <windows.h>} \textcolor{comment}{// for XMVerifyCPUSupport}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00018}00018 \textcolor{preprocessor}{\#include <DirectXMath.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00019}00019 \textcolor{preprocessor}{\#include <DirectXPackedVector.h>}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00020}00020 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00021}00021 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00022}00022 \textcolor{keyword}{using namespace }\mbox{\hyperlink{namespace_direct_x}{DirectX}};}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00023}00023 \textcolor{keyword}{using namespace }DirectX::PackedVector;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00025}00025 \textcolor{comment}{// Overload the  "{}<<"{} operators so that we can use cout to }}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00026}00026 \textcolor{comment}{// output XMVECTOR objects.}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00027}\mbox{\hyperlink{_week1-3-_vector_examples_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{00027}} ostream\& XM\_CALLCONV \mbox{\hyperlink{_week1-3-_vector_examples_8cpp_ae78fc3f791d5bdba6ceebac9374f5e23}{operator << }}(ostream\& os, FXMVECTOR v)}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00028}00028 \{}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00029}00029     XMFLOAT3 dest;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00030}00030     XMStoreFloat3(\&dest, v);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00031}00031 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00032}00032     os << \textcolor{stringliteral}{"{}("{}} << dest.x << \textcolor{stringliteral}{"{}, "{}} << dest.y << \textcolor{stringliteral}{"{}, "{}} << dest.z << \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00033}00033     \textcolor{keywordflow}{return} os;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00034}00034 \}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00036}\mbox{\hyperlink{_week1-3-_vector_examples_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00036}} \textcolor{keywordtype}{int} \mbox{\hyperlink{_week1-3-_vector_examples_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00037}00037 \{}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00038}00038     \textcolor{comment}{//When the boolalpha format flag is set, bool values are inserted / extracted by their textual representation : either true or false, instead of integral values}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00039}00039     cout.setf(ios\_base::boolalpha);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00040}00040 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00041}00041     \textcolor{comment}{// Check support for SSE2 (Pentium4, AMD K8, and above).}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00042}00042     \textcolor{keywordflow}{if} (!XMVerifyCPUSupport())}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00043}00043     \{}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00044}00044         cout << \textcolor{stringliteral}{"{}directx math not supported"{}} << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00045}00045         \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00046}00046     \}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00047}00047 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00048}00048     XMVECTOR n = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00049}00049     XMVECTOR u = XMVectorSet(1.0f, 2.0f, 3.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00050}00050     XMVECTOR v = XMVectorSet(-\/2.0f, 1.0f, -\/3.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00051}00051     XMVECTOR w = XMVectorSet(0.707f, 0.707f, 0.0f, 0.0f);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00053}00053     \textcolor{comment}{// Vector addition: XMVECTOR operator + }}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00054}00054     XMVECTOR a = u + v;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00055}00055 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00056}00056     \textcolor{comment}{// Vector subtraction: XMVECTOR operator -\/ }}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00057}00057     XMVECTOR b = u -\/ v;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00058}00058 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00059}00059     \textcolor{comment}{// Scalar multiplication: XMVECTOR operator * }}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00060}00060     XMVECTOR c = 10.0f * u;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00061}00061 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00062}00062     \textcolor{comment}{// ||u||}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00063}00063     XMVECTOR L = XMVector3Length(u);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00064}00064 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00065}00065     \textcolor{comment}{// d = u / ||u||}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00066}00066     XMVECTOR d = XMVector3Normalize(u);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00068}00068     \textcolor{comment}{// s = u dot v}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00069}00069     XMVECTOR s = XMVector3Dot(u, v);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00070}00070 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00071}00071     \textcolor{comment}{// e = u x v}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00072}00072     XMVECTOR e = XMVector3Cross(u, v);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00073}00073 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00074}00074     \textcolor{comment}{// Find proj\_n(w) and perp\_n(w)}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00075}00075     \textcolor{comment}{// If we interpret w as a force, projW can be thought of as the portion of the force w that acts in}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00076}00076     \textcolor{comment}{// the direction n.Likewise, the vector perpW = perpn(w) = w – p is the portion of the force v that}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00077}00077     \textcolor{comment}{// acts orthogonal to the direction n}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00078}00078     XMVECTOR projW;  \textcolor{comment}{//projW the orthogonal projection of w on n,}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00079}00079     XMVECTOR perpW;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00080}00080     XMVector3ComponentsFromNormal(\&projW, \&perpW, w, n);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00081}00081 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00082}00082     \textcolor{comment}{// Does projW + perpW == w?}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00083}00083     \textcolor{keywordtype}{bool} equal = XMVector3Equal(projW + perpW, w) != 0;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00084}00084     \textcolor{keywordtype}{bool} notEqual = XMVector3NotEqual(projW + perpW, w) != 0;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00085}00085 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00086}00086     \textcolor{comment}{// The angle between projW and perpW should be 90 degrees.}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00087}00087     XMVECTOR angleVec = XMVector3AngleBetweenVectors(projW, perpW);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00088}00088     \textcolor{keywordtype}{float} angleRadians = XMVectorGetX(angleVec);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00089}00089     \textcolor{keywordtype}{float} angleDegrees = XMConvertToDegrees(angleRadians);}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00090}00090 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00091}00091     cout << \textcolor{stringliteral}{"{}u                   = "{}} << u << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00092}00092     cout << \textcolor{stringliteral}{"{}v                   = "{}} << v << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00093}00093     cout << \textcolor{stringliteral}{"{}w                   = "{}} << w << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00094}00094     cout << \textcolor{stringliteral}{"{}n                   = "{}} << n << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00095}00095     cout << \textcolor{stringliteral}{"{}a = u + v           = "{}} << a << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00096}00096     cout << \textcolor{stringliteral}{"{}b = u -\/ v           = "{}} << b << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00097}00097     cout << \textcolor{stringliteral}{"{}c = 10 * u          = "{}} << c << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00098}00098     cout << \textcolor{stringliteral}{"{}d = u / ||u||       = "{}} << d << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00099}00099     cout << \textcolor{stringliteral}{"{}e = u x v           = "{}} << e << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00100}00100     cout << \textcolor{stringliteral}{"{}L  = ||u||          = "{}} << L << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00101}00101     cout << \textcolor{stringliteral}{"{}s = u.v             = "{}} << s << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00102}00102     cout << \textcolor{stringliteral}{"{}projW               = "{}} << projW << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00103}00103     cout << \textcolor{stringliteral}{"{}perpW               = "{}} << perpW << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00104}00104     cout << \textcolor{stringliteral}{"{}projW + perpW == w  = "{}} << equal << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00105}00105     cout << \textcolor{stringliteral}{"{}projW + perpW != w  = "{}} << notEqual << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00106}00106     cout << \textcolor{stringliteral}{"{}angle               = "{}} << angleDegrees << endl;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00107}00107 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00108}00108     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00109}00109 \}}
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00110}00110 }
+\DoxyCodeLine{\Hypertarget{_week1-3-_vector_examples_8cpp_source_l00111}00111 }
 
 \end{DoxyCode}

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DirectX: Week7/SubdividingTriangle/Week7-1-TriangleSubdividing.cpp Source File</title>
+<title>GAME3111: Week7/SubdividingTriangle/Week7-1-TriangleSubdividing.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">DirectX
+   <div id="projectname">GAME3111
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -94,468 +94,452 @@ $(document).ready(function(){initNavTree('_week7-1-_triangle_subdividing_8cpp_so
   <div class="headertitle"><div class="title">Week7-1-TriangleSubdividing.cpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="_week7-1-_triangle_subdividing_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//***************************************************************************************</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// Triangle subdividing inputs a triangle, subdivides it and outputs the four subdivided</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">//triangles. The  geometry shader illustrates the Append and RestartStrip methods.</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//      1</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">//      *</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">//     /  \</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">//    /    \</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">//   m0*–-—*m1</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">//  /  \   /  \</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// /    \ /    \ </span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// *–—*–—*–—*–—*</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">// 0     m2    2</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">// We can draw the subdivision in two strips:</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">// Strip 1: bottom three triangles</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment">// Strip 2: top triangle</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">//***************************************************************************************</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &quot;../../Common/d3dApp.h&quot;</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;../../Common/MathHelper.h&quot;</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;../../Common/UploadBuffer.h&quot;</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">using</span> Microsoft::WRL::ComPtr;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_direct_x.html">DirectX</a>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">using namespace </span>DirectX::PackedVector;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_vertex.html">Vertex</a></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>{</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    XMFLOAT3 <a class="code hl_variable" href="struct_vertex.html#af07583772f2c7eee146e655826467dcb">Pos</a>;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    XMFLOAT4 <a class="code hl_variable" href="struct_vertex.html#a98fd91c181a316de963a06c060ff5448">Color</a>;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<a href="_week7-1-_triangle_subdividing_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;../../Common/d3dApp.h&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;../../Common/MathHelper.h&quot;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;../../Common/UploadBuffer.h&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">using</span> Microsoft::WRL::ComPtr;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_direct_x.html">DirectX</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">using namespace </span>DirectX::PackedVector;</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_vertex.html">Vertex</a></div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>{</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    XMFLOAT4X4 <a class="code hl_variable" href="struct_object_constants.html#a274b083a5402569466d1e86844ab4dec">WorldViewProj</a> = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>};</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    XMFLOAT3 <a class="code hl_variable" href="struct_vertex.html#af07583772f2c7eee146e655826467dcb">Pos</a>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    XMFLOAT4 <a class="code hl_variable" href="struct_vertex.html#a98fd91c181a316de963a06c060ff5448">Color</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">class </span><a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_d3_d_app.html">D3DApp</a></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>{</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">   43</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">TriangleAPP</a>(HINSTANCE hInstance);</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a102fb6ff542cb9440496753c1d3926c5">   44</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a102fb6ff542cb9440496753c1d3926c5">TriangleAPP</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; rhs) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#ac87ba5e40c91b9b4b7142955fcd2972c">   45</a></span>    <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; <a class="code hl_function" href="class_triangle_a_p_p.html#ac87ba5e40c91b9b4b7142955fcd2972c">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; rhs) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">   46</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">~TriangleAPP</a>();</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a8a19d524d41a5d3d1a86a136f7794a24">   48</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a8a19d524d41a5d3d1a86a136f7794a24">Initialize</a>()<span class="keyword">override</span>;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a16ca94bd3f6a370977cceb23f987ee02">   51</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a16ca94bd3f6a370977cceb23f987ee02">OnResize</a>()<span class="keyword">override</span>;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8">   52</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8">Update</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)<span class="keyword">override</span>;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a619562cc39bc4630eefb1b658ea37f61">   53</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a619562cc39bc4630eefb1b658ea37f61">Draw</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">struct </span><a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>{</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    XMFLOAT4X4 <a class="code hl_variable" href="struct_object_constants.html#a274b083a5402569466d1e86844ab4dec">WorldViewProj</a> = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">class </span><a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_d3_d_app.html">D3DApp</a></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>{</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">   50</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">TriangleAPP</a>(HINSTANCE hInstance);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a102fb6ff542cb9440496753c1d3926c5">   51</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a102fb6ff542cb9440496753c1d3926c5">TriangleAPP</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; rhs) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#ac87ba5e40c91b9b4b7142955fcd2972c">   52</a></span>    <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; <a class="code hl_function" href="class_triangle_a_p_p.html#ac87ba5e40c91b9b4b7142955fcd2972c">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a>&amp; rhs) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">   53</a></span>    <a class="code hl_function" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">~TriangleAPP</a>();</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#af2a257f73e77cd7ae8b9edd3932a55fd">   56</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af2a257f73e77cd7ae8b9edd3932a55fd">BuildDescriptorHeaps</a>();</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#af7d88b9a9b7685618cd809b3563a08ea">   57</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af7d88b9a9b7685618cd809b3563a08ea">BuildConstantBuffers</a>();</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9">   58</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9">BuildRootSignature</a>();</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a4f65c7069f501aae800b228200b30c5f">   59</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a4f65c7069f501aae800b228200b30c5f">BuildShadersAndInputLayout</a>();</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee">   60</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee">BuildTriangleGeometry</a>();</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a07d94a5cf02586f8b60f6d80eca19801">   61</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a07d94a5cf02586f8b60f6d80eca19801">BuildPSO</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="class_triangle_a_p_p.html#a8a19d524d41a5d3d1a86a136f7794a24">   55</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a8a19d524d41a5d3d1a86a136f7794a24">Initialize</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> OnResize()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> Update(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> Draw(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    std::unique_ptr&lt;MeshGeometry&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    ComPtr&lt;ID3D12RootSignature&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#ad5cbeabb111a1611e38052722e71d2c0">mRootSignature</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    ComPtr&lt;ID3D12DescriptorHeap&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">mCbvHeap</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    std::unique_ptr&lt;UploadBuffer&lt;ObjectConstants&gt;&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#ae2ce3ada9b47142ae156195f9ed2773a">mObjectCB</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">void</span> BuildDescriptorHeaps();</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span> BuildConstantBuffers();</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">void</span> BuildRootSignature();</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">void</span> BuildShadersAndInputLayout();</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> BuildTriangleGeometry();</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">void</span> BuildPSO();</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="comment">//The ID3DBlob interface is used to return data of arbitrary length. It&#39;s contained in D3dcompiler.lib </span></div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    ComPtr&lt;ID3DBlob&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a10c65db3dea3d517876fac5c11d47376">mvsByteCode</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    ComPtr&lt;ID3DBlob&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#aa46643ec6db2dfa33abd8767739309a7">mpsByteCode</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    ComPtr&lt;ID3DBlob&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a0486123a12b11344056f7b19e2cd026d">mgsByteCode</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    std::vector&lt;D3D12_INPUT_ELEMENT_DESC&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a3e55137310cfe5fbddf2da3e8a43b35f">mInputLayout</a>;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    std::unique_ptr&lt;MeshGeometry&gt; mBoxGeo = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    ComPtr&lt;ID3D12RootSignature&gt; mRootSignature = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    ComPtr&lt;ID3D12DescriptorHeap&gt; mCbvHeap = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    std::unique_ptr&lt;UploadBuffer&lt;ObjectConstants&gt;&gt; mObjectCB = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    ComPtr&lt;ID3D12PipelineState&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a4e399c0b9ed0313c1af2df4a88d99ed2">mPSO</a> = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    XMFLOAT4X4 <a class="code hl_variable" href="class_triangle_a_p_p.html#a6327b235a61b02056a61317aa4200f21">mWorld</a> = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    XMFLOAT4X4 <a class="code hl_variable" href="class_triangle_a_p_p.html#a2ecfdaf851b02d7305951d89d93c79bf">mView</a> = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    XMFLOAT4X4 <a class="code hl_variable" href="class_triangle_a_p_p.html#a709f795c3d26e1c7884b85413112445f">mProj</a> = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">//The ID3DBlob interface is used to return data of arbitrary length. It&#39;s contained in D3dcompiler.lib </span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    ComPtr&lt;ID3DBlob&gt; mvsByteCode = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    ComPtr&lt;ID3DBlob&gt; mpsByteCode = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    ComPtr&lt;ID3DBlob&gt; mgsByteCode = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    std::vector&lt;D3D12_INPUT_ELEMENT_DESC&gt; mInputLayout;</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_triangle_a_p_p.html#ab05555f82deacd28ccb11059fe4b5490">mTheta</a> = 1.5f * XM_PI;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_triangle_a_p_p.html#a2ac699be0774120a5158f61f6284d504">mPhi</a> = XM_PIDIV4;</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_triangle_a_p_p.html#a425beba56765675c61dc301199a8e5e1">mRadius</a> = 5.0f;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="class_triangle_a_p_p.html#ab50e4cebd197d1379a9be8d649f30831">mTheta2</a> = 0.0f;</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    POINT <a class="code hl_variable" href="class_triangle_a_p_p.html#a9f0f75b0a6acd430cdfe0741fe38fb0c">mLastMousePos</a>;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    ComPtr&lt;ID3D12PipelineState&gt; mPSO = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    XMFLOAT4X4 mWorld = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    XMFLOAT4X4 mView = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    XMFLOAT4X4 mProj = <a class="code hl_function" href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a>();</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>};</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">   95</a></span><span class="keywordtype">int</span> WINAPI <a class="code hl_function" href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">WinMain</a>(HINSTANCE hInstance, HINSTANCE prevInstance,</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    PSTR cmdLine, <span class="keywordtype">int</span> showCmd)</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>{</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="comment">// Enable run-time memory check for debug builds.</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="preprocessor">#if defined(DEBUG) | defined(_DEBUG)</span></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">try</span></div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    {</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a> theApp(hInstance);</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">if</span> (!theApp.<a class="code hl_function" href="class_triangle_a_p_p.html#af09191ec7e0b1053c2ea90c0a6e39517">Initialize</a>())</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">return</span> theApp.<a class="code hl_function" href="class_d3_d_app.html#a0a2ed8f09bb1ae3a97f3b9a5067c905f">Run</a>();</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    }</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordflow">catch</span> (<a class="code hl_class" href="class_dx_exception.html">DxException</a>&amp; e)</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    {</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        MessageBox(<span class="keyword">nullptr</span>, e.<a class="code hl_function" href="class_dx_exception.html#a031a5ff549f043decbe96093e73dac27">ToString</a>().c_str(), L<span class="stringliteral">&quot;HR Failed&quot;</span>, MB_OK);</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    }</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>}</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><a class="code hl_function" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">TriangleAPP::TriangleAPP</a>(HINSTANCE hInstance)</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    : <a class="code hl_class" href="class_d3_d_app.html">D3DApp</a>(hInstance)</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>{</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><a class="code hl_function" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">TriangleAPP::~TriangleAPP</a>()</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>{</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>}</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="keywordtype">bool</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af09191ec7e0b1053c2ea90c0a6e39517">TriangleAPP::Initialize</a>()</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>{</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <span class="keywordflow">if</span> (!<a class="code hl_function" href="class_d3_d_app.html#a961fa79170dcbde858923a5250c322be">D3DApp::Initialize</a>())</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="comment">// Reset the command list to prep for initialization commands.</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Reset(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>.Get(), <span class="keyword">nullptr</span>));</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#af2a257f73e77cd7ae8b9edd3932a55fd">BuildDescriptorHeaps</a>();</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#af7d88b9a9b7685618cd809b3563a08ea">BuildConstantBuffers</a>();</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordtype">float</span> mTheta = 1.5f * XM_PI;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordtype">float</span> mPhi = XM_PIDIV4;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">float</span> mRadius = 5.0f;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    <span class="keywordtype">float</span> mTheta2 = 0.0f;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    POINT mLastMousePos;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>};</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">  102</a></span><span class="keywordtype">int</span> WINAPI <a class="code hl_function" href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">WinMain</a>(HINSTANCE hInstance, HINSTANCE prevInstance,</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    PSTR cmdLine, <span class="keywordtype">int</span> showCmd)</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>{</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="comment">// Enable run-time memory check for debug builds.</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="preprocessor">#if defined(DEBUG) | defined(_DEBUG)</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="keywordflow">try</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    {</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        <a class="code hl_class" href="class_triangle_a_p_p.html">TriangleAPP</a> theApp(hInstance);</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">if</span> (!theApp.<a class="code hl_function" href="class_triangle_a_p_p.html#af09191ec7e0b1053c2ea90c0a6e39517">Initialize</a>())</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="keywordflow">return</span> theApp.<a class="code hl_function" href="class_d3_d_app.html#a0a2ed8f09bb1ae3a97f3b9a5067c905f">Run</a>();</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <span class="keywordflow">catch</span> (<a class="code hl_class" href="class_dx_exception.html">DxException</a>&amp; e)</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    {</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        MessageBox(<span class="keyword">nullptr</span>, e.<a class="code hl_function" href="class_dx_exception.html#a031a5ff549f043decbe96093e73dac27">ToString</a>().c_str(), L<span class="stringliteral">&quot;HR Failed&quot;</span>, MB_OK);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    }</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>}</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><a class="code hl_function" href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">TriangleAPP::TriangleAPP</a>(HINSTANCE hInstance)</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    : <a class="code hl_class" href="class_d3_d_app.html">D3DApp</a>(hInstance)</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>{</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>}</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><a class="code hl_function" href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">TriangleAPP::~TriangleAPP</a>()</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>{</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>}</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="keywordtype">bool</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af09191ec7e0b1053c2ea90c0a6e39517">TriangleAPP::Initialize</a>()</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>{</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordflow">if</span> (!<a class="code hl_function" href="class_d3_d_app.html#a961fa79170dcbde858923a5250c322be">D3DApp::Initialize</a>())</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9">BuildRootSignature</a>();</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a4f65c7069f501aae800b228200b30c5f">BuildShadersAndInputLayout</a>();</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee">BuildTriangleGeometry</a>();</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <a class="code hl_function" href="class_triangle_a_p_p.html#a07d94a5cf02586f8b60f6d80eca19801">BuildPSO</a>();</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="comment">// Execute the initialization commands.</span></div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Close());</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    ID3D12CommandList* cmdsLists[] = { <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get() };</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <a class="code hl_variable" href="class_d3_d_app.html#a96ae78a6cf93ec91272032890ef65440">mCommandQueue</a>-&gt;ExecuteCommandLists(_countof(cmdsLists), cmdsLists);</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="comment">// Wait until initialization is complete.</span></div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <a class="code hl_function" href="class_d3_d_app.html#afd141907db51f0c177ab89955e9d5de9">FlushCommandQueue</a>();</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>}</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#aedae8af324d982f353ec80d8bcba0338">TriangleAPP::OnResize</a>()</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>{</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <a class="code hl_function" href="class_d3_d_app.html#a4c1b99cd01576c413d3a50d1435f1b8a">D3DApp::OnResize</a>();</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="comment">// Reset the command list to prep for initialization commands.</span></div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Reset(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>.Get(), <span class="keyword">nullptr</span>));</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    BuildDescriptorHeaps();</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    BuildConstantBuffers();</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    BuildRootSignature();</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    BuildShadersAndInputLayout();</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    BuildTriangleGeometry();</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    BuildPSO();</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="comment">// Execute the initialization commands.</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Close());</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    ID3D12CommandList* cmdsLists[] = { <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get() };</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <a class="code hl_variable" href="class_d3_d_app.html#a96ae78a6cf93ec91272032890ef65440">mCommandQueue</a>-&gt;ExecuteCommandLists(_countof(cmdsLists), cmdsLists);</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="comment">// Wait until initialization is complete.</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <a class="code hl_function" href="class_d3_d_app.html#afd141907db51f0c177ab89955e9d5de9">FlushCommandQueue</a>();</div>
 <div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="comment">// The window resized, so update the aspect ratio and recompute the projection matrix.</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    XMMATRIX P = XMMatrixPerspectiveFovLH(0.10f * <a class="code hl_variable" href="class_math_helper.html#a11e988eb2e34337e333972e5fd3b5dba">MathHelper::Pi</a>, <a class="code hl_function" href="class_d3_d_app.html#ab8cf74904b14c4a2072fc020c9bc4d22">AspectRatio</a>(), 1.0f, 1000.0f);</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    XMStoreFloat4x4(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a709f795c3d26e1c7884b85413112445f">mProj</a>, P);</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>}</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>}</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="keywordtype">void</span> TriangleAPP::OnResize()</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>{</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <a class="code hl_function" href="class_d3_d_app.html#a4c1b99cd01576c413d3a50d1435f1b8a">D3DApp::OnResize</a>();</div>
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a095c8439e126b61e3cfcf98c8ad20dd0">TriangleAPP::Update</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>{</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="comment">// Convert Spherical to Cartesian coordinates.</span></div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <span class="keywordtype">float</span> x = <a class="code hl_variable" href="class_triangle_a_p_p.html#a425beba56765675c61dc301199a8e5e1">mRadius</a> * sinf(<a class="code hl_variable" href="class_triangle_a_p_p.html#a2ac699be0774120a5158f61f6284d504">mPhi</a>) * cosf(<a class="code hl_variable" href="class_triangle_a_p_p.html#ab05555f82deacd28ccb11059fe4b5490">mTheta</a>);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <span class="keywordtype">float</span> z = <a class="code hl_variable" href="class_triangle_a_p_p.html#a425beba56765675c61dc301199a8e5e1">mRadius</a> * sinf(<a class="code hl_variable" href="class_triangle_a_p_p.html#a2ac699be0774120a5158f61f6284d504">mPhi</a>) * sinf(<a class="code hl_variable" href="class_triangle_a_p_p.html#ab05555f82deacd28ccb11059fe4b5490">mTheta</a>);</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keywordtype">float</span> y = <a class="code hl_variable" href="class_triangle_a_p_p.html#a425beba56765675c61dc301199a8e5e1">mRadius</a> * cosf(<a class="code hl_variable" href="class_triangle_a_p_p.html#a2ac699be0774120a5158f61f6284d504">mPhi</a>);</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="comment">// Build the view matrix.</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    XMVECTOR target = XMVectorZero();</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    XMStoreFloat4x4(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a2ecfdaf851b02d7305951d89d93c79bf">mView</a>, view);</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    XMMATRIX world = XMLoadFloat4x4(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a6327b235a61b02056a61317aa4200f21">mWorld</a>);</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="comment">// The window resized, so update the aspect ratio and recompute the projection matrix.</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    XMMATRIX P = XMMatrixPerspectiveFovLH(0.10f * <a class="code hl_variable" href="class_math_helper.html#a11e988eb2e34337e333972e5fd3b5dba">MathHelper::Pi</a>, <a class="code hl_function" href="class_d3_d_app.html#ab8cf74904b14c4a2072fc020c9bc4d22">AspectRatio</a>(), 1.0f, 1000.0f);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    XMStoreFloat4x4(&amp;mProj, P);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>}</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="keywordtype">void</span> TriangleAPP::Update(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>{</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="comment">// Convert Spherical to Cartesian coordinates.</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keywordtype">float</span> x = mRadius * sinf(mPhi) * cosf(mTheta);</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keywordtype">float</span> z = mRadius * sinf(mPhi) * sinf(mTheta);</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordtype">float</span> y = mRadius * cosf(mPhi);</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="comment">// Build the view matrix.</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    XMVECTOR target = XMVectorZero();</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="comment">//a rotation around z axis</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="comment">//mTheta2 += 0.1f;</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="comment">//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);</span></div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    XMMATRIX view = XMMatrixLookAtLH(pos, target, up);</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    XMStoreFloat4x4(&amp;mView, view);</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    XMMATRIX proj = XMLoadFloat4x4(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a709f795c3d26e1c7884b85413112445f">mProj</a>);</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    XMMATRIX worldViewProj = world * view * proj;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="comment">// Update the constant buffer with the latest worldViewProj matrix.</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a> objConstants;</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    XMStoreFloat4x4(&amp;objConstants.<a class="code hl_variable" href="struct_object_constants.html#a274b083a5402569466d1e86844ab4dec">WorldViewProj</a>, XMMatrixTranspose(worldViewProj));</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#ae2ce3ada9b47142ae156195f9ed2773a">mObjectCB</a>-&gt;CopyData(0, objConstants);</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>}</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    XMMATRIX world = XMLoadFloat4x4(&amp;mWorld);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    <span class="comment">//a rotation around z axis</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="comment">//mTheta2 += 0.1f;</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <span class="comment">//world = XMMatrixRotationZ((-XM_PI+ mTheta2) / 6.0f);</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    XMMATRIX proj = XMLoadFloat4x4(&amp;mProj);</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    XMMATRIX worldViewProj = world * view * proj;</div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a32ec9cd0dcf0183f7a5d2f24a872f07b">TriangleAPP::Draw</a>(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>{</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    <span class="comment">// Reuse the memory associated with command recording.</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    <span class="comment">// We can only reset when the associated command lists have finished execution on the GPU.</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>-&gt;Reset());</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="comment">//A command list can be reset after it has been added to the command queue via ExecuteCommandList.</span></div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="comment">// Reusing the command list reuses memory.</span></div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Reset(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>.Get(), <a class="code hl_variable" href="class_triangle_a_p_p.html#a4e399c0b9ed0313c1af2df4a88d99ed2">mPSO</a>.Get()));</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <span class="comment">//You cannot render without a view port. </span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <span class="comment">//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.</span></div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    <span class="comment">//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)</span></div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="comment">//also notice viewport(s), because you can have an array of view ports! &amp; is poiting to the address of the first viewport</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;RSSetViewports(1, &amp;<a class="code hl_variable" href="class_d3_d_app.html#ab86744c66c883d3815c5d08107b16408">mScreenViewport</a>);</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span> </div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="comment">//Each scissor rectangle in the array corresponds to a viewport in an array of viewports</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;RSSetScissorRects(1, &amp;<a class="code hl_variable" href="class_d3_d_app.html#adbf6e2922df9e6545390049968715547">mScissorRect</a>);</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="comment">// Indicate a state transition on the resource usage.</span></div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <span class="comment">//Specifies the state of a resource regarding how the resource is being used.</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <span class="comment">//D3D12_RESOURCE_STATE_PRESENT same as D3D12_RESOURCE_STATE_COMMON</span></div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="comment">//Applications should only transition to this state for accessing a resource across different graphics engine types.</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="comment">//Specifically, a resource must be in the COMMON state before being used on a COPY queue</span></div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ResourceBarrier(1, &amp;CD3DX12_RESOURCE_BARRIER::Transition(<a class="code hl_function" href="class_d3_d_app.html#a851376059fec11e3a6d7535785c5d8cd">CurrentBackBuffer</a>(),</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <span class="comment">// Clear the back buffer and depth buffer.</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ClearRenderTargetView(<a class="code hl_function" href="class_d3_d_app.html#ac796a8fcd1a1af0e4665e221af6981d4">CurrentBackBufferView</a>(), Colors::LightSteelBlue, 0, <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ClearDepthStencilView(<a class="code hl_function" href="class_d3_d_app.html#a2d2bfecf16e881f1d65f464767d38c12">DepthStencilView</a>(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;OMSetRenderTargets(1, &amp;<a class="code hl_function" href="class_d3_d_app.html#ac796a8fcd1a1af0e4665e221af6981d4">CurrentBackBufferView</a>(), <span class="keyword">true</span>, &amp;<a class="code hl_function" href="class_d3_d_app.html#a2d2bfecf16e881f1d65f464767d38c12">DepthStencilView</a>());</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    ID3D12DescriptorHeap* descriptorHeaps[] = { <a class="code hl_variable" href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">mCbvHeap</a>.Get() };</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetGraphicsRootSignature(<a class="code hl_variable" href="class_triangle_a_p_p.html#ad5cbeabb111a1611e38052722e71d2c0">mRootSignature</a>.Get());</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetVertexBuffers(0, 1, &amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferView());</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetIndexBuffer(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferView());   <span class="comment">//bind it to the pipeline</span></div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="comment">// Update the constant buffer with the latest worldViewProj matrix.</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    <a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a> objConstants;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    XMStoreFloat4x4(&amp;objConstants.<a class="code hl_variable" href="struct_object_constants.html#a274b083a5402569466d1e86844ab4dec">WorldViewProj</a>, XMMatrixTranspose(worldViewProj));</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    mObjectCB-&gt;CopyData(0, objConstants);</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>}</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keywordtype">void</span> TriangleAPP::Draw(<span class="keyword">const</span> <a class="code hl_class" href="class_game_timer.html">GameTimer</a>&amp; gt)</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>{</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <span class="comment">// Reuse the memory associated with command recording.</span></div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <span class="comment">// We can only reset when the associated command lists have finished execution on the GPU.</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>-&gt;Reset());</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="comment">//A command list can be reset after it has been added to the command queue via ExecuteCommandList.</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="comment">// Reusing the command list reuses memory.</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Reset(<a class="code hl_variable" href="class_d3_d_app.html#ae00420d2e3d8305821a1a95ebc1b00bb">mDirectCmdListAlloc</a>.Get(), mPSO.Get()));</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="comment">//You cannot render without a view port. </span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    <span class="comment">//viewport maps a NDC coordinate (like 0,1) to Render Target (400,0) assuming screen space 800X800 pixels.</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="comment">//also you use viewport to map to subportion of the render target (like top left rectangle of your screen)</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <span class="comment">//also notice viewport(s), because you can have an array of view ports! &amp; is poiting to the address of the first viewport</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;RSSetViewports(1, &amp;<a class="code hl_variable" href="class_d3_d_app.html#ab86744c66c883d3815c5d08107b16408">mScreenViewport</a>);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="comment">//Each scissor rectangle in the array corresponds to a viewport in an array of viewports</span></div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;RSSetScissorRects(1, &amp;<a class="code hl_variable" href="class_d3_d_app.html#adbf6e2922df9e6545390049968715547">mScissorRect</a>);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    <span class="comment">// Indicate a state transition on the resource usage.</span></div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="comment">//Specifies the state of a resource regarding how the resource is being used.</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <span class="comment">//D3D12_RESOURCE_STATE_PRESENT same as D3D12_RESOURCE_STATE_COMMON</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    <span class="comment">//Applications should only transition to this state for accessing a resource across different graphics engine types.</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    <span class="comment">//Specifically, a resource must be in the COMMON state before being used on a COPY queue</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ResourceBarrier(1, &amp;CD3DX12_RESOURCE_BARRIER::Transition(<a class="code hl_function" href="class_d3_d_app.html#a851376059fec11e3a6d7535785c5d8cd">CurrentBackBuffer</a>(),</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span> </div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    <span class="comment">// Clear the back buffer and depth buffer.</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ClearRenderTargetView(<a class="code hl_function" href="class_d3_d_app.html#ac796a8fcd1a1af0e4665e221af6981d4">CurrentBackBufferView</a>(), Colors::LightSteelBlue, 0, <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ClearDepthStencilView(<a class="code hl_function" href="class_d3_d_app.html#a2d2bfecf16e881f1d65f464767d38c12">DepthStencilView</a>(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;OMSetRenderTargets(1, &amp;<a class="code hl_function" href="class_d3_d_app.html#ac796a8fcd1a1af0e4665e221af6981d4">CurrentBackBufferView</a>(), <span class="keyword">true</span>, &amp;<a class="code hl_function" href="class_d3_d_app.html#a2d2bfecf16e881f1d65f464767d38c12">DepthStencilView</a>());</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);</div>
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetGraphicsRootDescriptorTable(0, <a class="code hl_variable" href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">mCbvHeap</a>-&gt;GetGPUDescriptorHandleForHeapStart());</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetGraphicsRootSignature(mRootSignature.Get());</div>
 <div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;DrawIndexedInstanced(<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;DrawArgs[<span class="stringliteral">&quot;triangle&quot;</span>].IndexCount, 1, 0, 0, 0);</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetVertexBuffers(0, 1, &amp;mBoxGeo-&gt;VertexBufferView());</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetIndexBuffer(&amp;mBoxGeo-&gt;IndexBufferView());   <span class="comment">//bind it to the pipeline</span></div>
 <div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="comment">// Indicate a state transition on the resource usage.</span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ResourceBarrier(1, &amp;CD3DX12_RESOURCE_BARRIER::Transition(<a class="code hl_function" href="class_d3_d_app.html#a851376059fec11e3a6d7535785c5d8cd">CurrentBackBuffer</a>(),</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;SetGraphicsRootDescriptorTable(0, mCbvHeap-&gt;GetGPUDescriptorHandleForHeapStart());</div>
 <div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="comment">// Done recording commands.</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Close());</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;DrawIndexedInstanced(mBoxGeo-&gt;DrawArgs[<span class="stringliteral">&quot;triangle&quot;</span>].IndexCount, 1, 0, 0, 0);</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
 <div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="comment">// Add the command list to the queue for execution.</span></div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    ID3D12CommandList* cmdsLists[] = { <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get() };</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <a class="code hl_variable" href="class_d3_d_app.html#a96ae78a6cf93ec91272032890ef65440">mCommandQueue</a>-&gt;ExecuteCommandLists(_countof(cmdsLists), cmdsLists);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="comment">// Indicate a state transition on the resource usage.</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;ResourceBarrier(1, &amp;CD3DX12_RESOURCE_BARRIER::Transition(<a class="code hl_function" href="class_d3_d_app.html#a851376059fec11e3a6d7535785c5d8cd">CurrentBackBuffer</a>(),</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="comment">// swap the back and front buffers</span></div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        <span class="comment">//HRESULT Present(UINT SyncInterval,UINT Flags);</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    <span class="comment">//SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="comment">//Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.</span></div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#adac97bdf38a37003abbbd7d39c2a75fb">mSwapChain</a>-&gt;Present(0, 0));</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <a class="code hl_variable" href="class_d3_d_app.html#ab0ef1ea8fcb85251dcd6d603a4090d62">mCurrBackBuffer</a> = (<a class="code hl_variable" href="class_d3_d_app.html#ab0ef1ea8fcb85251dcd6d603a4090d62">mCurrBackBuffer</a> + 1) % <a class="code hl_variable" href="class_d3_d_app.html#af4cd47b4bb3b28e1013e861355baf8e8">SwapChainBufferCount</a>;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="comment">// Done recording commands.</span></div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>-&gt;Close());</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="comment">// Add the command list to the queue for execution.</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    ID3D12CommandList* cmdsLists[] = { <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get() };</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <a class="code hl_variable" href="class_d3_d_app.html#a96ae78a6cf93ec91272032890ef65440">mCommandQueue</a>-&gt;ExecuteCommandLists(_countof(cmdsLists), cmdsLists);</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span> </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="comment">// Wait until frame commands are complete.  This waiting is inefficient and is</span></div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="comment">// done for simplicity.  Later we will show how to organize our rendering code</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="comment">// so we do not have to wait per frame.</span></div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <a class="code hl_function" href="class_d3_d_app.html#afd141907db51f0c177ab89955e9d5de9">FlushCommandQueue</a>();</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>}</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="comment">// swap the back and front buffers</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        <span class="comment">//HRESULT Present(UINT SyncInterval,UINT Flags);</span></div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="comment">//SyncInterval: 0 - The presentation occurs immediately, there is no synchronization.</span></div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="comment">//Flags defined by the DXGI_PRESENT constants. 0: Present a frame from each buffer (starting with the current buffer) to the output.</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#adac97bdf38a37003abbbd7d39c2a75fb">mSwapChain</a>-&gt;Present(0, 0));</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <a class="code hl_variable" href="class_d3_d_app.html#ab0ef1ea8fcb85251dcd6d603a4090d62">mCurrBackBuffer</a> = (<a class="code hl_variable" href="class_d3_d_app.html#ab0ef1ea8fcb85251dcd6d603a4090d62">mCurrBackBuffer</a> + 1) % <a class="code hl_variable" href="class_d3_d_app.html#af4cd47b4bb3b28e1013e861355baf8e8">SwapChainBufferCount</a>;</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9">TriangleAPP::BuildRootSignature</a>()</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>{</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="comment">// Shader programs typically require resources as input (constant buffers,</span></div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="comment">// textures, samplers).  The root signature defines the resources the shader</span></div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="comment">// programs expect.  If we think of the shader programs as a function, and</span></div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="comment">// the input resources as function parameters, then the root signature can be</span></div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="comment">// thought of as defining the function signature.  </span></div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="comment">// Root parameter can be a table, root descriptor or root constants.</span></div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    CD3DX12_ROOT_PARAMETER slotRootParameter[1];</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="comment">// Create a single descriptor table of CBVs.</span></div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    CD3DX12_DESCRIPTOR_RANGE cbvTable;</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    slotRootParameter[0].InitAsDescriptorTable(1, &amp;cbvTable);</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    <span class="comment">// A root signature is an array of root parameters.</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, <span class="keyword">nullptr</span>,</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span> </div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span> </div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    <span class="comment">// create a root signature with no slot for now!</span></div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    ComPtr&lt;ID3DBlob&gt; serializedRootSig = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    ComPtr&lt;ID3DBlob&gt; errorBlob = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    HRESULT hr = D3D12SerializeRootSignature(&amp;rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &amp;serializedRootSig, &amp;errorBlob);</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    <span class="keywordflow">if</span> (errorBlob != <span class="keyword">nullptr</span>)</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    {</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        ::OutputDebugStringA((<span class="keywordtype">char</span>*)errorBlob-&gt;GetBufferPointer());</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    }</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(hr);</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateRootSignature(</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        0,</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        serializedRootSig-&gt;GetBufferPointer(),</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        serializedRootSig-&gt;GetBufferSize(),</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        IID_PPV_ARGS(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#ad5cbeabb111a1611e38052722e71d2c0">mRootSignature</a>)));</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>}</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="comment">// Wait until frame commands are complete.  This waiting is inefficient and is</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="comment">// done for simplicity.  Later we will show how to organize our rendering code</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="comment">// so we do not have to wait per frame.</span></div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <a class="code hl_function" href="class_d3_d_app.html#afd141907db51f0c177ab89955e9d5de9">FlushCommandQueue</a>();</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>}</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keywordtype">void</span> TriangleAPP::BuildRootSignature()</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>{</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span> </div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="comment">// Shader programs typically require resources as input (constant buffers,</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="comment">// textures, samplers).  The root signature defines the resources the shader</span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="comment">// programs expect.  If we think of the shader programs as a function, and</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="comment">// the input resources as function parameters, then the root signature can be</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="comment">// thought of as defining the function signature.  </span></div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span> </div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    <span class="comment">// Root parameter can be a table, root descriptor or root constants.</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    CD3DX12_ROOT_PARAMETER slotRootParameter[1];</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="comment">// Create a single descriptor table of CBVs.</span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    CD3DX12_DESCRIPTOR_RANGE cbvTable;</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    slotRootParameter[0].InitAsDescriptorTable(1, &amp;cbvTable);</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <span class="comment">// A root signature is an array of root parameters.</span></div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, <span class="keyword">nullptr</span>,</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    <span class="comment">// create a root signature with no slot for now!</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    ComPtr&lt;ID3DBlob&gt; serializedRootSig = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    ComPtr&lt;ID3DBlob&gt; errorBlob = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    HRESULT hr = D3D12SerializeRootSignature(&amp;rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &amp;serializedRootSig, &amp;errorBlob);</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span> </div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    <span class="keywordflow">if</span> (errorBlob != <span class="keyword">nullptr</span>)</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    {</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        ::OutputDebugStringA((<span class="keywordtype">char</span>*)errorBlob-&gt;GetBufferPointer());</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    }</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(hr);</div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span> </div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span> </div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span> </div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a4f65c7069f501aae800b228200b30c5f">TriangleAPP::BuildShadersAndInputLayout</a>()</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>{</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    HRESULT hr = S_OK;</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateRootSignature(</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        0,</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        serializedRootSig-&gt;GetBufferPointer(),</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        serializedRootSig-&gt;GetBufferSize(),</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        IID_PPV_ARGS(&amp;mRootSignature)));</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>}</div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    <span class="comment">//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler </span></div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#a10c65db3dea3d517876fac5c11d47376">mvsByteCode</a> = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\VS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;VS&quot;</span>, <span class="stringliteral">&quot;vs_5_1&quot;</span>);</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#aa46643ec6db2dfa33abd8767739309a7">mpsByteCode</a> = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\PS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;PS&quot;</span>, <span class="stringliteral">&quot;ps_5_1&quot;</span>);</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#a0486123a12b11344056f7b19e2cd026d">mgsByteCode</a> = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\GS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;GS&quot;</span>, <span class="stringliteral">&quot;gs_5_1&quot;</span>);</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span> </div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#a3e55137310cfe5fbddf2da3e8a43b35f">mInputLayout</a> =</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    {</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        { <span class="stringliteral">&quot;POSITION&quot;</span>, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        { <span class="stringliteral">&quot;COLOR&quot;</span>, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    };</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>}</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="keywordtype">void</span> TriangleAPP::BuildShadersAndInputLayout()</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>{</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    HRESULT hr = S_OK;</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span> </div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    <span class="comment">//when you are adding new shader, make sure you right click, and set shader type and shader model in HLSL compiler </span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    mvsByteCode = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\VS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;VS&quot;</span>, <span class="stringliteral">&quot;vs_5_1&quot;</span>);</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    mpsByteCode = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\PS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;PS&quot;</span>, <span class="stringliteral">&quot;ps_5_1&quot;</span>);</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    mgsByteCode = <a class="code hl_function" href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a>(L<span class="stringliteral">&quot;Shaders\\GS.hlsl&quot;</span>, <span class="keyword">nullptr</span>, <span class="stringliteral">&quot;GS&quot;</span>, <span class="stringliteral">&quot;gs_5_1&quot;</span>);</div>
 <div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee">TriangleAPP::BuildTriangleGeometry</a>()</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>{</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    std::array&lt;Vertex, 3&gt; <a class="code hl_variable" href="class_triangle_a_p_p.html#a56500d26324c31b1d3a5bd892d23eb05">vertices</a> =</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    {</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(Colors::Red)}),</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Green) }),</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Blue)}),</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    };</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    std::array&lt;std::uint16_t, 3&gt; indices =</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>    {</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        0, 1, 2,</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    mInputLayout =</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>    {</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        { <span class="stringliteral">&quot;POSITION&quot;</span>, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        { <span class="stringliteral">&quot;COLOR&quot;</span>, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    };</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>}</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span> </div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="keywordtype">void</span> TriangleAPP::BuildTriangleGeometry()</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>{</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>    std::array&lt;Vertex, 3&gt; vertices =</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    {</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(Colors::Red)}),</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(+0.0f, +0.5f, 0.0f) , XMFLOAT4(Colors::Green) }),</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>                <a class="code hl_struct" href="struct_vertex.html">Vertex</a>({ XMFLOAT3(+0.5f, -0.5f, 0.0f) , XMFLOAT4(Colors::Blue)}),</div>
 <div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>    };</div>
 <div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span> </div>
 <div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>    <span class="keyword">const</span> UINT vbByteSize = (UINT)<a class="code hl_variable" href="class_triangle_a_p_p.html#a56500d26324c31b1d3a5bd892d23eb05">vertices</a>.size() * <span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_vertex.html">Vertex</a>);</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keyword">const</span> UINT ibByteSize = (UINT)indices.size() * <span class="keyword">sizeof</span>(std::uint16_t);</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span> </div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a> = std::make_unique&lt;MeshGeometry&gt;();</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;Name = <span class="stringliteral">&quot;triangleGeo&quot;</span>;</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>    std::array&lt;std::uint16_t, 3&gt; indices =</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>    {</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span> </div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        0, 1, 2,</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    };</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span> </div>
 <div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span> </div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(D3DCreateBlob(vbByteSize, &amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferCPU));</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    CopyMemory(<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferCPU-&gt;GetBufferPointer(), <a class="code hl_variable" href="class_triangle_a_p_p.html#a56500d26324c31b1d3a5bd892d23eb05">vertices</a>.data(), vbByteSize);</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(D3DCreateBlob(ibByteSize, &amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferCPU));</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    CopyMemory(<a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferCPU-&gt;GetBufferPointer(), indices.data(), ibByteSize);</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferGPU = <a class="code hl_function" href="classd3d_util.html#ae4a68e5b73f032619ee5c2db64f57899">d3dUtil::CreateDefaultBuffer</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(),</div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>        <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get(), <a class="code hl_variable" href="class_triangle_a_p_p.html#a56500d26324c31b1d3a5bd892d23eb05">vertices</a>.data(), vbByteSize, <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferUploader);</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span> </div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferGPU = <a class="code hl_function" href="classd3d_util.html#ae4a68e5b73f032619ee5c2db64f57899">d3dUtil::CreateDefaultBuffer</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(),</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>        <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get(), indices.data(), ibByteSize, <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferUploader);</div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span> </div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexByteStride = <span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_vertex.html">Vertex</a>);</div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;VertexBufferByteSize = vbByteSize;</div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexFormat = DXGI_FORMAT_R16_UINT;</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;IndexBufferByteSize = ibByteSize;</div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span> </div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    <a class="code hl_struct" href="struct_submesh_geometry.html">SubmeshGeometry</a> submesh;</div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#ab28b180ab73cabb07553c76f3f32c180">IndexCount</a> = (UINT)indices.size();</div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#a56f8aee51b11ee61a229679000a1aeb6">StartIndexLocation</a> = 0;</div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#a95e805e2c8022aea5826d7343ee7dc20">BaseVertexLocation</a> = 0;</div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span> </div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">mBoxGeo</a>-&gt;DrawArgs[<span class="stringliteral">&quot;triangle&quot;</span>] = submesh;</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    <span class="keyword">const</span> UINT vbByteSize = (UINT)vertices.size() * <span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_vertex.html">Vertex</a>);</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <span class="keyword">const</span> UINT ibByteSize = (UINT)indices.size() * <span class="keyword">sizeof</span>(std::uint16_t);</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    mBoxGeo = std::make_unique&lt;MeshGeometry&gt;();</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>    mBoxGeo-&gt;Name = <span class="stringliteral">&quot;triangleGeo&quot;</span>;</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span> </div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(D3DCreateBlob(vbByteSize, &amp;mBoxGeo-&gt;VertexBufferCPU));</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>    CopyMemory(mBoxGeo-&gt;VertexBufferCPU-&gt;GetBufferPointer(), vertices.data(), vbByteSize);</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span> </div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(D3DCreateBlob(ibByteSize, &amp;mBoxGeo-&gt;IndexBufferCPU));</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>    CopyMemory(mBoxGeo-&gt;IndexBufferCPU-&gt;GetBufferPointer(), indices.data(), ibByteSize);</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>    mBoxGeo-&gt;VertexBufferGPU = <a class="code hl_function" href="classd3d_util.html#ae4a68e5b73f032619ee5c2db64f57899">d3dUtil::CreateDefaultBuffer</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(),</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get(), vertices.data(), vbByteSize, mBoxGeo-&gt;VertexBufferUploader);</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span> </div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>    mBoxGeo-&gt;IndexBufferGPU = <a class="code hl_function" href="classd3d_util.html#ae4a68e5b73f032619ee5c2db64f57899">d3dUtil::CreateDefaultBuffer</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(),</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>        <a class="code hl_variable" href="class_d3_d_app.html#a3d515a557287c1a8f8fcc60abc839e84">mCommandList</a>.Get(), indices.data(), ibByteSize, mBoxGeo-&gt;IndexBufferUploader);</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span> </div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    mBoxGeo-&gt;VertexByteStride = <span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_vertex.html">Vertex</a>);</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>    mBoxGeo-&gt;VertexBufferByteSize = vbByteSize;</div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>    mBoxGeo-&gt;IndexFormat = DXGI_FORMAT_R16_UINT;</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    mBoxGeo-&gt;IndexBufferByteSize = ibByteSize;</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span> </div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>}</div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span> </div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#a07d94a5cf02586f8b60f6d80eca19801">TriangleAPP::BuildPSO</a>()</div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>{</div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;</div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    ZeroMemory(&amp;psoDesc, <span class="keyword">sizeof</span>(D3D12_GRAPHICS_PIPELINE_STATE_DESC));</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    <a class="code hl_struct" href="struct_submesh_geometry.html">SubmeshGeometry</a> submesh;</div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#ab28b180ab73cabb07553c76f3f32c180">IndexCount</a> = (UINT)indices.size();</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#a56f8aee51b11ee61a229679000a1aeb6">StartIndexLocation</a> = 0;</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>    submesh.<a class="code hl_variable" href="struct_submesh_geometry.html#a95e805e2c8022aea5826d7343ee7dc20">BaseVertexLocation</a> = 0;</div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span> </div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    mBoxGeo-&gt;DrawArgs[<span class="stringliteral">&quot;triangle&quot;</span>] = submesh;</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span> </div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span> </div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>    <span class="comment">//bind the input layout to pipeline</span></div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    psoDesc.InputLayout = { <a class="code hl_variable" href="class_triangle_a_p_p.html#a3e55137310cfe5fbddf2da3e8a43b35f">mInputLayout</a>.data(), (UINT)<a class="code hl_variable" href="class_triangle_a_p_p.html#a3e55137310cfe5fbddf2da3e8a43b35f">mInputLayout</a>.size() };</div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>    psoDesc.pRootSignature = <a class="code hl_variable" href="class_triangle_a_p_p.html#ad5cbeabb111a1611e38052722e71d2c0">mRootSignature</a>.Get();</div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span> </div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>    psoDesc.VS =</div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    {</div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(<a class="code hl_variable" href="class_triangle_a_p_p.html#a10c65db3dea3d517876fac5c11d47376">mvsByteCode</a>-&gt;GetBufferPointer()),</div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>        <a class="code hl_variable" href="class_triangle_a_p_p.html#a10c65db3dea3d517876fac5c11d47376">mvsByteCode</a>-&gt;GetBufferSize()</div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>    };</div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    psoDesc.PS =</div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>    {</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(<a class="code hl_variable" href="class_triangle_a_p_p.html#aa46643ec6db2dfa33abd8767739309a7">mpsByteCode</a>-&gt;GetBufferPointer()),</div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>        <a class="code hl_variable" href="class_triangle_a_p_p.html#aa46643ec6db2dfa33abd8767739309a7">mpsByteCode</a>-&gt;GetBufferSize()</div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>    };</div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>    psoDesc.GS =</div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>    {</div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(<a class="code hl_variable" href="class_triangle_a_p_p.html#a0486123a12b11344056f7b19e2cd026d">mgsByteCode</a>-&gt;GetBufferPointer()),</div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>        <a class="code hl_variable" href="class_triangle_a_p_p.html#a0486123a12b11344056f7b19e2cd026d">mgsByteCode</a>-&gt;GetBufferSize()</div>
-<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>    };</div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>    </div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>    psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);</div>
-<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>    psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;</div>
-<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span> </div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>    psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);</div>
-<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>    psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);</div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span> </div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span> </div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>    psoDesc.SampleMask = UINT_MAX;</div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>    psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>}</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span> </div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span><span class="keywordtype">void</span> TriangleAPP::BuildPSO()</div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>{</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    ZeroMemory(&amp;psoDesc, <span class="keyword">sizeof</span>(D3D12_GRAPHICS_PIPELINE_STATE_DESC));</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span> </div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>    <span class="comment">//bind the input layout to pipeline</span></div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>    psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };</div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    psoDesc.pRootSignature = mRootSignature.Get();</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span> </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>    psoDesc.VS =</div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>    {</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(mvsByteCode-&gt;GetBufferPointer()),</div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>        mvsByteCode-&gt;GetBufferSize()</div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>    };</div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>    psoDesc.PS =</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>    {</div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(mpsByteCode-&gt;GetBufferPointer()),</div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>        mpsByteCode-&gt;GetBufferSize()</div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>    };</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>    psoDesc.GS =</div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>    {</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>        <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(mgsByteCode-&gt;GetBufferPointer()),</div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>        mgsByteCode-&gt;GetBufferSize()</div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>    };</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>    </div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>    psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);</div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>    psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;</div>
 <div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span> </div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>    psoDesc.NumRenderTargets = 1;</div>
-<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>    psoDesc.RTVFormats[0] = <a class="code hl_variable" href="class_d3_d_app.html#a025509339d4e0ec2781a8deb9d4218cc">mBackBufferFormat</a>;  <span class="comment">//DXGI_FORMAT_R8G8B8A8_UNORM;</span></div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>    psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);</div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>    psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);</div>
 <div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span> </div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>    psoDesc.SampleDesc.Count = <a class="code hl_variable" href="class_d3_d_app.html#a6cbfb6c8fcc5edec4fb82aacaadf7fbb">m4xMsaaState</a> ? 4 : 1;</div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>    psoDesc.SampleDesc.Quality = <a class="code hl_variable" href="class_d3_d_app.html#a6cbfb6c8fcc5edec4fb82aacaadf7fbb">m4xMsaaState</a> ? (<a class="code hl_variable" href="class_d3_d_app.html#afb28a606eca768c1bb6cdc2109683dc7">m4xMsaaQuality</a> - 1) : 0;</div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>    psoDesc.DSVFormat = <a class="code hl_variable" href="class_d3_d_app.html#af2441a306c7f369256983c4f5f43395a">mDepthStencilFormat</a>;</div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateGraphicsPipelineState(&amp;psoDesc, IID_PPV_ARGS(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a4e399c0b9ed0313c1af2df4a88d99ed2">mPSO</a>)));</div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>}</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span> </div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span> </div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>    psoDesc.SampleMask = UINT_MAX;</div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>    psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;</div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span> </div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>    psoDesc.NumRenderTargets = 1;</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>    psoDesc.RTVFormats[0] = <a class="code hl_variable" href="class_d3_d_app.html#a025509339d4e0ec2781a8deb9d4218cc">mBackBufferFormat</a>;  <span class="comment">//DXGI_FORMAT_R8G8B8A8_UNORM;</span></div>
 <div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span> </div>
-<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af2a257f73e77cd7ae8b9edd3932a55fd">TriangleAPP::BuildDescriptorHeaps</a>()</div>
-<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>{</div>
-<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>    D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;</div>
-<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>    cbvHeapDesc.NumDescriptors = 1;</div>
-<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>    cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;</div>
-<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>    cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;</div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>    cbvHeapDesc.NodeMask = 0;</div>
-<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateDescriptorHeap(&amp;cbvHeapDesc,</div>
-<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>        IID_PPV_ARGS(&amp;<a class="code hl_variable" href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">mCbvHeap</a>)));</div>
-<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>}</div>
-<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span> </div>
-<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span><span class="keywordtype">void</span> <a class="code hl_function" href="class_triangle_a_p_p.html#af7d88b9a9b7685618cd809b3563a08ea">TriangleAPP::BuildConstantBuffers</a>()</div>
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>{</div>
-<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>    <a class="code hl_variable" href="class_triangle_a_p_p.html#ae2ce3ada9b47142ae156195f9ed2773a">mObjectCB</a> = std::make_unique&lt;UploadBuffer&lt;ObjectConstants&gt;&gt;(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(), 1, <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span> </div>
-<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>    UINT objCBByteSize = <a class="code hl_function" href="classd3d_util.html#a0883e0848cae813b2bc71570f3303e92">d3dUtil::CalcConstantBufferByteSize</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a>));</div>
-<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span> </div>
-<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span>    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = <a class="code hl_variable" href="class_triangle_a_p_p.html#ae2ce3ada9b47142ae156195f9ed2773a">mObjectCB</a>-&gt;Resource()-&gt;GetGPUVirtualAddress();</div>
-<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span>    <span class="comment">// Offset to the ith object constant buffer in the buffer.</span></div>
-<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>    <span class="keywordtype">int</span> boxCBufIndex = 0;</div>
-<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span>    cbAddress += boxCBufIndex * objCBByteSize;</div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>    psoDesc.SampleDesc.Count = <a class="code hl_variable" href="class_d3_d_app.html#a6cbfb6c8fcc5edec4fb82aacaadf7fbb">m4xMsaaState</a> ? 4 : 1;</div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>    psoDesc.SampleDesc.Quality = <a class="code hl_variable" href="class_d3_d_app.html#a6cbfb6c8fcc5edec4fb82aacaadf7fbb">m4xMsaaState</a> ? (<a class="code hl_variable" href="class_d3_d_app.html#afb28a606eca768c1bb6cdc2109683dc7">m4xMsaaQuality</a> - 1) : 0;</div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>    psoDesc.DSVFormat = <a class="code hl_variable" href="class_d3_d_app.html#af2441a306c7f369256983c4f5f43395a">mDepthStencilFormat</a>;</div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateGraphicsPipelineState(&amp;psoDesc, IID_PPV_ARGS(&amp;mPSO)));</div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>}</div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span> </div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span> </div>
+<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span><span class="keywordtype">void</span> TriangleAPP::BuildDescriptorHeaps()</div>
+<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>{</div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>    D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;</div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span>    cbvHeapDesc.NumDescriptors = 1;</div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>    cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;</div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>    cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;</div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>    cbvHeapDesc.NodeMask = 0;</div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>    <a class="code hl_define" href="d3d_util_8h.html#af3892d76181a8a44edbd1a71a6ae9b97">ThrowIfFailed</a>(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateDescriptorHeap(&amp;cbvHeapDesc,</div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>        IID_PPV_ARGS(&amp;mCbvHeap)));</div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>}</div>
+<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span> </div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span><span class="keywordtype">void</span> TriangleAPP::BuildConstantBuffers()</div>
+<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>{</div>
+<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span>    mObjectCB = std::make_unique&lt;UploadBuffer&lt;ObjectConstants&gt;&gt;(<a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>.Get(), 1, <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span> </div>
-<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;</div>
-<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>    cbvDesc.BufferLocation = cbAddress;</div>
-<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>    cbvDesc.SizeInBytes = <a class="code hl_function" href="classd3d_util.html#a0883e0848cae813b2bc71570f3303e92">d3dUtil::CalcConstantBufferByteSize</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a>));</div>
-<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span> </div>
-<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>    <a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateConstantBufferView(</div>
-<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>        &amp;cbvDesc,</div>
-<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span>        <a class="code hl_variable" href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">mCbvHeap</a>-&gt;GetCPUDescriptorHandleForHeapStart());</div>
-<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>}</div>
-<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span> </div>
-<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span> </div>
-<div class="ttc" id="a_week7-1-_triangle_subdividing_8cpp_html_aabcda87589d774901aa87061b8fd0176"><div class="ttname"><a href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">WinMain</a></div><div class="ttdeci">int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)</div><div class="ttdef"><b>Definition:</b> <a href="_week7-1-_triangle_subdividing_8cpp_source.html#l00095">Week7-1-TriangleSubdividing.cpp:95</a></div></div>
+<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>    UINT objCBByteSize = <a class="code hl_function" href="classd3d_util.html#a0883e0848cae813b2bc71570f3303e92">d3dUtil::CalcConstantBufferByteSize</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a>));</div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span> </div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB-&gt;Resource()-&gt;GetGPUVirtualAddress();</div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span>    <span class="comment">// Offset to the ith object constant buffer in the buffer.</span></div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>    <span class="keywordtype">int</span> boxCBufIndex = 0;</div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>    cbAddress += boxCBufIndex * objCBByteSize;</div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span> </div>
+<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;</div>
+<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span>    cbvDesc.BufferLocation = cbAddress;</div>
+<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span>    cbvDesc.SizeInBytes = <a class="code hl_function" href="classd3d_util.html#a0883e0848cae813b2bc71570f3303e92">d3dUtil::CalcConstantBufferByteSize</a>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="struct_object_constants.html">ObjectConstants</a>));</div>
+<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span> </div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span>    <a class="code hl_variable" href="class_d3_d_app.html#a15b84b7e76f6c705196dd6b4b5ad418d">md3dDevice</a>-&gt;CreateConstantBufferView(</div>
+<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>        &amp;cbvDesc,</div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>        mCbvHeap-&gt;GetCPUDescriptorHandleForHeapStart());</div>
+<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span>}</div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span> </div>
+<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span> </div>
+<div class="ttc" id="a_week7-1-_triangle_subdividing_8cpp_html_aabcda87589d774901aa87061b8fd0176"><div class="ttname"><a href="_week7-1-_triangle_subdividing_8cpp.html#aabcda87589d774901aa87061b8fd0176">WinMain</a></div><div class="ttdeci">int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)</div><div class="ttdef"><b>Definition:</b> <a href="_week7-1-_triangle_subdividing_8cpp_source.html#l00102">Week7-1-TriangleSubdividing.cpp:102</a></div></div>
 <div class="ttc" id="aclass_d3_d_app_html"><div class="ttname"><a href="class_d3_d_app.html">D3DApp</a></div><div class="ttdef"><b>Definition:</b> <a href="d3d_app_8h_source.html#l00018">d3dApp.h:19</a></div></div>
 <div class="ttc" id="aclass_d3_d_app_html_a025509339d4e0ec2781a8deb9d4218cc"><div class="ttname"><a href="class_d3_d_app.html#a025509339d4e0ec2781a8deb9d4218cc">D3DApp::mBackBufferFormat</a></div><div class="ttdeci">DXGI_FORMAT mBackBufferFormat</div><div class="ttdef"><b>Definition:</b> <a href="d3d_app_8h_source.html#l00121">d3dApp.h:121</a></div></div>
 <div class="ttc" id="aclass_d3_d_app_html_a0a2ed8f09bb1ae3a97f3b9a5067c905f"><div class="ttname"><a href="class_d3_d_app.html#a0a2ed8f09bb1ae3a97f3b9a5067c905f">D3DApp::Run</a></div><div class="ttdeci">int Run()</div><div class="ttdef"><b>Definition:</b> <a href="d3d_app_8cpp_source.html#l00072">d3dApp.cpp:72</a></div></div>
@@ -584,41 +568,11 @@ $(document).ready(function(){initNavTree('_week7-1-_triangle_subdividing_8cpp_so
 <div class="ttc" id="aclass_math_helper_html_a11e988eb2e34337e333972e5fd3b5dba"><div class="ttname"><a href="class_math_helper.html#a11e988eb2e34337e333972e5fd3b5dba">MathHelper::Pi</a></div><div class="ttdeci">static const float Pi</div><div class="ttdef"><b>Definition:</b> <a href="_common_2_math_helper_8h_source.html#l00096">MathHelper.h:96</a></div></div>
 <div class="ttc" id="aclass_math_helper_html_a68b4e9af95b1a36aad30ea80839f6b19"><div class="ttname"><a href="class_math_helper.html#a68b4e9af95b1a36aad30ea80839f6b19">MathHelper::Identity4x4</a></div><div class="ttdeci">static DirectX::XMFLOAT4X4 Identity4x4()</div><div class="ttdef"><b>Definition:</b> <a href="_common_2_math_helper_8h_source.html#l00081">MathHelper.h:81</a></div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html"><div class="ttname"><a href="class_triangle_a_p_p.html">TriangleAPP</a></div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00027">Triangle0.cpp:28</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a0486123a12b11344056f7b19e2cd026d"><div class="ttname"><a href="class_triangle_a_p_p.html#a0486123a12b11344056f7b19e2cd026d">TriangleAPP::mgsByteCode</a></div><div class="ttdeci">ComPtr&lt; ID3DBlob &gt; mgsByteCode</div><div class="ttdef"><b>Definition:</b> <a href="_week7-0-_triangle_with_adjacency_8cpp_source.html#l00065">Week7-0-TriangleWithAdjacency.cpp:65</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a07d94a5cf02586f8b60f6d80eca19801"><div class="ttname"><a href="class_triangle_a_p_p.html#a07d94a5cf02586f8b60f6d80eca19801">TriangleAPP::BuildPSO</a></div><div class="ttdeci">void BuildPSO()</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a095c8439e126b61e3cfcf98c8ad20dd0"><div class="ttname"><a href="class_triangle_a_p_p.html#a095c8439e126b61e3cfcf98c8ad20dd0">TriangleAPP::Update</a></div><div class="ttdeci">virtual void Update(const GameTimer &amp;gt) override</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00139">Triangle0.cpp:139</a></div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_a102fb6ff542cb9440496753c1d3926c5"><div class="ttname"><a href="class_triangle_a_p_p.html#a102fb6ff542cb9440496753c1d3926c5">TriangleAPP::TriangleAPP</a></div><div class="ttdeci">TriangleAPP(const TriangleAPP &amp;rhs)=delete</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a10c65db3dea3d517876fac5c11d47376"><div class="ttname"><a href="class_triangle_a_p_p.html#a10c65db3dea3d517876fac5c11d47376">TriangleAPP::mvsByteCode</a></div><div class="ttdeci">ComPtr&lt; ID3DBlob &gt; mvsByteCode</div><div class="ttdoc">The ID3DBlob interface is used to return data of arbitrary length. It's contained in D3dcompiler....</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00060">Triangle0.cpp:60</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a16ca94bd3f6a370977cceb23f987ee02"><div class="ttname"><a href="class_triangle_a_p_p.html#a16ca94bd3f6a370977cceb23f987ee02">TriangleAPP::OnResize</a></div><div class="ttdeci">virtual void OnResize() override</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a20cb93cfee183b09c754b602ad0282ee"><div class="ttname"><a href="class_triangle_a_p_p.html#a20cb93cfee183b09c754b602ad0282ee">TriangleAPP::BuildTriangleGeometry</a></div><div class="ttdeci">void BuildTriangleGeometry()</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a281e67605c03c9bb4ad8258f8bbaf6f8"><div class="ttname"><a href="class_triangle_a_p_p.html#a281e67605c03c9bb4ad8258f8bbaf6f8">TriangleAPP::Update</a></div><div class="ttdeci">virtual void Update(const GameTimer &amp;gt) override</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a28d5aed5ffc87b0c44313f9c04e5b6a9"><div class="ttname"><a href="class_triangle_a_p_p.html#a28d5aed5ffc87b0c44313f9c04e5b6a9">TriangleAPP::BuildRootSignature</a></div><div class="ttdeci">void BuildRootSignature()</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a2ac699be0774120a5158f61f6284d504"><div class="ttname"><a href="class_triangle_a_p_p.html#a2ac699be0774120a5158f61f6284d504">TriangleAPP::mPhi</a></div><div class="ttdeci">float mPhi</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00081">Triangle5-constantbuffer.cpp:81</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a2ecfdaf851b02d7305951d89d93c79bf"><div class="ttname"><a href="class_triangle_a_p_p.html#a2ecfdaf851b02d7305951d89d93c79bf">TriangleAPP::mView</a></div><div class="ttdeci">XMFLOAT4X4 mView</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00077">Triangle5-constantbuffer.cpp:77</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a32ec9cd0dcf0183f7a5d2f24a872f07b"><div class="ttname"><a href="class_triangle_a_p_p.html#a32ec9cd0dcf0183f7a5d2f24a872f07b">TriangleAPP::Draw</a></div><div class="ttdeci">virtual void Draw(const GameTimer &amp;gt) override</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00144">Triangle0.cpp:144</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a3e55137310cfe5fbddf2da3e8a43b35f"><div class="ttname"><a href="class_triangle_a_p_p.html#a3e55137310cfe5fbddf2da3e8a43b35f">TriangleAPP::mInputLayout</a></div><div class="ttdeci">std::vector&lt; D3D12_INPUT_ELEMENT_DESC &gt; mInputLayout</div><div class="ttdoc">Once we have defined a vertex structure, we need to provide Direct3D with a description of our vertex...</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00067">Triangle0.cpp:67</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a425beba56765675c61dc301199a8e5e1"><div class="ttname"><a href="class_triangle_a_p_p.html#a425beba56765675c61dc301199a8e5e1">TriangleAPP::mRadius</a></div><div class="ttdeci">float mRadius</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00082">Triangle5-constantbuffer.cpp:82</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a4e399c0b9ed0313c1af2df4a88d99ed2"><div class="ttname"><a href="class_triangle_a_p_p.html#a4e399c0b9ed0313c1af2df4a88d99ed2">TriangleAPP::mPSO</a></div><div class="ttdeci">ComPtr&lt; ID3D12PipelineState &gt; mPSO</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00069">Triangle0.cpp:69</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a4f65c7069f501aae800b228200b30c5f"><div class="ttname"><a href="class_triangle_a_p_p.html#a4f65c7069f501aae800b228200b30c5f">TriangleAPP::BuildShadersAndInputLayout</a></div><div class="ttdeci">void BuildShadersAndInputLayout()</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a56500d26324c31b1d3a5bd892d23eb05"><div class="ttname"><a href="class_triangle_a_p_p.html#a56500d26324c31b1d3a5bd892d23eb05">TriangleAPP::vertices</a></div><div class="ttdeci">std::array&lt; Vertex, 3 &gt; vertices</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00071">Triangle0.cpp:71</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a619562cc39bc4630eefb1b658ea37f61"><div class="ttname"><a href="class_triangle_a_p_p.html#a619562cc39bc4630eefb1b658ea37f61">TriangleAPP::Draw</a></div><div class="ttdeci">virtual void Draw(const GameTimer &amp;gt) override</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a6327b235a61b02056a61317aa4200f21"><div class="ttname"><a href="class_triangle_a_p_p.html#a6327b235a61b02056a61317aa4200f21">TriangleAPP::mWorld</a></div><div class="ttdeci">XMFLOAT4X4 mWorld</div><div class="ttdoc">step5</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00076">Triangle5-constantbuffer.cpp:76</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a709f795c3d26e1c7884b85413112445f"><div class="ttname"><a href="class_triangle_a_p_p.html#a709f795c3d26e1c7884b85413112445f">TriangleAPP::mProj</a></div><div class="ttdeci">XMFLOAT4X4 mProj</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00078">Triangle5-constantbuffer.cpp:78</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a87afc6f256e3225742214ceb9db86255"><div class="ttname"><a href="class_triangle_a_p_p.html#a87afc6f256e3225742214ceb9db86255">TriangleAPP::mCbvHeap</a></div><div class="ttdeci">ComPtr&lt; ID3D12DescriptorHeap &gt; mCbvHeap</div><div class="ttdoc">step4</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00064">Triangle5-constantbuffer.cpp:64</a></div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_a8a19d524d41a5d3d1a86a136f7794a24"><div class="ttname"><a href="class_triangle_a_p_p.html#a8a19d524d41a5d3d1a86a136f7794a24">TriangleAPP::Initialize</a></div><div class="ttdeci">virtual bool Initialize() override</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_a9f0f75b0a6acd430cdfe0741fe38fb0c"><div class="ttname"><a href="class_triangle_a_p_p.html#a9f0f75b0a6acd430cdfe0741fe38fb0c">TriangleAPP::mLastMousePos</a></div><div class="ttdeci">POINT mLastMousePos</div><div class="ttdef"><b>Definition:</b> <a href="_triangle6-rotationtransformation_8cpp_source.html#l00081">Triangle6-rotationtransformation.cpp:81</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_aa46643ec6db2dfa33abd8767739309a7"><div class="ttname"><a href="class_triangle_a_p_p.html#aa46643ec6db2dfa33abd8767739309a7">TriangleAPP::mpsByteCode</a></div><div class="ttdeci">ComPtr&lt; ID3DBlob &gt; mpsByteCode</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00061">Triangle0.cpp:61</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_ab05555f82deacd28ccb11059fe4b5490"><div class="ttname"><a href="class_triangle_a_p_p.html#ab05555f82deacd28ccb11059fe4b5490">TriangleAPP::mTheta</a></div><div class="ttdeci">float mTheta</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00080">Triangle5-constantbuffer.cpp:80</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_ab50e4cebd197d1379a9be8d649f30831"><div class="ttname"><a href="class_triangle_a_p_p.html#ab50e4cebd197d1379a9be8d649f30831">TriangleAPP::mTheta2</a></div><div class="ttdeci">float mTheta2</div><div class="ttdoc">step1</div><div class="ttdef"><b>Definition:</b> <a href="_triangle6-rotationtransformation_8cpp_source.html#l00078">Triangle6-rotationtransformation.cpp:78</a></div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_ac87ba5e40c91b9b4b7142955fcd2972c"><div class="ttname"><a href="class_triangle_a_p_p.html#ac87ba5e40c91b9b4b7142955fcd2972c">TriangleAPP::operator=</a></div><div class="ttdeci">TriangleAPP &amp; operator=(const TriangleAPP &amp;rhs)=delete</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_ad5cbeabb111a1611e38052722e71d2c0"><div class="ttname"><a href="class_triangle_a_p_p.html#ad5cbeabb111a1611e38052722e71d2c0">TriangleAPP::mRootSignature</a></div><div class="ttdeci">ComPtr&lt; ID3D12RootSignature &gt; mRootSignature</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00057">Triangle0.cpp:57</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_ae2ce3ada9b47142ae156195f9ed2773a"><div class="ttname"><a href="class_triangle_a_p_p.html#ae2ce3ada9b47142ae156195f9ed2773a">TriangleAPP::mObjectCB</a></div><div class="ttdeci">std::unique_ptr&lt; UploadBuffer&lt; ObjectConstants &gt; &gt; mObjectCB</div><div class="ttdef"><b>Definition:</b> <a href="_triangle5-constantbuffer_8cpp_source.html#l00065">Triangle5-constantbuffer.cpp:65</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_aedae8af324d982f353ec80d8bcba0338"><div class="ttname"><a href="class_triangle_a_p_p.html#aedae8af324d982f353ec80d8bcba0338">TriangleAPP::OnResize</a></div><div class="ttdeci">virtual void OnResize() override</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00132">Triangle0.cpp:132</a></div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_aee1b7e75d877f4643f91cded02bfb108"><div class="ttname"><a href="class_triangle_a_p_p.html#aee1b7e75d877f4643f91cded02bfb108">TriangleAPP::~TriangleAPP</a></div><div class="ttdeci">~TriangleAPP()</div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_af09191ec7e0b1053c2ea90c0a6e39517"><div class="ttname"><a href="class_triangle_a_p_p.html#af09191ec7e0b1053c2ea90c0a6e39517">TriangleAPP::Initialize</a></div><div class="ttdeci">virtual bool Initialize() override</div><div class="ttdef"><b>Definition:</b> <a href="_triangle0_8cpp_source.html#l00108">Triangle0.cpp:108</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_af2a257f73e77cd7ae8b9edd3932a55fd"><div class="ttname"><a href="class_triangle_a_p_p.html#af2a257f73e77cd7ae8b9edd3932a55fd">TriangleAPP::BuildDescriptorHeaps</a></div><div class="ttdeci">void BuildDescriptorHeaps()</div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_af7be729c07e798d3ebc979973a644344"><div class="ttname"><a href="class_triangle_a_p_p.html#af7be729c07e798d3ebc979973a644344">TriangleAPP::mBoxGeo</a></div><div class="ttdeci">std::unique_ptr&lt; MeshGeometry &gt; mBoxGeo</div><div class="ttdef"><b>Definition:</b> <a href="_triangle4-meshgeo_8cpp_source.html#l00047">Triangle4-meshgeo.cpp:47</a></div></div>
-<div class="ttc" id="aclass_triangle_a_p_p_html_af7d88b9a9b7685618cd809b3563a08ea"><div class="ttname"><a href="class_triangle_a_p_p.html#af7d88b9a9b7685618cd809b3563a08ea">TriangleAPP::BuildConstantBuffers</a></div><div class="ttdeci">void BuildConstantBuffers()</div></div>
 <div class="ttc" id="aclass_triangle_a_p_p_html_afef97e57945bb6968b9688a6c99adcc4"><div class="ttname"><a href="class_triangle_a_p_p.html#afef97e57945bb6968b9688a6c99adcc4">TriangleAPP::TriangleAPP</a></div><div class="ttdeci">TriangleAPP(HINSTANCE hInstance)</div></div>
 <div class="ttc" id="aclassd3d_util_html_a0883e0848cae813b2bc71570f3303e92"><div class="ttname"><a href="classd3d_util.html#a0883e0848cae813b2bc71570f3303e92">d3dUtil::CalcConstantBufferByteSize</a></div><div class="ttdeci">static UINT CalcConstantBufferByteSize(UINT byteSize)</div><div class="ttdef"><b>Definition:</b> <a href="d3d_util_8h_source.html#l00095">d3dUtil.h:95</a></div></div>
 <div class="ttc" id="aclassd3d_util_html_acac6acd838913d63466e4f0159bfe8b0"><div class="ttname"><a href="classd3d_util.html#acac6acd838913d63466e4f0159bfe8b0">d3dUtil::CompileShader</a></div><div class="ttdeci">static Microsoft::WRL::ComPtr&lt; ID3DBlob &gt; CompileShader(const std::wstring &amp;filename, const D3D_SHADER_MACRO *defines, const std::string &amp;entrypoint, const std::string &amp;target)</div><div class="ttdef"><b>Definition:</b> <a href="d3d_util_8cpp_source.html#l00090">d3dUtil.cpp:90</a></div></div>

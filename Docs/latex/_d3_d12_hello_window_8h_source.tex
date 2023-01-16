@@ -1,63 +1,63 @@
-\doxysection{D3\+D12\+Hello\+Window.\+h}
+\hypertarget{_d3_d12_hello_window_8h_source}{}\doxysection{D3\+D12\+Hello\+Window.\+h}
 \label{_d3_d12_hello_window_8h_source}\index{Week2/Week2-\/7-\/Hello World/D3D12HelloWindow.h@{Week2/Week2-\/7-\/Hello World/D3D12HelloWindow.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_d3_d12_hello_window_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{//}}
-\DoxyCodeLine{00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
-\DoxyCodeLine{00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
-\DoxyCodeLine{00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
-\DoxyCodeLine{00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
-\DoxyCodeLine{00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
-\DoxyCodeLine{00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
-\DoxyCodeLine{00009 \textcolor{comment}{//}}
-\DoxyCodeLine{00010 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{00011 }
-\DoxyCodeLine{00012 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014 \textcolor{preprocessor}{\#include "{}DXSample.h"{}}}
-\DoxyCodeLine{00015 }
-\DoxyCodeLine{00016 \textcolor{comment}{// Note that while ComPtr is used to manage the lifetime of resources on the CPU,}}
-\DoxyCodeLine{00017 \textcolor{comment}{// it has no understanding of the lifetime of resources on the GPU. Apps must account}}
-\DoxyCodeLine{00018 \textcolor{comment}{// for the GPU lifetime of resources to avoid destroying objects that may still be}}
-\DoxyCodeLine{00019 \textcolor{comment}{// referenced by the GPU.}}
-\DoxyCodeLine{00020 \textcolor{comment}{// An example of this can be found in the class method: OnDestroy().}}
-\DoxyCodeLine{00021 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
-\DoxyCodeLine{00022 }
-\DoxyCodeLine{00023 \textcolor{keyword}{class }D3D12HelloWindow : \textcolor{keyword}{public} DXSample}
-\DoxyCodeLine{00024 \{}
-\DoxyCodeLine{00025 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00026     D3D12HelloWindow(UINT width, UINT height, std::wstring name);}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnInit();}
-\DoxyCodeLine{00029     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnUpdate();}
-\DoxyCodeLine{00030     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnRender();}
-\DoxyCodeLine{00031     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnDestroy();}
-\DoxyCodeLine{00032 }
-\DoxyCodeLine{00033 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00034     \textcolor{keyword}{static} \textcolor{keyword}{const} UINT FrameCount = 2;}
-\DoxyCodeLine{00035 }
-\DoxyCodeLine{00036     \textcolor{comment}{// Pipeline objects.}}
-\DoxyCodeLine{00037     ComPtr<IDXGISwapChain3> m\_swapChain;}
-\DoxyCodeLine{00038     ComPtr<ID3D12Device> m\_device;}
-\DoxyCodeLine{00039     ComPtr<ID3D12Resource> m\_renderTargets[FrameCount];}
-\DoxyCodeLine{00040     ComPtr<ID3D12CommandAllocator> m\_commandAllocator;}
-\DoxyCodeLine{00041     ComPtr<ID3D12CommandQueue> m\_commandQueue;}
-\DoxyCodeLine{00042     ComPtr<ID3D12DescriptorHeap> m\_rtvHeap;}
-\DoxyCodeLine{00043     ComPtr<ID3D12PipelineState> m\_pipelineState;}
-\DoxyCodeLine{00044     ComPtr<ID3D12GraphicsCommandList> m\_commandList;}
-\DoxyCodeLine{00045     UINT m\_rtvDescriptorSize;}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047     \textcolor{comment}{// Synchronization objects.}}
-\DoxyCodeLine{00048     UINT m\_frameIndex;}
-\DoxyCodeLine{00049     HANDLE m\_fenceEvent;}
-\DoxyCodeLine{00050     ComPtr<ID3D12Fence> m\_fence;}
-\DoxyCodeLine{00051     UINT64 m\_fenceValue;}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053     \textcolor{keywordtype}{void} LoadPipeline();}
-\DoxyCodeLine{00054     \textcolor{keywordtype}{void} LoadAssets();}
-\DoxyCodeLine{00055     \textcolor{keywordtype}{void} PopulateCommandList();}
-\DoxyCodeLine{00056     \textcolor{keywordtype}{void} WaitForPreviousFrame();}
-\DoxyCodeLine{00057 \};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00001}00001 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00002}00002 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00003}00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00004}00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00005}00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00006}00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00007}00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00008}00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00009}00009 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00010}00010 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00012}00012 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00014}00014 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2_d_x_sample_8h}{DXSample.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00015}00015 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00016}00016 \textcolor{comment}{// Note that while ComPtr is used to manage the lifetime of resources on the CPU,}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00017}00017 \textcolor{comment}{// it has no understanding of the lifetime of resources on the GPU. Apps must account}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00018}00018 \textcolor{comment}{// for the GPU lifetime of resources to avoid destroying objects that may still be}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00019}00019 \textcolor{comment}{// referenced by the GPU.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00020}00020 \textcolor{comment}{// An example of this can be found in the class method: OnDestroy().}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00021}00021 \textcolor{keyword}{using} Microsoft::WRL::ComPtr;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00022}00022 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00023}\mbox{\hyperlink{class_d3_d12_hello_window}{00023}} \textcolor{keyword}{class }\mbox{\hyperlink{class_d3_d12_hello_window}{D3D12HelloWindow}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_d_x_sample}{DXSample}}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00024}00024 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00025}00025 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00026}00026     \mbox{\hyperlink{class_d3_d12_hello_window_ad23a2e6265b54755ed116a648124eb32}{D3D12HelloWindow}}(UINT width, UINT height, std::wstring name);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00028}00028     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_a512026fc5a0bbb36bdd36cfeca5eb834}{OnInit}}();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00029}00029     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aa82d80363a38f438311fd20a0e1962a0}{OnUpdate}}();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00030}00030     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aa8048f9788cc6b6b51de99aa6d5d9ec5}{OnRender}}();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00031}00031     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aae7da1c07166ccf6aa4c8b88af692bff}{OnDestroy}}();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00032}00032 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00033}00033 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00034}00034     \textcolor{keyword}{static} \textcolor{keyword}{const} UINT FrameCount = 2;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00035}00035 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00036}00036     \textcolor{comment}{// Pipeline objects.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00037}00037     ComPtr<IDXGISwapChain3> m\_swapChain;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00038}00038     ComPtr<ID3D12Device> m\_device;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00039}00039     ComPtr<ID3D12Resource> m\_renderTargets[FrameCount];}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00040}00040     ComPtr<ID3D12CommandAllocator> m\_commandAllocator;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00041}00041     ComPtr<ID3D12CommandQueue> m\_commandQueue;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00042}00042     ComPtr<ID3D12DescriptorHeap> m\_rtvHeap;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00043}00043     ComPtr<ID3D12PipelineState> m\_pipelineState;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00044}00044     ComPtr<ID3D12GraphicsCommandList> m\_commandList;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00045}00045     UINT m\_rtvDescriptorSize;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00047}00047     \textcolor{comment}{// Synchronization objects.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00048}00048     UINT m\_frameIndex;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00049}00049     HANDLE m\_fenceEvent;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00050}00050     ComPtr<ID3D12Fence> m\_fence;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00051}00051     UINT64 m\_fenceValue;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00053}00053     \textcolor{keywordtype}{void} LoadPipeline();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00054}00054     \textcolor{keywordtype}{void} LoadAssets();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00055}00055     \textcolor{keywordtype}{void} PopulateCommandList();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00056}00056     \textcolor{keywordtype}{void} WaitForPreviousFrame();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8h_source_l00057}00057 \};}
 
 \end{DoxyCode}

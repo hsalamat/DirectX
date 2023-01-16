@@ -1,144 +1,144 @@
-\doxysection{Shadow\+Map.\+cpp}
+\hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source}{}\doxysection{Shadow\+Map.\+cpp}
 \label{_week15_2_skinned_mesh_2_shadow_map_8cpp_source}\index{Week15/SkinnedMesh/ShadowMap.cpp@{Week15/SkinnedMesh/ShadowMap.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_week15_2_skinned_mesh_2_shadow_map_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// ShadowMap.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00004 }
-\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include "{}ShadowMap.h"{}}}
-\DoxyCodeLine{00006  }
-\DoxyCodeLine{00007 ShadowMap::ShadowMap(ID3D12Device* device, UINT width, UINT height)}
-\DoxyCodeLine{00008 \{}
-\DoxyCodeLine{00009     md3dDevice = device;}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011     mWidth = width;}
-\DoxyCodeLine{00012     mHeight = height;}
-\DoxyCodeLine{00013 }
-\DoxyCodeLine{00014     mViewport = \{ 0.0f, 0.0f, (float)width, (\textcolor{keywordtype}{float})height, 0.0f, 1.0f \};}
-\DoxyCodeLine{00015     mScissorRect = \{ 0, 0, (int)width, (\textcolor{keywordtype}{int})height \};}
-\DoxyCodeLine{00016 }
-\DoxyCodeLine{00017     BuildResource();}
-\DoxyCodeLine{00018 \}}
-\DoxyCodeLine{00019 }
-\DoxyCodeLine{00020 UINT ShadowMap::Width()\textcolor{keyword}{const}}
-\DoxyCodeLine{00021 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00022     \textcolor{keywordflow}{return} mWidth;}
-\DoxyCodeLine{00023 \}}
-\DoxyCodeLine{00024 }
-\DoxyCodeLine{00025 UINT ShadowMap::Height()\textcolor{keyword}{const}}
-\DoxyCodeLine{00026 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00027     \textcolor{keywordflow}{return} mHeight;}
-\DoxyCodeLine{00028 \}}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00030 ID3D12Resource*  ShadowMap::Resource()}
-\DoxyCodeLine{00031 \{}
-\DoxyCodeLine{00032     \textcolor{keywordflow}{return} mShadowMap.Get();}
-\DoxyCodeLine{00033 \}}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035 CD3DX12\_GPU\_DESCRIPTOR\_HANDLE ShadowMap::Srv()\textcolor{keyword}{const}}
-\DoxyCodeLine{00036 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00037     \textcolor{keywordflow}{return} mhGpuSrv;}
-\DoxyCodeLine{00038 \}}
-\DoxyCodeLine{00039 }
-\DoxyCodeLine{00040 CD3DX12\_CPU\_DESCRIPTOR\_HANDLE ShadowMap::Dsv()\textcolor{keyword}{const}}
-\DoxyCodeLine{00041 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00042     \textcolor{keywordflow}{return} mhCpuDsv;}
-\DoxyCodeLine{00043 \}}
-\DoxyCodeLine{00044 }
-\DoxyCodeLine{00045 D3D12\_VIEWPORT ShadowMap::Viewport()\textcolor{keyword}{const}}
-\DoxyCodeLine{00046 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00047     \textcolor{keywordflow}{return} mViewport;}
-\DoxyCodeLine{00048 \}}
-\DoxyCodeLine{00049 }
-\DoxyCodeLine{00050 D3D12\_RECT ShadowMap::ScissorRect()\textcolor{keyword}{const}}
-\DoxyCodeLine{00051 \textcolor{keyword}{}\{}
-\DoxyCodeLine{00052     \textcolor{keywordflow}{return} mScissorRect;}
-\DoxyCodeLine{00053 \}}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055 \textcolor{keywordtype}{void} ShadowMap::BuildDescriptors(CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
-\DoxyCodeLine{00056                                  CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
-\DoxyCodeLine{00057                                  CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDsv)}
-\DoxyCodeLine{00058 \{}
-\DoxyCodeLine{00059     \textcolor{comment}{// Save references to the descriptors. }}
-\DoxyCodeLine{00060     mhCpuSrv = hCpuSrv;}
-\DoxyCodeLine{00061     mhGpuSrv = hGpuSrv;}
-\DoxyCodeLine{00062     mhCpuDsv = hCpuDsv;}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064     \textcolor{comment}{//  Create the descriptors}}
-\DoxyCodeLine{00065     BuildDescriptors();}
-\DoxyCodeLine{00066 \}}
-\DoxyCodeLine{00067 }
-\DoxyCodeLine{00068 \textcolor{keywordtype}{void} ShadowMap::OnResize(UINT newWidth, UINT newHeight)}
-\DoxyCodeLine{00069 \{}
-\DoxyCodeLine{00070     \textcolor{keywordflow}{if}((mWidth != newWidth) || (mHeight != newHeight))}
-\DoxyCodeLine{00071     \{}
-\DoxyCodeLine{00072         mWidth = newWidth;}
-\DoxyCodeLine{00073         mHeight = newHeight;}
-\DoxyCodeLine{00074 }
-\DoxyCodeLine{00075         BuildResource();}
-\DoxyCodeLine{00076 }
-\DoxyCodeLine{00077         \textcolor{comment}{// New resource, so we need new descriptors to that resource.}}
-\DoxyCodeLine{00078         BuildDescriptors();}
-\DoxyCodeLine{00079     \}}
-\DoxyCodeLine{00080 \}}
-\DoxyCodeLine{00081  }
-\DoxyCodeLine{00082 \textcolor{keywordtype}{void} ShadowMap::BuildDescriptors()}
-\DoxyCodeLine{00083 \{}
-\DoxyCodeLine{00084     \textcolor{comment}{// Create SRV to resource so we can sample the shadow map in a shader program.}}
-\DoxyCodeLine{00085     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
-\DoxyCodeLine{00086     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
-\DoxyCodeLine{00087     srvDesc.Format = DXGI\_FORMAT\_R24\_UNORM\_X8\_TYPELESS; }
-\DoxyCodeLine{00088     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00089     srvDesc.Texture2D.MostDetailedMip = 0;}
-\DoxyCodeLine{00090     srvDesc.Texture2D.MipLevels = 1;}
-\DoxyCodeLine{00091     srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;}
-\DoxyCodeLine{00092     srvDesc.Texture2D.PlaneSlice = 0;}
-\DoxyCodeLine{00093     md3dDevice-\/>CreateShaderResourceView(mShadowMap.Get(), \&srvDesc, mhCpuSrv);}
-\DoxyCodeLine{00094 }
-\DoxyCodeLine{00095     \textcolor{comment}{// Create DSV to resource so we can render to the shadow map.}}
-\DoxyCodeLine{00096     D3D12\_DEPTH\_STENCIL\_VIEW\_DESC dsvDesc; }
-\DoxyCodeLine{00097     dsvDesc.Flags = D3D12\_DSV\_FLAG\_NONE;}
-\DoxyCodeLine{00098     dsvDesc.ViewDimension = D3D12\_DSV\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00099     dsvDesc.Format = DXGI\_FORMAT\_D24\_UNORM\_S8\_UINT;}
-\DoxyCodeLine{00100     dsvDesc.Texture2D.MipSlice = 0;}
-\DoxyCodeLine{00101     md3dDevice-\/>CreateDepthStencilView(mShadowMap.Get(), \&dsvDesc, mhCpuDsv);}
-\DoxyCodeLine{00102 \}}
-\DoxyCodeLine{00103 }
-\DoxyCodeLine{00104 \textcolor{keywordtype}{void} ShadowMap::BuildResource()}
-\DoxyCodeLine{00105 \{}
-\DoxyCodeLine{00106     \textcolor{comment}{// Note, compressed formats cannot be used for UAV.  We get error like:}}
-\DoxyCodeLine{00107     \textcolor{comment}{// ERROR: ID3D11Device::CreateTexture2D: The format (0x4d, BC3\_UNORM) }}
-\DoxyCodeLine{00108     \textcolor{comment}{// cannot be bound as an UnorderedAccessView, or cast to a format that}}
-\DoxyCodeLine{00109     \textcolor{comment}{// could be bound as an UnorderedAccessView.  Therefore this format }}
-\DoxyCodeLine{00110     \textcolor{comment}{// does not support D3D11\_BIND\_UNORDERED\_ACCESS.}}
-\DoxyCodeLine{00111 }
-\DoxyCodeLine{00112     D3D12\_RESOURCE\_DESC texDesc;}
-\DoxyCodeLine{00113     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
-\DoxyCodeLine{00114     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
-\DoxyCodeLine{00115     texDesc.Alignment = 0;}
-\DoxyCodeLine{00116     texDesc.Width = mWidth;}
-\DoxyCodeLine{00117     texDesc.Height = mHeight;}
-\DoxyCodeLine{00118     texDesc.DepthOrArraySize = 1;}
-\DoxyCodeLine{00119     texDesc.MipLevels = 1;}
-\DoxyCodeLine{00120     texDesc.Format = mFormat;}
-\DoxyCodeLine{00121     texDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{00122     texDesc.SampleDesc.Quality = 0;}
-\DoxyCodeLine{00123     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
-\DoxyCodeLine{00124     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_DEPTH\_STENCIL;}
-\DoxyCodeLine{00125 }
-\DoxyCodeLine{00126     D3D12\_CLEAR\_VALUE optClear;}
-\DoxyCodeLine{00127     optClear.Format = DXGI\_FORMAT\_D24\_UNORM\_S8\_UINT;}
-\DoxyCodeLine{00128     optClear.DepthStencil.Depth = 1.0f;}
-\DoxyCodeLine{00129     optClear.DepthStencil.Stencil = 0;}
-\DoxyCodeLine{00130 }
-\DoxyCodeLine{00131     ThrowIfFailed(md3dDevice-\/>CreateCommittedResource(}
-\DoxyCodeLine{00132         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
-\DoxyCodeLine{00133         D3D12\_HEAP\_FLAG\_NONE,}
-\DoxyCodeLine{00134         \&texDesc,}
-\DoxyCodeLine{00135         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
-\DoxyCodeLine{00136         \&optClear,}
-\DoxyCodeLine{00137         IID\_PPV\_ARGS(\&mShadowMap)));}
-\DoxyCodeLine{00138 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00002}00002 \textcolor{comment}{// ShadowMap.cpp by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00003}00003 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00004}00004 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00005}00005 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week15_2_skinned_mesh_2_shadow_map_8h}{ShadowMap.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00006}00006  }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00007}00007 \mbox{\hyperlink{class_shadow_map_a6a64d5589e34d3ac25c68301e7c073d9}{ShadowMap::ShadowMap}}(ID3D12Device* device, UINT width, UINT height)}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00008}00008 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00009}00009     md3dDevice = device;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00011}00011     mWidth = width;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00012}00012     mHeight = height;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00013}00013 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00014}00014     mViewport = \{ 0.0f, 0.0f, (float)width, (\textcolor{keywordtype}{float})height, 0.0f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00015}00015     mScissorRect = \{ 0, 0, (int)width, (\textcolor{keywordtype}{int})height \};}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00016}00016 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00017}00017     BuildResource();}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00018}00018 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00019}00019 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00020}00020 UINT \mbox{\hyperlink{class_shadow_map_a0bd46efd3af84d28aa9544f18be17732}{ShadowMap::Width}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00021}00021 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00022}00022     \textcolor{keywordflow}{return} mWidth;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00023}00023 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00024}00024 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00025}00025 UINT \mbox{\hyperlink{class_shadow_map_a6640ab4306f9570a52e37d3020a29160}{ShadowMap::Height}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00026}00026 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00027}00027     \textcolor{keywordflow}{return} mHeight;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00028}00028 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00030}00030 ID3D12Resource*  \mbox{\hyperlink{class_shadow_map_afb811bb099305ab7a1d04c2167c505d3}{ShadowMap::Resource}}()}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00032}00032     \textcolor{keywordflow}{return} mShadowMap.Get();}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00033}00033 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00035}00035 CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a8c3bfd410349cddd4646a75f3de86b1c}{ShadowMap::Srv}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00036}00036 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00037}00037     \textcolor{keywordflow}{return} mhGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00038}00038 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00039}00039 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00040}00040 CD3DX12\_CPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_shadow_map_a8c63c2ee0e5d031c7531d9cb20d7f527}{ShadowMap::Dsv}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00041}00041 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00042}00042     \textcolor{keywordflow}{return} mhCpuDsv;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00043}00043 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00044}00044 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00045}00045 D3D12\_VIEWPORT \mbox{\hyperlink{class_shadow_map_a055e71a16ef2e8d676ee813a35709255}{ShadowMap::Viewport}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00046}00046 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00047}00047     \textcolor{keywordflow}{return} mViewport;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00048}00048 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00049}00049 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00050}00050 D3D12\_RECT \mbox{\hyperlink{class_shadow_map_ad11d6c3325f9c3730c57ab2ef58cc32d}{ShadowMap::ScissorRect}}()\textcolor{keyword}{const}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00051}00051 \textcolor{keyword}{}\{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00052}00052     \textcolor{keywordflow}{return} mScissorRect;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00053}00053 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00055}00055 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_a9136f8cce85f159339c7ca8f05840eea}{ShadowMap::BuildDescriptors}}(CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuSrv,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00056}00056                                  CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuSrv,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00057}00057                                  CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDsv)}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00058}00058 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00059}00059     \textcolor{comment}{// Save references to the descriptors. }}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00060}00060     mhCpuSrv = hCpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00061}00061     mhGpuSrv = hGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00062}00062     mhCpuDsv = hCpuDsv;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00064}00064     \textcolor{comment}{//  Create the descriptors}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00065}00065     \mbox{\hyperlink{class_shadow_map_a9136f8cce85f159339c7ca8f05840eea}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00066}00066 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00067}00067 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00068}00068 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_ad1d64ceac0f4b3dbf045eb2e27c4d61a}{ShadowMap::OnResize}}(UINT newWidth, UINT newHeight)}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00069}00069 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00070}00070     \textcolor{keywordflow}{if}((mWidth != newWidth) || (mHeight != newHeight))}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00071}00071     \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00072}00072         mWidth = newWidth;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00073}00073         mHeight = newHeight;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00074}00074 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00075}00075         BuildResource();}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00076}00076 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00077}00077         \textcolor{comment}{// New resource, so we need new descriptors to that resource.}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00078}00078         \mbox{\hyperlink{class_shadow_map_a9136f8cce85f159339c7ca8f05840eea}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00079}00079     \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00080}00080 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00081}00081  }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00082}00082 \textcolor{keywordtype}{void} \mbox{\hyperlink{class_shadow_map_a9136f8cce85f159339c7ca8f05840eea}{ShadowMap::BuildDescriptors}}()}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00083}00083 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00084}00084     \textcolor{comment}{// Create SRV to resource so we can sample the shadow map in a shader program.}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00085}00085     D3D12\_SHADER\_RESOURCE\_VIEW\_DESC srvDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00086}00086     srvDesc.Shader4ComponentMapping = D3D12\_DEFAULT\_SHADER\_4\_COMPONENT\_MAPPING;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00087}00087     srvDesc.Format = DXGI\_FORMAT\_R24\_UNORM\_X8\_TYPELESS; }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00088}00088     srvDesc.ViewDimension = D3D12\_SRV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00089}00089     srvDesc.Texture2D.MostDetailedMip = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00090}00090     srvDesc.Texture2D.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00091}00091     srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00092}00092     srvDesc.Texture2D.PlaneSlice = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00093}00093     md3dDevice-\/>CreateShaderResourceView(mShadowMap.Get(), \&srvDesc, mhCpuSrv);}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00094}00094 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00095}00095     \textcolor{comment}{// Create DSV to resource so we can render to the shadow map.}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00096}00096     D3D12\_DEPTH\_STENCIL\_VIEW\_DESC dsvDesc; }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00097}00097     dsvDesc.Flags = D3D12\_DSV\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00098}00098     dsvDesc.ViewDimension = D3D12\_DSV\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00099}00099     dsvDesc.Format = DXGI\_FORMAT\_D24\_UNORM\_S8\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00100}00100     dsvDesc.Texture2D.MipSlice = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00101}00101     md3dDevice-\/>CreateDepthStencilView(mShadowMap.Get(), \&dsvDesc, mhCpuDsv);}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00102}00102 \}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00103}00103 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00104}00104 \textcolor{keywordtype}{void} ShadowMap::BuildResource()}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00105}00105 \{}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00106}00106     \textcolor{comment}{// Note, compressed formats cannot be used for UAV.  We get error like:}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00107}00107     \textcolor{comment}{// ERROR: ID3D11Device::CreateTexture2D: The format (0x4d, BC3\_UNORM) }}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00108}00108     \textcolor{comment}{// cannot be bound as an UnorderedAccessView, or cast to a format that}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00109}00109     \textcolor{comment}{// could be bound as an UnorderedAccessView.  Therefore this format }}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00110}00110     \textcolor{comment}{// does not support D3D11\_BIND\_UNORDERED\_ACCESS.}}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00111}00111 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00112}00112     D3D12\_RESOURCE\_DESC texDesc;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00113}00113     ZeroMemory(\&texDesc, \textcolor{keyword}{sizeof}(D3D12\_RESOURCE\_DESC));}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00114}00114     texDesc.Dimension = D3D12\_RESOURCE\_DIMENSION\_TEXTURE2D;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00115}00115     texDesc.Alignment = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00116}00116     texDesc.Width = mWidth;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00117}00117     texDesc.Height = mHeight;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00118}00118     texDesc.DepthOrArraySize = 1;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00119}00119     texDesc.MipLevels = 1;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00120}00120     texDesc.Format = mFormat;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00121}00121     texDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00122}00122     texDesc.SampleDesc.Quality = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00123}00123     texDesc.Layout = D3D12\_TEXTURE\_LAYOUT\_UNKNOWN;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00124}00124     texDesc.Flags = D3D12\_RESOURCE\_FLAG\_ALLOW\_DEPTH\_STENCIL;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00125}00125 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00126}00126     D3D12\_CLEAR\_VALUE optClear;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00127}00127     optClear.Format = DXGI\_FORMAT\_D24\_UNORM\_S8\_UINT;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00128}00128     optClear.DepthStencil.Depth = 1.0f;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00129}00129     optClear.DepthStencil.Stencil = 0;}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00130}00130 }
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00131}00131     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(md3dDevice-\/>CreateCommittedResource(}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00132}00132         \&CD3DX12\_HEAP\_PROPERTIES(D3D12\_HEAP\_TYPE\_DEFAULT),}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00133}00133         D3D12\_HEAP\_FLAG\_NONE,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00134}00134         \&texDesc,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00135}00135         D3D12\_RESOURCE\_STATE\_GENERIC\_READ,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00136}00136         \&optClear,}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00137}00137         IID\_PPV\_ARGS(\&mShadowMap)));}
+\DoxyCodeLine{\Hypertarget{_week15_2_skinned_mesh_2_shadow_map_8cpp_source_l00138}00138 \}}
 
 \end{DoxyCode}

@@ -1,248 +1,248 @@
-\doxysection{D3\+D12\+Hello\+Window.\+cpp}
+\hypertarget{_d3_d12_hello_window_8cpp_source}{}\doxysection{D3\+D12\+Hello\+Window.\+cpp}
 \label{_d3_d12_hello_window_8cpp_source}\index{Week2/Week2-\/7-\/Hello World/D3D12HelloWindow.cpp@{Week2/Week2-\/7-\/Hello World/D3D12HelloWindow.cpp}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_d3_d12_hello_window_8cpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{//}}
-\DoxyCodeLine{00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
-\DoxyCodeLine{00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
-\DoxyCodeLine{00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
-\DoxyCodeLine{00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
-\DoxyCodeLine{00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
-\DoxyCodeLine{00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
-\DoxyCodeLine{00009 \textcolor{comment}{//}}
-\DoxyCodeLine{00010 \textcolor{comment}{//*********************************************************}}
-\DoxyCodeLine{00011 }
-\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include "{}stdafx.h"{}}}
-\DoxyCodeLine{00013 \textcolor{preprocessor}{\#include "{}D3D12HelloWindow.h"{}}}
-\DoxyCodeLine{00014 }
-\DoxyCodeLine{00015 D3D12HelloWindow::D3D12HelloWindow(UINT width, UINT height, std::wstring name) :}
-\DoxyCodeLine{00016     DXSample(width, height, name),}
-\DoxyCodeLine{00017     m\_frameIndex(0),}
-\DoxyCodeLine{00018     m\_rtvDescriptorSize(0)}
-\DoxyCodeLine{00019 \{}
-\DoxyCodeLine{00020 \}}
-\DoxyCodeLine{00021 }
-\DoxyCodeLine{00022 \textcolor{comment}{//Step 1: Initialization involves first setting up the global variables and classes, and an initialize function must prepare the pipeline and assets.}}
-\DoxyCodeLine{00023 \textcolor{keywordtype}{void} D3D12HelloWindow::OnInit()}
-\DoxyCodeLine{00024 \{}
-\DoxyCodeLine{00025     LoadPipeline();}
-\DoxyCodeLine{00026     LoadAssets();}
-\DoxyCodeLine{00027 \}}
-\DoxyCodeLine{00028 }
-\DoxyCodeLine{00029 \textcolor{comment}{// Load the rendering pipeline dependencies.}}
-\DoxyCodeLine{00030 \textcolor{keywordtype}{void} D3D12HelloWindow::LoadPipeline()}
-\DoxyCodeLine{00031 \{}
-\DoxyCodeLine{00032     UINT dxgiFactoryFlags = 0;}
-\DoxyCodeLine{00033 }
-\DoxyCodeLine{00034 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
-\DoxyCodeLine{00035     \textcolor{comment}{// Step2: Enable the debug layer (requires the Graphics Tools "{}optional feature"{}).}}
-\DoxyCodeLine{00036     \textcolor{comment}{// NOTE: Enabling the debug layer after device creation will invalidate the active device.}}
-\DoxyCodeLine{00037     \{}
-\DoxyCodeLine{00038         ComPtr<ID3D12Debug> debugController;}
-\DoxyCodeLine{00039         \textcolor{keywordflow}{if} (SUCCEEDED(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController))))}
-\DoxyCodeLine{00040         \{}
-\DoxyCodeLine{00041             debugController-\/>EnableDebugLayer();}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043             \textcolor{comment}{// Enable additional debug layers.}}
-\DoxyCodeLine{00044             dxgiFactoryFlags |= DXGI\_CREATE\_FACTORY\_DEBUG;}
-\DoxyCodeLine{00045         \}}
-\DoxyCodeLine{00046     \}}
-\DoxyCodeLine{00047 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     \textcolor{comment}{//step3: Enables creating Microsoft DirectX Graphics Infrastructure (DXGI) objects}}
-\DoxyCodeLine{00050     ComPtr<IDXGIFactory4> factory;}
-\DoxyCodeLine{00051     ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID\_PPV\_ARGS(\&factory)));}
-\DoxyCodeLine{00052 }
-\DoxyCodeLine{00053     \textcolor{comment}{//step4: create a Windows Advanced Rasterization Platform (WARP) WARP enables Rendering When Direct3D Hardware is Not Available}}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     \textcolor{keywordflow}{if} (m\_useWarpDevice)}
-\DoxyCodeLine{00056     \{}
-\DoxyCodeLine{00057         ComPtr<IDXGIAdapter> warpAdapter;}
-\DoxyCodeLine{00058         ThrowIfFailed(factory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&warpAdapter)));}
-\DoxyCodeLine{00059 }
-\DoxyCodeLine{00060         ThrowIfFailed(D3D12CreateDevice(}
-\DoxyCodeLine{00061             warpAdapter.Get(),}
-\DoxyCodeLine{00062             D3D\_FEATURE\_LEVEL\_11\_0,}
-\DoxyCodeLine{00063             IID\_PPV\_ARGS(\&m\_device)}
-\DoxyCodeLine{00064             ));}
-\DoxyCodeLine{00065     \}}
-\DoxyCodeLine{00066     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{00067     \{}
-\DoxyCodeLine{00068         \textcolor{comment}{//step5: The IDXGIAdapter interface represents a display subsystem (including one or more GPUs, DACs and video memory).}}
-\DoxyCodeLine{00069         ComPtr<IDXGIAdapter1> hardwareAdapter;}
-\DoxyCodeLine{00070         GetHardwareAdapter(factory.Get(), \&hardwareAdapter);}
-\DoxyCodeLine{00071 }
-\DoxyCodeLine{00072         \textcolor{comment}{//step6: Creates a device that represents the display adapter.}}
-\DoxyCodeLine{00073         ThrowIfFailed(D3D12CreateDevice(}
-\DoxyCodeLine{00074             hardwareAdapter.Get(),}
-\DoxyCodeLine{00075             D3D\_FEATURE\_LEVEL\_11\_0,}
-\DoxyCodeLine{00076             IID\_PPV\_ARGS(\&m\_device)}
-\DoxyCodeLine{00077             ));}
-\DoxyCodeLine{00078     \}}
-\DoxyCodeLine{00079 }
-\DoxyCodeLine{00080     \textcolor{comment}{// step7: Describe and create the command queue. Fill out a command queue description, then create the command queue:}}
-\DoxyCodeLine{00081     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
-\DoxyCodeLine{00082     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
-\DoxyCodeLine{00083     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
-\DoxyCodeLine{00084 }
-\DoxyCodeLine{00085     ThrowIfFailed(m\_device-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&m\_commandQueue)));}
-\DoxyCodeLine{00086 }
-\DoxyCodeLine{00087     \textcolor{comment}{// step8: Describe and create the swap chain. Fill out a swapchain description, then create the swap chain}}
-\DoxyCodeLine{00088     DXGI\_SWAP\_CHAIN\_DESC1 swapChainDesc = \{\};}
-\DoxyCodeLine{00089     swapChainDesc.BufferCount = FrameCount;}
-\DoxyCodeLine{00090     swapChainDesc.Width = m\_width;}
-\DoxyCodeLine{00091     swapChainDesc.Height = m\_height;}
-\DoxyCodeLine{00092     swapChainDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{00093     swapChainDesc.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
-\DoxyCodeLine{00094     swapChainDesc.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
-\DoxyCodeLine{00095     swapChainDesc.SampleDesc.Count = 1;}
-\DoxyCodeLine{00096 }
-\DoxyCodeLine{00097     ComPtr<IDXGISwapChain1> swapChain;}
-\DoxyCodeLine{00098     ThrowIfFailed(factory-\/>CreateSwapChainForHwnd(}
-\DoxyCodeLine{00099         m\_commandQueue.Get(),        \textcolor{comment}{// Swap chain needs the queue so that it can force a flush on it.}}
-\DoxyCodeLine{00100         Win32Application::GetHwnd(),}
-\DoxyCodeLine{00101         \&swapChainDesc,}
-\DoxyCodeLine{00102         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00103         \textcolor{keyword}{nullptr},}
-\DoxyCodeLine{00104         \&swapChain}
-\DoxyCodeLine{00105         ));}
-\DoxyCodeLine{00106 }
-\DoxyCodeLine{00107     \textcolor{comment}{// This sample does not support fullscreen transitions.}}
-\DoxyCodeLine{00108     ThrowIfFailed(factory-\/>MakeWindowAssociation(Win32Application::GetHwnd(), DXGI\_MWA\_NO\_ALT\_ENTER));}
-\DoxyCodeLine{00109 }
-\DoxyCodeLine{00110     ThrowIfFailed(swapChain.As(\&m\_swapChain));}
-\DoxyCodeLine{00111     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
-\DoxyCodeLine{00112 }
-\DoxyCodeLine{00113     \textcolor{comment}{// step9: Create descriptor heaps. Fill out a heap description. then create a descriptor heap:}}
-\DoxyCodeLine{00114     \{}
-\DoxyCodeLine{00115         \textcolor{comment}{// Describe and create a render target view (RTV) descriptor heap.}}
-\DoxyCodeLine{00116         D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc = \{\};}
-\DoxyCodeLine{00117         rtvHeapDesc.NumDescriptors = FrameCount;}
-\DoxyCodeLine{00118         rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
-\DoxyCodeLine{00119         rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
-\DoxyCodeLine{00120         ThrowIfFailed(m\_device-\/>CreateDescriptorHeap(\&rtvHeapDesc, IID\_PPV\_ARGS(\&m\_rtvHeap)));}
-\DoxyCodeLine{00121 }
-\DoxyCodeLine{00122         m\_rtvDescriptorSize = m\_device-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
-\DoxyCodeLine{00123     \}}
-\DoxyCodeLine{00124 }
-\DoxyCodeLine{00125     \textcolor{comment}{// step10 : Create frame resources. Create the render target view:}}
-\DoxyCodeLine{00126     \{}
-\DoxyCodeLine{00127         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
-\DoxyCodeLine{00128 }
-\DoxyCodeLine{00129         \textcolor{comment}{// Create a RTV for each frame.}}
-\DoxyCodeLine{00130         \textcolor{keywordflow}{for} (UINT n = 0; n < FrameCount; n++)}
-\DoxyCodeLine{00131         \{}
-\DoxyCodeLine{00132             ThrowIfFailed(m\_swapChain-\/>GetBuffer(n, IID\_PPV\_ARGS(\&m\_renderTargets[n])));}
-\DoxyCodeLine{00133             m\_device-\/>CreateRenderTargetView(m\_renderTargets[n].Get(), \textcolor{keyword}{nullptr}, rtvHandle);}
-\DoxyCodeLine{00134             rtvHandle.Offset(1, m\_rtvDescriptorSize);}
-\DoxyCodeLine{00135         \}}
-\DoxyCodeLine{00136     \}}
-\DoxyCodeLine{00137 }
-\DoxyCodeLine{00138     ThrowIfFailed(m\_device-\/>CreateCommandAllocator(D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, IID\_PPV\_ARGS(\&m\_commandAllocator)));}
-\DoxyCodeLine{00139 \}}
-\DoxyCodeLine{00140 }
-\DoxyCodeLine{00141 \textcolor{comment}{// Load the sample assets.}}
-\DoxyCodeLine{00142 \textcolor{keywordtype}{void} D3D12HelloWindow::LoadAssets()}
-\DoxyCodeLine{00143 \{}
-\DoxyCodeLine{00144     \textcolor{comment}{// Create the command list.}}
-\DoxyCodeLine{00145     ThrowIfFailed(m\_device-\/>CreateCommandList(0, D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, m\_commandAllocator.Get(), \textcolor{keyword}{nullptr}, IID\_PPV\_ARGS(\&m\_commandList)));}
-\DoxyCodeLine{00146 }
-\DoxyCodeLine{00147     \textcolor{comment}{// Command lists are created in the recording state, but there is nothing}}
-\DoxyCodeLine{00148     \textcolor{comment}{// to record yet. The main loop expects it to be closed, so close it now.}}
-\DoxyCodeLine{00149     ThrowIfFailed(m\_commandList-\/>Close());}
-\DoxyCodeLine{00150 }
-\DoxyCodeLine{00151     \textcolor{comment}{// Create synchronization objects.}}
-\DoxyCodeLine{00152     \{}
-\DoxyCodeLine{00153         ThrowIfFailed(m\_device-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE, IID\_PPV\_ARGS(\&m\_fence)));}
-\DoxyCodeLine{00154         m\_fenceValue = 1;}
-\DoxyCodeLine{00155 }
-\DoxyCodeLine{00156         \textcolor{comment}{// Create an event handle to use for frame synchronization.}}
-\DoxyCodeLine{00157         m\_fenceEvent = CreateEvent(\textcolor{keyword}{nullptr}, FALSE, FALSE, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00158         \textcolor{keywordflow}{if} (m\_fenceEvent == \textcolor{keyword}{nullptr})}
-\DoxyCodeLine{00159         \{}
-\DoxyCodeLine{00160             ThrowIfFailed(HRESULT\_FROM\_WIN32(GetLastError()));}
-\DoxyCodeLine{00161         \}}
-\DoxyCodeLine{00162     \}}
-\DoxyCodeLine{00163 \}}
-\DoxyCodeLine{00164 }
-\DoxyCodeLine{00165 \textcolor{comment}{// Update frame-\/based values.}}
-\DoxyCodeLine{00166 \textcolor{keywordtype}{void} D3D12HelloWindow::OnUpdate()}
-\DoxyCodeLine{00167 \{}
-\DoxyCodeLine{00168 \}}
-\DoxyCodeLine{00169 }
-\DoxyCodeLine{00170 \textcolor{comment}{// Render the scene.}}
-\DoxyCodeLine{00171 \textcolor{keywordtype}{void} D3D12HelloWindow::OnRender()}
-\DoxyCodeLine{00172 \{}
-\DoxyCodeLine{00173     \textcolor{comment}{// Record all the commands we need to render the scene into the command list.}}
-\DoxyCodeLine{00174     PopulateCommandList();}
-\DoxyCodeLine{00175 }
-\DoxyCodeLine{00176     \textcolor{comment}{// Execute the command list.}}
-\DoxyCodeLine{00177     ID3D12CommandList* ppCommandLists[] = \{ m\_commandList.Get() \};}
-\DoxyCodeLine{00178     m\_commandQueue-\/>ExecuteCommandLists(\_countof(ppCommandLists), ppCommandLists);}
-\DoxyCodeLine{00179 }
-\DoxyCodeLine{00180     \textcolor{comment}{// Present the frame.}}
-\DoxyCodeLine{00181     ThrowIfFailed(m\_swapChain-\/>Present(1, 0));}
-\DoxyCodeLine{00182 }
-\DoxyCodeLine{00183     WaitForPreviousFrame();}
-\DoxyCodeLine{00184 \}}
-\DoxyCodeLine{00185 }
-\DoxyCodeLine{00186 \textcolor{keywordtype}{void} D3D12HelloWindow::OnDestroy()}
-\DoxyCodeLine{00187 \{}
-\DoxyCodeLine{00188     \textcolor{comment}{// Ensure that the GPU is no longer referencing resources that are about to be}}
-\DoxyCodeLine{00189     \textcolor{comment}{// cleaned up by the destructor.}}
-\DoxyCodeLine{00190     WaitForPreviousFrame();}
-\DoxyCodeLine{00191 }
-\DoxyCodeLine{00192     CloseHandle(m\_fenceEvent);}
-\DoxyCodeLine{00193 \}}
-\DoxyCodeLine{00194 }
-\DoxyCodeLine{00195 \textcolor{keywordtype}{void} D3D12HelloWindow::PopulateCommandList()}
-\DoxyCodeLine{00196 \{}
-\DoxyCodeLine{00197     \textcolor{comment}{// Command list allocators can only be reset when the associated }}
-\DoxyCodeLine{00198     \textcolor{comment}{// command lists have finished execution on the GPU; apps should use }}
-\DoxyCodeLine{00199     \textcolor{comment}{// fences to determine GPU execution progress.}}
-\DoxyCodeLine{00200     ThrowIfFailed(m\_commandAllocator-\/>Reset());}
-\DoxyCodeLine{00201 }
-\DoxyCodeLine{00202     \textcolor{comment}{// However, when ExecuteCommandList() is called on a particular command }}
-\DoxyCodeLine{00203     \textcolor{comment}{// list, that command list can then be reset at any time and must be before }}
-\DoxyCodeLine{00204     \textcolor{comment}{// re-\/recording.}}
-\DoxyCodeLine{00205     ThrowIfFailed(m\_commandList-\/>Reset(m\_commandAllocator.Get(), m\_pipelineState.Get()));}
-\DoxyCodeLine{00206 }
-\DoxyCodeLine{00207     \textcolor{comment}{// Indicate that the back buffer will be used as a render target.}}
-\DoxyCodeLine{00208     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
-\DoxyCodeLine{00209 }
-\DoxyCodeLine{00210     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart(), m\_frameIndex, m\_rtvDescriptorSize);}
-\DoxyCodeLine{00211 }
-\DoxyCodeLine{00212     \textcolor{comment}{// Record commands.}}
-\DoxyCodeLine{00213     \textcolor{keyword}{const} \textcolor{keywordtype}{float} clearColor[] = \{ 0.0f, 0.2f, 0.4f, 1.0f \};}
-\DoxyCodeLine{00214     m\_commandList-\/>ClearRenderTargetView(rtvHandle, clearColor, 0, \textcolor{keyword}{nullptr});}
-\DoxyCodeLine{00215 }
-\DoxyCodeLine{00216     \textcolor{comment}{// Indicate that the back buffer will now be used to present.}}
-\DoxyCodeLine{00217     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
-\DoxyCodeLine{00218 }
-\DoxyCodeLine{00219     ThrowIfFailed(m\_commandList-\/>Close());}
-\DoxyCodeLine{00220 \}}
-\DoxyCodeLine{00221 }
-\DoxyCodeLine{00222 \textcolor{keywordtype}{void} D3D12HelloWindow::WaitForPreviousFrame()}
-\DoxyCodeLine{00223 \{}
-\DoxyCodeLine{00224     \textcolor{comment}{// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.}}
-\DoxyCodeLine{00225     \textcolor{comment}{// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering}}
-\DoxyCodeLine{00226     \textcolor{comment}{// sample illustrates how to use fences for efficient resource usage and to}}
-\DoxyCodeLine{00227     \textcolor{comment}{// maximize GPU utilization.}}
-\DoxyCodeLine{00228 }
-\DoxyCodeLine{00229     \textcolor{comment}{// Signal and increment the fence value.}}
-\DoxyCodeLine{00230     \textcolor{keyword}{const} UINT64 fence = m\_fenceValue;}
-\DoxyCodeLine{00231     ThrowIfFailed(m\_commandQueue-\/>Signal(m\_fence.Get(), fence));}
-\DoxyCodeLine{00232     m\_fenceValue++;}
-\DoxyCodeLine{00233 }
-\DoxyCodeLine{00234     \textcolor{comment}{// Wait until the previous frame is finished.}}
-\DoxyCodeLine{00235     \textcolor{keywordflow}{if} (m\_fence-\/>GetCompletedValue() < fence)}
-\DoxyCodeLine{00236     \{}
-\DoxyCodeLine{00237         ThrowIfFailed(m\_fence-\/>SetEventOnCompletion(fence, m\_fenceEvent));}
-\DoxyCodeLine{00238         WaitForSingleObject(m\_fenceEvent, INFINITE);}
-\DoxyCodeLine{00239     \}}
-\DoxyCodeLine{00240 }
-\DoxyCodeLine{00241     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
-\DoxyCodeLine{00242 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00001}00001 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00002}00002 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00003}00003 \textcolor{comment}{// Copyright (c) Microsoft. All rights reserved.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00004}00004 \textcolor{comment}{// This code is licensed under the MIT License (MIT).}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00005}00005 \textcolor{comment}{// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00006}00006 \textcolor{comment}{// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00007}00007 \textcolor{comment}{// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00008}00008 \textcolor{comment}{// PURPOSE, MERCHANTABILITY, OR NON-\/INFRINGEMENT.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00009}00009 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00010}00010 \textcolor{comment}{//*********************************************************}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00011}00011 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00012}00012 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_week2-7-_hello_01_world_2stdafx_8h}{stdafx.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00013}00013 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_d3_d12_hello_window_8h}{D3D12HelloWindow.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00014}00014 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00015}\mbox{\hyperlink{class_d3_d12_hello_window_ad23a2e6265b54755ed116a648124eb32}{00015}} \mbox{\hyperlink{class_d3_d12_hello_window_ad23a2e6265b54755ed116a648124eb32}{D3D12HelloWindow::D3D12HelloWindow}}(UINT width, UINT height, std::wstring name) :}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00016}00016     \mbox{\hyperlink{class_d_x_sample}{DXSample}}(width, height, name),}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00017}00017     m\_frameIndex(0),}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00018}00018     m\_rtvDescriptorSize(0)}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00019}00019 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00020}00020 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00021}00021 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00022}00022 \textcolor{comment}{//Step 1: Initialization involves first setting up the global variables and classes, and an initialize function must prepare the pipeline and assets.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00023}\mbox{\hyperlink{class_d3_d12_hello_window_a512026fc5a0bbb36bdd36cfeca5eb834}{00023}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_a512026fc5a0bbb36bdd36cfeca5eb834}{D3D12HelloWindow::OnInit}}()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00024}00024 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00025}00025     LoadPipeline();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00026}00026     LoadAssets();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00027}00027 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00028}00028 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00029}00029 \textcolor{comment}{// Load the rendering pipeline dependencies.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00030}00030 \textcolor{keywordtype}{void} D3D12HelloWindow::LoadPipeline()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00031}00031 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00032}00032     UINT dxgiFactoryFlags = 0;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00033}00033 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00034}00034 \textcolor{preprocessor}{\#if defined(\_DEBUG)}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00035}00035     \textcolor{comment}{// Step2: Enable the debug layer (requires the Graphics Tools "{}optional feature"{}).}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00036}00036     \textcolor{comment}{// NOTE: Enabling the debug layer after device creation will invalidate the active device.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00037}00037     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00038}00038         ComPtr<ID3D12Debug> debugController;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00039}00039         \textcolor{keywordflow}{if} (SUCCEEDED(D3D12GetDebugInterface(IID\_PPV\_ARGS(\&debugController))))}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00040}00040         \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00041}00041             debugController-\/>EnableDebugLayer();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00043}00043             \textcolor{comment}{// Enable additional debug layers.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00044}00044             dxgiFactoryFlags |= DXGI\_CREATE\_FACTORY\_DEBUG;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00045}00045         \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00046}00046     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00047}00047 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00049}00049     \textcolor{comment}{//step3: Enables creating Microsoft DirectX Graphics Infrastructure (DXGI) objects}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00050}00050     ComPtr<IDXGIFactory4> factory;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00051}00051     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(CreateDXGIFactory2(dxgiFactoryFlags, IID\_PPV\_ARGS(\&factory)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00052}00052 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00053}00053     \textcolor{comment}{//step4: create a Windows Advanced Rasterization Platform (WARP) WARP enables Rendering When Direct3D Hardware is Not Available}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00055}00055     \textcolor{keywordflow}{if} (\mbox{\hyperlink{class_d_x_sample_a00b60a6d941dcaa6d750ee1c31f2a5f1}{m\_useWarpDevice}})}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00056}00056     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00057}00057         ComPtr<IDXGIAdapter> warpAdapter;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00058}00058         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>EnumWarpAdapter(IID\_PPV\_ARGS(\&warpAdapter)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00059}00059 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00060}00060         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12CreateDevice(}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00061}00061             warpAdapter.Get(),}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00062}00062             D3D\_FEATURE\_LEVEL\_11\_0,}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00063}00063             IID\_PPV\_ARGS(\&m\_device)}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00064}00064             ));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00065}00065     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00066}00066     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00067}00067     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00068}00068         \textcolor{comment}{//step5: The IDXGIAdapter interface represents a display subsystem (including one or more GPUs, DACs and video memory).}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00069}00069         ComPtr<IDXGIAdapter1> hardwareAdapter;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00070}00070         \mbox{\hyperlink{class_d_x_sample_aa375adcf3d2f476c9d2a5e8dad6e5f84}{GetHardwareAdapter}}(factory.Get(), \&hardwareAdapter);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00071}00071 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00072}00072         \textcolor{comment}{//step6: Creates a device that represents the display adapter.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00073}00073         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(D3D12CreateDevice(}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00074}00074             hardwareAdapter.Get(),}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00075}00075             D3D\_FEATURE\_LEVEL\_11\_0,}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00076}00076             IID\_PPV\_ARGS(\&m\_device)}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00077}00077             ));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00078}00078     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00079}00079 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00080}00080     \textcolor{comment}{// step7: Describe and create the command queue. Fill out a command queue description, then create the command queue:}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00081}00081     D3D12\_COMMAND\_QUEUE\_DESC queueDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00082}00082     queueDesc.Flags = D3D12\_COMMAND\_QUEUE\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00083}00083     queueDesc.Type = D3D12\_COMMAND\_LIST\_TYPE\_DIRECT;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00084}00084 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00085}00085     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_device-\/>CreateCommandQueue(\&queueDesc, IID\_PPV\_ARGS(\&m\_commandQueue)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00086}00086 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00087}00087     \textcolor{comment}{// step8: Describe and create the swap chain. Fill out a swapchain description, then create the swap chain}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00088}00088     DXGI\_SWAP\_CHAIN\_DESC1 swapChainDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00089}00089     swapChainDesc.BufferCount = FrameCount;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00090}00090     swapChainDesc.Width = \mbox{\hyperlink{class_d_x_sample_ad54a7eccea7fc9a8e9c80cbefca364a8}{m\_width}};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00091}00091     swapChainDesc.Height = \mbox{\hyperlink{class_d_x_sample_a56ff92a24d9f30901fa370b0112cdefd}{m\_height}};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00092}00092     swapChainDesc.Format = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00093}00093     swapChainDesc.BufferUsage = DXGI\_USAGE\_RENDER\_TARGET\_OUTPUT;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00094}00094     swapChainDesc.SwapEffect = DXGI\_SWAP\_EFFECT\_FLIP\_DISCARD;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00095}00095     swapChainDesc.SampleDesc.Count = 1;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00096}00096 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00097}00097     ComPtr<IDXGISwapChain1> swapChain;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00098}00098     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>CreateSwapChainForHwnd(}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00099}00099         m\_commandQueue.Get(),        \textcolor{comment}{// Swap chain needs the queue so that it can force a flush on it.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00100}00100         \mbox{\hyperlink{class_win32_application_a998822a640e56d38e51a4ffb580f5044}{Win32Application::GetHwnd}}(),}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00101}00101         \&swapChainDesc,}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00102}00102         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00103}00103         \textcolor{keyword}{nullptr},}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00104}00104         \&swapChain}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00105}00105         ));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00106}00106 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00107}00107     \textcolor{comment}{// This sample does not support fullscreen transitions.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00108}00108     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(factory-\/>MakeWindowAssociation(\mbox{\hyperlink{class_win32_application_a998822a640e56d38e51a4ffb580f5044}{Win32Application::GetHwnd}}(), DXGI\_MWA\_NO\_ALT\_ENTER));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00109}00109 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00110}00110     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(swapChain.As(\&m\_swapChain));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00111}00111     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00112}00112 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00113}00113     \textcolor{comment}{// step9: Create descriptor heaps. Fill out a heap description. then create a descriptor heap:}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00114}00114     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00115}00115         \textcolor{comment}{// Describe and create a render target view (RTV) descriptor heap.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00116}00116         D3D12\_DESCRIPTOR\_HEAP\_DESC rtvHeapDesc = \{\};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00117}00117         rtvHeapDesc.NumDescriptors = FrameCount;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00118}00118         rtvHeapDesc.Type = D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00119}00119         rtvHeapDesc.Flags = D3D12\_DESCRIPTOR\_HEAP\_FLAG\_NONE;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00120}00120         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_device-\/>CreateDescriptorHeap(\&rtvHeapDesc, IID\_PPV\_ARGS(\&m\_rtvHeap)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00121}00121 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00122}00122         m\_rtvDescriptorSize = m\_device-\/>GetDescriptorHandleIncrementSize(D3D12\_DESCRIPTOR\_HEAP\_TYPE\_RTV);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00123}00123     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00124}00124 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00125}00125     \textcolor{comment}{// step10 : Create frame resources. Create the render target view:}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00126}00126     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00127}00127         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart());}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00128}00128 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00129}00129         \textcolor{comment}{// Create a RTV for each frame.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00130}00130         \textcolor{keywordflow}{for} (UINT n = 0; n < FrameCount; n++)}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00131}00131         \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00132}00132             \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_swapChain-\/>GetBuffer(n, IID\_PPV\_ARGS(\&m\_renderTargets[n])));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00133}00133             m\_device-\/>CreateRenderTargetView(m\_renderTargets[n].Get(), \textcolor{keyword}{nullptr}, rtvHandle);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00134}00134             rtvHandle.Offset(1, m\_rtvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00135}00135         \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00136}00136     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00137}00137 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00138}00138     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_device-\/>CreateCommandAllocator(D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, IID\_PPV\_ARGS(\&m\_commandAllocator)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00139}00139 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00140}00140 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00141}00141 \textcolor{comment}{// Load the sample assets.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00142}00142 \textcolor{keywordtype}{void} D3D12HelloWindow::LoadAssets()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00143}00143 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00144}00144     \textcolor{comment}{// Create the command list.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00145}00145     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_device-\/>CreateCommandList(0, D3D12\_COMMAND\_LIST\_TYPE\_DIRECT, m\_commandAllocator.Get(), \textcolor{keyword}{nullptr}, IID\_PPV\_ARGS(\&m\_commandList)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00146}00146 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00147}00147     \textcolor{comment}{// Command lists are created in the recording state, but there is nothing}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00148}00148     \textcolor{comment}{// to record yet. The main loop expects it to be closed, so close it now.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00149}00149     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_commandList-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00150}00150 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00151}00151     \textcolor{comment}{// Create synchronization objects.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00152}00152     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00153}00153         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_device-\/>CreateFence(0, D3D12\_FENCE\_FLAG\_NONE, IID\_PPV\_ARGS(\&m\_fence)));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00154}00154         m\_fenceValue = 1;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00155}00155 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00156}00156         \textcolor{comment}{// Create an event handle to use for frame synchronization.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00157}00157         m\_fenceEvent = CreateEvent(\textcolor{keyword}{nullptr}, FALSE, FALSE, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00158}00158         \textcolor{keywordflow}{if} (m\_fenceEvent == \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00159}00159         \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00160}00160             \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(HRESULT\_FROM\_WIN32(GetLastError()));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00161}00161         \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00162}00162     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00163}00163 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00164}00164 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00165}00165 \textcolor{comment}{// Update frame-\/based values.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00166}\mbox{\hyperlink{class_d3_d12_hello_window_aa82d80363a38f438311fd20a0e1962a0}{00166}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aa82d80363a38f438311fd20a0e1962a0}{D3D12HelloWindow::OnUpdate}}()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00167}00167 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00168}00168 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00169}00169 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00170}00170 \textcolor{comment}{// Render the scene.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00171}\mbox{\hyperlink{class_d3_d12_hello_window_aa8048f9788cc6b6b51de99aa6d5d9ec5}{00171}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aa8048f9788cc6b6b51de99aa6d5d9ec5}{D3D12HelloWindow::OnRender}}()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00172}00172 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00173}00173     \textcolor{comment}{// Record all the commands we need to render the scene into the command list.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00174}00174     PopulateCommandList();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00175}00175 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00176}00176     \textcolor{comment}{// Execute the command list.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00177}00177     ID3D12CommandList* ppCommandLists[] = \{ m\_commandList.Get() \};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00178}00178     m\_commandQueue-\/>ExecuteCommandLists(\_countof(ppCommandLists), ppCommandLists);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00179}00179 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00180}00180     \textcolor{comment}{// Present the frame.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00181}00181     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_swapChain-\/>Present(1, 0));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00182}00182 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00183}00183     WaitForPreviousFrame();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00184}00184 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00185}00185 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00186}\mbox{\hyperlink{class_d3_d12_hello_window_aae7da1c07166ccf6aa4c8b88af692bff}{00186}} \textcolor{keywordtype}{void} \mbox{\hyperlink{class_d3_d12_hello_window_aae7da1c07166ccf6aa4c8b88af692bff}{D3D12HelloWindow::OnDestroy}}()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00187}00187 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00188}00188     \textcolor{comment}{// Ensure that the GPU is no longer referencing resources that are about to be}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00189}00189     \textcolor{comment}{// cleaned up by the destructor.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00190}00190     WaitForPreviousFrame();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00191}00191 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00192}00192     CloseHandle(m\_fenceEvent);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00193}00193 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00194}00194 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00195}00195 \textcolor{keywordtype}{void} D3D12HelloWindow::PopulateCommandList()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00196}00196 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00197}00197     \textcolor{comment}{// Command list allocators can only be reset when the associated }}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00198}00198     \textcolor{comment}{// command lists have finished execution on the GPU; apps should use }}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00199}00199     \textcolor{comment}{// fences to determine GPU execution progress.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00200}00200     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_commandAllocator-\/>Reset());}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00201}00201 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00202}00202     \textcolor{comment}{// However, when ExecuteCommandList() is called on a particular command }}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00203}00203     \textcolor{comment}{// list, that command list can then be reset at any time and must be before }}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00204}00204     \textcolor{comment}{// re-\/recording.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00205}00205     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_commandList-\/>Reset(m\_commandAllocator.Get(), m\_pipelineState.Get()));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00206}00206 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00207}00207     \textcolor{comment}{// Indicate that the back buffer will be used as a render target.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00208}00208     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_PRESENT, D3D12\_RESOURCE\_STATE\_RENDER\_TARGET));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00209}00209 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00210}00210     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE rtvHandle(m\_rtvHeap-\/>GetCPUDescriptorHandleForHeapStart(), m\_frameIndex, m\_rtvDescriptorSize);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00211}00211 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00212}00212     \textcolor{comment}{// Record commands.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00213}00213     \textcolor{keyword}{const} \textcolor{keywordtype}{float} clearColor[] = \{ 0.0f, 0.2f, 0.4f, 1.0f \};}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00214}00214     m\_commandList-\/>ClearRenderTargetView(rtvHandle, clearColor, 0, \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00215}00215 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00216}00216     \textcolor{comment}{// Indicate that the back buffer will now be used to present.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00217}00217     m\_commandList-\/>ResourceBarrier(1, \&CD3DX12\_RESOURCE\_BARRIER::Transition(m\_renderTargets[m\_frameIndex].Get(), D3D12\_RESOURCE\_STATE\_RENDER\_TARGET, D3D12\_RESOURCE\_STATE\_PRESENT));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00218}00218 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00219}00219     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_commandList-\/>Close());}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00220}00220 \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00221}00221 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00222}00222 \textcolor{keywordtype}{void} D3D12HelloWindow::WaitForPreviousFrame()}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00223}00223 \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00224}00224     \textcolor{comment}{// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00225}00225     \textcolor{comment}{// This is code implemented as such for simplicity. The D3D12HelloFrameBuffering}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00226}00226     \textcolor{comment}{// sample illustrates how to use fences for efficient resource usage and to}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00227}00227     \textcolor{comment}{// maximize GPU utilization.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00228}00228 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00229}00229     \textcolor{comment}{// Signal and increment the fence value.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00230}00230     \textcolor{keyword}{const} UINT64 fence = m\_fenceValue;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00231}00231     \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_commandQueue-\/>Signal(m\_fence.Get(), fence));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00232}00232     m\_fenceValue++;}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00233}00233 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00234}00234     \textcolor{comment}{// Wait until the previous frame is finished.}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00235}00235     \textcolor{keywordflow}{if} (m\_fence-\/>GetCompletedValue() < fence)}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00236}00236     \{}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00237}00237         \mbox{\hyperlink{d3d_util_8h_af3892d76181a8a44edbd1a71a6ae9b97}{ThrowIfFailed}}(m\_fence-\/>SetEventOnCompletion(fence, m\_fenceEvent));}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00238}00238         WaitForSingleObject(m\_fenceEvent, INFINITE);}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00239}00239     \}}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00240}00240 }
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00241}00241     m\_frameIndex = m\_swapChain-\/>GetCurrentBackBufferIndex();}
+\DoxyCodeLine{\Hypertarget{_d3_d12_hello_window_8cpp_source_l00242}00242 \}}
 
 \end{DoxyCode}

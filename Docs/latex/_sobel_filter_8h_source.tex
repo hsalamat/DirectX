@@ -1,66 +1,66 @@
-\doxysection{Sobel\+Filter.\+h}
+\hypertarget{_sobel_filter_8h_source}{}\doxysection{Sobel\+Filter.\+h}
 \label{_sobel_filter_8h_source}\index{Week8/SobelFilter/SobelFilter.h@{Week8/SobelFilter/SobelFilter.h}}
-\textbf{ Go to the documentation of this file.}
+\mbox{\hyperlink{_sobel_filter_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00002 \textcolor{comment}{// SobelFilter.h by Frank Luna (C) 2011 All Rights Reserved.}}
-\DoxyCodeLine{00003 \textcolor{comment}{//}}
-\DoxyCodeLine{00004 \textcolor{comment}{// Applies a sobel filter on the topmost mip level of an input texture.}}
-\DoxyCodeLine{00005 \textcolor{comment}{//***************************************************************************************}}
-\DoxyCodeLine{00006 }
-\DoxyCodeLine{00007 \textcolor{preprocessor}{\#pragma once}}
-\DoxyCodeLine{00008 }
-\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
-\DoxyCodeLine{00010 }
-\DoxyCodeLine{00011 \textcolor{keyword}{class }SobelFilter}
-\DoxyCodeLine{00012 \{}
-\DoxyCodeLine{00013 \textcolor{keyword}{public}:}
-\DoxyCodeLine{00018     SobelFilter(ID3D12Device* device,}
-\DoxyCodeLine{00019         UINT width, UINT height,}
-\DoxyCodeLine{00020         DXGI\_FORMAT format);}
-\DoxyCodeLine{00021         }
-\DoxyCodeLine{00022     SobelFilter(\textcolor{keyword}{const} SobelFilter\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{00023     SobelFilter\& operator=(\textcolor{keyword}{const} SobelFilter\& rhs)=\textcolor{keyword}{delete};}
-\DoxyCodeLine{00024     \string~SobelFilter()=\textcolor{keywordflow}{default};}
-\DoxyCodeLine{00025 }
-\DoxyCodeLine{00026     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE OutputSrv();}
-\DoxyCodeLine{00027 }
-\DoxyCodeLine{00028     UINT DescriptorCount()\textcolor{keyword}{const};}
-\DoxyCodeLine{00029 }
-\DoxyCodeLine{00030     \textcolor{keywordtype}{void} BuildDescriptors(}
-\DoxyCodeLine{00031         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDescriptor, }
-\DoxyCodeLine{00032         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuDescriptor,}
-\DoxyCodeLine{00033         UINT descriptorSize);}
-\DoxyCodeLine{00034 }
-\DoxyCodeLine{00035     \textcolor{keywordtype}{void} OnResize(UINT newWidth, UINT newHeight);}
-\DoxyCodeLine{00036 }
-\DoxyCodeLine{00037     \textcolor{keywordtype}{void} Execute(}
-\DoxyCodeLine{00038         ID3D12GraphicsCommandList* cmdList, }
-\DoxyCodeLine{00039         ID3D12RootSignature* rootSig,}
-\DoxyCodeLine{00040         ID3D12PipelineState* pso,}
-\DoxyCodeLine{00041         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE input);}
-\DoxyCodeLine{00042 }
-\DoxyCodeLine{00043 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00044     \textcolor{keywordtype}{void} BuildDescriptors();}
-\DoxyCodeLine{00045     \textcolor{keywordtype}{void} BuildResource();}
-\DoxyCodeLine{00046 }
-\DoxyCodeLine{00047 \textcolor{keyword}{private}:}
-\DoxyCodeLine{00048 }
-\DoxyCodeLine{00049     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00050 }
-\DoxyCodeLine{00051     UINT mWidth = 0;}
-\DoxyCodeLine{00052     UINT mHeight = 0;}
-\DoxyCodeLine{00053     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
-\DoxyCodeLine{00054 }
-\DoxyCodeLine{00055     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuSrv;}
-\DoxyCodeLine{00056     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuUav;}
-\DoxyCodeLine{00057 }
-\DoxyCodeLine{00058     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuSrv;}
-\DoxyCodeLine{00059     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuUav;}
-\DoxyCodeLine{00060 }
-\DoxyCodeLine{00061     Microsoft::WRL::ComPtr<ID3D12Resource> mOutput = \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00062 \};}
-\DoxyCodeLine{00063 }
-\DoxyCodeLine{00064  }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00001}00001 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00002}00002 \textcolor{comment}{// SobelFilter.h by Frank Luna (C) 2011 All Rights Reserved.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00003}00003 \textcolor{comment}{//}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00004}00004 \textcolor{comment}{// Applies a sobel filter on the topmost mip level of an input texture.}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00005}00005 \textcolor{comment}{//***************************************************************************************}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00006}00006 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00007}00007 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00008}00008 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00009}00009 \textcolor{preprocessor}{\#include "{}../../Common/d3dUtil.h"{}}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00010}00010 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00011}\mbox{\hyperlink{class_sobel_filter}{00011}} \textcolor{keyword}{class }\mbox{\hyperlink{class_sobel_filter}{SobelFilter}}}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00012}00012 \{}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00013}00013 \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00018}00018     \mbox{\hyperlink{class_sobel_filter_a5f2b4d8831d7088834c780d5b458c1e9}{SobelFilter}}(ID3D12Device* device,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00019}00019         UINT width, UINT height,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00020}00020         DXGI\_FORMAT format);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00021}00021         }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00022}\mbox{\hyperlink{class_sobel_filter_a11ddae3f042851f8c6397794e0ad0dac}{00022}}     \mbox{\hyperlink{class_sobel_filter_a11ddae3f042851f8c6397794e0ad0dac}{SobelFilter}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_sobel_filter}{SobelFilter}}\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00023}\mbox{\hyperlink{class_sobel_filter_a543778b1457272b56657eeff2fb80896}{00023}}     \mbox{\hyperlink{class_sobel_filter}{SobelFilter}}\& \mbox{\hyperlink{class_sobel_filter_a543778b1457272b56657eeff2fb80896}{operator=}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_sobel_filter}{SobelFilter}}\& rhs)=\textcolor{keyword}{delete};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00024}\mbox{\hyperlink{class_sobel_filter_adefb7d00c361a26aff15d88964194f4d}{00024}}     \mbox{\hyperlink{class_sobel_filter_adefb7d00c361a26aff15d88964194f4d}{\string~SobelFilter}}()=\textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00025}00025 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00026}00026     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE \mbox{\hyperlink{class_sobel_filter_a1cc3d1b1aa9c9c0ddef8d0a74ec9a0f9}{OutputSrv}}();}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00027}00027 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00028}00028     UINT \mbox{\hyperlink{class_sobel_filter_a32cbc064a252b0b8e74d7b07685b0bd8}{DescriptorCount}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00029}00029 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00030}00030     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sobel_filter_a82b36db6e36d721b39af35cb03961848}{BuildDescriptors}}(}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00031}00031         CD3DX12\_CPU\_DESCRIPTOR\_HANDLE hCpuDescriptor, }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00032}00032         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE hGpuDescriptor,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00033}00033         UINT descriptorSize);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00034}00034 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00035}00035     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sobel_filter_a43d720be9379cccc4459dadf4cace502}{OnResize}}(UINT newWidth, UINT newHeight);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00036}00036 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00037}00037     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sobel_filter_a8d0cc4de3f8cd98e62f52080e87359f0}{Execute}}(}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00038}00038         ID3D12GraphicsCommandList* cmdList, }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00039}00039         ID3D12RootSignature* rootSig,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00040}00040         ID3D12PipelineState* pso,}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00041}00041         CD3DX12\_GPU\_DESCRIPTOR\_HANDLE input);}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00042}00042 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00043}00043 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00044}00044     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sobel_filter_a82b36db6e36d721b39af35cb03961848}{BuildDescriptors}}();}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00045}00045     \textcolor{keywordtype}{void} BuildResource();}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00046}00046 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00047}00047 \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00048}00048 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00049}00049     ID3D12Device* md3dDevice = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00050}00050 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00051}00051     UINT mWidth = 0;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00052}00052     UINT mHeight = 0;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00053}00053     DXGI\_FORMAT mFormat = DXGI\_FORMAT\_R8G8B8A8\_UNORM;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00054}00054 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00055}00055     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuSrv;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00056}00056     CD3DX12\_CPU\_DESCRIPTOR\_HANDLE mhCpuUav;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00057}00057 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00058}00058     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuSrv;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00059}00059     CD3DX12\_GPU\_DESCRIPTOR\_HANDLE mhGpuUav;}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00060}00060 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00061}00061     Microsoft::WRL::ComPtr<ID3D12Resource> mOutput = \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00062}00062 \};}
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00063}00063 }
+\DoxyCodeLine{\Hypertarget{_sobel_filter_8h_source_l00064}00064  }
 
 \end{DoxyCode}
