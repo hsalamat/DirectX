@@ -82,6 +82,13 @@ bool InitDirect3DApp::Initialize()
 	//The maximum number of samples that can be taken per pixel is defined by : #define D3D12_MAX_MULTISAMPLE_SAMPLE_COUNT ( 32 )
 
 	ThrowIfFailed(md3dDevice->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msQualityLevels, sizeof(msQualityLevels)));
+
+
+	std::wstring text = L"***msQualityLevel: ";
+	text += std::to_wstring(msQualityLevels.NumQualityLevels);
+	text += L"\n";
+
+	OutputDebugString(text.c_str());
 		
 	return true;
 }
