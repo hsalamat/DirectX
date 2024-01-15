@@ -117,14 +117,19 @@ bool InitDirect3DApp::Initialize()
 
 	   //Indicates a query for the level of support for basic Direct3D 12 feature options.
 
-	D3D12_FEATURE_DATA_D3D12_OPTIONS tiers;
+	D3D12_FEATURE_DATA_D3D12_OPTIONS options;
 
-	if (md3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &tiers, sizeof(tiers))) {
-		OutputDebugString(L"Failed to query the options for adapter ");
+	HRESULT result= md3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &options, sizeof(options));
+	if (result != S_OK) {
+		OutputDebugString(L"Failed to query the options for adapter \n");		
 	}
 
 	else {
-		OutputDebugString(L"Options query for adapter succeeded");
+		OutputDebugString(L"Options query for adapter succeeded \n");
+		if (options.DoublePrecisionFloatShaderOps)
+		{
+			OutputDebugString(L"DoublePrecisionFloatShaderOps is supported \n");
+		}
 	}
 
 
@@ -134,7 +139,7 @@ bool InitDirect3DApp::Initialize()
 	//Indicates a query for the adapter's architectural details, so that your application can better optimize for certain adapter properties.
 	//For example UMA: Unified Memory Architecture: a technology that allows a Graphics Processing Unit to share system memory
 
-	D3D12_FEATURE_DATA_ARCHITECTURE1 arch;
+	D3D12_FEATURE_DATA_ARCHITECTURE1 arch{};
 
 	md3dDevice->CheckFeatureSupport(D3D12_FEATURE_ARCHITECTURE1, &arch, sizeof(arch));
 
@@ -143,6 +148,7 @@ bool InitDirect3DApp::Initialize()
 	gpuNode += to_wstring(md3dDevice->GetNodeCount());
 
 	OutputDebugString(gpuNode.c_str());
+	OutputDebugString(L"\n");
 
 	return true;
 }
