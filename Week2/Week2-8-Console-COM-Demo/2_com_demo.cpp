@@ -57,7 +57,7 @@ int main()
 	IPersistFile* pPersist = nullptr;
 	pLink->QueryInterface(__uuidof(IPersistFile), reinterpret_cast<void**> (&pPersist));
 	//! change this to a "proper path"
-	pPersist->Save(L"c:\\wallpaper.lnk", FALSE);
+	pPersist->Save(L"wallpaper.lnk", FALSE);
 	pPersist->Release();
 	pLink->Release();
 #pragma endregion
