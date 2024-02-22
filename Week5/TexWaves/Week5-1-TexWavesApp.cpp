@@ -29,6 +29,7 @@ struct RenderItem
     // and scale of the object in the world.
     XMFLOAT4X4 World = MathHelper::Identity4x4();
 
+	//step1
 	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
 
 	// Dirty flag indicating the object data has changed and we need to update the constant buffer.
@@ -84,9 +85,10 @@ private:
 	void UpdateMaterialCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 	void UpdateWaves(const GameTimer& gt); 
-
+	//step3
 	void LoadTextures();
     void BuildRootSignature();
+	//step14
 	void BuildDescriptorHeaps();
     void BuildShadersAndInputLayout();
     void BuildLandGeometry();
@@ -117,6 +119,7 @@ private:
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
+	//step2
 	std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 	std::unordered_map<std::string, ComPtr<ID3DBlob>> mShaders;
 	std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> mPSOs;
@@ -193,7 +196,7 @@ bool TexWavesApp::Initialize()
     mCbvSrvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
     mWaves = std::make_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);
- 
+	//step4
 	LoadTextures();
     BuildRootSignature();
 	BuildDescriptorHeaps();
@@ -526,6 +529,7 @@ void TexWavesApp::UpdateWaves(const GameTimer& gt)
 	mWavesRitem->Geo->VertexBufferGPU = currWavesVB->Resource();
 }
 
+//step5
 void TexWavesApp::LoadTextures()
 {
 	auto grassTex = std::make_unique<Texture>();
@@ -537,7 +541,7 @@ void TexWavesApp::LoadTextures()
 
 	auto waterTex = std::make_unique<Texture>();
 	waterTex->Name = "waterTex";
-	waterTex->Filename = L"../../Textures/water1.dds";
+	waterTex->Filename = L"../../Textures/mywatertexture.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), waterTex->Filename.c_str(),
 		waterTex->Resource, waterTex->UploadHeap));
@@ -556,6 +560,7 @@ void TexWavesApp::LoadTextures()
 
 void TexWavesApp::BuildRootSignature()
 {
+	//step6
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
@@ -568,6 +573,7 @@ void TexWavesApp::BuildRootSignature()
     slotRootParameter[2].InitAsConstantBufferView(1);
     slotRootParameter[3].InitAsConstantBufferView(2);
 
+	//step8
 	auto staticSamplers = GetStaticSamplers();
 
     // A root signature is an array of root parameters.
@@ -594,6 +600,7 @@ void TexWavesApp::BuildRootSignature()
         IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
+//step13
 void TexWavesApp::BuildDescriptorHeaps()
 {
 	//
@@ -644,6 +651,8 @@ void TexWavesApp::BuildShadersAndInputLayout()
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+
+		//step12
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
     };
 }
@@ -666,6 +675,7 @@ void TexWavesApp::BuildLandGeometry()
         vertices[i].Pos = p;
         vertices[i].Pos.y = GetHillsHeight(p.x, p.z);
         vertices[i].Normal = GetHillsNormal(p.x, p.z);
+		//step15
 		vertices[i].TexC = grid.Vertices[i].TexC;
     }
 
@@ -771,6 +781,7 @@ void TexWavesApp::BuildBoxGeometry()
 		auto& p = box.Vertices[i].Position;
 		vertices[i].Pos = p;
 		vertices[i].Normal = box.Vertices[i].Normal;
+		//step16
 		vertices[i].TexC = box.Vertices[i].TexC;
 	}
 
@@ -856,6 +867,7 @@ void TexWavesApp::BuildMaterials()
 	auto grass = std::make_unique<Material>();
 	grass->Name = "grass";
 	grass->MatCBIndex = 0;
+	//step17
 	grass->DiffuseSrvHeapIndex = 0;
 	grass->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	grass->FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);
@@ -866,6 +878,7 @@ void TexWavesApp::BuildMaterials()
 	auto water = std::make_unique<Material>();
 	water->Name = "water";
 	water->MatCBIndex = 1;
+	//step18
 	water->DiffuseSrvHeapIndex = 1;
 	water->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	water->FresnelR0 = XMFLOAT3(0.2f, 0.2f, 0.2f);
@@ -874,6 +887,7 @@ void TexWavesApp::BuildMaterials()
 	auto wirefence = std::make_unique<Material>();
 	wirefence->Name = "wirefence";
 	wirefence->MatCBIndex = 2;
+	//step19
 	wirefence->DiffuseSrvHeapIndex = 2;
 	wirefence->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	wirefence->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
@@ -949,6 +963,7 @@ void TexWavesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std:
         cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
         cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
+		//step19
 		CD3DX12_GPU_DESCRIPTOR_HANDLE tex(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 		tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
 
@@ -963,6 +978,8 @@ void TexWavesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std:
     }
 }
 
+
+//step20
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> TexWavesApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
