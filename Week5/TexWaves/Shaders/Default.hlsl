@@ -18,6 +18,7 @@
 // Include structures and functions for lighting.
 #include "LightingUtil.hlsl"
 
+//step7
 Texture2D    gDiffuseMap : register(t0);
 
 
@@ -32,6 +33,7 @@ SamplerState gsamAnisotropicClamp : register(s5);
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
+    //step8
 	float4x4 gTexTransform;
 };
 
@@ -74,6 +76,7 @@ struct VertexIn
 {
 	float3 PosL    : POSITION;
     float3 NormalL : NORMAL;
+    //step9
 	float2 TexC    : TEXCOORD;
 };
 
@@ -82,6 +85,7 @@ struct VertexOut
 	float4 PosH    : SV_POSITION;
     float3 PosW    : POSITION;
     float3 NormalW : NORMAL;
+    //step10
 	float2 TexC    : TEXCOORD;
 };
 
@@ -99,6 +103,7 @@ VertexOut VS(VertexIn vin)
     // Transform to homogeneous clip space.
     vout.PosH = mul(posW, gViewProj);
 	
+    //step10
 	// Output vertex attributes for interpolation across triangle.
 	float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
 	vout.TexC = mul(texC, gMatTransform).xy;
@@ -114,6 +119,7 @@ float4 PS(VertexOut pin) : SV_Target
 //there is not enough texture resolution for the surface; we would thus get magnification
 //artifacts. Therefore, we repeat the grass texture over the land mesh to get more resolution.
 
+    //step11
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
 	
     // Interpolating normal can unnormalize it, so renormalize it.
