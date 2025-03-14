@@ -1223,7 +1223,8 @@ void TreeBillboardsApp::BuildRenderItems()
 
 	//step8
 	auto canadaBoxRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&canadaBoxRitem->World,  XMMatrixScaling(5.0f, 5.0f, 5.0f));
+	XMMATRIX C1 = XMMatrixMultiply(XMMatrixScaling(5.0f, 5.0f, 5.0f), XMMatrixTranslation(3.0f, 8.0f, -9.0f));
+	XMStoreFloat4x4(&canadaBoxRitem->World,  C1);
 	//XMStoreFloat4x4(&canadaBoxRitem->World, XMMatrixScaling(5.0f, 5.0f, 5.0f));
 	canadaBoxRitem->ObjCBIndex = 3;
 	canadaBoxRitem->Mat = mMaterials["canadianFlag"].get();
