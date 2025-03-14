@@ -1,6 +1,6 @@
-/** @file Week7-2-TreeBillboardsApp.cpp
+/** @file Week7-3-TreeBillboardsApp.cpp
  *  @brief Tree Billboarding Demo
- *   Adding Billboarding to our previous Hills, Mountain, Crate, and Wave Demo
+ *   Adding a new texture, a new material, a new geometry (sphere) and a new render item to the previous example!
  * 
  *   Controls:
  *   Hold the left mouse button down and move the mouse to rotate.
